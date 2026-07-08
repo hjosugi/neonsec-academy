@@ -1,0 +1,645 @@
+[
+  {
+    "id": "Q-CEHB-08-001",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "easy",
+    "tags": ["port-security", "mac-flooding", "switch-security"],
+    "body": "Which switch security feature directly mitigates MAC flooding attacks by limiting the number of MAC addresses that can be learned on a single access port and taking a configurable action, such as dropping traffic or shutting down the port, when that limit is exceeded?",
+    "choices": [
+      "Port security",
+      "Dynamic ARP Inspection (DAI)",
+      "DHCP snooping",
+      "802.1Q VLAN tagging"
+    ],
+    "answer": "Port security",
+    "explanation": {
+      "answer": "Port security.",
+      "why": "Port security caps the number of MAC addresses allowed per switch port, often to just one or a small handful, and enforces a violation action, such as protect, restrict, or shutdown, when an unauthorized or excessive number of MAC addresses appears, directly defeating the CAM-table-overflow technique MAC flooding relies on. DAI validates ARP packets against a trusted binding table and does not track MAC-address-per-port counts. DHCP snooping controls which ports may source DHCP server traffic and builds the binding table DAI relies on, but it does not limit MAC learning. 802.1Q VLAN tagging segments broadcast domains for traffic management and has no mechanism to cap MAC address counts or respond to CAM table abuse.",
+      "trap": "Assuming DAI or DHCP snooping is a catch-all for 'switch security,' when each of these three controls actually targets a different attack: port security stops MAC flooding, DHCP snooping stops rogue DHCP/starvation, and DAI stops ARP poisoning.",
+      "memory_phrase": "Port security counts MAC addresses per port and cuts off the flood before the CAM table drowns."
+    }
+  },
+  {
+    "id": "Q-CEHB-08-002",
+    "type": "multi",
+    "module": 8,
+    "difficulty": "medium",
+    "tags": ["sniffing", "defense-mapping", "arp-poisoning", "dhcp-starvation", "mac-flooding"],
+    "body": "Which of the following attack-to-defense pairings are CORRECTLY matched? (Select all that apply.)",
+    "choices": [
+      "MAC flooding is best mitigated by port security (limiting MAC addresses learned per port)",
+      "ARP poisoning is best mitigated by Dynamic ARP Inspection (validating ARP packets against a trusted IP-to-MAC binding table)",
+      "DHCP starvation and rogue DHCP servers are best mitigated by DHCP snooping (restricting DHCP server replies to trusted ports)",
+      "ARP poisoning is best mitigated by port security (limiting MAC addresses learned per port)",
+      "MAC flooding is best mitigated by Dynamic ARP Inspection (validating ARP packets against a trusted binding table)"
+    ],
+    "answer": [
+      "MAC flooding is best mitigated by port security (limiting MAC addresses learned per port)",
+      "ARP poisoning is best mitigated by Dynamic ARP Inspection (validating ARP packets against a trusted IP-to-MAC binding table)",
+      "DHCP starvation and rogue DHCP servers are best mitigated by DHCP snooping (restricting DHCP server replies to trusted ports)"
+    ],
+    "explanation": {
+      "answer": "MAC flooding is mitigated by port security, ARP poisoning is mitigated by Dynamic ARP Inspection, and DHCP starvation/rogue DHCP is mitigated by DHCP snooping, each control matches the specific mechanism the corresponding attack abuses.",
+      "why": "Port security limits MAC addresses per port, directly countering MAC-table-overflow attacks; it does not validate ARP contents, so pairing it with ARP poisoning is incorrect. DAI validates ARP IP-to-MAC bindings, addressing ARP poisoning specifically; it has no concept of per-port MAC address counts, so pairing it with MAC flooding is incorrect. DHCP snooping restricts which ports can source DHCP server messages, directly addressing starvation and rogue servers.",
+      "trap": "Swapping the mechanism a control checks, MAC address count versus ARP packet content versus DHCP message source, is the classic wrong-pairing trap; each control inspects a different field or table.",
+      "memory_phrase": "MAC count to port security, ARP content to DAI, DHCP source port to DHCP snooping, don't cross the wires."
+    }
+  },
+  {
+    "id": "Q-CEHB-08-003",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "easy",
+    "tags": ["ip-source-guard", "dhcp-snooping", "ip-spoofing"],
+    "body": "Which switch security feature uses the IP-to-MAC-to-port bindings learned by DHCP snooping to filter traffic and block a host from sending packets with a source IP address that does not match its assigned lease, helping prevent local IP spoofing?",
+    "choices": [
+      "IP Source Guard",
+      "Dynamic ARP Inspection (DAI)",
+      "Port mirroring (SPAN)",
+      "Unicast Reverse Path Forwarding (uRPF) on the core router"
+    ],
+    "answer": "IP Source Guard",
+    "explanation": {
+      "answer": "IP Source Guard.",
+      "why": "IP Source Guard filters traffic per switch port using the DHCP snooping binding table, dropping packets whose source IP, and optionally MAC, does not match the address that port was actually leased. DAI uses the same DHCP snooping binding table but validates ARP packets specifically, not the source IP field of arbitrary IP traffic. Port mirroring only copies traffic for monitoring and enforces no filtering at all. uRPF is a router-level anti-spoofing check typically applied at network egress/ingress points between networks, not a switch-port-level control tied to DHCP-lease bindings on an access-layer switch.",
+      "trap": "Confusing IP Source Guard with DAI because both consume the DHCP snooping binding table, the distinguishing detail is which field each one checks: ARP packets for DAI, the source IP of general IP traffic for IP Source Guard.",
+      "memory_phrase": "IP Source Guard makes sure your packets' source IP matches the lease you were actually given."
+    }
+  },
+  {
+    "id": "Q-CEHB-08-004",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "medium",
+    "tags": ["ssl-stripping", "mitm", "downgrade-attack"],
+    "body": "An attacker has already achieved a man-in-the-middle position on a LAN segment (for example, via ARP poisoning). Which technique allows the attacker to silently intercept a victim's supposedly secure web session by keeping the victim's browser talking in plaintext HTTP while the attacker relays requests to the real site over HTTPS?",
+    "choices": [
+      "SSL/TLS stripping",
+      "DNS cache poisoning",
+      "MAC flooding",
+      "Session fixation"
+    ],
+    "answer": "SSL/TLS stripping",
+    "explanation": {
+      "answer": "SSL/TLS stripping.",
+      "why": "SSL/TLS stripping intercepts the victim's initial plaintext request or an HTTP-to-HTTPS redirect and rewrites links/responses so the victim's browser continues communicating over unencrypted HTTP with the attacker, while the attacker separately maintains the legitimate encrypted HTTPS connection to the real server, letting the attacker read and modify traffic the victim believes is protected. DNS cache poisoning redirects a domain name to a different IP address; it does not by itself downgrade an established or intended HTTPS session to HTTP. MAC flooding forces a switch to broadcast traffic and is unrelated to protocol downgrading. Session fixation pre-assigns a known session identifier before login and has nothing to do with the HTTPS-to-HTTP downgrade mechanism.",
+      "trap": "Assuming that being in a MITM position alone breaks TLS encryption directly; TLS itself is not broken, SSL stripping instead works by preventing the secure connection from ever being established on the victim's side in the first place, exploiting the plaintext-first nature of typical HTTP-to-HTTPS redirects.",
+      "memory_phrase": "SSL stripping doesn't crack the lock, it just keeps the victim's door from ever getting locked."
+    }
+  },
+  {
+    "id": "Q-CEHB-08-005",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "hard",
+    "tags": ["hsts", "ssl-stripping-defense", "preload"],
+    "body": "An organization enables the HTTP Strict Transport Security (HSTS) header on its web server, but a security reviewer notes that a victim's very first connection to the site, before the browser has ever received and cached the HSTS header, is still theoretically vulnerable to an SSL-stripping downgrade. What is the standard mitigation for this specific first-visit gap?",
+    "choices": [
+      "Submitting the domain to the browser vendors' HSTS preload list, so browsers enforce HTTPS for that domain even before any prior visit",
+      "Increasing the HSTS max-age directive to a longer value",
+      "Disabling HTTP entirely at the DNS level so the domain has no A record",
+      "Rotating the server's TLS certificate more frequently"
+    ],
+    "answer": "Submitting the domain to the browser vendors' HSTS preload list, so browsers enforce HTTPS for that domain even before any prior visit",
+    "explanation": {
+      "answer": "Submitting the domain to the browser vendors' HSTS preload list, so browsers enforce HTTPS for that domain even before any prior visit.",
+      "why": "HSTS preload lists are built into browsers themselves, so a domain on the list gets HTTPS enforced from the very first connection attempt, closing the trust-on-first-use gap that a standard HSTS response header cannot cover, because the header itself must be received once over a successful HTTPS connection before the browser starts enforcing it. A longer max-age only extends how long the browser remembers the policy after it has already received the header at least once; it does nothing for the very first, not-yet-cached visit. Removing the DNS A record would break the site entirely rather than securing the first connection, and is not a real-world mitigation. Certificate rotation frequency is a certificate-lifecycle hygiene practice unrelated to the HSTS first-visit trust gap.",
+      "trap": "Believing that enabling HSTS alone fully closes the SSL-stripping window; standard HSTS is trust-on-first-use, so the very first, never-before-seen connection for a given browser profile remains a theoretical gap unless the domain is preloaded.",
+      "memory_phrase": "Regular HSTS trusts after the first visit; preload lists trust before the first visit ever happens."
+    }
+  },
+  {
+    "id": "Q-CEHB-08-006",
+    "type": "true_false",
+    "module": 8,
+    "difficulty": "medium",
+    "tags": ["span", "network-tap", "packet-capture"],
+    "body": "True or False: A switch's SPAN (port mirroring) port guarantees a complete, lossless copy of all monitored traffic under every load condition, making it functionally interchangeable with a dedicated hardware network TAP for forensic-grade packet capture.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "False. A SPAN port shares the switch's internal backplane and CPU resources with normal forwarding, so under high traffic load or oversubscription it can silently drop mirrored frames and can also alter timing; a dedicated hardware TAP passively and physically copies every bit at full duplex, independent of switch load, which is why TAPs are generally preferred for rigorous forensic or IDS capture where completeness matters most.",
+      "why": "SPAN ports are a convenient, no-extra-hardware software feature built into the switch, but mirroring is typically given lower priority than actual traffic forwarding, so frames can be dropped when the mirrored volume exceeds the SPAN port's or the switch's capacity. A TAP is an inline hardware device that duplicates the electrical or optical signal itself, so it does not depend on switch CPU/ASIC availability and does not compete with production forwarding for resources.",
+      "trap": "Assuming a built-in, free switch feature (SPAN) must be equivalent to purpose-built forensic hardware (a TAP) simply because both are described as 'capturing traffic'; completeness and reliability under load are where they diverge.",
+      "memory_phrase": "SPAN borrows spare switch cycles and can drop frames; a TAP is a dedicated copy machine that never has to share."
+    }
+  },
+  {
+    "id": "Q-CEHB-08-007",
+    "type": "scenario",
+    "module": 8,
+    "difficulty": "hard",
+    "tags": ["dns-poisoning", "dnssec", "scenario"],
+    "body": "During an authorized assessment, you find that an internal DNS resolver has served a forged record for a legitimate internal application to several endpoints, without the resolver, the endpoints, or the network path ever being directly compromised. A forged response with a guessed transaction ID and matching query fields was simply accepted by the resolver before the real authoritative answer arrived. Explain how DNSSEC would address this specific weakness, and note one important security property DNSSEC does NOT provide that a defender might mistakenly assume it does.",
+    "answer": "DNSSEC addresses this weakness by having the authoritative zone cryptographically sign its DNS records (via RRSIG records validated up a chain of trust to a trusted root/anchor), so a resolver performing DNSSEC validation can cryptographically verify that a response actually originated from the legitimate zone owner and was not altered in transit, causing a forged or guessed response, even one with correct-looking query fields and transaction ID, to fail validation and be rejected rather than cached and served to clients. The important property DNSSEC does NOT provide is confidentiality: DNSSEC authenticates and integrity-protects DNS responses but does not encrypt the DNS query or response, so the query content itself remains visible to anyone able to observe the traffic; encrypting DNS traffic is instead addressed by separate mechanisms such as DNS-over-TLS or DNS-over-HTTPS.",
+    "explanation": {
+      "answer": "DNSSEC provides origin authentication and integrity for DNS data through a chain of digital signatures, causing spoofed or tampered responses to fail validation; it does not provide confidentiality/encryption of DNS traffic, which is a separate concern addressed by protocols like DNS-over-TLS or DNS-over-HTTPS.",
+      "why": "The scenario describes a classic response-guessing DNS cache poisoning weakness: a resolver that only checks that a response's fields, query name, type, transaction ID, source port, superficially match, without cryptographic proof of authenticity, can be tricked by a forged response racing against the legitimate one. DNSSEC closes this gap by requiring a valid signature chain from the zone up to a trust anchor, so an attacker without the zone's private signing key cannot produce a response that will pass validation, regardless of how well they guess the transaction ID or timing. DNSSEC's guarantee is specifically about authenticity and integrity, not secrecy, so an eavesdropper can still see which domains are being queried even on a fully DNSSEC-validated resolver.",
+      "trap": "Assuming DNSSEC encrypts DNS traffic and therefore also provides privacy/confidentiality; this is one of the most common DNSSEC misconceptions on the exam. DNSSEC is purely about proving authenticity and integrity via signatures, not about hiding query content.",
+      "memory_phrase": "DNSSEC proves the answer is real; it never promises the question or answer was kept secret."
+    }
+  },
+  {
+    "id": "Q-CEHB-09-001",
+    "type": "mcq",
+    "module": 9,
+    "difficulty": "medium",
+    "tags": ["business-email-compromise", "bec", "pretexting", "fraud"],
+    "body": "Which statement BEST distinguishes Business Email Compromise (BEC) from a generic, mass-distributed phishing campaign?",
+    "choices": [
+      "BEC always relies on a malicious attachment or link to deliver malware, while phishing never uses attachments",
+      "BEC is a highly targeted social engineering scheme, often impersonating an executive, vendor, or attorney over email with a fabricated but plausible business pretext, aimed at tricking a specific employee into an action like a fraudulent wire transfer, frequently without using any malware or link at all",
+      "BEC exclusively targets personal, non-corporate email accounts",
+      "BEC is a purely technical exploit against the email server's software, requiring no human deception"
+    ],
+    "answer": "BEC is a highly targeted social engineering scheme, often impersonating an executive, vendor, or attorney over email with a fabricated but plausible business pretext, aimed at tricking a specific employee into an action like a fraudulent wire transfer, frequently without using any malware or link at all",
+    "explanation": {
+      "answer": "BEC is a targeted form of pretexting delivered by email, impersonating a trusted business relationship (executive, vendor, outside counsel) to manipulate a specific employee, often in finance or HR, into taking a harmful action such as a wire transfer or sensitive data disclosure; the message itself is frequently the entire attack, with no malware payload required.",
+      "why": "Many BEC messages are pure social-engineering text with no attachment or link at all, which is exactly what makes them hard for technical email filters to catch; conversely, mass phishing frequently does use links or attachments, so the claim about phishing never using them is also false. Targeting personal accounts is an invented restriction; BEC targets corporate email workflows and can involve compromised or spoofed business accounts, not personal accounts. BEC's success depends entirely on human deception and trust, not a technical flaw in email server software.",
+      "trap": "Assuming every socially engineered email attack must contain a malicious link or attachment to be dangerous; BEC is notable precisely because a well-crafted, malware-free message impersonating a trusted party can bypass technical filters that look for malicious payloads.",
+      "memory_phrase": "BEC doesn't need malware, it needs a convincing story and the right target in accounts payable."
+    }
+  },
+  {
+    "id": "Q-CEHB-09-002",
+    "type": "mcq",
+    "module": 9,
+    "difficulty": "easy",
+    "tags": ["vishing", "caller-id-spoofing", "smishing"],
+    "body": "Which technique commonly increases the credibility of a vishing attack by making an incoming call appear to originate from a trusted internal extension or a known, legitimate organization's phone number?",
+    "choices": [
+      "Caller ID spoofing",
+      "DNS cache poisoning",
+      "Session fixation",
+      "MAC flooding"
+    ],
+    "answer": "Caller ID spoofing",
+    "explanation": {
+      "answer": "Caller ID spoofing.",
+      "why": "Caller ID spoofing manipulates the displayed caller identification information so a vishing call appears to come from a trusted number, such as an internal help desk extension or a recognized company, increasing the odds the target will trust and comply with the caller's requests. DNS cache poisoning redirects domain name resolution and has no relationship to telephone caller identification. Session fixation is a web-session attack technique unrelated to phone calls. MAC flooding is a switch/CAM-table attack, also unrelated to telephony.",
+      "trap": "Assuming vishing's effectiveness comes only from the attacker's verbal social engineering skill; a spoofed caller ID is a simple technical trick that meaningfully boosts the pretext's credibility before the attacker even says a word.",
+      "memory_phrase": "Spoofed caller ID puts a trusted name on an untrusted call."
+    }
+  },
+  {
+    "id": "Q-CEHB-09-003",
+    "type": "mcq",
+    "module": 9,
+    "difficulty": "medium",
+    "tags": ["security-awareness", "metrics", "phishing-simulation"],
+    "body": "A security awareness program runs monthly phishing simulations. Over six months, the click-through rate on simulated phishing emails stays roughly flat, but the rate at which employees proactively report suspicious emails to the security team increases significantly. How should this trend BEST be interpreted?",
+    "choices": [
+      "The awareness program has failed, since click-through rate is the only metric that matters",
+      "The program is likely still providing real value: a rising report rate indicates growing employee vigilance and improves detection speed for real attacks, even if click rate alone has not yet dropped",
+      "The results should be discarded, since click rate and report rate can never both be meaningful metrics at the same time",
+      "Report rate is irrelevant because only technical controls, not employee behavior, affect an organization's real phishing risk"
+    ],
+    "answer": "The program is likely still providing real value: a rising report rate indicates growing employee vigilance and improves detection speed for real attacks, even if click rate alone has not yet dropped",
+    "explanation": {
+      "answer": "The program is likely still providing real value: a rising report rate indicates growing employee vigilance and improves detection speed for real attacks, even if click rate alone has not yet dropped.",
+      "why": "Report rate is a complementary metric to click rate: a rising report rate shows employees are increasingly recognizing and flagging suspicious messages, which shortens the organization's time-to-detect for real phishing campaigns, even in months where the click rate itself has not moved much yet. Judging a program by click rate alone ignores the value of faster detection and response that a strong reporting culture provides, and click rate can be a noisy, slow-moving metric influenced by simulation difficulty and employee fatigue. Discarding the data misunderstands that mature awareness programs typically track both metrics together, since they measure different things: susceptibility versus vigilance. Claiming employee behavior is irrelevant contradicts the entire premise of security awareness training and ignores that humans remain a primary initial-access vector regardless of technical controls.",
+      "trap": "Fixating on a single metric, click rate, as the sole measure of program success, when a mature program tracks multiple metrics together, such as report rate, time-to-report, and repeat-clicker trends, to get a fuller picture.",
+      "memory_phrase": "A falling click rate proves fewer people fall for it; a rising report rate proves more people are watching for it."
+    }
+  },
+  {
+    "id": "Q-CEHB-09-004",
+    "type": "true_false",
+    "module": 9,
+    "difficulty": "easy",
+    "tags": ["insider-threat", "behavioral-indicators"],
+    "body": "True or False: A sudden, unexplained spike in an employee's access to systems and large-volume data downloads outside their normal job duties, particularly occurring shortly before a planned resignation, is considered a classic behavioral indicator of potential insider threat activity that warrants review.",
+    "choices": ["True", "False"],
+    "answer": "True",
+    "explanation": {
+      "answer": "True. Anomalous access patterns and bulk data access or exfiltration, especially clustered around a resignation or termination, are well-recognized behavioral indicators used by insider-threat and user-behavior-analytics programs to flag accounts for closer review.",
+      "why": "This combination, access outside normal job function, volume anomalies, and timing tied to an impending departure, is a textbook indicator set because departing employees are statistically overrepresented in data-theft insider incidents, whether the intent is bringing data to a new employer or simple opportunism before access is revoked. Flagging such patterns for review does not itself accuse the employee of wrongdoing; it triggers a closer look consistent with a risk-based monitoring program.",
+      "trap": "Assuming insider-threat indicators only apply to obviously malicious actions like sabotage; accumulating or downloading data outside normal duties is a quieter, far more common precursor pattern that is just as important to monitor.",
+      "memory_phrase": "Unusual access plus bulk downloads plus 'about to leave' is the classic insider-threat red flag combination."
+    }
+  },
+  {
+    "id": "Q-CEHB-09-005",
+    "type": "multi",
+    "module": 9,
+    "difficulty": "medium",
+    "tags": ["tailgating", "physical-security", "access-control"],
+    "body": "Which of the following are recognized, effective physical controls for reducing the risk of tailgating (piggybacking) into a secured facility? (Select all that apply.)",
+    "choices": [
+      "An access control vestibule (mantrap) that only allows one authenticated person through at a time",
+      "Requiring security guards or receptionists to visually verify and challenge unbadged individuals attempting to enter",
+      "Anti-passback logic that prevents the same badge from being used to enter twice in a row without an intervening exit",
+      "Propping exterior secure doors open during business hours to improve airflow and convenience",
+      "Disabling door alarm chimes so employees are not 'annoyed' by frequent door events",
+      "Publicly posting the badge-reader vendor and firmware version on the building's outward-facing website for transparency"
+    ],
+    "answer": [
+      "An access control vestibule (mantrap) that only allows one authenticated person through at a time",
+      "Requiring security guards or receptionists to visually verify and challenge unbadged individuals attempting to enter",
+      "Anti-passback logic that prevents the same badge from being used to enter twice in a row without an intervening exit"
+    ],
+    "explanation": {
+      "answer": "Mantraps/access control vestibules, guard or receptionist verification of unbadged individuals, and anti-passback badge logic are all recognized physical controls that directly reduce tailgating risk by either physically preventing multiple entries per authentication event or by adding human or logical verification.",
+      "why": "Propping secure doors open defeats every other access control at that entry point regardless of what else is in place, turning a controlled entrance into an open one. Disabling door alarms removes a detective control that would otherwise flag doors held open or forced, directly reducing visibility into tailgating attempts. Publicly posting badge-reader hardware and firmware details provides attackers useful reconnaissance for finding known vulnerabilities or bypass techniques and offers no legitimate security benefit.",
+      "trap": "Options framed as convenience or transparency, propping a door open, silencing an alarm, or publishing technical details, are common distractors that sound harmless but each directly undermines an existing physical control.",
+      "memory_phrase": "Mantraps, verification, and anti-passback close the gap tailgating exploits; propped doors and silenced alarms reopen it."
+    }
+  },
+  {
+    "id": "Q-CEHB-09-006",
+    "type": "scenario",
+    "module": 9,
+    "difficulty": "hard",
+    "tags": ["mfa-fatigue", "prompt-bombing", "number-matching", "scenario"],
+    "body": "An attacker has already obtained a valid username and password for an employee's corporate account through a prior credential-stuffing incident, but the account is protected by push-based multi-factor authentication (MFA). Overnight, the employee's authenticator app receives dozens of MFA push approval requests in rapid succession, none of which the employee initiated. Around 3 a.m., the exhausted employee taps 'Approve' on one request just to stop the notifications. Identify this attack technique, and describe two effective controls that would have reduced its likelihood of success.",
+    "answer": "This is an MFA fatigue attack, also called prompt bombing or MFA push-spam, where an attacker who already has valid credentials repeatedly triggers push-based MFA prompts, hoping the victim will eventually approve one out of annoyance, confusion, or an assumption that a colleague or system is causing the repeated prompts, without the victim ever verifying the request is legitimate. Two effective controls are: (1) switching from simple accept/deny push approval to number matching, where the user must read a number shown on the login screen and type that specific number into the authenticator app, which prevents an accidental or fatigued tap from approving a login the user never actually initiated or saw the context for; and (2) rate limiting or automatically locking an account and alerting security after a small number of MFA prompts are denied or go unanswered in a short window, combined with employee training to always deny and report unexpected MFA prompts rather than approve them to make the notifications stop.",
+    "explanation": {
+      "answer": "MFA fatigue / prompt bombing; mitigations include number matching (replacing simple approve/deny push) and rate limiting or alerting on repeated/unusual push requests, paired with user training to deny and report unexpected prompts.",
+      "why": "Push-based MFA without number matching reduces the approval action to a single tap with no context displayed, which is exactly what makes repeated, high-volume prompting an effective social-engineering-adjacent technique: it exploits human fatigue and habit rather than any cryptographic weakness in MFA itself. Number matching forces the user to actively read and transcribe a value tied to the specific login attempt, which defeats a reflexive tap and gives the user a moment to recognize they did not initiate any login. Rate limiting and anomaly alerting on repeated denied or unanswered pushes lets the security team detect and respond to an in-progress credential-stuffing-plus-MFA-fatigue attempt before the attacker succeeds.",
+      "trap": "Assuming MFA alone, regardless of its implementation details, is sufficient protection; the specific MFA method matters a great deal, and simple push-approval MFA without number matching or prompt throttling is known to be vulnerable to fatigue-based social engineering even when the underlying credentials and cryptography are otherwise sound.",
+      "memory_phrase": "When 'approve' is a single lazy tap, the flood of prompts is the attack, number matching makes the user actually look before they tap."
+    }
+  },
+  {
+    "id": "Q-CEHB-10-001",
+    "type": "mcq",
+    "module": 10,
+    "difficulty": "medium",
+    "tags": ["amplification", "reflection", "protocol-comparison"],
+    "body": "Security researchers commonly rank UDP-based reflection/amplification vectors by their typical amplification factor, the ratio of response size to query size. Which of the following has historically been associated with one of the LARGEST documented amplification factors, making it especially attractive for attackers building high-volume reflected floods?",
+    "choices": [
+      "Memcached (when exposed without authentication to the internet)",
+      "ICMP echo request/reply (ping)",
+      "TCP three-way handshake (SYN/SYN-ACK)",
+      "HTTPS (TLS-encrypted HTTP)"
+    ],
+    "answer": "Memcached (when exposed without authentication to the internet)",
+    "explanation": {
+      "answer": "Memcached (when exposed without authentication to the internet).",
+      "why": "Misconfigured, internet-exposed memcached servers have been documented producing extremely large amplification factors, historically far larger than more traditional vectors like DNS or NTP, because a small request can trigger an enormous cached-data response, making them a favored amplification vector when found exposed. ICMP echo reply is roughly a 1:1 size ratio to the request and is not considered a significant amplification vector. The TCP three-way handshake is not a UDP-based reflection/amplification vector at all; SYN floods are a separate protocol-exhaustion technique that does not rely on spoofable, connectionless amplification. HTTPS relies on a stateful TCP/TLS handshake, which makes source-IP spoofing and simple reflection impractical, so it is not used as a reflection/amplification vector the way stateless UDP services are.",
+      "trap": "Assuming all reflection/amplification vectors produce similarly modest amplification, when in practice exposed vectors like memcached, and historically certain NTP and DNS configurations, have produced amplification factors dramatically larger than others, which is why exposed instances of these specific services draw outsized attacker interest.",
+      "memory_phrase": "A tiny spoofed request to an exposed memcached server can return a disproportionately massive reply, aimed entirely at the victim."
+    }
+  },
+  {
+    "id": "Q-CEHB-10-002",
+    "type": "mcq",
+    "module": 10,
+    "difficulty": "medium",
+    "tags": ["syn-cookies", "tcp-options", "trade-offs"],
+    "body": "SYN cookies allow a server under a SYN flood to avoid pre-allocating connection state for every incoming SYN. What is a commonly cited technical trade-off of relying on SYN cookies?",
+    "choices": [
+      "SYN cookies permanently disable the ability to accept any new TCP connections",
+      "Because connection details are encoded into the SYN-ACK sequence number rather than stored server-side, some TCP options negotiated at handshake time, such as window scaling, may not be preserved for connections established while SYN cookies are active",
+      "SYN cookies require the client to install special software before connecting",
+      "SYN cookies encrypt all subsequent application data for the connection"
+    ],
+    "answer": "Because connection details are encoded into the SYN-ACK sequence number rather than stored server-side, some TCP options negotiated at handshake time, such as window scaling, may not be preserved for connections established while SYN cookies are active",
+    "explanation": {
+      "answer": "Because connection details are encoded into the SYN-ACK sequence number rather than stored server-side, some TCP options negotiated at handshake time, such as window scaling, may not be preserved for connections established while SYN cookies are active.",
+      "why": "Since SYN cookie implementations typically cannot store full TCP option state until the final ACK confirms legitimacy, certain handshake-negotiated options like window scaling can be lost or limited for connections completed under SYN-cookie mode, which can modestly affect performance for high-bandwidth, high-latency connections. SYN cookies do not disable new connections; their entire purpose is to keep accepting legitimate connections during a flood while avoiding resource exhaustion. They require no special client software since they work within the existing standard TCP handshake fields. SYN cookies are purely a connection-establishment resource-management technique and have no encryption function for application data.",
+      "trap": "Assuming a defensive mechanism is entirely free of trade-offs simply because it is effective at its primary goal; SYN cookies are a well-regarded and widely deployed mitigation, but the option-preservation limitation is a real, frequently tested nuance.",
+      "memory_phrase": "SYN cookies save memory by not remembering everything, so a few handshake extras can get forgotten too."
+    }
+  },
+  {
+    "id": "Q-CEHB-10-003",
+    "type": "mcq",
+    "module": 10,
+    "difficulty": "easy",
+    "tags": ["anycast", "scrubbing-center", "ddos-mitigation"],
+    "body": "How does anycast routing, combined with cloud-based scrubbing centers, commonly help absorb and mitigate large volumetric DDoS attacks?",
+    "choices": [
+      "It advertises the same IP address from multiple geographically distributed locations, naturally spreading attack traffic across many points of presence, where scrubbing centers filter out malicious packets before forwarding only clean traffic on to the origin",
+      "It encrypts all inbound traffic so flood packets cannot be generated in the first place",
+      "It assigns a unique IP address to every individual client to prevent any packet spoofing",
+      "It physically relocates the origin server to a new data center during an attack"
+    ],
+    "answer": "It advertises the same IP address from multiple geographically distributed locations, naturally spreading attack traffic across many points of presence, where scrubbing centers filter out malicious packets before forwarding only clean traffic on to the origin",
+    "explanation": {
+      "answer": "It advertises the same IP address from multiple geographically distributed locations, naturally spreading attack traffic across many points of presence, where scrubbing centers filter out malicious packets before forwarding only clean traffic on to the origin.",
+      "why": "Anycast lets many geographically dispersed nodes announce the same IP prefix, so network routing naturally distributes an attacker's flood across numerous points of presence instead of concentrating it on one link; each node can then pass traffic through scrubbing infrastructure that filters malicious packets, forwarding only legitimate, clean traffic to the actual origin. Encryption of inbound traffic does not prevent an attacker from generating or sending flood traffic and is unrelated to volumetric absorption. Assigning unique IP addresses per client is not how anycast or scrubbing works and does not scale or prevent spoofing on its own. Physically relocating a data center during an active attack is impractical at DDoS timescales and is not how anycast-based mitigation operates.",
+      "trap": "Confusing anycast, a routing/addressing technique that spreads load across locations, with encryption or physical relocation, neither of which addresses the core volumetric problem of too much traffic converging on one place.",
+      "memory_phrase": "Anycast spreads the flood thin across many doors, then scrubbing centers sweep out the junk before it reaches home."
+    }
+  },
+  {
+    "id": "Q-CEHB-10-004",
+    "type": "true_false",
+    "module": 10,
+    "difficulty": "easy",
+    "tags": ["bcp38", "ingress-filtering", "anti-spoofing"],
+    "body": "True or False: BCP38 (network ingress/egress filtering) recommends that network operators block outbound packets whose source IP address does not belong to their own assigned address space, which helps reduce the ability of compromised hosts on that network to be used to launch spoofed-source attacks, such as reflection and amplification DDoS, against other networks.",
+    "choices": ["True", "False"],
+    "answer": "True",
+    "explanation": {
+      "answer": "True. BCP38 is a long-standing best-practice recommendation for source address validation at the network edge: operators filter outbound traffic so packets must carry a source address that legitimately belongs to their own network, preventing hosts on that network from sending spoofed-source packets outward.",
+      "why": "Reflection and amplification DDoS attacks depend on the attacker forging the victim's IP address as the source of requests sent to third-party reflectors; if every network correctly implemented BCP38-style egress filtering, spoofed-source packets could not leave the network they originated from, substantially reducing the viability of this entire attack category industry-wide. In practice, inconsistent adoption across the internet is exactly why spoofed-source reflection attacks remain a persistent problem despite BCP38 having existed for decades.",
+      "trap": "Assuming anti-spoofing filtering happens at the victim's network; BCP38 is specifically about the SOURCE network filtering outbound traffic before it ever reaches the internet, since the victim has no way to distinguish a spoofed packet from a real one once it arrives.",
+      "memory_phrase": "BCP38: filter spoofed traffic at the source network, before it ever gets a chance to reach a victim anywhere else."
+    }
+  },
+  {
+    "id": "Q-CEHB-10-005",
+    "type": "multi",
+    "module": 10,
+    "difficulty": "medium",
+    "tags": ["rate-limiting", "ddos-mitigation", "traffic-shaping"],
+    "body": "Which of the following are legitimate characteristics or implementations of rate limiting as a DoS/DDoS mitigation technique? (Select all that apply.)",
+    "choices": [
+      "Capping the number of requests or connections allowed from a given source (such as an IP address or API key) within a defined time window",
+      "Using algorithms such as token bucket or leaky bucket to smooth out bursts of traffic while still allowing a steady, sustainable request rate",
+      "Rate limiting can help blunt application-layer floods but generally cannot, by itself, absorb a volumetric attack that has already saturated the upstream network link",
+      "Setting the rate limit threshold to zero for all traffic sources at all times to guarantee no attack can ever succeed",
+      "Rate limiting must always be applied equally to every endpoint at an identical threshold regardless of the endpoint's cost or sensitivity",
+      "Rate limiting works by encrypting requests so malicious ones cannot be distinguished from legitimate ones"
+    ],
+    "answer": [
+      "Capping the number of requests or connections allowed from a given source (such as an IP address or API key) within a defined time window",
+      "Using algorithms such as token bucket or leaky bucket to smooth out bursts of traffic while still allowing a steady, sustainable request rate",
+      "Rate limiting can help blunt application-layer floods but generally cannot, by itself, absorb a volumetric attack that has already saturated the upstream network link"
+    ],
+    "explanation": {
+      "answer": "Effective rate limiting caps requests per source within a time window, commonly using token bucket or leaky bucket algorithms to allow legitimate bursts while still enforcing a sustainable ceiling, and it is best understood as an application/service-layer control that complements, rather than replaces, upstream volumetric mitigation like scrubbing when the link itself is already saturated.",
+      "why": "A rate limit of zero for everyone at all times would simply deny all legitimate traffic as well, which is a denial of service against your own users rather than a working mitigation. Requiring identical thresholds across every endpoint ignores that different endpoints have very different cost and abuse profiles; a login or search endpoint is typically far more expensive or sensitive per request than serving a static image, so mature rate-limiting policy differentiates by endpoint. Encryption has no bearing on distinguishing malicious from legitimate request volume; that distinction is made by counting and thresholds, not by confidentiality mechanisms.",
+      "trap": "Treating 'more aggressive' as always 'more secure'; a rate limit set to zero or applied without nuance breaks the service for legitimate users, which is not a meaningful defense, and conflating rate limiting with an unrelated control like encryption is a common category-confusion trap.",
+      "memory_phrase": "Rate limiting counts and caps per source with smoothing algorithms, it tunes the tap, it doesn't confuse itself with encryption, and it can't fix a pipe that's already full upstream."
+    }
+  },
+  {
+    "id": "Q-CEHB-10-006",
+    "type": "scenario",
+    "module": 10,
+    "difficulty": "hard",
+    "tags": ["slowloris", "application-layer-dos", "mitigation", "scenario"],
+    "body": "A web server's connection table fills up and legitimate users cannot connect, yet bandwidth utilization on the perimeter link stays low and the server's CPU and memory usage remain largely normal. Investigation shows thousands of connections open to the web server, each sending HTTP headers extremely slowly, one fragment every few seconds, never completing a full request. Identify the attack category at play and recommend two concrete mitigations a defender could apply at the web/application tier.",
+    "answer": "This is an application-layer (Layer 7) denial-of-service attack in the Slowloris family: the attacker opens many connections and trickles partial HTTP headers just fast enough to avoid a timeout, tying up the web server's limited pool of worker threads or connection slots without requiring meaningful bandwidth, which explains the low link utilization alongside an exhausted connection table. Appropriate mitigations at the web/application tier include: (1) configuring aggressive timeouts for incomplete requests and a cap on how long a connection may stay open without completing its headers, so slow, unfinished connections are dropped quickly instead of holding a slot indefinitely; and (2) placing a reverse proxy or load balancer with an event-driven, non-thread-per-connection architecture in front of the origin server, since such proxies can absorb and manage large numbers of slow or idle connections far more efficiently than a traditional thread-per-connection web server, along with limiting the number of concurrent connections permitted per source IP address.",
+    "explanation": {
+      "answer": "Slowloris-style application-layer DoS; mitigate with strict incomplete-request/header timeouts and a connection-limiting reverse proxy or load balancer with an event-driven architecture in front of the origin, plus per-source connection caps.",
+      "why": "The low bandwidth combined with an exhausted connection table is the classic fingerprint of an application-layer, low-and-slow attack rather than a volumetric flood: the attacker is exhausting a finite resource, worker threads or connection slots, not link capacity. Traditional thread-per-connection web servers are especially vulnerable because each held-open connection consumes a thread or process; event-driven proxies handle many idle or slow connections far more cheaply and can shield the origin. Aggressive timeouts on incomplete requests directly counter the technique's core mechanism, which depends on connections being allowed to stay open indefinitely while trickling data.",
+      "trap": "Reaching for volumetric remedies such as upstream scrubbing or blackholing when bandwidth is not actually the bottleneck; an application-layer, low-and-slow attack requires application/web-tier fixes like timeouts and connection-handling architecture, not network-link-focused mitigations.",
+      "memory_phrase": "Low bandwidth plus a maxed-out connection table equals Slowloris, fix it with timeouts and a proxy built to juggle many slow connections, not with a bigger pipe."
+    }
+  },
+  {
+    "id": "Q-CEHB-11-001",
+    "type": "mcq",
+    "module": 11,
+    "difficulty": "easy",
+    "tags": ["session-fixation", "session-hijacking", "comparison"],
+    "body": "What is the KEY distinction between session fixation and session hijacking?",
+    "choices": [
+      "In session fixation, the attacker sets or supplies a known session identifier to the victim BEFORE authentication and then reuses it once the victim logs in; in session hijacking, the attacker steals or predicts a session identifier for a session that already belongs to an authenticated victim",
+      "Session fixation only occurs over encrypted connections, while session hijacking only occurs over unencrypted connections",
+      "Session fixation and session hijacking are simply two different names for the exact same technique",
+      "Session fixation can only be performed by an insider, while session hijacking can only be performed by an external attacker"
+    ],
+    "answer": "In session fixation, the attacker sets or supplies a known session identifier to the victim BEFORE authentication and then reuses it once the victim logs in; in session hijacking, the attacker steals or predicts a session identifier for a session that already belongs to an authenticated victim",
+    "explanation": {
+      "answer": "In session fixation, the attacker sets or supplies a known session identifier to the victim BEFORE authentication and then reuses it once the victim logs in; in session hijacking, the attacker steals or predicts a session identifier for a session that already belongs to an authenticated victim.",
+      "why": "The defining difference is timing and origin of the session ID: fixation is a pre-authentication attack where the attacker already knows the ID because they supplied it, while hijacking is a post-authentication attack where the attacker must obtain or guess an ID that the server generated for an already-logged-in victim. Encryption status is not what defines either attack; both can occur regardless of transport encryption, though encryption reduces certain theft vectors for hijacking specifically. They are related but distinct techniques with different root-cause fixes, regenerating the session ID at login defeats fixation, while protecting the token in transit and at rest defeats hijacking, so treating them as identical misses important distinctions tested on the exam. Neither technique is restricted to insiders or outsiders.",
+      "trap": "Treating 'session fixation' and 'session hijacking' as interchangeable terms; the exam expects the specific distinction of whether the attacker supplied the ID beforehand (fixation) or captured/guessed an ID the server already issued to a legitimate session (hijacking).",
+      "memory_phrase": "Fixation plants the seed before login; hijacking steals the fruit after login."
+    }
+  },
+  {
+    "id": "Q-CEHB-11-002",
+    "type": "mcq",
+    "module": 11,
+    "difficulty": "easy",
+    "tags": ["samesite", "cookies", "csrf"],
+    "body": "What does setting a session cookie's SameSite attribute to 'Strict' accomplish?",
+    "choices": [
+      "It prevents the browser from sending that cookie along with requests originating from a different site, which helps mitigate cross-site request forgery and reduces certain cross-site token exposure scenarios",
+      "It guarantees the cookie is transmitted only over an encrypted HTTPS connection",
+      "It prevents any JavaScript on the page from reading the cookie's value",
+      "It automatically expires the cookie after exactly one browsing session"
+    ],
+    "answer": "It prevents the browser from sending that cookie along with requests originating from a different site, which helps mitigate cross-site request forgery and reduces certain cross-site token exposure scenarios",
+    "explanation": {
+      "answer": "It prevents the browser from sending that cookie along with requests originating from a different site, which helps mitigate cross-site request forgery and reduces certain cross-site token exposure scenarios.",
+      "why": "SameSite=Strict instructs the browser to withhold the cookie on requests that originate from a different site than the one that set the cookie, including most cross-site navigations, which helps prevent cross-site request forgery and limits scenarios where the session token would otherwise ride along with unrelated cross-site requests. Restricting transmission to HTTPS only is the job of the Secure attribute, a separate cookie flag. Preventing JavaScript from reading the cookie is the job of the HttpOnly attribute, also separate. Cookie expiration is controlled by the Expires or Max-Age attributes, not by SameSite, which governs cross-site sending behavior, not lifetime.",
+      "trap": "Bundling SameSite together with Secure or HttpOnly as if they all do the same thing; each of the three attributes defends against a different, specific threat: cross-site sending (SameSite), transport encryption (Secure), and script access (HttpOnly).",
+      "memory_phrase": "SameSite decides which SITE the cookie will follow you to, not whether it's encrypted or script-readable."
+    }
+  },
+  {
+    "id": "Q-CEHB-11-003",
+    "type": "mcq",
+    "module": 11,
+    "difficulty": "medium",
+    "tags": ["session-id", "entropy", "predictability"],
+    "body": "Why is it critical that session identifiers be generated using a cryptographically secure pseudorandom number generator with sufficient length and entropy, rather than a predictable scheme such as a sequential counter or a hash of the username and timestamp?",
+    "choices": [
+      "Longer session IDs load faster in the browser regardless of how they were generated",
+      "Insufficient randomness or predictable generation schemes make it feasible for an attacker to guess or brute-force a valid session ID for another user without ever stealing it directly, defeating the purpose of the identifier as a secret proof of authentication",
+      "Session ID randomness only affects database storage efficiency, not security",
+      "Cryptographically random session IDs are required only when the application does not use HTTPS"
+    ],
+    "answer": "Insufficient randomness or predictable generation schemes make it feasible for an attacker to guess or brute-force a valid session ID for another user without ever stealing it directly, defeating the purpose of the identifier as a secret proof of authentication",
+    "explanation": {
+      "answer": "Insufficient randomness or predictable generation schemes make it feasible for an attacker to guess or brute-force a valid session ID for another user without ever stealing it directly, defeating the purpose of the identifier as a secret proof of authentication.",
+      "why": "A session ID functions as a bearer secret: anyone who possesses a valid value is treated as the authenticated user, so if the value space is small or the generation scheme is predictable, an attacker can guess, enumerate, or reconstruct a valid ID for another active session purely through prediction, without needing to intercept or steal anything. Session ID length has no meaningful effect on browser load performance at the scale relevant to security. Storage efficiency is a database design consideration, not a security property. High entropy matters regardless of whether HTTPS is used, since HTTPS protects the token in transit but does nothing to stop an attacker who can simply predict or guess a weak identifier without ever needing to intercept traffic at all.",
+      "trap": "Assuming that as long as a session ID is protected in transit (via HTTPS) and not directly readable by scripts (via HttpOnly), the value of the identifier itself doesn't matter; a predictable or low-entropy identifier can be attacked purely through guessing, independent of any interception.",
+      "memory_phrase": "A guessable session ID is a stolen session waiting to happen, even if nothing was ever actually intercepted."
+    }
+  },
+  {
+    "id": "Q-CEHB-11-004",
+    "type": "true_false",
+    "module": 11,
+    "difficulty": "medium",
+    "tags": ["tls", "hsts", "secure-cookie", "session-protection"],
+    "body": "True or False: Setting the Secure attribute on a session cookie is sufficient on its own to guarantee that the session token can never be exposed over an unencrypted connection, even without deploying HSTS.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "False. The Secure attribute stops the browser from ever attaching that specific cookie to a plain HTTP request, but if the site itself is still reachable over HTTP at all, for example before an HTTP-to-HTTPS redirect completes, or if a user types the address without https://, other user data, page content, or even the initial navigation can be exposed or manipulated by an on-path attacker, and without HSTS the browser may repeatedly attempt plain HTTP first on future visits, creating windows for interception or SSL-stripping-style downgrades; HSTS closes this gap by making the browser refuse to attempt HTTP for that domain at all.",
+      "why": "Secure and HSTS solve related but distinct problems: Secure controls whether a particular cookie is ever sent over plaintext HTTP, while HSTS controls whether the browser will attempt a plaintext HTTP connection to the domain in the first place. Relying on Secure alone still leaves the initial connection attempt, and any other cookies or resources not marked Secure, exposed to interception or downgrade on a network path where HTTP is still reachable.",
+      "trap": "Assuming a single well-known cookie flag provides complete protection; real-world session security requires HTTPS enforced end to end (via HSTS), the Secure flag on the cookie, and HttpOnly together, since each addresses a different gap in the chain.",
+      "memory_phrase": "Secure protects the cookie once you're on HTTPS; HSTS makes sure the browser gets there in the first place."
+    }
+  },
+  {
+    "id": "Q-CEHB-11-005",
+    "type": "multi",
+    "module": 11,
+    "difficulty": "medium",
+    "tags": ["jwt", "token-handling", "web-security"],
+    "body": "An application uses JSON Web Tokens (JWTs) for session/authorization state instead of traditional server-side session IDs. Which of the following are recognized, real-world JWT handling pitfalls? (Select all that apply.)",
+    "choices": [
+      "Storing the JWT in browser localStorage, where it is accessible to any JavaScript running on the page, including injected script from a successful XSS attack",
+      "Accepting a token whose header specifies the 'none' algorithm, or failing to strictly enforce and pin the expected signing algorithm, allowing a forged, unsigned, or algorithm-confused token to be accepted as valid",
+      "Issuing JWTs with very long or no expiration, combined with no server-side mechanism to revoke or deny-list a specific token before it naturally expires",
+      "Giving the JWT a short expiration time and validating its signature and expiration on every request",
+      "Storing the JWT only in a cookie configured with both the HttpOnly and Secure attributes"
+    ],
+    "answer": [
+      "Storing the JWT in browser localStorage, where it is accessible to any JavaScript running on the page, including injected script from a successful XSS attack",
+      "Accepting a token whose header specifies the 'none' algorithm, or failing to strictly enforce and pin the expected signing algorithm, allowing a forged, unsigned, or algorithm-confused token to be accepted as valid",
+      "Issuing JWTs with very long or no expiration, combined with no server-side mechanism to revoke or deny-list a specific token before it naturally expires"
+    ],
+    "explanation": {
+      "answer": "Storing JWTs in script-accessible localStorage, accepting unsigned or algorithm-confused tokens, and issuing long-lived tokens with no revocation path are all well-documented JWT pitfalls that undermine the token's intended security guarantees.",
+      "why": "Giving a JWT a short expiration and validating its signature and expiration on every request is a recommended best practice, not a pitfall, since it limits the damage window if a token is ever stolen. Storing the token in a cookie with both HttpOnly and Secure set is also a recommended practice, since it removes the token from JavaScript's reach and ensures it only travels over encrypted connections, unlike the localStorage approach.",
+      "trap": "Misreading a best practice (short expiry with active validation, or HttpOnly plus Secure cookie storage) as if it were a pitfall simply because it appears in a list alongside genuinely risky practices; read each option for whether it increases or decreases actual exposure.",
+      "memory_phrase": "localStorage plus XSS, alg 'none', and 'never expires with no revocation' are the three classic ways a JWT stops being trustworthy."
+    }
+  },
+  {
+    "id": "Q-CEHB-11-006",
+    "type": "scenario",
+    "module": 11,
+    "difficulty": "hard",
+    "tags": ["logout", "session-invalidation", "token-revocation", "scenario"],
+    "body": "A web application's 'Log Out' button calls client-side JavaScript that deletes the session cookie from the browser and redirects to the login page. During an authorized assessment, a tester captures a copy of the session cookie's value before logout, for example from an earlier legitimate proxy capture, and after the victim clicks 'Log Out,' successfully replays that same captured cookie value in a new request and is still granted access to the victim's account. What is the underlying flaw, and how should logout be correctly implemented?",
+    "answer": "The underlying flaw is that logout is only being handled client-side: deleting the cookie from the victim's browser removes it from that browser, but the server never invalidates the corresponding session identifier on its own side, so any copy of that token captured beforehand remains fully valid and accepted until it eventually expires on its own. Correct logout must be enforced server-side: when a user logs out, the server should immediately invalidate that specific session, for example by deleting or marking the corresponding server-side session record as invalid, or, for token-based schemes, adding the token to a server-side deny-list or revocation store checked on each request, in addition to clearing the cookie client-side, so that any previously captured copy of the token is rejected on its very next use regardless of what the original browser does.",
+    "explanation": {
+      "answer": "Client-side-only logout leaves the server-side session/token valid; true logout requires server-side invalidation (or checked revocation) of that specific session identifier or token, not just deleting the cookie in the browser.",
+      "why": "A session token's validity is determined by the server, not by whether a particular browser happens to still be holding a copy of it; if the server keeps honoring the token because nothing about its own state changed, then deleting the browser's copy provides no real security benefit against anyone who already has another copy of that same value. This is a particularly sharp problem for stateless token schemes like plain JWTs, which are valid purely based on signature and expiration unless the application deliberately adds a server-side revocation or deny-list check, since a stateless token has no natural server-side record to delete.",
+      "trap": "Assuming that because the browser no longer displays a logged-in state, the underlying session is actually gone; a captured or previously synced copy of a session token remains a live credential until the server itself stops honoring it, which is why server-side invalidation, not just client-side cookie deletion, is the real control.",
+      "memory_phrase": "Deleting the cookie from one browser doesn't delete the session from the server, real logout has to kill it where it actually lives."
+    }
+  },
+  {
+    "id": "Q-CEHB-12-001",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "medium",
+    "tags": ["signature-based", "anomaly-based", "detection-tradeoffs"],
+    "body": "In terms of typical detection error rates, how do signature-based and anomaly-based (behavior-based) IDS approaches generally compare?",
+    "choices": [
+      "Signature-based detection typically has low false positives against known threats but high false negatives against novel, previously unseen attacks; anomaly-based detection can catch novel attacks by flagging deviations from a baseline, but typically produces a higher false-positive rate as legitimate-but-unusual behavior gets flagged",
+      "Signature-based detection always has a higher false-positive rate than anomaly-based detection",
+      "Both approaches have mathematically identical false-positive and false-negative rates in every deployment",
+      "Anomaly-based detection can never produce false positives once its baseline is established"
+    ],
+    "answer": "Signature-based detection typically has low false positives against known threats but high false negatives against novel, previously unseen attacks; anomaly-based detection can catch novel attacks by flagging deviations from a baseline, but typically produces a higher false-positive rate as legitimate-but-unusual behavior gets flagged",
+    "explanation": {
+      "answer": "Signature-based detection typically has low false positives against known threats but high false negatives against novel, previously unseen attacks; anomaly-based detection can catch novel attacks by flagging deviations from a baseline, but typically produces a higher false-positive rate as legitimate-but-unusual behavior gets flagged.",
+      "why": "Signature-based (misuse) detection matches traffic against known patterns, so it is precise against threats it has signatures for but blind to anything new, a high false-negative risk for zero-days; anomaly-based detection instead models normal behavior and flags deviations, which lets it catch previously unknown attack patterns but also causes it to flag unusual-yet-legitimate activity more often. The general error-rate relationship runs the opposite direction from claiming signature-based always has higher false positives; well-tuned signature engines are typically praised for low false positives, not high ones. Real-world detection error rates depend heavily on tuning, signature quality, and baseline maturity, so claiming they are ever mathematically identical misrepresents how differently the two approaches behave. Anomaly-based systems remain prone to false positives even after baselining, since legitimate behavior naturally varies over time.",
+      "trap": "Absolute claims ('never,' 'always,' 'identical') about detection error rates are a strong signal of an incorrect option; real detection trade-offs are about tendencies and typical behavior, not guarantees.",
+      "memory_phrase": "Signatures miss what they've never met; anomalies flag anything that looks a little different, known or not."
+    }
+  },
+  {
+    "id": "Q-CEHB-12-002",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "hard",
+    "tags": ["insertion-attack", "evasion-attack", "ids-theory", "fragmentation"],
+    "body": "In classic IDS evasion theory (as formalized by Ptacek and Newsham), an 'insertion attack' occurs when the IDS accepts and processes a packet that the target end host will actually reject, causing the IDS to see data that never really reached the target. How does this differ from an 'evasion attack' in the same framework?",
+    "choices": [
+      "An evasion attack occurs when the IDS rejects or fails to process a packet that the target host actually accepts, so the IDS misses data that the target really did process",
+      "An evasion attack and an insertion attack are the exact same technique described with two different names",
+      "An evasion attack only refers to attacks that use encryption, while an insertion attack only refers to attacks that use fragmentation",
+      "An evasion attack occurs only when the attacker physically bypasses the network segment where the IDS sensor is installed"
+    ],
+    "answer": "An evasion attack occurs when the IDS rejects or fails to process a packet that the target host actually accepts, so the IDS misses data that the target really did process",
+    "explanation": {
+      "answer": "An evasion attack occurs when the IDS rejects or fails to process a packet that the target host actually accepts, so the IDS misses data that the target really did process.",
+      "why": "Insertion and evasion are mirror-image mismatches between what the IDS sees/accepts and what the target host actually processes: in insertion, the IDS accepts something the target rejects, polluting the IDS's view with data the target never saw; in evasion, the IDS rejects or ignores something the target accepts, so the IDS's view is missing data the target actually processed, letting the real attack traffic slip through undetected. These are deliberately named as two distinct, complementary failure modes, not synonyms. Encryption and fragmentation are both practical techniques that can be used to cause either insertion or evasion conditions depending on how they are applied; the insertion/evasion distinction is about which system's view is wrong, not about which specific technique caused the mismatch. Physical bypass of the sensor's placement is a completely different concept, network tapping/positioning, not a reassembly or interpretation mismatch at all.",
+      "trap": "Assuming 'insertion' and 'evasion' are interchangeable jargon for 'evading the IDS' generally; the exam-relevant nuance is the precise direction of the mismatch: does the IDS see too much (insertion) or too little (evasion) compared to what the target actually processes.",
+      "memory_phrase": "Insertion tricks the IDS into believing in data the target never got; evasion tricks the IDS into ignoring data the target actually got."
+    }
+  },
+  {
+    "id": "Q-CEHB-12-003",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "medium",
+    "tags": ["ngfw", "tls-inspection", "ssl-decryption"],
+    "body": "How do many Next-Generation Firewalls (NGFWs) address the challenge of inspecting threats hidden inside encrypted TLS/SSL traffic, which a traditional stateful firewall generally cannot examine?",
+    "choices": [
+      "They simply block all encrypted traffic by default, regardless of destination",
+      "They perform authorized TLS/SSL inspection by terminating the client's encrypted connection, decrypting and inspecting the content, then re-encrypting it before forwarding to the destination, acting as a sanctioned intermediary",
+      "They convert all TLS traffic to an unencrypted protocol permanently before it leaves the network",
+      "They rely exclusively on the destination port number to infer whether encrypted traffic is malicious"
+    ],
+    "answer": "They perform authorized TLS/SSL inspection by terminating the client's encrypted connection, decrypting and inspecting the content, then re-encrypting it before forwarding to the destination, acting as a sanctioned intermediary",
+    "explanation": {
+      "answer": "They perform authorized TLS/SSL inspection by terminating the client's encrypted connection, decrypting and inspecting the content, then re-encrypting it before forwarding to the destination, acting as a sanctioned intermediary.",
+      "why": "NGFWs commonly implement SSL/TLS inspection, sometimes called SSL forward proxy, where the firewall itself terminates the client's TLS session, decrypts and inspects the plaintext content against its security policies, then establishes and re-encrypts a separate TLS connection onward to the actual destination, letting it apply deep packet inspection, application awareness, and IPS signatures to traffic that would otherwise be opaque. Blocking all encrypted traffic outright would break the vast majority of legitimate modern web and application traffic and is not how NGFWs handle this in practice. Permanently converting traffic to an unencrypted protocol would break confidentiality for the rest of the traffic's path and is not how TLS inspection works. Relying only on port numbers to infer maliciousness is an outdated, unreliable heuristic that modern encrypted, multiplexed, and non-standard-port traffic easily defeats.",
+      "trap": "Assuming a firewall either has to leave encrypted traffic completely opaque or break confidentiality entirely; authorized TLS inspection is a middle path where the firewall becomes a trusted, policy-controlled intermediary for both legs of the connection, not a wholesale destroyer of encryption.",
+      "memory_phrase": "NGFW TLS inspection opens the envelope, reads the letter, then reseals it in a new envelope before sending it on."
+    }
+  },
+  {
+    "id": "Q-CEHB-12-004",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "easy",
+    "tags": ["waf", "web-application-firewall", "positive-security-model"],
+    "body": "How does a Web Application Firewall (WAF) primarily differ from a general-purpose network firewall or NGFW in what it protects?",
+    "choices": [
+      "A WAF operates at the application layer specifically to inspect and filter HTTP/HTTPS traffic for web-application-specific attacks, such as SQL injection and cross-site scripting, often using rule sets like the OWASP Core Rule Set, and can even provide temporary 'virtual patching' for a known application vulnerability while a permanent code fix is developed",
+      "A WAF exclusively filters traffic based on source and destination MAC addresses",
+      "A WAF replaces the need for any network-layer firewall entirely",
+      "A WAF only functions when deployed on the same physical host as the database server"
+    ],
+    "answer": "A WAF operates at the application layer specifically to inspect and filter HTTP/HTTPS traffic for web-application-specific attacks, such as SQL injection and cross-site scripting, often using rule sets like the OWASP Core Rule Set, and can even provide temporary 'virtual patching' for a known application vulnerability while a permanent code fix is developed",
+    "explanation": {
+      "answer": "A WAF operates at the application layer specifically to inspect and filter HTTP/HTTPS traffic for web-application-specific attacks, such as SQL injection and cross-site scripting, often using rule sets like the OWASP Core Rule Set, and can even provide temporary 'virtual patching' for a known application vulnerability while a permanent code fix is developed.",
+      "why": "A WAF is purpose-built to sit in front of, or alongside, web applications and inspect HTTP/HTTPS requests and responses for attack patterns targeting the application layer, using signature-like rule sets and often a positive security model, allow-listing expected input patterns, in addition to, or instead of, a negative/block-list model, and can shield a known vulnerable endpoint with a targeted rule while the underlying code is fixed. MAC-address filtering is a Layer 2 concept unrelated to WAF functionality, which operates at Layer 7 against HTTP semantics. A WAF is a complementary control focused specifically on web application traffic; it does not replace network-layer firewalls, which handle broader network segmentation and non-web protocols. A WAF is typically deployed inline or as a reverse proxy/cloud service in front of web applications, not required to run on the same physical host as a database.",
+      "trap": "Treating 'firewall' in the name as implying it does the same job as a network firewall; a WAF's entire value proposition is deep understanding of HTTP and web application logic, a layer general network firewalls do not inspect.",
+      "memory_phrase": "A WAF reads HTTP requests like a bouncer who actually understands the web app's language, not just IP addresses and ports."
+    }
+  },
+  {
+    "id": "Q-CEHB-12-005",
+    "type": "true_false",
+    "module": 12,
+    "difficulty": "easy",
+    "tags": ["tarpit", "deception", "defense"],
+    "body": "True or False: A tarpit is a defensive technique that deliberately slows down or stalls suspicious or unwanted connection attempts, for example by responding very slowly or advertising a tiny TCP window size, in order to waste an attacker's or automated scanner's time and resources rather than immediately blocking the connection outright.",
+    "choices": ["True", "False"],
+    "answer": "True",
+    "explanation": {
+      "answer": "True. A tarpit intentionally keeps a suspicious connection open but crawling at a near-standstill pace, which ties up the connecting party's resources, threads, sockets, or scan time, for far longer than a normal response would, making large-scale scanning or automated attack tools far less efficient against a tarpitted host or network range.",
+      "why": "This description accurately reflects the core tarpit concept: rather than an outright reject or drop, which costs an attacker almost nothing and lets them move on immediately, a tarpit deliberately consumes the attacker's time and resources by staying just barely responsive, degrading the economics of mass scanning or worm propagation against the protected range.",
+      "trap": "Confusing a tarpit with simply blocking or dropping a connection; the entire point of a tarpit is to keep the connection alive but crawling, imposing a cost on the attacker's time and resources, which a simple drop or reject does not do.",
+      "memory_phrase": "A tarpit doesn't slam the door, it holds it open just a crack, forever, wasting the attacker's time."
+    }
+  },
+  {
+    "id": "Q-CEHB-12-006",
+    "type": "multi",
+    "module": 12,
+    "difficulty": "medium",
+    "tags": ["honeynet", "honeytoken", "honeypot", "deception"],
+    "body": "Which of the following statements about honeypot-related deception techniques are accurate? (Select all that apply.)",
+    "choices": [
+      "A honeynet is a network of multiple interconnected honeypots and supporting infrastructure, designed to simulate a fuller network environment and observe more complex, multi-stage attacker behavior than a single honeypot could capture",
+      "A honeytoken is a fake but individually trackable piece of data, such as a bogus credential, API key, or database record, that triggers an alert when it is accessed or used, without requiring a full decoy system to be built and maintained",
+      "A honeypot must run genuine, unmodified production software and contain real customer data to provide any security value",
+      "High-interaction honeypots carry effectively zero containment or legal risk once deployed, since attackers can never use them as a pivot point into anything else",
+      "Low-interaction honeypots are generally the better choice for capturing full, working zero-day exploit code, since attackers feel safest fully engaging with a lightly emulated service"
+    ],
+    "answer": [
+      "A honeynet is a network of multiple interconnected honeypots and supporting infrastructure, designed to simulate a fuller network environment and observe more complex, multi-stage attacker behavior than a single honeypot could capture",
+      "A honeytoken is a fake but individually trackable piece of data, such as a bogus credential, API key, or database record, that triggers an alert when it is accessed or used, without requiring a full decoy system to be built and maintained"
+    ],
+    "explanation": {
+      "answer": "A honeynet extends the single-honeypot concept into a broader simulated network for richer attacker-behavior observation, and a honeytoken provides a lightweight, individually trackable deception artifact that does not require standing up a full decoy system, both accurate descriptions of real deception techniques.",
+      "why": "A honeypot's value comes precisely from having no legitimate purpose, so any interaction is inherently suspicious; it does not need real customer data or unmodified production software to be useful, and using real customer data would actually introduce unnecessary risk. High-interaction honeypots are explicitly understood to carry more containment and operational risk than low-interaction ones precisely because they offer a fuller, more real environment an attacker could potentially abuse or pivot from if not carefully isolated, so claiming zero risk is false. Low-interaction honeypots emulate only limited services and are generally considered less suited to capturing full exploit chains or novel zero-day payloads, since a full exploit typically needs a more complete, realistic target to actually execute against; that role is better suited to high-interaction honeypots.",
+      "trap": "Absolute claims like 'must contain real data' or 'zero risk,' or reversing the low/high-interaction trade-off by claiming the lighter-weight option is best for capturing the deepest attacker behavior, are the classic wrong-answer patterns in honeypot questions.",
+      "memory_phrase": "Honeynets widen the trap, honeytokens shrink it to a single tripwire, neither needs real data, and 'high-interaction' still means real risk."
+    }
+  },
+  {
+    "id": "Q-CEHB-12-007",
+    "type": "scenario",
+    "module": 12,
+    "difficulty": "hard",
+    "tags": ["edr", "ndr", "detection-gap", "scenario"],
+    "body": "During an authorized red-team-style assessment, the team confirms initial access to a single workstation and then moves laterally to two internal servers using stolen but valid credentials over normal, expected internal protocols, without dropping any new files and without generating any traffic that crosses the perimeter firewall or is visible to the perimeter-deployed NIDS. The organization's perimeter IDS and firewall logs show nothing unusual for the entire engagement. Explain the visibility gap this reveals, and describe how a combination of EDR and NDR would help close it.",
+    "answer": "The visibility gap is that perimeter-focused controls, the firewall and a NIDS sensor positioned only at the network edge, have no vantage point over internal, east-west traffic between workstations and servers, and lateral movement using valid, legitimate-looking credentials over normal protocols generates no obviously malicious signature for a perimeter sensor to match, since nothing crosses the monitored boundary and nothing looks like a known bad pattern. Endpoint Detection and Response (EDR) would help close part of this gap by observing host-level behavior directly on the workstation and servers, such as unusual process lineage, credential use patterns, or living-off-the-land command execution, regardless of whether any traffic ever reaches the perimeter. Network Detection and Response (NDR) would help close the rest of the gap by analyzing internal, east-west network traffic and flow/behavioral metadata for anomalies, such as a workstation suddenly authenticating to servers it has never contacted before, even when the traffic uses expected protocols and stays entirely inside the network, something a perimeter-only NIDS was never positioned to see in the first place.",
+    "explanation": {
+      "answer": "Perimeter-only firewall/IDS has no visibility into internal east-west lateral movement using valid credentials; EDR adds host-level behavioral visibility and NDR adds internal network-flow behavioral visibility, together covering the blind spot perimeter controls cannot see.",
+      "why": "Classic perimeter defenses are positioned and tuned to catch traffic crossing the network boundary and to match known-bad signatures; an attacker who is already inside and moving between internal hosts using legitimate credentials over ordinary protocols produces neither of those triggers. EDR closes the endpoint side of the gap by watching what actually happens on the host, independent of network position, while NDR closes the internal network side by baselining and flagging anomalous internal traffic patterns and relationships between hosts that a perimeter sensor was never deployed to observe. Neither tool alone fully covers both blind spots; the combination is what closes the loop.",
+      "trap": "Assuming that because 'nothing crossed the perimeter' the environment must be clean; a mature detection strategy explicitly assumes attackers will operate inside the perimeter using legitimate-looking access, which is exactly why internal, host-level and network-level (east-west) visibility through EDR and NDR is treated as a necessary complement to perimeter firewall and IDS/IPS, not a redundant afterthought.",
+      "memory_phrase": "If it never touches the perimeter and never breaks a signature, only watching the edge will miss it, EDR watches the host, NDR watches the internal traffic, together they watch what the perimeter can't."
+    }
+  }
+]
