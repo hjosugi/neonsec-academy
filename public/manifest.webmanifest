@@ -1,0 +1,15 @@
+{
+  "name": "NeonSec Academy — CEH Trainer",
+  "short_name": "NeonSec",
+  "description": "A cyberpunk CEH exam-prep trainer: question bank, spaced-repetition review, mock exams, and weakness analytics.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#050816",
+  "theme_color": "#050816",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

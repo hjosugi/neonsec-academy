@@ -45,9 +45,13 @@ Visual theme, command palette (`/` or ⌘K), effect toggles (reduce‑motion / l
 high‑contrast / scanlines), responsive layout, onboarding, city map, and this documentation are in.
 ⬜ Deploy workflow, PWA/offline, and theme presets are tracked as new issues (P6‑013…015).
 
-## New issues added this pass
-- **P1‑011** Automated unit tests (Vitest) for srs / exam / analytics
-- **P1‑012** CI: typecheck + build + content validation
-- **P6‑013** GitHub Pages deploy workflow
-- **P6‑014** PWA / offline support
-- **P6‑015** Shareable question packs (import/export decks)
+## New issues added — and mostly already implemented this pass
+- **P1‑011** ✅ Automated unit tests (Vitest) — 25 tests across srs / grade / exam / analytics / readiness
+- **P1‑012** ✅ CI: typecheck + content validation + tests + build (`.github/workflows/ci.yml`)
+- **P6‑013** ✅ GitHub Pages deploy workflow (`.github/workflows/deploy.yml`) → live demo
+- **P6‑014** ✅ PWA / offline support (manifest + icon + runtime-caching service worker)
+- **P6‑015** ⬜ Shareable question packs (import/export decks) — still open
+
+## Question bank size
+Seed bank expanded from 263 → **~370** questions (batch-2 `Q-CEHB-*` items deepen the
+high-weight domains: recon, system, network, web).

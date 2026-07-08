@@ -10,6 +10,8 @@ Neon‑Tokyo‑7 terminal aesthetic that stays out of the way of actually studyi
 Manage questions.  Review mistakes.  Prove practical skill safely.
 ```
 
+**▶ Live demo:** <https://hjosugi.github.io/neonsec-academy/> (published from `main` via GitHub Actions)
+
 > ⚠️ **For authorized, defensive security learning only.** Every lab uses **synthetic data**.
 > Nothing in this project scans real targets, uses real credentials, runs malware, or generates
 > attack traffic. It teaches knowledge and judgment, not operational attacks.
