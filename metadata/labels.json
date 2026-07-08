@@ -1,0 +1,127 @@
+[
+  {
+    "name": "phase:0",
+    "color": "0b1026",
+    "description": "Foundation, scope, safety, design direction"
+  },
+  {
+    "name": "phase:1",
+    "color": "102a43",
+    "description": "Question bank MVP"
+  },
+  {
+    "name": "phase:2",
+    "color": "243b53",
+    "description": "Review queue and retention"
+  },
+  {
+    "name": "phase:3",
+    "color": "334e68",
+    "description": "CEH exam mode"
+  },
+  {
+    "name": "phase:4",
+    "color": "486581",
+    "description": "Safe practical labs"
+  },
+  {
+    "name": "phase:5",
+    "color": "627d98",
+    "description": "CEH plus practical tracks"
+  },
+  {
+    "name": "phase:6",
+    "color": "829ab1",
+    "description": "Cyberpunk polish and launch"
+  },
+  {
+    "name": "type:epic",
+    "color": "7c3aed",
+    "description": "Large parent-level work"
+  },
+  {
+    "name": "type:feature",
+    "color": "00f5ff",
+    "description": "User-facing product feature"
+  },
+  {
+    "name": "type:content",
+    "color": "ff2bd6",
+    "description": "Question, lab, or study content"
+  },
+  {
+    "name": "type:design",
+    "color": "ffcc00",
+    "description": "Visual, UX, or interaction design"
+  },
+  {
+    "name": "type:security",
+    "color": "ff3366",
+    "description": "Safety, security, legal, and abuse prevention"
+  },
+  {
+    "name": "type:infra",
+    "color": "39ff14",
+    "description": "Tooling, data, imports, exports, CI"
+  },
+  {
+    "name": "type:quality",
+    "color": "9d4edd",
+    "description": "Testing, QA, metrics, release readiness"
+  },
+  {
+    "name": "area:question-bank",
+    "color": "00b4d8",
+    "description": "Question storage, authoring, search"
+  },
+  {
+    "name": "area:review",
+    "color": "90e0ef",
+    "description": "Review queue, spaced repetition, mistakes"
+  },
+  {
+    "name": "area:exam",
+    "color": "ffafcc",
+    "description": "Mock exam and readiness"
+  },
+  {
+    "name": "area:lab",
+    "color": "cdb4db",
+    "description": "Safe local lab and challenge management"
+  },
+  {
+    "name": "area:design",
+    "color": "f72585",
+    "description": "Cyberpunk UI and accessibility"
+  },
+  {
+    "name": "area:analytics",
+    "color": "48cae4",
+    "description": "Stats, dashboards, reports"
+  },
+  {
+    "name": "area:content",
+    "color": "bde0fe",
+    "description": "CEH content and CEH+ content"
+  },
+  {
+    "name": "area:safety",
+    "color": "e63946",
+    "description": "Authorization boundaries and harmful-use prevention"
+  },
+  {
+    "name": "priority:P0",
+    "color": "d00000",
+    "description": "Critical path"
+  },
+  {
+    "name": "priority:P1",
+    "color": "f48c06",
+    "description": "Important"
+  },
+  {
+    "name": "priority:P2",
+    "color": "ffd60a",
+    "description": "Nice to have after core flow"
+  }
+]

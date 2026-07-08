@@ -1,0 +1,580 @@
+[
+  {
+    "id": "Q-CEH-19-001",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "easy",
+    "tags": ["cloud-service-models", "iaas"],
+    "body": "Which cloud service model provides customers with fundamental compute, storage, and networking resources as virtualized infrastructure, while the customer remains responsible for the operating system, middleware, and applications?",
+    "choices": [
+      "Infrastructure as a Service (IaaS)",
+      "Platform as a Service (PaaS)",
+      "Software as a Service (SaaS)",
+      "Function as a Service (FaaS)"
+    ],
+    "answer": "Infrastructure as a Service (IaaS)",
+    "explanation": {
+      "answer": "IaaS delivers virtualized compute, storage, and networking; the customer manages everything from the OS upward.",
+      "why": "IaaS (e.g., raw VMs) leaves OS/middleware/app management to the customer. PaaS abstracts away the OS/runtime so developers only manage code and data. SaaS delivers a complete application with the provider managing everything except user data/configuration. FaaS abstracts away servers entirely, billing per invocation, and manages the runtime for the customer.",
+      "trap": "Confusing IaaS with PaaS because both are used by developers - the key differentiator is who patches and manages the OS.",
+      "memory_phrase": "IaaS = rent the building's foundation and walls, you furnish everything else."
+    }
+  },
+  {
+    "id": "Q-CEH-19-002",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "easy",
+    "tags": ["cloud-service-models", "paas"],
+    "body": "A development team wants to deploy a web application without provisioning or patching servers, operating systems, or runtime environments themselves. Which cloud service model BEST fits this requirement?",
+    "choices": [
+      "Platform as a Service (PaaS)",
+      "Infrastructure as a Service (IaaS)",
+      "Software as a Service (SaaS)",
+      "On-premises virtualization"
+    ],
+    "answer": "Platform as a Service (PaaS)",
+    "explanation": {
+      "answer": "PaaS provides a managed runtime/platform (OS, middleware, patching handled by the provider) so developers only deploy and manage code and data.",
+      "why": "PaaS is correct because the provider manages the OS and runtime stack. IaaS would still require the customer to patch the OS. SaaS delivers a finished application, not a platform for custom development. On-premises virtualization requires the team to manage everything themselves.",
+      "trap": "Thinking any 'managed' offering must be SaaS - SaaS delivers a ready-made application, not a platform to build custom apps on.",
+      "memory_phrase": "PaaS = provider preps the kitchen, you just cook."
+    }
+  },
+  {
+    "id": "Q-CEH-19-003",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "easy",
+    "tags": ["cloud-service-models", "saas"],
+    "body": "Which cloud service model delivers a complete, ready-to-use application to end users over the internet, typically accessed via a web browser, with the provider managing the underlying infrastructure, platform, and application code?",
+    "choices": [
+      "Software as a Service (SaaS)",
+      "Infrastructure as a Service (IaaS)",
+      "Platform as a Service (PaaS)",
+      "Desktop as a Service (DaaS)"
+    ],
+    "answer": "Software as a Service (SaaS)",
+    "explanation": {
+      "answer": "SaaS provides fully managed, ready-to-use applications (e.g., webmail, CRM) where the provider owns the entire stack.",
+      "why": "SaaS is correct since customers only manage their data and user-level configuration. IaaS/PaaS require the customer to build or manage part of the stack. DaaS specifically virtualizes desktops, a narrower concept, not the general 'complete application' model being described.",
+      "trap": "Picking DaaS because it sounds like it also delivers a ready product - DaaS is specifically virtual desktops, not general applications.",
+      "memory_phrase": "SaaS = software you simply sign in and use."
+    }
+  },
+  {
+    "id": "Q-CEH-19-004",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "easy",
+    "tags": ["cloud-deployment-models", "public-cloud"],
+    "body": "Which cloud deployment model involves computing resources owned and operated by a third-party provider and shared among multiple, unrelated organizations (tenants) over the public internet?",
+    "choices": [
+      "Public cloud",
+      "Private cloud",
+      "Community cloud",
+      "Hybrid cloud"
+    ],
+    "answer": "Public cloud",
+    "explanation": {
+      "answer": "Public cloud infrastructure is owned by a third-party provider and shared across many unrelated customers (multi-tenant).",
+      "why": "Public cloud is correct by definition. Private cloud is dedicated to a single organization. Community cloud is shared among organizations with common concerns (e.g., government agencies). Hybrid cloud combines two or more deployment models.",
+      "trap": "Assuming 'shared' automatically means community cloud - community cloud implies a shared group with common interests, not the general public.",
+      "memory_phrase": "Public cloud = a shared apartment building; anyone can rent a unit."
+    }
+  },
+  {
+    "id": "Q-CEH-19-005",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "easy",
+    "tags": ["cloud-deployment-models", "private-cloud"],
+    "body": "Which cloud deployment model provisions infrastructure for the exclusive use of a single organization, whether hosted on-premises or by a third party, offering greater control over security and compliance?",
+    "choices": [
+      "Private cloud",
+      "Public cloud",
+      "Community cloud",
+      "Multi-cloud"
+    ],
+    "answer": "Private cloud",
+    "explanation": {
+      "answer": "Private cloud is dedicated to one organization, giving it more control over configuration, security, and compliance.",
+      "why": "Private cloud fits the exclusive single-tenant description. Public cloud is multi-tenant and shared. Community cloud is shared among multiple related organizations. Multi-cloud refers to using services from more than one cloud provider, not a single deployment model.",
+      "trap": "Confusing 'private' with 'on-premises only' - private cloud can be hosted on-premises or by a third party, as long as it stays single-tenant.",
+      "memory_phrase": "Private cloud = a single-family house, not an apartment complex."
+    }
+  },
+  {
+    "id": "Q-CEH-19-006",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "easy",
+    "tags": ["cloud-deployment-models", "hybrid-cloud"],
+    "body": "Which cloud deployment model combines two or more distinct cloud infrastructures (such as private and public) that remain separate entities but are bound together by technology enabling data and application portability?",
+    "choices": [
+      "Hybrid cloud",
+      "Community cloud",
+      "Multi-tenant cloud",
+      "Virtual private cloud"
+    ],
+    "answer": "Hybrid cloud",
+    "explanation": {
+      "answer": "Hybrid cloud links private and public (or other) clouds so workloads and data can move between them as needed.",
+      "why": "Hybrid cloud is the correct term for this combination. Community cloud describes a single shared infrastructure model for related organizations, not a combination of infrastructures. 'Multi-tenant cloud' just describes a shared-resource characteristic, not a deployment model. A virtual private cloud (VPC) is an isolated network segment within a public cloud, not a full deployment-model combination.",
+      "trap": "Mixing up 'hybrid cloud' with 'multi-cloud' - multi-cloud means using multiple public cloud providers, while hybrid cloud specifically bridges private and public environments.",
+      "memory_phrase": "Hybrid cloud = a house with a rented storage unit down the street, connected by a moving truck."
+    }
+  },
+  {
+    "id": "Q-CEH-19-007",
+    "type": "true_false",
+    "module": 19,
+    "difficulty": "medium",
+    "tags": ["shared-responsibility", "iaas", "patch-management"],
+    "body": "True or False: Under the cloud shared responsibility model, in an IaaS deployment the cloud service provider is responsible for patching the guest operating system running inside the customer's virtual machines.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "False - in IaaS, the customer is responsible for patching the guest OS; the provider only secures the underlying physical infrastructure, hypervisor, and network.",
+      "why": "The shared responsibility model shifts more responsibility to the customer as you move from SaaS toward IaaS. In IaaS the provider secures 'the cloud' (physical hosts, hypervisor, facilities) while the customer secures everything 'in the cloud' they deploy - guest OS, patching, middleware, applications, and data. This statement reverses that responsibility, making it false.",
+      "trap": "Assuming the cloud provider handles all patching just because they manage the physical hardware - the guest OS inside a customer-controlled VM is always the customer's job in IaaS.",
+      "memory_phrase": "IaaS: provider guards the building, you lock your own apartment door."
+    }
+  },
+  {
+    "id": "Q-CEH-19-008",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "medium",
+    "tags": ["misconfiguration", "storage-bucket", "cloud-threats"],
+    "body": "According to numerous industry incident reports, what is the MOST common root cause of publicly disclosed cloud data breaches?",
+    "choices": [
+      "Customer misconfiguration of cloud resources (e.g., publicly exposed storage buckets)",
+      "Zero-day exploitation of the hypervisor",
+      "Physical theft of data center hardware",
+      "Side-channel attacks against shared CPU caches"
+    ],
+    "answer": "Customer misconfiguration of cloud resources (e.g., publicly exposed storage buckets)",
+    "explanation": {
+      "answer": "Most real-world cloud breaches stem from customer-side misconfigurations, such as storage buckets or databases left publicly accessible, rather than provider-side flaws.",
+      "why": "Misconfiguration is consistently cited as the leading cause of cloud incidents because it is a customer responsibility under the shared responsibility model and is easy to get wrong at scale. Hypervisor zero-days are rare and heavily hardened by providers. Physical theft is mitigated by strict data-center physical security. Cache-based side-channel attacks are a real but far less common cause of actual breaches compared to simple misconfiguration.",
+      "trap": "Assuming sophisticated technical exploits (hypervisor 0-days, side channels) are the main threat - in practice, mundane misconfiguration dwarfs them in breach statistics.",
+      "memory_phrase": "Cloud breaches: it's rarely the lock that's broken, it's the door left wide open."
+    }
+  },
+  {
+    "id": "Q-CEH-19-009",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "medium",
+    "tags": ["iam", "least-privilege", "cloud-security"],
+    "body": "An organization's cloud audit reveals that many IAM roles are granted the equivalent of administrator access even though the assigned workloads only need to read from a single storage container. Which principle should be applied to remediate this finding?",
+    "choices": [
+      "Principle of least privilege",
+      "Principle of separation of duties",
+      "Defense in depth",
+      "Security through obscurity"
+    ],
+    "answer": "Principle of least privilege",
+    "explanation": {
+      "answer": "Least privilege means granting only the minimum permissions necessary to perform a task, which directly addresses over-permissive IAM roles.",
+      "why": "Least privilege is correct because the fix is scoping each role down to exactly what it needs. Separation of duties splits critical tasks among multiple people or roles to prevent fraud, which isn't the issue here. Defense in depth layers multiple controls but doesn't specifically address excessive single-role permissions. Security through obscurity relies on hiding details rather than restricting access and is not a valid IAM control.",
+      "trap": "Choosing 'defense in depth' because it sounds like general good security - the specific fix for over-permissive roles is least privilege, a distinct and more precise principle.",
+      "memory_phrase": "Least privilege = give the intern a key to one room, not the whole building."
+    }
+  },
+  {
+    "id": "Q-CEH-19-010",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "medium",
+    "tags": ["casb", "cloud-security", "shadow-it"],
+    "body": "Which type of security solution sits between an organization's users and cloud service providers to enforce security policies such as data loss prevention, access control, and visibility into shadow IT usage?",
+    "choices": [
+      "Cloud Access Security Broker (CASB)",
+      "Web Application Firewall (WAF)",
+      "Next-Generation Firewall (NGFW)",
+      "Security Information and Event Management (SIEM)"
+    ],
+    "answer": "Cloud Access Security Broker (CASB)",
+    "explanation": {
+      "answer": "A CASB is a policy enforcement point placed between cloud consumers and providers to give visibility and control over cloud application usage.",
+      "why": "CASB is purpose-built to monitor and control traffic to sanctioned and unsanctioned (shadow IT) cloud services, enforcing DLP and access policies. A WAF protects specific web applications from HTTP-layer attacks, not general cloud usage. An NGFW provides network-layer filtering with some application awareness but lacks CASB's deep cloud-service visibility. A SIEM aggregates and correlates logs for detection but does not itself broker or enforce access to cloud services.",
+      "trap": "Confusing CASB with a SIEM because both provide 'visibility' - a SIEM is for log correlation and alerting, while a CASB actively sits in the access path enforcing cloud-specific policy.",
+      "memory_phrase": "CASB = the bouncer standing between your users and every cloud app door."
+    }
+  },
+  {
+    "id": "Q-CEH-19-011",
+    "type": "multi",
+    "module": 19,
+    "difficulty": "medium",
+    "tags": ["cloud-best-practices", "iam", "logging", "mfa"],
+    "body": "Which of the following are widely recommended best practices for securing cloud environments? (Select three.)",
+    "choices": [
+      "Enable centralized logging and monitoring (e.g., audit trails of API calls)",
+      "Enforce multi-factor authentication for privileged cloud accounts",
+      "Apply least-privilege IAM policies scoped to specific resources",
+      "Disable logging on storage services to reduce operational costs",
+      "Grant broad wildcard (*:*) permissions to simplify troubleshooting",
+      "Hardcode long-lived access keys directly into application source code"
+    ],
+    "answer": [
+      "Enable centralized logging and monitoring (e.g., audit trails of API calls)",
+      "Enforce multi-factor authentication for privileged cloud accounts",
+      "Apply least-privilege IAM policies scoped to specific resources"
+    ],
+    "explanation": {
+      "answer": "Centralized logging, MFA for privileged accounts, and least-privilege IAM are all core, universally recommended cloud security controls.",
+      "why": "These three are correct because they directly reduce attack surface and improve detection: logging enables audit and incident response, MFA mitigates credential theft, and least privilege limits blast radius. Disabling logging removes visibility needed for detection and forensics. Wildcard permissions violate least privilege and dramatically increase blast radius if credentials are compromised. Hardcoding long-lived keys in source code risks credential leakage via repositories and violates secure secrets-management practice.",
+      "trap": "Being tempted by 'reduce costs' or 'simplify troubleshooting' framing - these distractors sound operationally reasonable but directly undermine security.",
+      "memory_phrase": "Log it, lock it (MFA), limit it (least privilege) - never skip, widen, or hardcode."
+    }
+  },
+  {
+    "id": "Q-CEH-19-012",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "hard",
+    "tags": ["container-security", "container-breakout", "kernel"],
+    "body": "Containers running on the same host typically share the host's kernel rather than each running a full separate OS. What is the primary security risk this architecture introduces compared to full virtual machines?",
+    "choices": [
+      "A kernel-level vulnerability or misconfiguration can allow a 'container breakout' where a process escapes container isolation to affect the host or other containers",
+      "Containers cannot be patched independently of the host operating system",
+      "Containers always run with encrypted memory, making forensic analysis impossible",
+      "Containers require a dedicated hypervisor for every instance, increasing cost"
+    ],
+    "answer": "A kernel-level vulnerability or misconfiguration can allow a 'container breakout' where a process escapes container isolation to affect the host or other containers",
+    "explanation": {
+      "answer": "Because containers share the host kernel, a kernel exploit or a misconfigured container (e.g., running privileged, excessive capabilities) can allow an attacker to break out of the container boundary and reach the host or sibling containers.",
+      "why": "Shared-kernel architecture is exactly what makes container breakout a meaningful risk, unlike VMs which each run isolated kernels atop a hypervisor. Containers can be patched somewhat independently via image updates, though the underlying host kernel patch is shared, so that option is inaccurate as stated. Encrypted memory is not an inherent or default container property. Containers specifically avoid requiring a dedicated hypervisor per instance - that is a cost/efficiency benefit, not a risk, and is the opposite of the correct concern.",
+      "trap": "Assuming containers are 'just lightweight VMs' with equivalent isolation guarantees - the shared kernel is the key architectural difference driving this specific risk.",
+      "memory_phrase": "Containers share one kernel roof; a hole in that roof rains on every tenant."
+    }
+  },
+  {
+    "id": "Q-CEH-19-013",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "hard",
+    "tags": ["serverless", "faas", "shared-responsibility"],
+    "body": "In a serverless (Function-as-a-Service) architecture, the cloud provider manages the underlying servers, operating system, and runtime patching. Which security responsibility remains with the customer/developer?",
+    "choices": [
+      "Securing the function's application code, its dependencies, and configured permissions/triggers",
+      "Physically securing the data center hosting the functions",
+      "Patching the host operating system that executes the function",
+      "Maintaining the hypervisor that isolates tenant workloads"
+    ],
+    "answer": "Securing the function's application code, its dependencies, and configured permissions/triggers",
+    "explanation": {
+      "answer": "Even though the provider handles infrastructure, the developer is still responsible for secure coding, vetting third-party dependencies/libraries, and correctly scoping the function's execution role and event triggers.",
+      "why": "Serverless shifts infrastructure responsibility to the provider, but application-layer security (code flaws, vulnerable dependencies, over-permissive execution roles, insecure triggers like public API Gateway endpoints) remains squarely with the developer. Physical data center security, host OS patching, and hypervisor maintenance are all infrastructure-layer tasks owned entirely by the provider in a serverless model.",
+      "trap": "Assuming 'serverless' means 'security-less' for the customer - it eliminates infrastructure management, not application-layer responsibility.",
+      "memory_phrase": "Serverless removes servers from your job, not secure code from your job."
+    }
+  },
+  {
+    "id": "Q-CEH-19-014",
+    "type": "scenario",
+    "module": 19,
+    "difficulty": "hard",
+    "tags": ["ssrf", "instance-metadata-service", "credential-theft", "defense-in-depth"],
+    "body": "During an authorized penetration test of a web application hosted on a cloud IaaS virtual machine, the tester discovers a Server-Side Request Forgery (SSRF) vulnerability that allows the application server to make arbitrary outbound HTTP requests. The tester demonstrates that this SSRF can be used to query the cloud instance's metadata service endpoint and retrieve temporary IAM credentials assigned to the VM. As the assessor writing the report, what remediation should you recommend to the client to prevent this class of attack, and why does it work?",
+    "answer": "Recommend upgrading to a session-oriented/token-required metadata service version (e.g., enforcing a hop-limited, token-based request flow instead of the legacy simple GET-based version), combined with strict input validation/allow-listing on any server-side request functionality, network egress controls limiting access to the metadata endpoint, and scoping the instance's IAM role to least privilege so that even if credentials are exposed, their blast radius is minimal. This works because it closes the specific gap SSRF exploits (an unauthenticated, easily-requested metadata endpoint reachable from application code) while least-privilege IAM limits the damage of any credentials that do leak.",
+    "explanation": {
+      "answer": "The correct defensive fix combines enforcing a token/session-based metadata service (blocking naive SSRF-driven GET requests), input validation/allow-listing to prevent SSRF, network controls, and least-privilege IAM scoping on the instance role.",
+      "why": "SSRF-to-metadata-credential-theft succeeds because legacy instance metadata services respond to simple unauthenticated HTTP GET requests from anything running on the instance, including a vulnerable app tricked into proxying the request. Requiring a session token obtained via a separate request with a hop limit defeats naive SSRF because the attacker typically cannot complete the token-fetch handshake through the vulnerable endpoint. Input validation prevents the SSRF itself at the source. Least-privilege IAM ensures that even a successful credential theft yields minimal usable access, limiting impact.",
+      "trap": "Recommending only 'fix the SSRF bug' - a complete answer also hardens the metadata service and scopes IAM roles as defense in depth, since application code will always carry some risk of injection-class bugs.",
+      "memory_phrase": "SSRF plus a chatty metadata endpoint equals free cloud credentials - require a token handshake and starve the leak."
+    }
+  },
+  {
+    "id": "Q-CEH-20-001",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "easy",
+    "tags": ["symmetric-encryption", "cryptography-basics"],
+    "body": "Which type of encryption uses the SAME secret key for both encrypting and decrypting data?",
+    "choices": [
+      "Symmetric encryption",
+      "Asymmetric encryption",
+      "Hashing",
+      "Digital signing"
+    ],
+    "answer": "Symmetric encryption",
+    "explanation": {
+      "answer": "Symmetric encryption (e.g., AES) uses one shared secret key for both encryption and decryption.",
+      "why": "Symmetric encryption is correct by definition. Asymmetric encryption uses a mathematically related key pair (public/private), not the same key. Hashing is a one-way function that doesn't use a key to 'decrypt' - it produces a fixed-size digest and isn't reversible. Digital signing uses asymmetric key pairs to prove authenticity/integrity, not a single shared key.",
+      "trap": "Confusing symmetric encryption with hashing because both can seem like 'one algorithm, one output' - hashing has no decryption step at all, while symmetric encryption is always reversible with the same key.",
+      "memory_phrase": "Symmetric = one key locks and unlocks the same door."
+    }
+  },
+  {
+    "id": "Q-CEH-20-002",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "easy",
+    "tags": ["asymmetric-encryption", "public-key", "cryptography-basics"],
+    "body": "Which type of encryption uses a mathematically related key pair, where one key (public) can be freely shared and a different key (private) is kept secret, such that data encrypted with one key can only be decrypted with the other?",
+    "choices": [
+      "Asymmetric encryption",
+      "Symmetric encryption",
+      "Hashing",
+      "Steganography"
+    ],
+    "answer": "Asymmetric encryption",
+    "explanation": {
+      "answer": "Asymmetric (public-key) encryption uses a public/private key pair; RSA and ECC are common examples.",
+      "why": "Asymmetric encryption is correct by definition. Symmetric encryption uses only one shared key. Hashing produces a non-reversible digest and doesn't use key pairs for encryption/decryption. Steganography hides the existence of data within other data (e.g., an image) and is not an encryption scheme at all.",
+      "trap": "Thinking steganography is a form of encryption because both 'hide' information - steganography conceals existence, encryption scrambles content but doesn't hide that it exists.",
+      "memory_phrase": "Asymmetric = a mailbox slot (public) anyone can drop mail into, but only your key (private) opens it."
+    }
+  },
+  {
+    "id": "Q-CEH-20-003",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "easy",
+    "tags": ["hashing", "encryption", "integrity", "confidentiality"],
+    "body": "Which statement BEST distinguishes hashing from encryption?",
+    "choices": [
+      "Hashing is a one-way function used primarily to verify integrity, while encryption is reversible and used primarily to protect confidentiality",
+      "Hashing and encryption are interchangeable terms for the same reversible process",
+      "Hashing always requires a private key, while encryption never uses keys",
+      "Encryption produces a fixed-length digest, while hashing produces variable-length ciphertext"
+    ],
+    "answer": "Hashing is a one-way function used primarily to verify integrity, while encryption is reversible and used primarily to protect confidentiality",
+    "explanation": {
+      "answer": "Hashing is deliberately one-way (no decryption) and used to detect changes to data (integrity), while encryption is designed to be reversed with the correct key to protect data from unauthorized reading (confidentiality).",
+      "why": "This is the core conceptual distinction tested throughout CEH cryptography content. The second option is wrong because hashing is NOT reversible, unlike encryption. The third option is backwards and inaccurate - hashing typically uses no key at all (except in keyed variants like HMAC), while many encryption schemes do use keys. The fourth option swaps the actual properties: hashing produces a fixed-length digest regardless of input size, while encryption/ciphertext length typically relates to plaintext length or block size.",
+      "trap": "Assuming a 'strong' hash can be reversed with enough computing power - by design, cryptographic hashes are not intended to be reversible; brute-force guessing plaintexts is a different attack, not reversal.",
+      "memory_phrase": "Hash = one-way fingerprint (integrity); Encrypt = two-way lockbox (confidentiality)."
+    }
+  },
+  {
+    "id": "Q-CEH-20-004",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "easy",
+    "tags": ["aes", "symmetric-encryption", "block-cipher"],
+    "body": "Which symmetric block cipher, adopted as a U.S. federal standard (FIPS 197), is the current de facto standard for encrypting sensitive data and supports key lengths of 128, 192, and 256 bits?",
+    "choices": [
+      "AES (Advanced Encryption Standard)",
+      "DES (Data Encryption Standard)",
+      "RSA",
+      "RC4"
+    ],
+    "answer": "AES (Advanced Encryption Standard)",
+    "explanation": {
+      "answer": "AES is the modern, widely trusted symmetric block cipher standardized in FIPS 197, supporting 128/192/256-bit keys.",
+      "why": "AES is correct as described. DES is an older symmetric cipher with only a 56-bit effective key, now considered cryptographically broken/deprecated due to brute-forceability. RSA is an asymmetric algorithm, not a symmetric block cipher. RC4 is a symmetric stream cipher, but it is deprecated due to known biases/weaknesses, and it doesn't match the block-cipher/128-256-bit-key description given.",
+      "trap": "Selecting DES because it's the more 'classic' textbook answer for 'the' encryption standard - DES's small key size makes it obsolete; AES replaced it.",
+      "memory_phrase": "AES: 128/192/256-bit keys, the modern gold standard for symmetric encryption."
+    }
+  },
+  {
+    "id": "Q-CEH-20-005",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "easy",
+    "tags": ["rsa", "asymmetric-encryption", "public-key"],
+    "body": "The security of the RSA asymmetric algorithm is primarily based on the computational difficulty of which mathematical problem?",
+    "choices": [
+      "Factoring the product of two large prime numbers",
+      "Solving the discrete logarithm problem over elliptic curves",
+      "Reversing a cryptographic hash function",
+      "Brute-forcing a 128-bit symmetric key"
+    ],
+    "answer": "Factoring the product of two large prime numbers",
+    "explanation": {
+      "answer": "RSA's security rests on the practical infeasibility of factoring the large composite number (the product of two large primes) that forms part of its public key.",
+      "why": "This is RSA's defining hard problem. The elliptic curve discrete logarithm problem is what underpins ECC (Elliptic Curve Cryptography), a different algorithm family, not RSA. 'Reversing a hash function' relates to hash preimage resistance, unrelated to RSA's key mathematics. Brute-forcing a symmetric key describes an attack on symmetric ciphers like AES, not the asymmetric RSA algorithm.",
+      "trap": "Mixing up RSA's factoring problem with ECC's elliptic curve discrete logarithm problem - both are asymmetric algorithms but rely on different hard math problems.",
+      "memory_phrase": "RSA = hard to un-multiply two huge primes."
+    }
+  },
+  {
+    "id": "Q-CEH-20-006",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "easy",
+    "tags": ["digital-signature", "non-repudiation", "authentication", "integrity"],
+    "body": "What is the PRIMARY purpose of a digital signature applied to a message?",
+    "choices": [
+      "To provide authentication, integrity, and non-repudiation of the message's origin",
+      "To make the message unreadable to anyone without the sender's private key",
+      "To compress the message for faster transmission",
+      "To automatically encrypt the message body using AES"
+    ],
+    "answer": "To provide authentication, integrity, and non-repudiation of the message's origin",
+    "explanation": {
+      "answer": "A digital signature (typically created by hashing the message and encrypting the hash with the sender's private key) lets a recipient verify who sent the message, that it wasn't altered, and prevents the sender from later denying they sent it.",
+      "why": "This triad (authentication, integrity, non-repudiation) is the standard purpose of digital signatures. Digital signatures do not provide confidentiality by themselves - they don't make the message unreadable, since the signature is verified with the sender's PUBLIC key, and the message itself may still be sent in plaintext unless separately encrypted. Signing has nothing to do with compression. Signing does not equate to AES encryption of the body; those are separate, optional operations that can be combined with signing but are not what signing itself provides.",
+      "trap": "Assuming a 'signature' also hides the message content - signing and encrypting are separate operations; a signed message can still be fully readable unless it is also encrypted.",
+      "memory_phrase": "Digital signature = a wax seal proving who sent it and that it's untouched, not an envelope hiding the contents."
+    }
+  },
+  {
+    "id": "Q-CEH-20-007",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "medium",
+    "tags": ["diffie-hellman", "key-exchange"],
+    "body": "Two parties who have never communicated before need to establish a shared secret key over a public, insecure network without ever transmitting the key itself. Which algorithm is specifically designed for this key-exchange purpose?",
+    "choices": [
+      "Diffie-Hellman (DH) key exchange",
+      "AES-256",
+      "SHA-256",
+      "HMAC"
+    ],
+    "answer": "Diffie-Hellman (DH) key exchange",
+    "explanation": {
+      "answer": "Diffie-Hellman allows two parties to mathematically derive a shared secret over an insecure channel without ever sending the secret itself, using each side's private value combined with the other's public value.",
+      "why": "DH is purpose-built for secure key agreement/exchange, which is exactly the described scenario. AES-256 is a symmetric cipher used to encrypt data once a key already exists, not to establish one. SHA-256 is a hash function used for integrity/digests, not key exchange. HMAC provides keyed message authentication, requiring a key to already be shared - it doesn't establish one.",
+      "trap": "Confusing DH with generating an RSA key pair - RSA key pairs are generated locally by one party, while DH is a two-party interactive protocol for agreeing on a shared secret together.",
+      "memory_phrase": "Diffie-Hellman: two people publicly mix colors and each ends up with the same secret shade."
+    }
+  },
+  {
+    "id": "Q-CEH-20-008",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "medium",
+    "tags": ["pki", "certificate-authority", "certificate-chain"],
+    "body": "In a Public Key Infrastructure (PKI), what is the primary role of a Certificate Authority (CA) within the certificate chain of trust?",
+    "choices": [
+      "To verify the identity of a certificate requestor and digitally sign the certificate binding that identity to a public key",
+      "To generate and store every user's private key on their behalf indefinitely",
+      "To encrypt all network traffic on behalf of end users",
+      "To act as the sole repository where symmetric session keys are permanently stored"
+    ],
+    "answer": "To verify the identity of a certificate requestor and digitally sign the certificate binding that identity to a public key",
+    "explanation": {
+      "answer": "A CA vouches for the binding between an identity (e.g., a domain or organization) and a public key by digitally signing the certificate; relying parties trust the certificate because they trust the CA, directly or via a chain up to a trusted root.",
+      "why": "This is the CA's core function in PKI. CAs do not typically generate or retain end-user private keys as a general practice, and for signing certs the private key should never leave the owner's control - key escrow is a distinct, optional service, not the CA's primary role. CAs don't perform bulk traffic encryption themselves; that happens between the communicating endpoints using the certified keys. Session keys are typically ephemeral, especially with forward secrecy, and are not stored permanently by a CA at all.",
+      "trap": "Assuming the CA is 'in the middle' of every encrypted conversation - the CA's job ends at issuing and vouching for the certificate; it does not participate in or store the resulting encrypted sessions.",
+      "memory_phrase": "CA = the notary that signs and vouches for your public key's ID, not your bodyguard for every conversation."
+    }
+  },
+  {
+    "id": "Q-CEH-20-009",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "medium",
+    "tags": ["tls", "handshake", "session-key"],
+    "body": "During a TLS handshake, what is the primary purpose of the initial negotiation phase between client and server?",
+    "choices": [
+      "To agree on protocol version, cipher suite, and authenticate the server (and optionally the client) before deriving a shared session key",
+      "To permanently exchange each party's private keys for future use",
+      "To hash the entire application payload before any data is sent",
+      "To assign a new public IP address to the client for the session"
+    ],
+    "answer": "To agree on protocol version, cipher suite, and authenticate the server (and optionally the client) before deriving a shared session key",
+    "explanation": {
+      "answer": "The TLS handshake negotiates the supported TLS version and cipher suite, authenticates the server via its certificate (and optionally the client), and establishes a shared symmetric session key used for the subsequent encrypted session.",
+      "why": "This captures the real purpose of the handshake. Private keys are never transmitted, even during a handshake - that would defeat the purpose of asymmetric cryptography; only public certificates and derived/ephemeral key material are exchanged. Hashing the entire application payload isn't part of the handshake; the handshake happens before application data is sent. IP address assignment is a networking (e.g., DHCP) function unrelated to TLS.",
+      "trap": "Thinking the handshake 'exchanges the private key' to enable decryption - TLS specifically avoids ever transmitting private keys; only a derived shared secret (via mechanisms like Diffie-Hellman) is established.",
+      "memory_phrase": "TLS handshake = agree on the rules and the secret handshake, never mail the house key."
+    }
+  },
+  {
+    "id": "Q-CEH-20-010",
+    "type": "true_false",
+    "module": 20,
+    "difficulty": "medium",
+    "tags": ["password-hashing", "salt", "md5", "weak-algorithms"],
+    "body": "True or False: Storing user passwords using an unsalted MD5 hash is considered an industry best practice for protecting password databases against offline cracking attacks.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "False - unsalted MD5 is considered cryptographically weak and inappropriate for password storage; modern best practice uses slow, salted algorithms specifically designed for password hashing, such as bcrypt, scrypt, Argon2, or salted PBKDF2.",
+      "why": "MD5 is fast and has known collision weaknesses, and without a per-user salt, identical passwords produce identical hashes and are highly vulnerable to precomputed rainbow-table attacks and fast brute-force/GPU cracking. Purpose-built password hashing algorithms are deliberately slow and memory-hard to resist large-scale offline guessing, and salting ensures identical passwords yield different hashes across users and systems.",
+      "trap": "Assuming 'it's a hash, so it's secure' - not all hash functions are appropriate for password storage; fast general-purpose hashes like MD5 or unsalted SHA-256 are considered weak specifically for this use case.",
+      "memory_phrase": "Passwords need slow, salted hashing - MD5 is fast, unsalted, and cracked in seconds by GPUs."
+    }
+  },
+  {
+    "id": "Q-CEH-20-011",
+    "type": "multi",
+    "module": 20,
+    "difficulty": "medium",
+    "tags": ["weak-algorithms", "deprecated-crypto", "des", "md5", "sha1"],
+    "body": "Which of the following are considered cryptographically weak or deprecated for modern security use? (Select three.)",
+    "choices": [
+      "DES (56-bit key symmetric cipher)",
+      "MD5 (as a general-purpose collision-resistant hash)",
+      "SHA-1 (for digital signatures/certificates)",
+      "SHA-3-256",
+      "AES-256 in GCM mode",
+      "RSA-2048 with proper padding (e.g., OAEP)"
+    ],
+    "answer": [
+      "DES (56-bit key symmetric cipher)",
+      "MD5 (as a general-purpose collision-resistant hash)",
+      "SHA-1 (for digital signatures/certificates)"
+    ],
+    "explanation": {
+      "answer": "DES, MD5 (for collision resistance), and SHA-1 (for signatures/certificates) are all formally deprecated or broken for their originally intended security guarantees.",
+      "why": "DES's 56-bit key is brute-forceable with modern hardware. MD5 has practical, demonstrated collision attacks, making it unsuitable wherever collision resistance matters. SHA-1 also has practical collision attacks and is deprecated by major browsers/CAs for certificates and signatures. In contrast, SHA-3-256 (a modern, structurally different hash standard), AES-256-GCM, and properly padded RSA-2048 are all still considered secure and widely recommended for current use.",
+      "trap": "Lumping SHA-3-256 in with SHA-1 just because both are 'SHA' hash functions - SHA-3 is a completely different, modern design unrelated to SHA-1's broken construction, and it remains secure today.",
+      "memory_phrase": "DES, MD5, SHA-1: the retired trio - broken by brute force or collisions."
+    }
+  },
+  {
+    "id": "Q-CEH-20-012",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "hard",
+    "tags": ["ecb-mode", "block-cipher", "encryption-weakness"],
+    "body": "When encrypting a large image file using a block cipher in ECB (Electronic Codebook) mode, analysts often observe that broad visual patterns from the original image remain recognizable in the encrypted output. What property of ECB mode causes this weakness?",
+    "choices": [
+      "Identical plaintext blocks always encrypt to identical ciphertext blocks, revealing patterns in the underlying data",
+      "ECB mode does not actually encrypt data, it only encodes it in Base64",
+      "ECB mode requires no key, so anyone can trivially decrypt it",
+      "ECB mode only works on plaintext smaller than 56 bits"
+    ],
+    "answer": "Identical plaintext blocks always encrypt to identical ciphertext blocks, revealing patterns in the underlying data",
+    "explanation": {
+      "answer": "ECB mode encrypts each fixed-size block independently with the same key and no chaining or randomization, so identical plaintext blocks always produce identical ciphertext blocks - preserving structural patterns, famously demonstrated by the 'ECB penguin' image.",
+      "why": "This determinism is the well-known root cause of ECB's pattern-leakage weakness. ECB does perform real encryption, not mere encoding, so the second option is false. It absolutely requires a key like any block cipher mode, so 'no key' is incorrect. ECB's weakness is unrelated to a 56-bit size limit; that number is simply DES's key length and isn't a real constraint of ECB mode itself.",
+      "trap": "Assuming any use of a strong cipher (like AES) is automatically safe - the MODE of operation (ECB) matters just as much as the cipher algorithm itself; AES in ECB mode still leaks patterns.",
+      "memory_phrase": "ECB: same plaintext block in, same ciphertext block out, every time - patterns survive encryption."
+    }
+  },
+  {
+    "id": "Q-CEH-20-013",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "hard",
+    "tags": ["ecc", "elliptic-curve", "rsa-comparison"],
+    "body": "Compared to RSA, what is the primary practical advantage of Elliptic Curve Cryptography (ECC) for achieving an equivalent level of cryptographic security?",
+    "choices": [
+      "ECC achieves comparable security with significantly smaller key sizes, reducing computational and bandwidth overhead",
+      "ECC eliminates the need for any private key, using only public parameters",
+      "ECC is a symmetric algorithm, making it faster than all asymmetric algorithms by definition",
+      "ECC does not rely on any hard mathematical problem, making it inherently unbreakable"
+    ],
+    "answer": "ECC achieves comparable security with significantly smaller key sizes, reducing computational and bandwidth overhead",
+    "explanation": {
+      "answer": "ECC's elliptic curve discrete logarithm problem is harder to solve per bit of key size than RSA's factoring problem, so ECC can match RSA's security strength (e.g., roughly a 256-bit ECC key equating to a 3072-bit RSA key) using much smaller keys - beneficial for constrained devices, TLS handshake performance, and bandwidth.",
+      "why": "Smaller-key equivalent security is ECC's well-established practical advantage. ECC still uses a private key (the scalar) paired with a public point on the curve, so 'no private key' is false. ECC is asymmetric, not symmetric, so that option misdescribes the algorithm family entirely. No cryptographic algorithm is 'inherently unbreakable' - ECC's security, like RSA's, is based on the current computational infeasibility of a hard math problem, here the elliptic curve discrete log problem, not mathematical impossibility.",
+      "trap": "Assuming smaller keys mean weaker security - with ECC, smaller keys can provide equal or greater security than much larger RSA keys because of the different underlying hard problem.",
+      "memory_phrase": "ECC: same lock strength as RSA, using a much smaller key."
+    }
+  },
+  {
+    "id": "Q-CEH-20-014",
+    "type": "scenario",
+    "module": 20,
+    "difficulty": "hard",
+    "tags": ["ecb-mode", "hardcoded-keys", "password-hashing", "code-review", "sha1"],
+    "body": "During an authorized source code review, you find that a web application encrypts sensitive database fields using AES in ECB mode with a hardcoded key embedded in the application source, and stores user passwords using unsalted SHA-1 hashes. As the assessor, summarize the cryptographic weaknesses present and the specific remediation you would recommend for each.",
+    "answer": "Three distinct weaknesses should be flagged: (1) AES in ECB mode leaks structural patterns because identical plaintext blocks always yield identical ciphertext blocks - remediate by switching to an authenticated mode with a randomized/unique nonce per encryption, such as AES-GCM (or AES-CBC with a random IV plus a separate MAC), ensuring semantic security. (2) A hardcoded key embedded in source code is trivially recoverable by anyone with code or binary access and cannot be rotated without a redeploy - remediate by storing keys in a dedicated secrets manager/HSM/KMS, loaded at runtime, with support for key rotation. (3) Unsalted SHA-1 password hashes are vulnerable to fast brute-force/GPU cracking, rainbow tables, and SHA-1's known collision weaknesses - remediate by migrating to a purpose-built, slow, salted password hashing algorithm such as bcrypt, scrypt, or Argon2, with a unique salt per user, and force a password reset or re-hash on next login for existing accounts.",
+    "explanation": {
+      "answer": "The complete answer must independently address the ECB mode pattern leakage, the hardcoded/unmanaged key, and the weak unsalted SHA-1 password storage, each with its own specific fix.",
+      "why": "These are three separate, commonly co-occurring findings in real code reviews. ECB's determinism defeats confidentiality for structured or repetitive data even though the underlying cipher (AES) is strong - the fix is the mode of operation, not the cipher choice. Hardcoded keys fail because source code, and often compiled binaries, can be extracted, and a compromised key can never be rotated cleanly without redeployment; centralized key management solves both problems. SHA-1 for passwords is doubly wrong: it is a fast general-purpose hash not designed to resist offline brute-forcing, and it lacks salting, so identical passwords produce identical hashes and are susceptible to rainbow tables - purpose-built slow, salted algorithms directly address both issues.",
+      "trap": "Treating this as a single issue ('their crypto is bad') instead of identifying that a strong algorithm like AES can still be insecure due to mode of operation and key handling, which are separate design decisions from the algorithm itself.",
+      "memory_phrase": "Strong cipher, weak mode, weak key storage, weak hash - four different mistakes need four different fixes."
+    }
+  }
+]

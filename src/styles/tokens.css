@@ -1,0 +1,86 @@
+/* ============================================================
+   NeonSec Academy — Design Tokens
+   Cyberpunk atmosphere, productivity-first legibility.
+   Source of truth: docs/DESIGN_SYSTEM.md
+   ============================================================ */
+
+:root {
+  /* --- Core surfaces --- */
+  --bg-deep-space: #050816;
+  --bg-abyss: #030510;
+  --panel-night: #0b1026;
+  --panel-elevated: #101736;
+  --panel-inset: #080c1f;
+  --hairline: rgba(0, 245, 255, 0.14);
+  --hairline-strong: rgba(0, 245, 255, 0.32);
+
+  /* --- Neon accents --- */
+  --border-cyan: #00f5ff;
+  --neon-magenta: #ff2bd6;
+  --neon-purple: #9d4edd;
+  --acid-green: #39ff14;
+  --warning-amber: #ffcc00;
+  --danger-red: #ff3366;
+  --neon-blue: #48cae4;
+
+  /* --- Text --- */
+  --text-main: #e6f1ff;
+  --text-muted: #8aa4c8;
+  --text-dim: #5b6f92;
+  --text-ink: #050816; /* text on bright neon fills */
+
+  /* --- Semantic --- */
+  --ok: var(--acid-green);
+  --warn: var(--warning-amber);
+  --bad: var(--danger-red);
+  --focus: var(--border-cyan);
+
+  /* --- Glows (dialed down when .low-glow is set) --- */
+  --glow-cyan: 0 0 0.6rem rgba(0, 245, 255, 0.55), 0 0 1.4rem rgba(0, 245, 255, 0.25);
+  --glow-magenta: 0 0 0.6rem rgba(255, 43, 214, 0.55), 0 0 1.4rem rgba(255, 43, 214, 0.22);
+  --glow-green: 0 0 0.6rem rgba(57, 255, 20, 0.5), 0 0 1.2rem rgba(57, 255, 20, 0.2);
+  --glow-red: 0 0 0.6rem rgba(255, 51, 102, 0.55), 0 0 1.2rem rgba(255, 51, 102, 0.22);
+  --glow-amber: 0 0 0.6rem rgba(255, 204, 0, 0.5);
+  --text-glow-cyan: 0 0 0.5rem rgba(0, 245, 255, 0.45);
+
+  /* --- Typography --- */
+  --font-display: 'Orbitron', 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: 'JetBrains Mono', 'Share Tech Mono', ui-monospace, 'SFMono-Regular',
+    Menlo, Consolas, monospace;
+  --font-term: 'Share Tech Mono', 'JetBrains Mono', ui-monospace, monospace;
+
+  /* --- Radii / spacing / motion --- */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --clip: 10px; /* angled-corner size for cyber panels */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur: 220ms;
+  --dur-slow: 420ms;
+
+  /* --- Layout --- */
+  --nav-w: 244px;
+  --statusbar-h: 46px;
+  --content-max: 1160px;
+
+  color-scheme: dark;
+}
+
+/* High-contrast accessibility mode brightens text + hairlines. */
+:root.high-contrast {
+  --text-muted: #b9cbe6;
+  --text-dim: #8ea6c8;
+  --hairline: rgba(0, 245, 255, 0.3);
+  --hairline-strong: rgba(0, 245, 255, 0.5);
+}
+
+/* Low-glow mode removes the heavy neon bloom for tired eyes / OLED. */
+:root.low-glow {
+  --glow-cyan: none;
+  --glow-magenta: none;
+  --glow-green: none;
+  --glow-red: none;
+  --glow-amber: none;
+  --text-glow-cyan: none;
+}

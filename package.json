@@ -1,0 +1,29 @@
+{
+  "name": "neonsec-academy",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "NeonSec Academy — a cyberpunk CEH exam-prep platform: question bank, spaced-repetition review, mock exams, weakness analytics, and safe practical labs.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "build:fast": "vite build",
+    "preview": "vite preview --host",
+    "typecheck": "tsc --noEmit",
+    "validate:content": "node scripts/validate_questions.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.1",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "typescript": "^6.0.3",
+    "vite": "^8.1.3"
+  }
+}

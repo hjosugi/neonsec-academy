@@ -1,0 +1,2933 @@
+[
+  {
+    "id": "P0-001",
+    "phase": 0,
+    "title": "[P0-001] プロダクトビジョン・対象ユーザー・非ゴールを確定する",
+    "summary": "NeonSec Academy を『CEH 問題管理・復習管理・安全な実践記録』のためのプロダクトとして定義する。",
+    "labels": [
+      "phase:0",
+      "type:epic",
+      "area:content",
+      "area:safety",
+      "priority:P0"
+    ],
+    "milestone": "Phase 0 - Foundation",
+    "priority": "priority:P0",
+    "estimate": "1d",
+    "user_story": "CEH 受験者として、何を作るか・何を作らないかを最初に固定し、学習と実践の方向性で迷わないようにしたい。",
+    "requirements": [
+      "主目的を CEH 知識試験の合格、CEH Practical への準備、CEH 後の実践基礎に分ける",
+      "ゲーム要素は補助に限定し、問題管理・復習管理・実践記録を中心にする",
+      "対象ユーザー、利用シーン、成功指標、非ゴールを 1 ページでまとめる",
+      "cyberpunk 感は UI/世界観/コピーに残し、学習効率を邪魔しない方針にする"
+    ],
+    "acceptance": [
+      "README の冒頭に product promise が 3 行以内で書かれている",
+      "MVP に入れる機能と入れない機能が明確になっている",
+      "安全境界と非ゴールがトップレベル文書から参照できる"
+    ],
+    "subtasks": [
+      "product statement を作る",
+      "primary persona と secondary persona を書く",
+      "success metrics を定義する",
+      "non-goals を書く"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": [
+      "推奨 product promise: Manage questions. Review mistakes. Prove practical skill safely."
+    ]
+  },
+  {
+    "id": "P0-002",
+    "phase": 0,
+    "title": "[P0-002] CEH 20 module と CEH+ 実践トラックの分類体系を定義する",
+    "summary": "CEH 公式 module、問題 domain、実践 skill、CEH 後の skill track を同じ taxonomy で管理できるようにする。",
+    "labels": [
+      "phase:0",
+      "type:content",
+      "area:content",
+      "area:exam",
+      "priority:P0"
+    ],
+    "milestone": "Phase 0 - Foundation",
+    "priority": "priority:P0",
+    "estimate": "1d",
+    "user_story": "問題作成者として、すべての問題・復習・lab を CEH module と実践 skill に紐付けたい。",
+    "requirements": [
+      "CEH 20 module を固定 master data として持つ",
+      "各問題に module, subtopic, skill_type, difficulty, source_type を付けられる",
+      "CEH+ track として pentest, AppSec, cloud, SOC, IR, reporting を追加する",
+      "module と CEH+ track の対応表を作る"
+    ],
+    "acceptance": [
+      "20 module すべてが docs/taxonomy.md に記載されている",
+      "question schema から module と CEH+ track を参照できる",
+      "未分類問題を検出できるルールがある"
+    ],
+    "subtasks": [
+      "CEH module list を master data 化する",
+      "CEH+ skill track を定義する",
+      "difficulty と question_type を定義する",
+      "coverage matrix の初版を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": [
+      "CEH 後の実践トラックは攻撃手順ではなく、許可済み評価・防御・レポート・ログ分析中心で扱う。"
+    ]
+  },
+  {
+    "id": "P0-003",
+    "phase": 0,
+    "title": "[P0-003] 安全ポリシーと lab boundary を定義する",
+    "summary": "実システムに触れず、許可済みローカル教材だけで学ぶための安全境界を明文化する。",
+    "labels": [
+      "phase:0",
+      "type:security",
+      "area:safety",
+      "priority:P0"
+    ],
+    "milestone": "Phase 0 - Foundation",
+    "priority": "priority:P0",
+    "estimate": "1d",
+    "user_story": "開発者として、危険な機能や誤用されやすい機能を最初から除外したい。",
+    "requirements": [
+      "禁止事項: 外部 scan、実 phishing、credential theft、live malware、DDoS traffic、実 Wi-Fi 攻撃",
+      "許可事項: 模擬ログ、PCAP、ローカル vulnerable app、toy hash、設定レビュー、レポート演習",
+      "全 lab に scope contract を必須にする",
+      "ユーザーが scope を確認しないと lab を開始できない UX にする"
+    ],
+    "acceptance": [
+      "docs/SAFETY_BOUNDARIES.md が存在する",
+      "すべての practical issue が safety section を持つ",
+      "unsafe content review checklist がある"
+    ],
+    "subtasks": [
+      "allowed / forbidden の一覧を作る",
+      "lab scope contract のテンプレートを作る",
+      "dangerous category の safe replacement を定義する",
+      "review gate を Issue template に入れる"
+    ],
+    "dependencies": [],
+    "safety": "この Issue 自体が全プロジェクトの安全基準になる。安全に変換できない機能は backlog から削除する。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P0-004",
+    "phase": 0,
+    "title": "[P0-004] Question / Review / Attempt / Lab / Report のデータモデルを設計する",
+    "summary": "問題管理と復習管理を後から拡張しやすくするため、最初に最小データモデルを決める。",
+    "labels": [
+      "phase:0",
+      "type:infra",
+      "area:question-bank",
+      "area:review",
+      "priority:P0"
+    ],
+    "milestone": "Phase 0 - Foundation",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "開発者として、問題・回答履歴・復習予定・lab evidence を一貫した ID で追跡したい。",
+    "requirements": [
+      "Question, Choice, Explanation, Attempt, ReviewItem, LabChallenge, Evidence, Report の entity を定義する",
+      "すべての entity に stable id, created_at, updated_at を持たせる",
+      "CEH module と CEH+ track を外部キーまたは enum として扱う",
+      "将来の import/export を前提に JSON schema を用意する"
+    ],
+    "acceptance": [
+      "docs/DATA_MODEL.md に ERD 風の説明がある",
+      "sample JSON が validation 可能な形で置かれている",
+      "削除・アーカイブ・復元の方針が書かれている"
+    ],
+    "subtasks": [
+      "entity 一覧を書く",
+      "field 定義を書く",
+      "index / search key を決める",
+      "migration 方針を書く"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P0-005",
+    "phase": 0,
+    "title": "[P0-005] GitHub labels / milestones / project board を定義する",
+    "summary": "Phase 0〜6 を GitHub Issues でそのまま管理できるようにする。",
+    "labels": [
+      "phase:0",
+      "type:infra",
+      "type:quality",
+      "priority:P1"
+    ],
+    "milestone": "Phase 0 - Foundation",
+    "priority": "priority:P1",
+    "estimate": "0.5d",
+    "user_story": "プロジェクト管理者として、Issue を迷わず分類し、Phase ごとの進捗を追えるようにしたい。",
+    "requirements": [
+      "phase, type, area, priority の label セットを定義する",
+      "Phase 0〜6 の milestones を定義する",
+      "Project board の columns を定義する",
+      "Issue import 用の metadata frontmatter を用意する"
+    ],
+    "acceptance": [
+      "docs/LABELS.md と docs/MILESTONES.md が存在する",
+      "全 Issue に phase label と milestone がある",
+      "Import script が dry-run で全 Issue を表示できる"
+    ],
+    "subtasks": [
+      "label 定義を書く",
+      "milestone 定義を書く",
+      "board columns を書く",
+      "Issue import guide を書く"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P0-006",
+    "phase": 0,
+    "title": "[P0-006] Cyberpunk Productivity Design System v0 を作る",
+    "summary": "neon terminal 風の見た目を残しつつ、問題管理・復習管理が読みやすい UI ルールを作る。",
+    "labels": [
+      "phase:0",
+      "type:design",
+      "area:design",
+      "priority:P0"
+    ],
+    "milestone": "Phase 0 - Foundation",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、cyberpunk 感は欲しいが、長時間の復習でも疲れない画面にしたい。",
+    "requirements": [
+      "color token, typography, spacing, elevation, border, glow のルールを定義する",
+      "neon effect は CTA, focus, status, rank に限定する",
+      "問題文・解説・コード・ログは高コントラストで読みやすくする",
+      "reduced motion と low glow mode を必須にする"
+    ],
+    "acceptance": [
+      "docs/DESIGN_SYSTEM.md に token と component 方針がある",
+      "Question Console, Review Queue, Mock Exam, Lab Report の wireframe がある",
+      "accessibility notes がある"
+    ],
+    "subtasks": [
+      "color tokens を決める",
+      "component vocabulary を決める",
+      "screen priority を決める",
+      "motion / glow policy を書く"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P0-007",
+    "phase": 0,
+    "title": "[P0-007] 情報設計とナビゲーションを設計する",
+    "summary": "問題・復習・試験・lab・レポートへ迷わず移動できる構成を決める。",
+    "labels": [
+      "phase:0",
+      "type:design",
+      "area:design",
+      "area:question-bank",
+      "priority:P0"
+    ],
+    "milestone": "Phase 0 - Foundation",
+    "priority": "priority:P0",
+    "estimate": "1d",
+    "user_story": "ユーザーとして、今日やるべき復習、弱点、模擬試験、実践課題へすぐ行けるようにしたい。",
+    "requirements": [
+      "Global nav: Dashboard, Question Bank, Review, Exam, Labs, Reports, Analytics, Settings",
+      "Cyberpunk map は補助ナビにし、主要操作は productivity nav で行う",
+      "Command palette から主要操作に移動できる設計にする",
+      "mobile / desktop の priority を決める"
+    ],
+    "acceptance": [
+      "docs/INFORMATION_ARCHITECTURE.md が存在する",
+      "主要画面の目的・入口・出口が書かれている",
+      "deep link 設計がある"
+    ],
+    "subtasks": [
+      "site map を作る",
+      "primary flows を書く",
+      "empty state を決める",
+      "shortcut の候補を決める"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P0-008",
+    "phase": 0,
+    "title": "[P0-008] Content authoring guideline と QA rubric を作る",
+    "summary": "CEH 問題と CEH+ 実践課題を安全・一貫・復習しやすく作るための基準を作る。",
+    "labels": [
+      "phase:0",
+      "type:content",
+      "type:quality",
+      "area:content",
+      "priority:P1"
+    ],
+    "milestone": "Phase 0 - Foundation",
+    "priority": "priority:P1",
+    "estimate": "1d",
+    "user_story": "問題作成者として、よい問題、悪い問題、危険な問題を判断できる基準が欲しい。",
+    "requirements": [
+      "1 問 1 concept を原則にする",
+      "解説は answer, why, trap, memory phrase を含める",
+      "実践課題は objective, dataset, expected evidence, remediation を含める",
+      "危険な手順は概念・検知・防御・ローカル教材に変換する"
+    ],
+    "acceptance": [
+      "docs/CONTENT_GUIDE.md が存在する",
+      "question review checklist がある",
+      "lab content safety checklist がある"
+    ],
+    "subtasks": [
+      "question template を作る",
+      "explanation template を作る",
+      "lab template を作る",
+      "review rubric を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P1-001",
+    "phase": 1,
+    "title": "[P1-001] アプリケーションの土台と開発ルールを作る",
+    "summary": "MVP 開発を始めるため、ディレクトリ構成、設定、lint/test 方針、サンプルデータを用意する。",
+    "labels": [
+      "phase:1",
+      "type:infra",
+      "priority:P0"
+    ],
+    "milestone": "Phase 1 - Question Bank MVP",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "開発者として、機能追加前に迷わないプロジェクト構成を持ちたい。",
+    "requirements": [
+      "src, docs, content, tests, scripts の責務を分ける",
+      "環境変数や secret を使わない初期構成にする",
+      "seed data をローカルで読み込めるようにする",
+      "安全ポリシー文書をトップから参照する"
+    ],
+    "acceptance": [
+      "新規 clone 後に README の手順で起動できる",
+      "sample questions が表示できる",
+      "test command の入口がある"
+    ],
+    "subtasks": [
+      "ディレクトリ構成を作る",
+      "README 起動手順を書く",
+      "seed data loader の placeholder を作る",
+      "basic test を追加する"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P1-002",
+    "phase": 1,
+    "title": "[P1-002] Question Bank CRUD を実装する",
+    "summary": "CEH 問題を作成・閲覧・編集・アーカイブできる最小機能を作る。",
+    "labels": [
+      "phase:1",
+      "type:feature",
+      "area:question-bank",
+      "priority:P0"
+    ],
+    "milestone": "Phase 1 - Question Bank MVP",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "ユーザーとして、自分の問題を登録して復習対象にできるようにしたい。",
+    "requirements": [
+      "Question title, body, choices, answer, explanation, module, tags, difficulty を保存できる",
+      "削除は hard delete ではなく archive にする",
+      "問題 ID は永続的に変わらない",
+      "入力 validation と preview を用意する"
+    ],
+    "acceptance": [
+      "新規問題を作成できる",
+      "作成した問題を編集できる",
+      "archive した問題は通常一覧から消える",
+      "invalid question は保存できない"
+    ],
+    "subtasks": [
+      "form を作る",
+      "list/detail を作る",
+      "edit/archive を作る",
+      "validation を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P1-003",
+    "phase": 1,
+    "title": "[P1-003] 複数の question type に対応する",
+    "summary": "MCQ だけでなく、scenario、multi-select、true/false、short answer、report prompt を扱えるようにする。",
+    "labels": [
+      "phase:1",
+      "type:feature",
+      "area:question-bank",
+      "priority:P0"
+    ],
+    "milestone": "Phase 1 - Question Bank MVP",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "CEH 受験者として、知識問題だけでなくシナリオ問題や実務寄りの問題も同じ場所で管理したい。",
+    "requirements": [
+      "question_type enum を実装する",
+      "MCQ, multi_select, true_false, short_answer, scenario, report_prompt をサポートする",
+      "type ごとに validation を変える",
+      "UI は type に応じて回答形式を変える"
+    ],
+    "acceptance": [
+      "6 種類の question type が seed data で表示できる",
+      "type に合わない回答形式は保存できない",
+      "attempt history に回答形式が残る"
+    ],
+    "subtasks": [
+      "schema を拡張する",
+      "renderer を分岐する",
+      "validation を追加する",
+      "sample data を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P1-004",
+    "phase": 1,
+    "title": "[P1-004] CEH module / tag / difficulty で検索・フィルタする",
+    "summary": "必要な問題をすぐ探せるように、分類と検索 UI を実装する。",
+    "labels": [
+      "phase:1",
+      "type:feature",
+      "area:question-bank",
+      "priority:P0"
+    ],
+    "milestone": "Phase 1 - Question Bank MVP",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、弱点 module や難易度ごとに問題を絞り込みたい。",
+    "requirements": [
+      "keyword search を提供する",
+      "module, tag, difficulty, status, last_attempt_result で filter できる",
+      "複数 filter の組み合わせを保存できる設計にする",
+      "empty state で次の action を出す"
+    ],
+    "acceptance": [
+      "module: Cryptography などで正しく絞り込める",
+      "複数 tag の filter が動く",
+      "検索結果件数が表示される"
+    ],
+    "subtasks": [
+      "filter state を設計する",
+      "search input を作る",
+      "filter chips を作る",
+      "empty state を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P1-005",
+    "phase": 1,
+    "title": "[P1-005] Markdown renderer を作り、コード・ログ・表を読みやすく表示する",
+    "summary": "問題文・解説・lab note に Markdown を使い、技術問題を読みやすくする。",
+    "labels": [
+      "phase:1",
+      "type:feature",
+      "area:question-bank",
+      "area:design",
+      "priority:P1"
+    ],
+    "milestone": "Phase 1 - Question Bank MVP",
+    "priority": "priority:P1",
+    "estimate": "2d",
+    "user_story": "問題作成者として、ログ、HTTP header、設定ファイル、表を問題文に入れたい。",
+    "requirements": [
+      "code block, inline code, table, callout を表示する",
+      "危険な HTML は無効化する",
+      "Cyberpunk theme でも長文が読みやすい line height にする",
+      "copy button は code block のみに置く"
+    ],
+    "acceptance": [
+      "sample log problem が崩れず表示される",
+      "script tag などの危険な HTML が実行されない",
+      "dark theme で contrast が十分にある"
+    ],
+    "subtasks": [
+      "renderer 方針を決める",
+      "sanitization を入れる",
+      "code block style を作る",
+      "sample を追加する"
+    ],
+    "dependencies": [],
+    "safety": "ユーザー入力 Markdown は信頼しない。HTML 実行、外部 script、tracking pixel、remote image の扱いを制限する。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P1-006",
+    "phase": 1,
+    "title": "[P1-006] 回答提出と即時 explanation 表示を実装する",
+    "summary": "問題に回答したら正誤、理由、罠、覚える短文をすぐ確認できるようにする。",
+    "labels": [
+      "phase:1",
+      "type:feature",
+      "area:question-bank",
+      "area:review",
+      "priority:P0"
+    ],
+    "milestone": "Phase 1 - Question Bank MVP",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、間違えた直後に理由を理解し、復習に回したい。",
+    "requirements": [
+      "answer submit 後に correct/incorrect を表示する",
+      "explanation, why wrong, memory phrase を表示する",
+      "間違えた問題は review queue 候補にする",
+      "submit 前後で選択肢の変更を制御する"
+    ],
+    "acceptance": [
+      "正解時と不正解時の UI が分かる",
+      "attempt が保存される",
+      "不正解問題が review 候補になる"
+    ],
+    "subtasks": [
+      "submit handler を作る",
+      "result panel を作る",
+      "attempt save を作る",
+      "review enqueue hook を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P1-007",
+    "phase": 1,
+    "title": "[P1-007] Attempt history と基本統計を保存する",
+    "summary": "各問題の回答履歴、正答率、最終回答日、連続正解数を保存する。",
+    "labels": [
+      "phase:1",
+      "type:feature",
+      "area:analytics",
+      "area:review",
+      "priority:P0"
+    ],
+    "milestone": "Phase 1 - Question Bank MVP",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、自分がどの問題をいつ何回間違えたかを見たい。",
+    "requirements": [
+      "attempt ごとに selected_answer, result, time_spent, confidence を保存する",
+      "question detail に attempt history を表示する",
+      "basic stats: total attempts, accuracy, last attempted を計算する",
+      "privacy のため external tracking は入れない"
+    ],
+    "acceptance": [
+      "同じ問題の複数 attempt が時系列で見える",
+      "dashboard に basic stats が表示される",
+      "データ再読み込み後も履歴が残る"
+    ],
+    "subtasks": [
+      "attempt schema を作る",
+      "save flow を作る",
+      "history UI を作る",
+      "stats calculation を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P1-008",
+    "phase": 1,
+    "title": "[P1-008] JSON / CSV import export を実装する",
+    "summary": "問題データをバックアップし、外部編集できるように import/export を用意する。",
+    "labels": [
+      "phase:1",
+      "type:infra",
+      "area:question-bank",
+      "priority:P1"
+    ],
+    "milestone": "Phase 1 - Question Bank MVP",
+    "priority": "priority:P1",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、問題をファイルで一括追加・バックアップしたい。",
+    "requirements": [
+      "JSONL export を標準形式にする",
+      "CSV import は MCQ の basic fields に限定する",
+      "import preview と validation error を表示する",
+      "既存 ID の conflict policy を定義する"
+    ],
+    "acceptance": [
+      "sample JSONL を export/import できる",
+      "invalid row の error が行番号付きで出る",
+      "duplicate ID の扱いが明確である"
+    ],
+    "subtasks": [
+      "export format を決める",
+      "import parser を作る",
+      "preview UI を作る",
+      "validation を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P1-009",
+    "phase": 1,
+    "title": "[P1-009] 安全な seed question set を作る",
+    "summary": "CEH 20 module を広くカバーする、安全なオリジナル問題の初期セットを用意する。",
+    "labels": [
+      "phase:1",
+      "type:content",
+      "area:content",
+      "area:question-bank",
+      "priority:P0"
+    ],
+    "milestone": "Phase 1 - Question Bank MVP",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "初回ユーザーとして、空の状態ではなく、すぐ復習体験を試せる問題が欲しい。",
+    "requirements": [
+      "各 CEH module に最低 3 問のオリジナル問題を作る",
+      "問題は概念・防御・ログ分析・レポート判断を中心にする",
+      "実攻撃手順や第三者対象の指示は含めない",
+      "各問題に explanation と memory phrase を付ける"
+    ],
+    "acceptance": [
+      "最低 60 問の seed set がある",
+      "すべての問題に module と difficulty が付いている",
+      "content QA checklist を通過している"
+    ],
+    "subtasks": [
+      "module ごとの問題数を決める",
+      "sample 問題を作る",
+      "review する",
+      "seed data に入れる"
+    ],
+    "dependencies": [],
+    "safety": "seed 問題は defensive reasoning、概念理解、ローカル模擬データのみ。実攻撃の再現手順は入れない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P1-010",
+    "phase": 1,
+    "title": "[P1-010] Core UI Layout を cyber terminal 風に実装する",
+    "summary": "Dashboard / Question Bank / Review / Exam / Labs へ行ける基本 UI を作る。",
+    "labels": [
+      "phase:1",
+      "type:design",
+      "type:feature",
+      "area:design",
+      "priority:P0"
+    ],
+    "milestone": "Phase 1 - Question Bank MVP",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、cyberpunk 感のある画面でありながら、問題管理にすぐアクセスしたい。",
+    "requirements": [
+      "left nav, top status bar, main console panel の 3 領域を作る",
+      "neon glow は active state と progress indicator に限定する",
+      "Dashboard に Today Review, Weak Areas, Mock Exam CTA を置く",
+      "キーボード操作で主要画面へ移動できる設計にする"
+    ],
+    "acceptance": [
+      "5 つの主要画面へ遷移できる",
+      "空データ時の dashboard が表示される",
+      "design tokens が使われている"
+    ],
+    "subtasks": [
+      "layout shell を作る",
+      "nav を作る",
+      "status bar を作る",
+      "dashboard placeholder を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P2-001",
+    "phase": 2,
+    "title": "[P2-001] Review scheduler を実装する",
+    "summary": "間違えた問題や自信の低い問題を自動で復習予定に入れる。",
+    "labels": [
+      "phase:2",
+      "type:feature",
+      "area:review",
+      "priority:P0"
+    ],
+    "milestone": "Phase 2 - Review System",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "ユーザーとして、次に何を復習すべきかを自分で毎回考えなくてよいようにしたい。",
+    "requirements": [
+      "review interval, due_at, ease, lapses, confidence を持つ",
+      "回答結果と confidence から次回復習日を決める",
+      "同じ日に出す問題数の上限を設定できる",
+      "manual reschedule を可能にする"
+    ],
+    "acceptance": [
+      "不正解問題が due queue に入る",
+      "正解が続くと間隔が伸びる",
+      "due count が dashboard に表示される"
+    ],
+    "subtasks": [
+      "scheduler model を作る",
+      "enqueue logic を作る",
+      "due query を作る",
+      "settings を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P2-002",
+    "phase": 2,
+    "title": "[P2-002] Mistake Notebook を作る",
+    "summary": "間違えた理由、正しい考え方、次回の覚え方を 1 問ごとに残せるようにする。",
+    "labels": [
+      "phase:2",
+      "type:feature",
+      "area:review",
+      "priority:P0"
+    ],
+    "milestone": "Phase 2 - Review System",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、自分の間違いパターンを言語化して、同じミスを減らしたい。",
+    "requirements": [
+      "attempt から mistake note を作成できる",
+      "fields: why_wrong, correct_reasoning, memory_phrase, next_action",
+      "module / tag / date で notebook を filter できる",
+      "review session 後に notebook update を促す"
+    ],
+    "acceptance": [
+      "不正解 attempt から note を作れる",
+      "note が question detail と dashboard から見える",
+      "未記入の mistake note を検出できる"
+    ],
+    "subtasks": [
+      "note schema を作る",
+      "create flow を作る",
+      "notebook list を作る",
+      "filter を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P2-003",
+    "phase": 2,
+    "title": "[P2-003] Weakness Dashboard を作る",
+    "summary": "module, tag, question type, difficulty ごとの弱点を見える化する。",
+    "labels": [
+      "phase:2",
+      "type:feature",
+      "area:analytics",
+      "area:review",
+      "priority:P0"
+    ],
+    "milestone": "Phase 2 - Review System",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "ユーザーとして、今どの CEH module を重点的に復習すべきかを知りたい。",
+    "requirements": [
+      "accuracy, attempts, due count, average confidence, recent trend を計算する",
+      "CEH 20 module coverage を一覧表示する",
+      "weakest 3 modules と next action を出す",
+      "データが少ない場合は insufficient data と表示する"
+    ],
+    "acceptance": [
+      "module ごとの正答率が表示される",
+      "weakest modules が dashboard に出る",
+      "クリックすると該当問題に遷移できる"
+    ],
+    "subtasks": [
+      "metrics 定義を作る",
+      "aggregation を作る",
+      "dashboard UI を作る",
+      "drilldown link を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P2-004",
+    "phase": 2,
+    "title": "[P2-004] Confidence rating と difficulty adjustment を追加する",
+    "summary": "正解/不正解だけでなく、自信の有無を復習計画に反映する。",
+    "labels": [
+      "phase:2",
+      "type:feature",
+      "area:review",
+      "priority:P1"
+    ],
+    "milestone": "Phase 2 - Review System",
+    "priority": "priority:P1",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、勘で当たった問題も復習に残したい。",
+    "requirements": [
+      "answer submit 時に confidence 1〜5 を入力できる",
+      "低 confidence の正解は review interval を短くする",
+      "問題作成者が perceived difficulty を見られる",
+      "confidence 未入力時の default policy を決める"
+    ],
+    "acceptance": [
+      "正解でも confidence 低なら review queue に残る",
+      "confidence trend が question detail に出る",
+      "settings で confidence 入力の有無を切り替えられる"
+    ],
+    "subtasks": [
+      "confidence UI を作る",
+      "scheduler と接続する",
+      "history に保存する",
+      "stats に追加する"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P2-005",
+    "phase": 2,
+    "title": "[P2-005] Daily Review Queue を作る",
+    "summary": "今日の復習だけに集中できる画面を作る。",
+    "labels": [
+      "phase:2",
+      "type:feature",
+      "area:review",
+      "area:design",
+      "priority:P0"
+    ],
+    "milestone": "Phase 2 - Review System",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、アプリを開いたら今日の復習をすぐ始めたい。",
+    "requirements": [
+      "due items を priority 順に並べる",
+      "session size を選べる",
+      "review progress bar を表示する",
+      "途中終了しても session state を保存する"
+    ],
+    "acceptance": [
+      "Start Review から due 問題が始まる",
+      "session 終了時に summary が出る",
+      "途中終了後に再開できる"
+    ],
+    "subtasks": [
+      "queue query を作る",
+      "session state を作る",
+      "review runner UI を作る",
+      "summary に接続する"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P2-006",
+    "phase": 2,
+    "title": "[P2-006] Progress streak と lightweight achievement を追加する",
+    "summary": "ゲーム化しすぎず、継続の手応えだけを出す。",
+    "labels": [
+      "phase:2",
+      "type:feature",
+      "area:review",
+      "area:design",
+      "priority:P2"
+    ],
+    "milestone": "Phase 2 - Review System",
+    "priority": "priority:P2",
+    "estimate": "1d",
+    "user_story": "ユーザーとして、毎日の復習を継続している実感が欲しい。",
+    "requirements": [
+      "daily completion streak を表示する",
+      "achievement は復習・正答率・レポート提出など学習行動に限定する",
+      "leaderboard は MVP では作らない",
+      "streak loss で過度に不安を煽らない copy にする"
+    ],
+    "acceptance": [
+      "今日の復習完了で streak が増える",
+      "miss しても motivational copy が表示される",
+      "achievement は disable できる"
+    ],
+    "subtasks": [
+      "streak model を作る",
+      "achievement list を作る",
+      "dashboard badge を作る",
+      "settings を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P2-007",
+    "phase": 2,
+    "title": "[P2-007] Explanation Compare View を作る",
+    "summary": "自分の回答理由と公式 explanation を比較できるようにする。",
+    "labels": [
+      "phase:2",
+      "type:feature",
+      "area:review",
+      "priority:P1"
+    ],
+    "milestone": "Phase 2 - Review System",
+    "priority": "priority:P1",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、単に答えを覚えるのではなく、考え方のズレを直したい。",
+    "requirements": [
+      "short_answer / scenario で user reasoning を入力できる",
+      "model answer と side-by-side で比較する",
+      "差分メモを mistake notebook に送れる",
+      "採点は自動化しすぎず self-check を基本にする"
+    ],
+    "acceptance": [
+      "user reasoning と explanation が並んで表示される",
+      "compare note を保存できる",
+      "review summary に reasoning gap が出る"
+    ],
+    "subtasks": [
+      "reasoning input を作る",
+      "compare layout を作る",
+      "notebook 連携を作る",
+      "summary 連携を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P2-008",
+    "phase": 2,
+    "title": "[P2-008] Bookmark / Pin / Retry Later を実装する",
+    "summary": "重要問題や後で見直したい問題を手動で管理できるようにする。",
+    "labels": [
+      "phase:2",
+      "type:feature",
+      "area:question-bank",
+      "area:review",
+      "priority:P1"
+    ],
+    "milestone": "Phase 2 - Review System",
+    "priority": "priority:P1",
+    "estimate": "1d",
+    "user_story": "ユーザーとして、試験直前に見たい問題を自分でまとめたい。",
+    "requirements": [
+      "question を bookmark できる",
+      "pin note を付けられる",
+      "retry later を押すと review queue に入る",
+      "bookmarked view を作る"
+    ],
+    "acceptance": [
+      "bookmark した問題だけ一覧できる",
+      "retry later が due queue に反映される",
+      "pin note が question detail に表示される"
+    ],
+    "subtasks": [
+      "bookmark schema を作る",
+      "button を追加する",
+      "list view を作る",
+      "queue 連携を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P2-009",
+    "phase": 2,
+    "title": "[P2-009] Review Session Summary を作る",
+    "summary": "復習終了後に成果・ミス・次の行動を 1 画面で確認できるようにする。",
+    "labels": [
+      "phase:2",
+      "type:feature",
+      "area:review",
+      "area:analytics",
+      "priority:P0"
+    ],
+    "milestone": "Phase 2 - Review System",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、今日の復習で何が改善し、次に何をすべきかを知りたい。",
+    "requirements": [
+      "session accuracy, time spent, new mistakes, mastered items を表示する",
+      "weak modules と next drill CTA を出す",
+      "mistake notebook 未記入項目を出す",
+      "summary を後から見返せるように保存する"
+    ],
+    "acceptance": [
+      "review 完了後に summary が出る",
+      "next action が 1〜3 個表示される",
+      "過去 session summary を一覧できる"
+    ],
+    "subtasks": [
+      "summary data を作る",
+      "summary UI を作る",
+      "history を作る",
+      "next action logic を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P2-010",
+    "phase": 2,
+    "title": "[P2-010] Keyboard shortcut と reduced motion を実装する",
+    "summary": "長時間の復習を効率化し、cyberpunk 演出が負担にならないようにする。",
+    "labels": [
+      "phase:2",
+      "type:design",
+      "type:quality",
+      "area:design",
+      "priority:P1"
+    ],
+    "milestone": "Phase 2 - Review System",
+    "priority": "priority:P1",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、マウスを多用せず、疲れにくい状態で復習したい。",
+    "requirements": [
+      "Review で 1/2/3/4, Enter, Next, Bookmark を keyboard で操作できる",
+      "Command palette を呼び出せる shortcut を定義する",
+      "reduced motion setting で animation を無効化する",
+      "focus ring は neon だが視認性を優先する"
+    ],
+    "acceptance": [
+      "主要操作が keyboard だけで完了できる",
+      "reduced motion on で animation が止まる",
+      "focus state が見える"
+    ],
+    "subtasks": [
+      "shortcut map を作る",
+      "review runner に追加する",
+      "settings を作る",
+      "accessibility QA を行う"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P3-001",
+    "phase": 3,
+    "title": "[P3-001] CEH 20-module Coverage Matrix を作る",
+    "summary": "公式 module ごとの問題数、正答率、復習状況を一覧で確認できるようにする。",
+    "labels": [
+      "phase:3",
+      "type:feature",
+      "area:exam",
+      "area:analytics",
+      "priority:P0"
+    ],
+    "milestone": "Phase 3 - CEH Exam Mode",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "CEH 受験者として、20 module のどこが足りないかを一目で知りたい。",
+    "requirements": [
+      "20 module ごとに total questions, attempted, accuracy, due count, readiness を表示する",
+      "module をクリックすると drill に移動する",
+      "coverage threshold を設定できる",
+      "問題数が少ない module を警告する"
+    ],
+    "acceptance": [
+      "20 module すべてが matrix に出る",
+      "未作成/未回答/弱点が区別できる",
+      "module drill に遷移できる"
+    ],
+    "subtasks": [
+      "matrix aggregation を作る",
+      "readiness formula を作る",
+      "UI を作る",
+      "drill link を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P3-002",
+    "phase": 3,
+    "title": "[P3-002] 125問・4時間の Mock Exam Mode を実装する",
+    "summary": "CEH 知識試験形式に近い timed mock exam を実装する。",
+    "labels": [
+      "phase:3",
+      "type:feature",
+      "area:exam",
+      "priority:P0"
+    ],
+    "milestone": "Phase 3 - CEH Exam Mode",
+    "priority": "priority:P0",
+    "estimate": "4d",
+    "user_story": "受験者として、本番と同じ時間感覚で 125 問を解く練習をしたい。",
+    "requirements": [
+      "125 問の exam session を作成できる",
+      "timer, question navigator, flagged for review を実装する",
+      "途中保存と resume をサポートする",
+      "submit 後に result report へ遷移する"
+    ],
+    "acceptance": [
+      "125 問 session を開始できる",
+      "timer が動く",
+      "flagged questions を見直せる",
+      "submit 後に採点される"
+    ],
+    "subtasks": [
+      "exam session model を作る",
+      "timer を作る",
+      "navigator を作る",
+      "submit flow を作る"
+    ],
+    "dependencies": [],
+    "safety": "Mock exam は知識確認用。実ターゲットへの操作や外部通信を伴う課題は入れない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P3-003",
+    "phase": 3,
+    "title": "[P3-003] Exam weighting config をユーザー編集可能にする",
+    "summary": "module 別出題比率を設定し、弱点重視・均等・本番想定の mock exam を作れるようにする。",
+    "labels": [
+      "phase:3",
+      "type:feature",
+      "area:exam",
+      "priority:P1"
+    ],
+    "milestone": "Phase 3 - CEH Exam Mode",
+    "priority": "priority:P1",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、苦手 module を多めに出す mock exam を作りたい。",
+    "requirements": [
+      "exam preset: balanced, weak-focused, final-ready を用意する",
+      "module ごとの出題数を編集できる",
+      "問題数不足時の fallback を明示する",
+      "preset は保存・複製できる"
+    ],
+    "acceptance": [
+      "balanced preset で 125 問を生成できる",
+      "weak-focused preset が弱点 module を増やす",
+      "問題不足時に warning が出る"
+    ],
+    "subtasks": [
+      "preset schema を作る",
+      "editor UI を作る",
+      "exam generator と接続する",
+      "warning を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P3-004",
+    "phase": 3,
+    "title": "[P3-004] Exam Result Report を作る",
+    "summary": "Mock exam 後に合格可能性、弱点、復習 plan を出す。",
+    "labels": [
+      "phase:3",
+      "type:feature",
+      "area:exam",
+      "area:analytics",
+      "priority:P0"
+    ],
+    "milestone": "Phase 3 - CEH Exam Mode",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "受験者として、模試後に何を直せば合格に近づくかを知りたい。",
+    "requirements": [
+      "overall score, module score, time spent, flagged accuracy を表示する",
+      "typical target score と safety margin を出す",
+      "wrong answers を review queue に送る",
+      "PDF ではなく Markdown/HTML export を優先する"
+    ],
+    "acceptance": [
+      "score と module breakdown が見える",
+      "wrong answers が review queue に入る",
+      "next 7 days plan が生成される"
+    ],
+    "subtasks": [
+      "result aggregation を作る",
+      "report UI を作る",
+      "review queue 連携を作る",
+      "plan generator を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P3-005",
+    "phase": 3,
+    "title": "[P3-005] Question randomization と no-repeat policy を実装する",
+    "summary": "Mock exam で同じ問題が偏りすぎないようにする。",
+    "labels": [
+      "phase:3",
+      "type:infra",
+      "area:exam",
+      "priority:P1"
+    ],
+    "milestone": "Phase 3 - CEH Exam Mode",
+    "priority": "priority:P1",
+    "estimate": "2d",
+    "user_story": "受験者として、答えの暗記ではなく理解を測りたい。",
+    "requirements": [
+      "recently used questions を避ける",
+      "module coverage を守りながら randomize する",
+      "選択肢 order を question ごとに randomize できる",
+      "seed を保存して exam 再現性を持たせる"
+    ],
+    "acceptance": [
+      "同じ preset でも session ごとに問題が変わる",
+      "過去直近 session の重複率が threshold 以下になる",
+      "result review では元の順序を再現できる"
+    ],
+    "subtasks": [
+      "selection algorithm を作る",
+      "seed 保存を作る",
+      "choice shuffle を作る",
+      "duplicate test を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P3-006",
+    "phase": 3,
+    "title": "[P3-006] Readiness Score を Red / Amber / Green で表示する",
+    "summary": "模試・復習・coverage を総合して受験準備度を見える化する。",
+    "labels": [
+      "phase:3",
+      "type:feature",
+      "area:analytics",
+      "area:exam",
+      "priority:P1"
+    ],
+    "milestone": "Phase 3 - CEH Exam Mode",
+    "priority": "priority:P1",
+    "estimate": "2d",
+    "user_story": "受験者として、今受けるべきか、まだ復習すべきかを判断したい。",
+    "requirements": [
+      "score, consistency, coverage, due backlog, weak modules から readiness を計算する",
+      "Green は複数回 mock exam の安定性を条件にする",
+      "数値の根拠を説明する",
+      "過度な断定は避け、decision support として表示する"
+    ],
+    "acceptance": [
+      "readiness が dashboard に表示される",
+      "根拠の breakdown が見える",
+      "Green 条件を満たすまで next action が出る"
+    ],
+    "subtasks": [
+      "formula を設計する",
+      "status UI を作る",
+      "breakdown を作る",
+      "threshold settings を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P3-007",
+    "phase": 3,
+    "title": "[P3-007] Mock Exam Review Mode を実装する",
+    "summary": "模試後に間違い・迷い・時間超過問題だけを効率よく見直せるようにする。",
+    "labels": [
+      "phase:3",
+      "type:feature",
+      "area:exam",
+      "area:review",
+      "priority:P0"
+    ],
+    "milestone": "Phase 3 - CEH Exam Mode",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "受験者として、模試後に全問を見直すのではなく、重要な問題から復習したい。",
+    "requirements": [
+      "wrong, flagged, low confidence, slow questions で filter できる",
+      "explanation と自分の回答を並べる",
+      "mistake notebook に送れる",
+      "review queue への一括追加ができる"
+    ],
+    "acceptance": [
+      "wrong questions だけ表示できる",
+      "flagged questions だけ表示できる",
+      "一括 review enqueue ができる"
+    ],
+    "subtasks": [
+      "review filters を作る",
+      "compare view を接続する",
+      "bulk enqueue を作る",
+      "notebook 連携を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P3-008",
+    "phase": 3,
+    "title": "[P3-008] Weak Module Drill を作る",
+    "summary": "苦手 module に絞って短時間 drill を実行できるようにする。",
+    "labels": [
+      "phase:3",
+      "type:feature",
+      "area:exam",
+      "area:review",
+      "priority:P0"
+    ],
+    "milestone": "Phase 3 - CEH Exam Mode",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "受験者として、弱点だけを 10〜30 問単位で集中練習したい。",
+    "requirements": [
+      "module / tag / question type / difficulty を選んで drill を作る",
+      "10, 20, 30 問の quick presets を用意する",
+      "drill 結果を review と analytics に反映する",
+      "同じ問題の連続出題を避ける"
+    ],
+    "acceptance": [
+      "Cryptography 10 問 drill を開始できる",
+      "drill result が保存される",
+      "weakness dashboard が更新される"
+    ],
+    "subtasks": [
+      "drill generator を作る",
+      "session UI を作る",
+      "result save を作る",
+      "dashboard 連携を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P3-009",
+    "phase": 3,
+    "title": "[P3-009] CEH Concept Cards を作る",
+    "summary": "問題の周辺知識を 1 枚カードで復習できるようにする。",
+    "labels": [
+      "phase:3",
+      "type:content",
+      "area:content",
+      "area:review",
+      "priority:P1"
+    ],
+    "milestone": "Phase 3 - CEH Exam Mode",
+    "priority": "priority:P1",
+    "estimate": "3d",
+    "user_story": "受験者として、問題を解く前後に短い要点カードで理解を補強したい。",
+    "requirements": [
+      "各 module に minimum 5 concept cards を用意する",
+      "cards は meaning, when used, exam trap, remember phrase を含める",
+      "危険な tool 手順ではなく、概念・判断・防御観点に寄せる",
+      "cards を問題と相互リンクする"
+    ],
+    "acceptance": [
+      "最低 100 枚の card 仕様が用意される",
+      "question detail から関連 card を見られる",
+      "card から関連 questions に行ける"
+    ],
+    "subtasks": [
+      "card schema を作る",
+      "card samples を作る",
+      "question link を作る",
+      "card viewer を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P3-010",
+    "phase": 3,
+    "title": "[P3-010] CEH Final Gate Checklist を実装する",
+    "summary": "受験前の最終確認として、模試・coverage・復習 backlog・弱点をまとめる。",
+    "labels": [
+      "phase:3",
+      "type:feature",
+      "area:exam",
+      "area:analytics",
+      "priority:P0"
+    ],
+    "milestone": "Phase 3 - CEH Exam Mode",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "受験者として、試験予約前に準備不足を客観的に確認したい。",
+    "requirements": [
+      "3 回連続 mock score の条件を設定できる",
+      "未復習 due backlog の上限を設定できる",
+      "weak modules が threshold 以下か確認する",
+      "未作成/未回答 module を警告する"
+    ],
+    "acceptance": [
+      "Final Gate に pass/fail が出る",
+      "fail の場合 next action が出る",
+      "checklist を Markdown export できる"
+    ],
+    "subtasks": [
+      "gate criteria を作る",
+      "checklist UI を作る",
+      "export を作る",
+      "next action を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P4-001",
+    "phase": 4,
+    "title": "[P4-001] Lab Registry と Scope Contract を実装する",
+    "summary": "すべての lab に許可範囲、対象、禁止事項、期待 evidence を持たせる。",
+    "labels": [
+      "phase:4",
+      "type:feature",
+      "type:security",
+      "area:lab",
+      "area:safety",
+      "priority:P0"
+    ],
+    "milestone": "Phase 4 - Safe Practical Labs",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "ユーザーとして、実践課題を始める前に安全範囲を明確に確認したい。",
+    "requirements": [
+      "lab ごとに scope contract を表示する",
+      "開始前に user acknowledgement を必須にする",
+      "external target, public IP, real email, real credentials を禁止フィールドとして検出する",
+      "lab は local / dataset / simulated / writeup の種類に分ける"
+    ],
+    "acceptance": [
+      "scope 未確認では lab を開始できない",
+      "lab detail に allowed/forbidden が表示される",
+      "unsafe metadata を含む lab は publish できない"
+    ],
+    "subtasks": [
+      "lab schema を作る",
+      "scope UI を作る",
+      "acknowledgement を保存する",
+      "safety validation を作る"
+    ],
+    "dependencies": [],
+    "safety": "最重要 Issue。lab は許可済みローカル教材・模擬 dataset のみ。実サービスを対象にする記述を metadata validation で拒否する。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P4-002",
+    "phase": 4,
+    "title": "[P4-002] Evidence Vault を作る",
+    "summary": "lab の観察結果、スクリーンショット名、ログ抜粋、メモを evidence として整理できるようにする。",
+    "labels": [
+      "phase:4",
+      "type:feature",
+      "area:lab",
+      "priority:P0"
+    ],
+    "milestone": "Phase 4 - Safe Practical Labs",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "実践者として、lab の答えだけでなく根拠を残して report に使いたい。",
+    "requirements": [
+      "evidence item: title, type, note, source, timestamp, related challenge を持つ",
+      "file path や screenshot reference を保存できる設計にする",
+      "sensitive data warning を表示する",
+      "evidence を report finding に紐付けられる"
+    ],
+    "acceptance": [
+      "lab 中に evidence を追加できる",
+      "evidence 一覧を challenge ごとに見られる",
+      "report builder から evidence を引用できる"
+    ],
+    "subtasks": [
+      "evidence schema を作る",
+      "add/edit UI を作る",
+      "lab link を作る",
+      "report link を作る"
+    ],
+    "dependencies": [],
+    "safety": "実認証情報、第三者の個人情報、実システムの秘密情報を evidence に保存しない warning を出す。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P4-003",
+    "phase": 4,
+    "title": "[P4-003] Flag Challenge Engine を実装する",
+    "summary": "CEH Practical 風に、問題文・dataset・flag・evidence・解説を管理できるようにする。",
+    "labels": [
+      "phase:4",
+      "type:feature",
+      "area:lab",
+      "priority:P0"
+    ],
+    "milestone": "Phase 4 - Safe Practical Labs",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "ユーザーとして、安全な課題で手を動かし、答えと根拠を提出したい。",
+    "requirements": [
+      "challenge に prompt, assets, expected_flag, hint, explanation を持たせる",
+      "flag submit と attempt history を保存する",
+      "hint 使用を記録する",
+      "正解後に remediation と report prompt を出す"
+    ],
+    "acceptance": [
+      "flag を提出して正誤判定できる",
+      "hint 使用が記録される",
+      "正解後に explanation が見える",
+      "challenge result が analytics に反映される"
+    ],
+    "subtasks": [
+      "challenge schema を作る",
+      "flag submit UI を作る",
+      "attempt save を作る",
+      "explanation flow を作る"
+    ],
+    "dependencies": [],
+    "safety": "flag はローカル教材や静的 dataset から導く。実ネットワークへの侵入、credential theft、マルウェア実行を必要条件にしない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P4-004",
+    "phase": 4,
+    "title": "[P4-004] PCAP / Log / Config Analysis Challenge を追加する",
+    "summary": "実践的だが安全な dataset 分析型 challenge を作る。",
+    "labels": [
+      "phase:4",
+      "type:content",
+      "area:lab",
+      "area:content",
+      "priority:P0"
+    ],
+    "milestone": "Phase 4 - Safe Practical Labs",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "実践者として、危険な攻撃を実行せずに、通信・ログ・設定の読み方を身につけたい。",
+    "requirements": [
+      "PCAP, web log, auth log, cloud config, firewall rule の challenge type を用意する",
+      "各 challenge は answer, evidence, remediation を要求する",
+      "dataset は synthetic または intentionally prepared のみ使う",
+      "解説は detection と prevention を含める"
+    ],
+    "acceptance": [
+      "最低 5 種類の analysis challenge sample がある",
+      "各 sample に flag と explanation がある",
+      "report builder へ evidence を送れる"
+    ],
+    "subtasks": [
+      "challenge type を定義する",
+      "sample dataset を作る",
+      "viewer UI を作る",
+      "scoring を作る"
+    ],
+    "dependencies": [],
+    "safety": "実被害ログや流出データは使わない。教材用に作成した synthetic dataset のみを seed に含める。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P4-005",
+    "phase": 4,
+    "title": "[P4-005] Web App Security Concept Lab を作る",
+    "summary": "Web security の概念を安全なローカル教材で理解する lab type を作る。",
+    "labels": [
+      "phase:4",
+      "type:content",
+      "area:lab",
+      "area:content",
+      "priority:P1"
+    ],
+    "milestone": "Phase 4 - Safe Practical Labs",
+    "priority": "priority:P1",
+    "estimate": "3d",
+    "user_story": "CEH 受験者として、Web app の脆弱性を攻撃手順の暗記ではなく、原因と修正で理解したい。",
+    "requirements": [
+      "broken access control, input validation, session, security headers などを扱う",
+      "課題は local toy app または静的 request/response dataset に限定する",
+      "各課題で finding, impact, remediation を書かせる",
+      "危険な payload 集や実サイト検査手順は含めない"
+    ],
+    "acceptance": [
+      "最低 4 つの web concept lab sample がある",
+      "各 sample は remediation を要求する",
+      "unsafe target warning が表示される"
+    ],
+    "subtasks": [
+      "lab template を作る",
+      "sample request/response を作る",
+      "report prompt を作る",
+      "safety review を行う"
+    ],
+    "dependencies": [],
+    "safety": "第三者 Web サイトに対する検査手順は含めない。local toy app / static request-response のみ扱う。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P4-006",
+    "phase": 4,
+    "title": "[P4-006] Vulnerability Triage Workflow を実装する",
+    "summary": "発見事項を severity, likelihood, impact, fix priority で整理できるようにする。",
+    "labels": [
+      "phase:4",
+      "type:feature",
+      "area:lab",
+      "area:analytics",
+      "priority:P0"
+    ],
+    "milestone": "Phase 4 - Safe Practical Labs",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "実践者として、flag を取るだけでなく、リスク判断と修正優先度まで考えたい。",
+    "requirements": [
+      "finding に title, affected asset, evidence, impact, likelihood, severity, remediation を持たせる",
+      "severity は手動選択と rubric の併用にする",
+      "false positive / accepted risk / fixed の status を持つ",
+      "report builder と連携する"
+    ],
+    "acceptance": [
+      "finding を作成できる",
+      "severity と status を変更できる",
+      "report に finding を追加できる"
+    ],
+    "subtasks": [
+      "finding schema を作る",
+      "triage UI を作る",
+      "status flow を作る",
+      "report 連携を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P4-007",
+    "phase": 4,
+    "title": "[P4-007] Report Builder を実装する",
+    "summary": "Finding, impact, evidence, remediation をまとめた実務寄り report を作れるようにする。",
+    "labels": [
+      "phase:4",
+      "type:feature",
+      "area:lab",
+      "area:content",
+      "priority:P0"
+    ],
+    "milestone": "Phase 4 - Safe Practical Labs",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "実践者として、技術的な答えだけでなく、相手に伝わるレポートを書く練習をしたい。",
+    "requirements": [
+      "Executive summary, scope, methodology, findings, remediation, appendix を持つ",
+      "finding から report section を生成できる",
+      "Markdown export を提供する",
+      "report quality checklist を表示する"
+    ],
+    "acceptance": [
+      "lab result から report を作成できる",
+      "finding が report に反映される",
+      "Markdown export ができる",
+      "quality checklist がすべて確認できる"
+    ],
+    "subtasks": [
+      "report schema を作る",
+      "editor UI を作る",
+      "finding import を作る",
+      "Markdown export を作る"
+    ],
+    "dependencies": [],
+    "safety": "report に実ターゲット名、実 IP、実 credential、第三者データを含めない warning を表示する。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P4-008",
+    "phase": 4,
+    "title": "[P4-008] Lab Scoring Rubric を実装する",
+    "summary": "flag 正解だけでなく、evidence と remediation も評価できるようにする。",
+    "labels": [
+      "phase:4",
+      "type:feature",
+      "area:lab",
+      "area:analytics",
+      "priority:P1"
+    ],
+    "milestone": "Phase 4 - Safe Practical Labs",
+    "priority": "priority:P1",
+    "estimate": "2d",
+    "user_story": "受験者として、実践課題でどの skill が足りないかを知りたい。",
+    "requirements": [
+      "score components: flag, evidence, explanation, remediation, safety",
+      "hint 使用や scope warning を scoring に反映する",
+      "rubric は challenge type ごとに設定できる",
+      "score breakdown を lab summary に表示する"
+    ],
+    "acceptance": [
+      "challenge ごとに score breakdown が出る",
+      "report 提出の有無が score に反映される",
+      "safety acknowledgement が score 条件になる"
+    ],
+    "subtasks": [
+      "rubric schema を作る",
+      "scoring logic を作る",
+      "summary UI を作る",
+      "settings を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P4-009",
+    "phase": 4,
+    "title": "[P4-009] CEH Practical-style 20 Challenge Simulator を作る",
+    "summary": "CEH Practical の形式を意識した 20 問構成の安全な総合演習を作る。",
+    "labels": [
+      "phase:4",
+      "type:feature",
+      "type:content",
+      "area:lab",
+      "area:exam",
+      "priority:P0"
+    ],
+    "milestone": "Phase 4 - Safe Practical Labs",
+    "priority": "priority:P0",
+    "estimate": "5d",
+    "user_story": "CEH Practical を目指すユーザーとして、時間制限つきで 20 challenge を通す練習をしたい。",
+    "requirements": [
+      "20 challenge session を作成できる",
+      "challenge は dataset analysis, config review, report prompt, concept lab を組み合わせる",
+      "timer と progress を表示する",
+      "session 後に practical readiness report を出す"
+    ],
+    "acceptance": [
+      "20 challenge session を開始・終了できる",
+      "結果が module / skill ごとに集計される",
+      "wrong / weak challenges が review queue に入る"
+    ],
+    "subtasks": [
+      "session model を作る",
+      "20 challenge generator を作る",
+      "timer UI を作る",
+      "readiness report を作る"
+    ],
+    "dependencies": [],
+    "safety": "CEH Practical 風の形式だけを模倣し、実ネットワーク侵入や live exploit を要求しない。すべて許可済み local/synthetic dataset で完結する。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P4-010",
+    "phase": 4,
+    "title": "[P4-010] Lab Safety Audit を自動化する",
+    "summary": "lab content が安全基準に反していないかを publish 前に検査する。",
+    "labels": [
+      "phase:4",
+      "type:security",
+      "type:quality",
+      "area:safety",
+      "area:lab",
+      "priority:P0"
+    ],
+    "milestone": "Phase 4 - Safe Practical Labs",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "プロジェクト管理者として、危険な lab が混入する前に検出したい。",
+    "requirements": [
+      "forbidden target type, public IP, real domain, credential field, live malware reference を検出する",
+      "unsafe category は safe alternative に変換する提案を出す",
+      "audit result を lab metadata に保存する",
+      "manual override は安全レビュー note 必須にする"
+    ],
+    "acceptance": [
+      "unsafe sample lab が publish で拒否される",
+      "audit report が表示される",
+      "safe sample lab は publish できる"
+    ],
+    "subtasks": [
+      "safety rules を作る",
+      "audit runner を作る",
+      "publish gate を作る",
+      "audit report UI を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は安全ゲートそのもの。検出回避を助ける情報ではなく、コンテンツレビューと誤用防止に限定する。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P5-001",
+    "phase": 5,
+    "title": "[P5-001] CEH+ Pentest Engagement Workflow Track を作る",
+    "summary": "CEH 後に必要な scoping, planning, evidence, reporting を演習できる track を作る。",
+    "labels": [
+      "phase:5",
+      "type:content",
+      "area:lab",
+      "area:content",
+      "priority:P0"
+    ],
+    "milestone": "Phase 5 - CEH Plus Practical Track",
+    "priority": "priority:P0",
+    "estimate": "4d",
+    "user_story": "CEH 合格後の学習者として、現場の pentest に近い流れを安全に練習したい。",
+    "requirements": [
+      "scope review, rules of engagement, asset inventory, finding triage, report delivery を扱う",
+      "実スキャンや実 exploit ではなく、模擬 asset list と dataset で進める",
+      "各 step に checklist と deliverable を持たせる",
+      "final deliverable は Markdown report とする"
+    ],
+    "acceptance": [
+      "1 つの engagement scenario を最初から最後まで完了できる",
+      "scope violation quiz が含まれる",
+      "report が export できる"
+    ],
+    "subtasks": [
+      "scenario を作る",
+      "deliverable checklist を作る",
+      "workflow UI を作る",
+      "report template を接続する"
+    ],
+    "dependencies": [],
+    "safety": "実組織・実ドメイン・実 IP を対象にしない。許可済み架空組織と synthetic dataset だけを使う。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P5-002",
+    "phase": 5,
+    "title": "[P5-002] CEH+ AppSec Code Review Challenge Track を作る",
+    "summary": "攻撃実行ではなく、コードレビューと修正提案で Web/AppSec 実践力を伸ばす。",
+    "labels": [
+      "phase:5",
+      "type:content",
+      "area:lab",
+      "area:content",
+      "priority:P0"
+    ],
+    "milestone": "Phase 5 - CEH Plus Practical Track",
+    "priority": "priority:P0",
+    "estimate": "4d",
+    "user_story": "実践者として、脆弱性の原因をコードから読み、修正案を書けるようになりたい。",
+    "requirements": [
+      "authz, input validation, secrets handling, error handling, dependency risk の課題を作る",
+      "小さな toy code snippet を使う",
+      "各課題で vulnerable line, impact, fix を提出する",
+      "安全な修正例と unit-test idea を解説に含める"
+    ],
+    "acceptance": [
+      "最低 10 個の code review challenge 仕様がある",
+      "各 challenge に fix explanation がある",
+      "finding と report に連携できる"
+    ],
+    "subtasks": [
+      "snippet template を作る",
+      "challenge samples を作る",
+      "review form を作る",
+      "report 連携を作る"
+    ],
+    "dependencies": [],
+    "safety": "toy code の静的レビューに限定する。実サービスへの検査、payload 実行、credential 取得は扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P5-003",
+    "phase": 5,
+    "title": "[P5-003] CEH+ Cloud IAM / Config Review Track を作る",
+    "summary": "Cloud security の基礎を、模擬設定ファイルのレビューで学ぶ track を作る。",
+    "labels": [
+      "phase:5",
+      "type:content",
+      "area:lab",
+      "area:content",
+      "priority:P0"
+    ],
+    "milestone": "Phase 5 - CEH Plus Practical Track",
+    "priority": "priority:P0",
+    "estimate": "4d",
+    "user_story": "実践者として、cloud の危険な設定を見つけ、修正方針を説明できるようになりたい。",
+    "requirements": [
+      "IAM over-permission, public exposure, weak logging, missing encryption, secret handling を扱う",
+      "vendor 固有操作ではなく、概念と設定レビューを中心にする",
+      "synthetic config files のみ使う",
+      "各課題に least privilege の説明を入れる"
+    ],
+    "acceptance": [
+      "最低 8 個の cloud config review challenge がある",
+      "各 challenge に risk と remediation がある",
+      "cloud track の weakness stats が出る"
+    ],
+    "subtasks": [
+      "cloud scenario を作る",
+      "config sample を作る",
+      "review form を作る",
+      "analytics tag を追加する"
+    ],
+    "dependencies": [],
+    "safety": "実 cloud account、実 access key、実 resource は使わない。synthetic config と架空 account ID のみ。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P5-004",
+    "phase": 5,
+    "title": "[P5-004] CEH+ SOC Log Investigation Track を作る",
+    "summary": "攻撃実行ではなく、ログから兆候を読み取る blue-team 実践課題を作る。",
+    "labels": [
+      "phase:5",
+      "type:content",
+      "area:lab",
+      "area:content",
+      "priority:P0"
+    ],
+    "milestone": "Phase 5 - CEH Plus Practical Track",
+    "priority": "priority:P0",
+    "estimate": "4d",
+    "user_story": "実践者として、ログを読んで何が起きたかを説明できるようになりたい。",
+    "requirements": [
+      "auth log, web access log, DNS log, endpoint alert, firewall log の synthetic dataset を使う",
+      "課題は timeline, indicator, affected asset, next action を提出させる",
+      "CEH module と SOC skill tag を両方付ける",
+      "解説は detection logic と containment idea を含める"
+    ],
+    "acceptance": [
+      "最低 10 個の log investigation challenge 仕様がある",
+      "timeline builder と連携できる",
+      "wrong answers が review queue に入る"
+    ],
+    "subtasks": [
+      "log dataset format を作る",
+      "scenario を作る",
+      "timeline form を作る",
+      "review 連携を作る"
+    ],
+    "dependencies": [],
+    "safety": "実インシデントログや個人情報は含めない。教材用 synthetic logs だけを使う。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P5-005",
+    "phase": 5,
+    "title": "[P5-005] Incident Response Timeline / Report Track を作る",
+    "summary": "発見後の対応、時系列整理、報告書作成までを練習できるようにする。",
+    "labels": [
+      "phase:5",
+      "type:content",
+      "area:lab",
+      "area:content",
+      "priority:P1"
+    ],
+    "milestone": "Phase 5 - CEH Plus Practical Track",
+    "priority": "priority:P1",
+    "estimate": "3d",
+    "user_story": "実践者として、見つけた事象を timeline と action plan に落とし込みたい。",
+    "requirements": [
+      "timeline event: time, source, observation, confidence, related evidence を持つ",
+      "incident summary, impact, containment, eradication, recovery, lessons learned を書く",
+      "SOC log track と連携する",
+      "report quality checklist を入れる"
+    ],
+    "acceptance": [
+      "synthetic incident を timeline に整理できる",
+      "IR report を Markdown export できる",
+      "missing evidence warning が出る"
+    ],
+    "subtasks": [
+      "timeline schema を作る",
+      "timeline UI を作る",
+      "IR report template を作る",
+      "quality checklist を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P5-006",
+    "phase": 5,
+    "title": "[P5-006] Threat Modeling and Remediation Track を作る",
+    "summary": "攻撃者視点を安全に防御設計へ変換する track を作る。",
+    "labels": [
+      "phase:5",
+      "type:content",
+      "area:content",
+      "area:lab",
+      "priority:P1"
+    ],
+    "milestone": "Phase 5 - CEH Plus Practical Track",
+    "priority": "priority:P1",
+    "estimate": "3d",
+    "user_story": "実践者として、脆弱性を見つけるだけでなく、設計レベルの対策を考えたい。",
+    "requirements": [
+      "simple architecture diagram / data flow を教材として使う",
+      "assets, trust boundaries, threats, mitigations を整理する",
+      "CEH concepts と secure design を接続する",
+      "output は remediation backlog とする"
+    ],
+    "acceptance": [
+      "最低 5 個の threat modeling scenario がある",
+      "mitigation backlog を作成できる",
+      "report builder と連携できる"
+    ],
+    "subtasks": [
+      "scenario template を作る",
+      "threat form を作る",
+      "mitigation backlog を作る",
+      "report 連携を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P5-007",
+    "phase": 5,
+    "title": "[P5-007] Portfolio Evidence Exporter を作る",
+    "summary": "CEH 合格後の実践力を示すため、安全に公開可能な学習成果を出力する。",
+    "labels": [
+      "phase:5",
+      "type:feature",
+      "area:analytics",
+      "area:content",
+      "priority:P1"
+    ],
+    "milestone": "Phase 5 - CEH Plus Practical Track",
+    "priority": "priority:P1",
+    "estimate": "3d",
+    "user_story": "ユーザーとして、実データを含めずに、学習成果やレポート能力をポートフォリオ化したい。",
+    "requirements": [
+      "export 対象: mock exam stats, lab reports, sanitized findings, reflection notes",
+      "秘密情報や実ターゲット情報を自動で除外する warning を出す",
+      "public-safe mode を用意する",
+      "Markdown portfolio を生成する"
+    ],
+    "acceptance": [
+      "public-safe portfolio を export できる",
+      "sensitive placeholder check が動く",
+      "export 前に privacy checklist が出る"
+    ],
+    "subtasks": [
+      "export schema を作る",
+      "sanitization checklist を作る",
+      "Markdown generator を作る",
+      "preview UI を作る"
+    ],
+    "dependencies": [],
+    "safety": "実ターゲット名、実 IP、credential、個人情報、非公開情報を export しない。public-safe mode を default にする。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P5-008",
+    "phase": 5,
+    "title": "[P5-008] Security Interview Readiness Tracker を作る",
+    "summary": "CEH と実践 track の成果を、面接で説明できる形に整理する。",
+    "labels": [
+      "phase:5",
+      "type:feature",
+      "area:analytics",
+      "area:content",
+      "priority:P2"
+    ],
+    "milestone": "Phase 5 - CEH Plus Practical Track",
+    "priority": "priority:P2",
+    "estimate": "2d",
+    "user_story": "求職者として、自分が何を学び、何を実践し、どう説明するかを整理したい。",
+    "requirements": [
+      "skill evidence を STAR 形式または concise story に変換する",
+      "concept, lab, report, reflection を紐付ける",
+      "弱点 module は honest gap と next plan として表示する",
+      "英語面接用の短い回答メモを保存できる"
+    ],
+    "acceptance": [
+      "skill ごとに evidence が表示される",
+      "1〜2 分の説明メモを保存できる",
+      "portfolio exporter と連携できる"
+    ],
+    "subtasks": [
+      "skill evidence model を作る",
+      "story template を作る",
+      "tracker UI を作る",
+      "portfolio 連携を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P5-009",
+    "phase": 5,
+    "title": "[P5-009] Team / Peer Review Mode の設計を作る",
+    "summary": "将来、問題・レポート・lab writeup を他者レビューできるようにする設計を用意する。",
+    "labels": [
+      "phase:5",
+      "type:design",
+      "type:feature",
+      "area:content",
+      "priority:P2"
+    ],
+    "milestone": "Phase 5 - CEH Plus Practical Track",
+    "priority": "priority:P2",
+    "estimate": "2d",
+    "user_story": "学習者として、自分のレポートや考え方を安全にレビューしてもらいたい。",
+    "requirements": [
+      "MVP では実装せず、data model と UX だけ定義する",
+      "comment, suggestion, approval, safety flag を設計する",
+      "private data masking を前提にする",
+      "review rubric を作る"
+    ],
+    "acceptance": [
+      "docs/PEER_REVIEW_DESIGN.md がある",
+      "review comment schema がある",
+      "privacy / safety guardrails がある"
+    ],
+    "subtasks": [
+      "use cases を書く",
+      "comment schema を作る",
+      "review rubric を作る",
+      "privacy rules を作る"
+    ],
+    "dependencies": [],
+    "safety": "他者と共有する前提の機能は、実ターゲット情報や秘密情報を含まない public-safe content のみに限定する。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P5-010",
+    "phase": 5,
+    "title": "[P5-010] Advanced Lab Pack Authoring を設計する",
+    "summary": "将来、CEH+ の課題セットを追加しやすい authoring format を作る。",
+    "labels": [
+      "phase:5",
+      "type:infra",
+      "type:content",
+      "area:lab",
+      "priority:P1"
+    ],
+    "milestone": "Phase 5 - CEH Plus Practical Track",
+    "priority": "priority:P1",
+    "estimate": "3d",
+    "user_story": "教材作成者として、新しい lab pack を安全に追加したい。",
+    "requirements": [
+      "lab pack manifest, challenge files, assets, safety audit result を定義する",
+      "versioning と compatibility を持たせる",
+      "pack import 前に safety audit を必須にする",
+      "sample pack を 1 つ作る"
+    ],
+    "acceptance": [
+      "lab pack format が docs にある",
+      "sample pack を import preview できる",
+      "unsafe pack は import できない"
+    ],
+    "subtasks": [
+      "manifest schema を作る",
+      "sample pack を作る",
+      "import preview を設計する",
+      "safety audit 連携を作る"
+    ],
+    "dependencies": [],
+    "safety": "第三者からの lab pack は信頼しない。安全 audit、manifest validation、public target 禁止を必須にする。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-001",
+    "phase": 6,
+    "title": "[P6-001] Cyberpunk Visual Theme を本実装する",
+    "summary": "Phase 0 の design system を使い、NeonSec らしい cyberpunk UI に仕上げる。",
+    "labels": [
+      "phase:6",
+      "type:design",
+      "area:design",
+      "priority:P0"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P0",
+    "estimate": "4d",
+    "user_story": "ユーザーとして、問題管理アプリとして使いやすく、同時に neon hacker terminal の雰囲気を感じたい。",
+    "requirements": [
+      "color tokens, glow, grid background, panel border, status lights を実装する",
+      "Question / Review / Exam の可読性を最優先にする",
+      "glow intensity setting を持つ",
+      "design regression checklist を作る"
+    ],
+    "acceptance": [
+      "主要画面が design system と一致する",
+      "low glow mode が動く",
+      "長文問題の可読性が保たれる"
+    ],
+    "subtasks": [
+      "theme tokens を適用する",
+      "panel style を作る",
+      "status light を作る",
+      "visual QA を行う"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-002",
+    "phase": 6,
+    "title": "[P6-002] City Map Navigation Overlay を作る",
+    "summary": "CEH module と CEH+ track を cyberpunk city map として見せる補助 UI を作る。",
+    "labels": [
+      "phase:6",
+      "type:design",
+      "type:feature",
+      "area:design",
+      "area:analytics",
+      "priority:P1"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P1",
+    "estimate": "4d",
+    "user_story": "ユーザーとして、20 module の進捗を cyberpunk city map で楽しく把握したい。",
+    "requirements": [
+      "district は CEH module group と CEH+ track に対応する",
+      "map は progress visualization であり、主要ナビの代替にしない",
+      "district status: locked, weak, due, ready, mastered を表示する",
+      "クリックで module drill / review queue に移動する"
+    ],
+    "acceptance": [
+      "map から弱点 module に移動できる",
+      "due review が district glow で分かる",
+      "map を非表示にできる"
+    ],
+    "subtasks": [
+      "district mapping を作る",
+      "map layout を作る",
+      "status visualization を作る",
+      "drill link を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-003",
+    "phase": 6,
+    "title": "[P6-003] Sound / Motion / Visual Effects の optional toggles を作る",
+    "summary": "Cyberpunk 演出を好みに応じて調整できるようにする。",
+    "labels": [
+      "phase:6",
+      "type:design",
+      "type:quality",
+      "area:design",
+      "priority:P1"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P1",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、集中したい時は演出を減らし、気分を上げたい時は演出を有効にしたい。",
+    "requirements": [
+      "sound は default off にする",
+      "motion は reduced motion setting を尊重する",
+      "glitch effect は短く、問題文には使わない",
+      "settings から all effects off ができる"
+    ],
+    "acceptance": [
+      "effect settings が保存される",
+      "問題文に animation がかからない",
+      "reduced motion on で演出が止まる"
+    ],
+    "subtasks": [
+      "settings fields を作る",
+      "effect gates を作る",
+      "sound policy を作る",
+      "QA を行う"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-004",
+    "phase": 6,
+    "title": "[P6-004] Command Palette / Terminal Launcher を作る",
+    "summary": "cyberpunk terminal 感を残しつつ、画面移動と操作を高速化する。",
+    "labels": [
+      "phase:6",
+      "type:feature",
+      "type:design",
+      "area:design",
+      "priority:P1"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P1",
+    "estimate": "3d",
+    "user_story": "ユーザーとして、keyboard で review, mock exam, weak drill, question search へ即移動したい。",
+    "requirements": [
+      "commands: start review, search question, start mock, weak drill, open lab, export report",
+      "command は自然な短い alias を持つ",
+      "実 OS command は実行しない",
+      "結果 preview と keyboard navigation を実装する"
+    ],
+    "acceptance": [
+      "command palette から主要操作に移動できる",
+      "unknown command は安全に no-op になる",
+      "OS command injection の余地がない"
+    ],
+    "subtasks": [
+      "command registry を作る",
+      "palette UI を作る",
+      "keyboard 操作を作る",
+      "security test を行う"
+    ],
+    "dependencies": [],
+    "safety": "Terminal 風 UI だが、実 shell command は実行しない。アプリ内 command registry に登録された安全な action だけを実行する。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-005",
+    "phase": 6,
+    "title": "[P6-005] Responsive Layout / Mobile Review を仕上げる",
+    "summary": "スマホや小さい画面でも復習と問題確認ができるようにする。",
+    "labels": [
+      "phase:6",
+      "type:design",
+      "type:quality",
+      "area:design",
+      "area:review",
+      "priority:P1"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P1",
+    "estimate": "3d",
+    "user_story": "ユーザーとして、移動中にも短い復習だけできるようにしたい。",
+    "requirements": [
+      "mobile では Review Queue と Mistake Notebook を優先する",
+      "Mock exam は desktop 推奨として warning を出す",
+      "long table は card layout に変える",
+      "touch target を十分に大きくする"
+    ],
+    "acceptance": [
+      "mobile width で review session が完了できる",
+      "dashboard が横スクロールなしで見える",
+      "mock exam desktop warning が出る"
+    ],
+    "subtasks": [
+      "responsive breakpoints を確認する",
+      "mobile review UI を作る",
+      "table fallback を作る",
+      "manual QA を行う"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-006",
+    "phase": 6,
+    "title": "[P6-006] Onboarding Flow を作る",
+    "summary": "初回ユーザーが 5 分以内に問題管理と復習管理を理解できるようにする。",
+    "labels": [
+      "phase:6",
+      "type:feature",
+      "type:design",
+      "area:design",
+      "priority:P0"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "初回ユーザーとして、何から始めるべきかすぐ分かりたい。",
+    "requirements": [
+      "goal selection: CEH exam, CEH Practical, CEH+, all を選べる",
+      "daily review size と target date を設定できる",
+      "seed questions を入れるか選べる",
+      "safety policy を確認する step を入れる"
+    ],
+    "acceptance": [
+      "初回起動時に onboarding が出る",
+      "完了後に dashboard が personalized される",
+      "safety acknowledgement が保存される"
+    ],
+    "subtasks": [
+      "onboarding steps を作る",
+      "settings save を作る",
+      "seed import option を作る",
+      "dashboard 反映を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-007",
+    "phase": 6,
+    "title": "[P6-007] Theme Presets と Accessibility QA を実施する",
+    "summary": "Cyberpunk theme を維持しつつ、視認性と疲れにくさを検証する。",
+    "labels": [
+      "phase:6",
+      "type:quality",
+      "type:design",
+      "area:design",
+      "priority:P0"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "ユーザーとして、長時間使っても目が疲れにくく、文字が読めるテーマを選びたい。",
+    "requirements": [
+      "presets: Neon Night, Low Glow, High Contrast, Focus Mode",
+      "問題文、解説、ログ、コード、表の contrast を確認する",
+      "color だけに依存しない status 表示にする",
+      "keyboard focus と screen reader label を確認する"
+    ],
+    "acceptance": [
+      "4 つの theme preset が選べる",
+      "status が色以外でも判別できる",
+      "accessibility checklist が pass する"
+    ],
+    "subtasks": [
+      "theme preset を作る",
+      "contrast QA を行う",
+      "focus QA を行う",
+      "checklist を記録する"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-008",
+    "phase": 6,
+    "title": "[P6-008] Analytics Export と Privacy Settings を作る",
+    "summary": "学習・復習・模試結果を安全に export できるようにする。",
+    "labels": [
+      "phase:6",
+      "type:feature",
+      "area:analytics",
+      "area:safety",
+      "priority:P1"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P1",
+    "estimate": "2d",
+    "user_story": "ユーザーとして、自分の進捗をバックアップしたり、公開可能な形で共有したい。",
+    "requirements": [
+      "export targets: attempts, review schedule, mock summaries, lab summaries, reports",
+      "public-safe export と full backup export を分ける",
+      "sensitive field masking を行う",
+      "export 前に privacy checklist を表示する"
+    ],
+    "acceptance": [
+      "full backup JSON を export できる",
+      "public-safe Markdown を export できる",
+      "privacy checklist が表示される"
+    ],
+    "subtasks": [
+      "export types を作る",
+      "masking rules を作る",
+      "settings UI を作る",
+      "preview を作る"
+    ],
+    "dependencies": [],
+    "safety": "public-safe export を default にする。実情報、credential、private note は明示的に除外する。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-009",
+    "phase": 6,
+    "title": "[P6-009] Release Documentation を整備する",
+    "summary": "v1.0 に向けて README、setup、usage、content authoring、safety docs を整える。",
+    "labels": [
+      "phase:6",
+      "type:quality",
+      "type:content",
+      "priority:P0"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P0",
+    "estimate": "2d",
+    "user_story": "利用者として、何ができるか、どう安全に使うか、どう問題を追加するかをすぐ理解したい。",
+    "requirements": [
+      "README に product overview, screenshots placeholders, quick start, safety を書く",
+      "docs に question authoring, lab authoring, import/export を書く",
+      "dangerous-use disclaimer ではなく、具体的な safe-use policy を書く",
+      "CHANGELOG の初版を作る"
+    ],
+    "acceptance": [
+      "README だけで利用目的が分かる",
+      "安全境界へのリンクが目立つ",
+      "authoring docs が存在する"
+    ],
+    "subtasks": [
+      "README を書く",
+      "authoring docs を書く",
+      "safety docs を更新する",
+      "CHANGELOG を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-010",
+    "phase": 6,
+    "title": "[P6-010] Demo Content と Landing Page を作る",
+    "summary": "Cyberpunk 感と問題管理価値が伝わる demo を用意する。",
+    "labels": [
+      "phase:6",
+      "type:design",
+      "type:content",
+      "area:design",
+      "priority:P1"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P1",
+    "estimate": "3d",
+    "user_story": "初見ユーザーとして、これは単なるゲームではなく、CEH と実践復習の管理ツールだとすぐ分かりたい。",
+    "requirements": [
+      "landing copy は problem management, review system, practical evidence を強調する",
+      "demo dataset は安全な synthetic content のみ使う",
+      "screens: dashboard, review queue, mock exam report, lab report, city map",
+      "dark cyberpunk aesthetic を保つ"
+    ],
+    "acceptance": [
+      "landing page に主要価値が 30 秒で伝わる",
+      "demo mode を安全に起動できる",
+      "危険な tool 実行を連想させすぎない copy になっている"
+    ],
+    "subtasks": [
+      "landing copy を作る",
+      "demo dataset を作る",
+      "screens を整える",
+      "safety copy を review する"
+    ],
+    "dependencies": [],
+    "safety": "demo は synthetic content のみ。実攻撃ツールの実行デモや実ターゲット操作の演出は避ける。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-011",
+    "phase": 6,
+    "title": "[P6-011] Security / Legal / Content Safety Review を行う",
+    "summary": "v1.0 公開前に危険機能、誤解を招く copy、プライバシーリスクを確認する。",
+    "labels": [
+      "phase:6",
+      "type:security",
+      "type:quality",
+      "area:safety",
+      "priority:P0"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "公開者として、安全で合法的な学習プロダクトとして公開できる状態にしたい。",
+    "requirements": [
+      "unsafe content scan を全問題・全 lab に実行する",
+      "外部 target を示す data がないか確認する",
+      "privacy export と public demo を確認する",
+      "README と UI copy が authorized-only を明確にしているか確認する"
+    ],
+    "acceptance": [
+      "safety review checklist が完了している",
+      "unsafe content が 0 件になっている",
+      "残リスクと対応方針が docs に記録されている"
+    ],
+    "subtasks": [
+      "content scan を実行する",
+      "manual review を行う",
+      "risk register を作る",
+      "release approval を記録する"
+    ],
+    "dependencies": [],
+    "safety": "安全レビューの Issue。見つかった危険項目は修正または削除し、回避方法や実害手順はドキュメントに残さない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  },
+  {
+    "id": "P6-012",
+    "phase": 6,
+    "title": "[P6-012] v1.0 Acceptance Test Run を実施する",
+    "summary": "Phase 0〜6 の主要 flow が通るかを、リリース前にまとめて検証する。",
+    "labels": [
+      "phase:6",
+      "type:quality",
+      "priority:P0"
+    ],
+    "milestone": "Phase 6 - Cyberpunk Polish and Launch",
+    "priority": "priority:P0",
+    "estimate": "3d",
+    "user_story": "開発者として、v1.0 を出す前に、問題作成から復習、模試、lab、report、export まで通しで確認したい。",
+    "requirements": [
+      "happy path: onboarding → question → attempt → review → mock → lab → report → export",
+      "safety path: unsafe lab rejected, public-safe export masking",
+      "accessibility path: keyboard review, reduced motion, low glow",
+      "data path: import/export/backup restore"
+    ],
+    "acceptance": [
+      "acceptance checklist がすべて pass している",
+      "known issues が triaged されている",
+      "v1.0 release note が作成されている"
+    ],
+    "subtasks": [
+      "test plan を作る",
+      "manual run を実行する",
+      "bugs を起票する",
+      "release note を作る"
+    ],
+    "dependencies": [],
+    "safety": "この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。",
+    "tests": [
+      "主要な happy path が手動で再現できる",
+      "入力エラー時に安全に失敗する",
+      "永続化されたデータが再読み込み後も一致する"
+    ],
+    "notes": []
+  }
+]

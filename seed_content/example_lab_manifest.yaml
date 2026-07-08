@@ -1,0 +1,24 @@
+lab_id: LAB-SOC-001
+title: Synthetic Auth Log Investigation
+track: SOC Log Investigation
+ceh_modules:
+  - Enumeration
+  - Sniffing
+  - Evading IDS, Firewalls, and Honeypots
+scope:
+  allowed:
+    - provided_synthetic_logs_only
+    - local_notes_only
+  forbidden:
+    - public_internet_scan
+    - real_account_lookup
+    - real_credential_use
+objectives:
+  - identify_suspicious_login_pattern
+  - build_timeline
+  - propose_containment_steps
+expected_outputs:
+  - evidence
+  - finding
+  - remediation
+safety_review: required

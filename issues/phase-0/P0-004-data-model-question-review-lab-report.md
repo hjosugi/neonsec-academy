@@ -1,0 +1,64 @@
+---
+title: "[P0-004] Question / Review / Attempt / Lab / Report のデータモデルを設計する"
+labels: "phase:0,type:infra,area:question-bank,area:review,priority:P0"
+milestone: "Phase 0 - Foundation"
+phase: "0"
+priority: "priority:P0"
+estimate: "2d"
+---
+
+# [P0-004] Question / Review / Attempt / Lab / Report のデータモデルを設計する
+
+## Summary
+
+問題管理と復習管理を後から拡張しやすくするため、最初に最小データモデルを決める。
+
+## User Story
+
+開発者として、問題・回答履歴・復習予定・lab evidence を一貫した ID で追跡したい。
+
+## Requirements
+
+- [ ] Question, Choice, Explanation, Attempt, ReviewItem, LabChallenge, Evidence, Report の entity を定義する
+- [ ] すべての entity に stable id, created_at, updated_at を持たせる
+- [ ] CEH module と CEH+ track を外部キーまたは enum として扱う
+- [ ] 将来の import/export を前提に JSON schema を用意する
+
+## Acceptance Criteria
+
+- [ ] docs/DATA_MODEL.md に ERD 風の説明がある
+- [ ] sample JSON が validation 可能な形で置かれている
+- [ ] 削除・アーカイブ・復元の方針が書かれている
+
+## Subtasks
+
+- [ ] entity 一覧を書く
+- [ ] field 定義を書く
+- [ ] index / search key を決める
+- [ ] migration 方針を書く
+
+## Dependencies
+
+- None
+
+## Safety / Abuse Prevention
+
+この Issue は許可済み教材・ローカルデータ・模擬データのみを対象にする。実システム、第三者サービス、実アカウント、実認証情報を扱わない。
+
+## Test Plan
+
+- [ ] 主要な happy path が手動で再現できる
+- [ ] 入力エラー時に安全に失敗する
+- [ ] 永続化されたデータが再読み込み後も一致する
+
+## Definition of Done
+
+- [ ] Acceptance Criteria がすべて満たされている
+- [ ] 必要な docs / schema / sample data が更新されている
+- [ ] Safety / Abuse Prevention が確認されている
+- [ ] Review Queue / Analytics への影響が確認されている
+- [ ] Cyberpunk UI が可読性を邪魔していない
+
+## Notes
+
+- None

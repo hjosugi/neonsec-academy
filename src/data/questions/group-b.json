@@ -1,0 +1,829 @@
+[
+  {
+    "id": "Q-CEH-04-001",
+    "type": "mcq",
+    "module": 4,
+    "difficulty": "easy",
+    "tags": [
+      "netbios",
+      "ports",
+      "enumeration"
+    ],
+    "body": "Which port is used by the NetBIOS Name Service, commonly queried during NetBIOS enumeration to resolve NetBIOS names to IP addresses?",
+    "choices": [
+      "UDP 137",
+      "TCP 139",
+      "TCP 445",
+      "UDP 161"
+    ],
+    "answer": "UDP 137",
+    "explanation": {
+      "answer": "UDP 137 is the NetBIOS Name Service port.",
+      "why": "NetBIOS uses three classic ports: UDP 137 (Name Service, used for name resolution/enumeration), UDP 138 (Datagram Service), and TCP 139 (Session Service, used for file/print sharing sessions). TCP 445 is used by SMB when running directly over TCP/IP without NetBIOS. UDP 161 belongs to SNMP, not NetBIOS.",
+      "trap": "Test-takers often confuse 139 (Session Service, used for actual SMB sessions) with 137 (Name Service, used purely for name resolution/enumeration queries).",
+      "memory_phrase": "1-3-7 = Name (lookup); 1-3-9 = Session (talk)."
+    }
+  },
+  {
+    "id": "Q-CEH-04-002",
+    "type": "mcq",
+    "module": 4,
+    "difficulty": "easy",
+    "tags": [
+      "smb",
+      "ports",
+      "enumeration"
+    ],
+    "body": "Which TCP port is used for direct-hosted SMB traffic over TCP/IP, without requiring NetBIOS as a transport?",
+    "choices": [
+      "TCP 445",
+      "TCP 139",
+      "UDP 137",
+      "TCP 389"
+    ],
+    "answer": "TCP 445",
+    "explanation": {
+      "answer": "TCP 445 carries direct-hosted SMB (SMB over TCP/IP without NetBIOS).",
+      "why": "Modern Windows systems can run SMB directly over TCP port 445, bypassing the legacy NetBIOS Session Service on TCP 139. Port 139 is still used for NetBIOS-based SMB sessions, port 137 is NetBIOS name resolution, and 389 belongs to LDAP.",
+      "trap": "Some assume 139 and 445 are interchangeable; both can carry SMB traffic, but only 445 is 'direct-hosted' SMB independent of NetBIOS.",
+      "memory_phrase": "445 = SMB goes solo (no NetBIOS needed)."
+    }
+  },
+  {
+    "id": "Q-CEH-04-003",
+    "type": "mcq",
+    "module": 4,
+    "difficulty": "medium",
+    "tags": [
+      "ldap",
+      "ports",
+      "enumeration"
+    ],
+    "body": "An enumeration scan reveals an open TCP port 389 on a domain controller. Which service does this port most likely indicate?",
+    "choices": [
+      "LDAP (unencrypted)",
+      "SNMP agent",
+      "NTP",
+      "DNS"
+    ],
+    "answer": "LDAP (unencrypted)",
+    "explanation": {
+      "answer": "TCP/UDP 389 is the default port for unencrypted LDAP, commonly exposed by Active Directory domain controllers.",
+      "why": "LDAP is used to query and enumerate directory information such as usernames, group memberships, and organizational structure. SNMP uses UDP 161, NTP uses UDP 123, and DNS uses port 53 — none of which is 389.",
+      "trap": "Do not confuse port 389 (plain LDAP) with port 636 (LDAPS, encrypted over SSL/TLS) — the exam often tests both in the same question set.",
+      "memory_phrase": "389 = the directory service door."
+    }
+  },
+  {
+    "id": "Q-CEH-04-004",
+    "type": "mcq",
+    "module": 4,
+    "difficulty": "easy",
+    "tags": [
+      "snmp",
+      "ports",
+      "enumeration"
+    ],
+    "body": "Which UDP port does the SNMP agent listen on by default to receive get/set requests from a network management station?",
+    "choices": [
+      "UDP 161",
+      "UDP 162",
+      "UDP 389",
+      "UDP 123"
+    ],
+    "answer": "UDP 161",
+    "explanation": {
+      "answer": "UDP 161 is the default port an SNMP agent listens on for incoming management requests (GetRequest/SetRequest).",
+      "why": "UDP 162 is instead used for SNMP trap messages sent from the agent to the manager, 389 is LDAP, and 123 is NTP.",
+      "trap": "Mixing up 161 (agent listens for requests) with 162 (manager listens for traps) is a very common exam trap.",
+      "memory_phrase": "161 = ask the agent; 162 = agent alerts you."
+    }
+  },
+  {
+    "id": "Q-CEH-04-005",
+    "type": "mcq",
+    "module": 4,
+    "difficulty": "medium",
+    "tags": [
+      "ntp",
+      "enumeration"
+    ],
+    "body": "During enumeration, an attacker queries an exposed NTP service. What type of information can typically be gathered this way?",
+    "choices": [
+      "A list of hosts that have recently synchronized time with the NTP server, along with internal IP addressing details",
+      "The full contents of the Windows SAM database",
+      "Valid LDAP bind credentials in cleartext",
+      "The complete DNS zone file for the domain"
+    ],
+    "answer": "A list of hosts that have recently synchronized time with the NTP server, along with internal IP addressing details",
+    "explanation": {
+      "answer": "NTP enumeration can reveal a list of associated/peer hosts and internal network addressing information exposed by the time service.",
+      "why": "NTP control-mode queries can expose peer/association lists, which may leak internal hostnames or IP addresses useful for network mapping. NTP does not expose SAM contents, LDAP credentials, or DNS zone data — those belong to completely different services.",
+      "trap": "Candidates sometimes assume any 'enumeration' question is about credentials; NTP enumeration is about network/topology reconnaissance, not credential harvesting.",
+      "memory_phrase": "NTP tells time — and tattles on its neighbors."
+    }
+  },
+  {
+    "id": "Q-CEH-04-006",
+    "type": "mcq",
+    "module": 4,
+    "difficulty": "medium",
+    "tags": [
+      "smtp",
+      "enumeration"
+    ],
+    "body": "Which SMTP command, if not properly restricted, can be abused by an attacker to confirm whether a specific mailbox or username exists on a mail server?",
+    "choices": [
+      "VRFY",
+      "HELO",
+      "DATA",
+      "STARTTLS"
+    ],
+    "answer": "VRFY",
+    "explanation": {
+      "answer": "The VRFY command asks the SMTP server to verify whether a given username/mailbox is valid, which can be abused for username enumeration.",
+      "why": "EXPN (expand a mailing list) is similarly abusable, but of the options given only VRFY appears. HELO simply initiates a session, DATA begins message content transmission, and STARTTLS negotiates encryption — none of these confirm mailbox existence.",
+      "trap": "Some assume any SMTP command that returns an error can be used to enumerate users; only commands specifically designed to validate recipients (VRFY, EXPN, and to a lesser extent RCPT TO) are useful for this purpose.",
+      "memory_phrase": "VRFY = 'verify a user is really here.'"
+    }
+  },
+  {
+    "id": "Q-CEH-04-007",
+    "type": "mcq",
+    "module": 4,
+    "difficulty": "hard",
+    "tags": [
+      "snmp",
+      "community-strings",
+      "enumeration"
+    ],
+    "body": "Many legacy network devices ship with a default SNMP read-only community string that, if left unchanged, allows attackers to enumerate system information via SNMP. What is that commonly known default value?",
+    "choices": [
+      "public",
+      "private",
+      "admin",
+      "cisco"
+    ],
+    "answer": "public",
+    "explanation": {
+      "answer": "'public' is the widely known default read-only SNMP community string.",
+      "why": "'private' is the commonly known default read-write community string (more dangerous if exposed, since it permits configuration changes), while 'admin' and 'cisco' are not standard SNMP default community strings.",
+      "trap": "Exam questions frequently swap 'public' and 'private' as distractors for each other — remember 'public' is read-only, 'private' is read-write.",
+      "memory_phrase": "Public library: read-only. Private club: read-write."
+    }
+  },
+  {
+    "id": "Q-CEH-04-008",
+    "type": "multi",
+    "module": 4,
+    "difficulty": "medium",
+    "tags": [
+      "netbios",
+      "smb",
+      "ports",
+      "enumeration"
+    ],
+    "body": "Which of the following ports are classically associated with NetBIOS/SMB enumeration on Windows networks? (Select all that apply.)",
+    "choices": [
+      "UDP 137",
+      "TCP 139",
+      "TCP 445",
+      "TCP 25",
+      "UDP 161",
+      "TCP 3389"
+    ],
+    "answer": [
+      "UDP 137",
+      "TCP 139",
+      "TCP 445"
+    ],
+    "explanation": {
+      "answer": "UDP 137 (NetBIOS Name Service), TCP 139 (NetBIOS Session Service), and TCP 445 (direct-hosted SMB) are all associated with NetBIOS/SMB enumeration.",
+      "why": "TCP 25 is SMTP, UDP 161 is SNMP, and TCP 3389 is RDP — all unrelated to NetBIOS/SMB, included here as distractors from other enumeration/service categories.",
+      "trap": "Because 161 and 25 also appear elsewhere in enumeration topics, candidates sometimes select them here by association rather than checking that they are actually NetBIOS/SMB-specific ports.",
+      "memory_phrase": "137-139-445: the NetBIOS/SMB trio."
+    }
+  },
+  {
+    "id": "Q-CEH-04-009",
+    "type": "true_false",
+    "module": 4,
+    "difficulty": "easy",
+    "tags": [
+      "dns",
+      "zone-transfer",
+      "countermeasures"
+    ],
+    "body": "True or False: As a security best practice, DNS zone transfers (AXFR) should be restricted so that only authorized secondary (slave) DNS servers can request them.",
+    "choices": [
+      "True",
+      "False"
+    ],
+    "answer": "True",
+    "explanation": {
+      "answer": "True — zone transfers should be limited to explicitly authorized secondary name servers.",
+      "why": "A full zone transfer discloses every record in a DNS zone (hostnames, subdomains, internal IP addresses, mail servers, etc.), which is highly valuable for attacker reconnaissance if it can be requested by anyone. Restricting AXFR to known secondary servers (via ACL/IP allow-list) and disabling it for arbitrary hosts is a standard countermeasure.",
+      "trap": "Some believe zone transfers are inherently safe because they are 'just DNS records' — but an open zone transfer is one of the most efficient ways to map an entire internal/external DNS namespace at once.",
+      "memory_phrase": "AXFR to strangers = free network map. Lock it down."
+    }
+  },
+  {
+    "id": "Q-CEH-04-010",
+    "type": "scenario",
+    "module": 4,
+    "difficulty": "hard",
+    "tags": [
+      "enumeration",
+      "countermeasures",
+      "snmp",
+      "null-session"
+    ],
+    "body": "During an authorized assessment, a tester finds that SNMP is reachable on a border router using the default read-only community string, and that TCP 445 on an internal Windows server allows anonymous (null) session connections. Explain what an attacker could learn from each exposure, and describe two countermeasures the organization should implement to close these enumeration paths.",
+    "answer": "From SNMP with the default community string, an attacker could walk the device's MIB to enumerate system details such as device description, uptime, running services, routing/ARP tables, and interface configuration. From an SMB null session on TCP 445, an attacker could potentially enumerate shares, user/group account names, and password policy without valid credentials. Countermeasures include changing default SNMP community strings (or migrating to SNMPv3 with authentication/encryption) and restricting SNMP access via ACLs, plus disabling anonymous/null SMB sessions and restricting SMB exposure to only trusted internal hosts/segments via firewall rules.",
+    "explanation": {
+      "answer": "Countermeasures: harden/replace default SNMP community strings (prefer SNMPv3) and disable anonymous SMB null sessions, both combined with network-level access restriction.",
+      "why": "Default community strings and null sessions are classic, well-documented enumeration weaknesses covered in CEH: SNMP MIB walks leak configuration/topology data, and SMB null sessions can leak account and share information even without authentication. Effective remediation targets both the service configuration (strings/anonymous access) and network exposure (ACLs/segmentation).",
+      "trap": "A common mistake is proposing only to 'block the port entirely' without addressing the underlying weak configuration — in environments where the service is legitimately needed, the correct fix is hardening (strong strings/SNMPv3, disabling anonymous access) plus restricting access, not just blanket blocking.",
+      "memory_phrase": "Change the default, restrict the reach — enumeration loses its teeth."
+    }
+  },
+  {
+    "id": "Q-CEH-05-001",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "easy",
+    "tags": [
+      "cve",
+      "vulnerability-databases"
+    ],
+    "body": "What does the acronym CVE stand for in the context of vulnerability management?",
+    "choices": [
+      "Common Vulnerabilities and Exposures",
+      "Critical Vulnerability Evaluation",
+      "Common Vulnerability Enumeration",
+      "Certified Vulnerability Exploit"
+    ],
+    "answer": "Common Vulnerabilities and Exposures",
+    "explanation": {
+      "answer": "CVE stands for Common Vulnerabilities and Exposures.",
+      "why": "CVE is a dictionary of publicly disclosed cybersecurity vulnerabilities, each assigned a unique identifier (e.g., CVE-YYYY-NNNNN) to allow consistent reference across tools and organizations. The other options are plausible-sounding but are not the actual expansion of the acronym.",
+      "trap": "Candidates often confuse CVE (specific vulnerability instances/identifiers) with CWE (general weakness categories) — they sound similar but serve different purposes.",
+      "memory_phrase": "CVE = the vulnerability's ID card."
+    }
+  },
+  {
+    "id": "Q-CEH-05-002",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "easy",
+    "tags": [
+      "nvd",
+      "nist",
+      "vulnerability-databases"
+    ],
+    "body": "The National Vulnerability Database (NVD), which enriches CVE entries with CVSS scores and other metadata, is maintained by which organization?",
+    "choices": [
+      "NIST (National Institute of Standards and Technology)",
+      "MITRE Corporation",
+      "FIRST.org",
+      "ISO"
+    ],
+    "answer": "NIST (National Institute of Standards and Technology)",
+    "explanation": {
+      "answer": "The NVD is maintained by NIST, a U.S. government agency.",
+      "why": "MITRE maintains the base CVE list/program itself, but NIST's NVD adds analysis such as CVSS scores, CPE applicability, and CWE mappings on top of each CVE entry. FIRST.org maintains the CVSS specification itself (not the NVD), and ISO is unrelated to either.",
+      "trap": "MITRE vs. NIST is a classic mix-up: MITRE assigns/catalogs CVE IDs, while NIST's NVD enriches and scores them.",
+      "memory_phrase": "MITRE names it, NIST scores it."
+    }
+  },
+  {
+    "id": "Q-CEH-05-003",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "easy",
+    "tags": [
+      "cwe",
+      "vulnerability-databases"
+    ],
+    "body": "How does CWE (Common Weakness Enumeration) differ from CVE?",
+    "choices": [
+      "CWE catalogs general categories/types of software and hardware weaknesses, while CVE identifies specific, individual vulnerability instances",
+      "CWE and CVE are two names for the exact same database",
+      "CWE only applies to network hardware, while CVE only applies to software",
+      "CWE is scored using CVSS, while CVE is never scored"
+    ],
+    "answer": "CWE catalogs general categories/types of software and hardware weaknesses, while CVE identifies specific, individual vulnerability instances",
+    "explanation": {
+      "answer": "CWE is a taxonomy of common weakness types (root causes), while CVE identifies specific real-world vulnerability instances.",
+      "why": "For example, CWE-89 describes 'SQL Injection' as a general weakness category, while a specific CVE entry would describe one particular SQL injection flaw found in one particular product/version. They are related but distinct: a CVE entry is often mapped to one or more CWE categories that classify its root cause.",
+      "trap": "Thinking CWE and CVE are interchangeable is the main trap — CWE is about the type of flaw, CVE is about a specific occurrence of a flaw.",
+      "memory_phrase": "CWE = the weakness's genre; CVE = one specific book in that genre."
+    }
+  },
+  {
+    "id": "Q-CEH-05-004",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "easy",
+    "tags": [
+      "cvss",
+      "scoring"
+    ],
+    "body": "What is the numeric range of a CVSS (Common Vulnerability Scoring System) Base Score?",
+    "choices": [
+      "0.0 to 10.0",
+      "0 to 100",
+      "1 to 5",
+      "-10 to 10"
+    ],
+    "answer": "0.0 to 10.0",
+    "explanation": {
+      "answer": "CVSS Base Scores range from 0.0 (no impact) to 10.0 (maximum severity).",
+      "why": "This 0.0-10.0 scale is standardized by FIRST.org and used across CVSS versions to express vulnerability severity in a comparable way. The other ranges (0-100, 1-5, -10 to 10) are not how CVSS is scored.",
+      "trap": "Some confuse CVSS's 0.0-10.0 scale with percentage-style (0-100) risk scores used by unrelated proprietary risk models.",
+      "memory_phrase": "CVSS tops out at a perfect 10."
+    }
+  },
+  {
+    "id": "Q-CEH-05-005",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "medium",
+    "tags": [
+      "scanning",
+      "authenticated-scan",
+      "unauthenticated-scan"
+    ],
+    "body": "What is the key difference between an authenticated (credentialed) vulnerability scan and an unauthenticated vulnerability scan?",
+    "choices": [
+      "An authenticated scan uses valid login credentials to inspect the target from the inside (revealing missing patches and local misconfigurations), while an unauthenticated scan only sees what is visible externally without logging in",
+      "An authenticated scan can only be run by a certified ethical hacker, while anyone can run an unauthenticated scan",
+      "An authenticated scan targets only authentication servers, while an unauthenticated scan targets only web servers",
+      "There is no practical difference; the terms are interchangeable"
+    ],
+    "answer": "An authenticated scan uses valid login credentials to inspect the target from the inside (revealing missing patches and local misconfigurations), while an unauthenticated scan only sees what is visible externally without logging in",
+    "explanation": {
+      "answer": "Authenticated scans log into the target with valid credentials for deep, internal visibility; unauthenticated scans assess the target only from an external, no-credential perspective.",
+      "why": "This difference in access level directly affects accuracy and depth: authenticated scans generally produce more complete, accurate results (fewer false negatives) because they can check local patch levels and configuration directly, while unauthenticated scans approximate what an outside attacker without credentials would see. The other options misrepresent 'authenticated' as being about the operator's certification or the scan's target type, and the two scan types are clearly not interchangeable.",
+      "trap": "The word 'authenticated' describes the scanner's access to the target, not who is allowed to run the tool or what type of system is being scanned.",
+      "memory_phrase": "Authenticated = scanner has the keys; unauthenticated = scanner's outside looking in."
+    }
+  },
+  {
+    "id": "Q-CEH-05-006",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "medium",
+    "tags": [
+      "false-positive",
+      "scanning"
+    ],
+    "body": "In vulnerability scanning, what is a 'false positive'?",
+    "choices": [
+      "The scanner reports a vulnerability that does not actually exist on the target",
+      "The scanner fails to report a vulnerability that does exist on the target",
+      "The scanner correctly identifies and confirms a real vulnerability",
+      "The scanner crashes before completing the assessment"
+    ],
+    "answer": "The scanner reports a vulnerability that does not actually exist on the target",
+    "explanation": {
+      "answer": "A false positive is an incorrectly reported finding — the scanner flags a vulnerability that, upon verification, is not actually present or exploitable.",
+      "why": "This wastes analyst time on verification and remediation planning for a non-issue. The opposite case — missing a real vulnerability — is a false negative, not a false positive. A correctly confirmed real vulnerability is a 'true positive,' and a scanner crash is an operational failure, not a positive/negative classification.",
+      "trap": "Mixing up false positive and false negative is extremely common; remember 'positive' means the scanner claimed something exists.",
+      "memory_phrase": "False positive = crying wolf."
+    }
+  },
+  {
+    "id": "Q-CEH-05-007",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "medium",
+    "tags": [
+      "false-negative",
+      "scanning"
+    ],
+    "body": "Why are false negatives generally considered more dangerous than false positives in vulnerability assessment?",
+    "choices": [
+      "A false negative means a real vulnerability goes undetected, leaving the organization exposed while believing it is secure",
+      "A false negative always takes longer to fix than a false positive",
+      "False negatives only occur in authenticated scans",
+      "False negatives are automatically reported to regulators, causing compliance penalties"
+    ],
+    "answer": "A false negative means a real vulnerability goes undetected, leaving the organization exposed while believing it is secure",
+    "explanation": {
+      "answer": "False negatives leave genuine risk unaddressed because the scanner failed to detect it, creating a false sense of security.",
+      "why": "A false positive merely costs verification time; a false negative can leave an exploitable weakness completely unremediated because no one knows it exists. False negatives are not limited to authenticated scans, and there is no rule that they are automatically reported to regulators.",
+      "trap": "Some assume false positives are the bigger operational problem because they're more frequently discussed in day-to-day triage — but from a risk standpoint, undetected real vulnerabilities (false negatives) pose the greater danger.",
+      "memory_phrase": "Positive wastes your time; negative costs you your security."
+    }
+  },
+  {
+    "id": "Q-CEH-05-008",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "medium",
+    "tags": [
+      "cvss",
+      "scoring",
+      "severity-rating"
+    ],
+    "body": "Under the CVSS v3.x qualitative severity rating scale, a vulnerability with a Base Score of 9.8 would be classified as:",
+    "choices": [
+      "Critical",
+      "High",
+      "Medium",
+      "Low"
+    ],
+    "answer": "Critical",
+    "explanation": {
+      "answer": "A CVSS Base Score of 9.8 falls in the Critical range.",
+      "why": "The CVSS v3.x qualitative scale maps scores as: None (0.0), Low (0.1-3.9), Medium (4.0-6.9), High (7.0-8.9), and Critical (9.0-10.0). Since 9.8 falls between 9.0 and 10.0, it is rated Critical, not High, Medium, or Low.",
+      "trap": "Candidates sometimes misremember the High/Critical boundary as 8.0 or 9.5 — the actual cutoff for Critical is 9.0.",
+      "memory_phrase": "9.0 and up: as critical as it gets."
+    }
+  },
+  {
+    "id": "Q-CEH-05-009",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "hard",
+    "tags": [
+      "cvss",
+      "attack-vector",
+      "scoring"
+    ],
+    "body": "In a CVSS v3.1 vector string, the Base Metric value 'AV:N' indicates that the vulnerability's Attack Vector is:",
+    "choices": [
+      "Network — the vulnerability can be exploited remotely over a network without requiring physical or local access",
+      "None — the vulnerability cannot actually be exploited",
+      "Local — exploitation requires local, console-level access to the system",
+      "Physical — exploitation requires physically touching the device"
+    ],
+    "answer": "Network — the vulnerability can be exploited remotely over a network without requiring physical or local access",
+    "explanation": {
+      "answer": "'AV:N' means Attack Vector: Network, the most easily exploitable vector since it requires no physical or local access.",
+      "why": "The CVSS Attack Vector metric has four possible values: Network (N), Adjacent (A, same broadcast/collision domain), Local (L, requires local access/login), and Physical (P, requires physical touch of the device). 'N' specifically denotes Network, not 'None,' 'Local,' or 'Physical.'",
+      "trap": "Reading 'N' as 'None' (implying no risk) is a common misinterpretation — in CVSS, 'N' for Attack Vector actually signals the highest-risk, most remotely exploitable option.",
+      "memory_phrase": "AV:N = No need to be nearby."
+    }
+  },
+  {
+    "id": "Q-CEH-05-010",
+    "type": "true_false",
+    "module": 5,
+    "difficulty": "easy",
+    "tags": [
+      "cvss",
+      "scoring"
+    ],
+    "body": "True or False: In CVSS v3.1, a Base Score of 0.0 represents the most severe possible vulnerability rating.",
+    "choices": [
+      "True",
+      "False"
+    ],
+    "answer": "False",
+    "explanation": {
+      "answer": "False — a Base Score of 0.0 corresponds to a rating of 'None,' the least severe end of the scale, not the most severe.",
+      "why": "CVSS severity increases as the score rises toward 10.0; 0.0 indicates effectively no measurable impact/severity, while scores from 9.0-10.0 represent the Critical (most severe) category.",
+      "trap": "Some assume lower numbers mean 'more critical' by analogy with ranking systems like '#1 priority' — but CVSS works the opposite way: higher score means higher severity.",
+      "memory_phrase": "Zero on CVSS = zero to worry about."
+    }
+  },
+  {
+    "id": "Q-CEH-05-011",
+    "type": "multi",
+    "module": 5,
+    "difficulty": "medium",
+    "tags": [
+      "vulnerability-assessment",
+      "assessment-types"
+    ],
+    "body": "Which of the following are recognized types/approaches of vulnerability assessment covered in CEH methodology? (Select all that apply.)",
+    "choices": [
+      "Active assessment",
+      "Host-based assessment",
+      "Wireless network assessment",
+      "Social media assessment",
+      "Credential-stuffing assessment",
+      "Phishing simulation assessment"
+    ],
+    "answer": [
+      "Active assessment",
+      "Host-based assessment",
+      "Wireless network assessment"
+    ],
+    "explanation": {
+      "answer": "Active assessment, Host-based assessment, and Wireless network assessment are all recognized categories of vulnerability assessment.",
+      "why": "CEH methodology categorizes vulnerability assessments along several dimensions, including how they interact with the target (active vs. passive), what they examine (host-based, network-based, application-based), and specific technology scope (wireless network assessment). 'Social media assessment,' 'credential-stuffing assessment,' and 'phishing simulation assessment' are not standard vulnerability assessment categories — phishing/credential attacks are attack techniques, not assessment types, and there is no standard 'social media assessment' category in vulnerability management.",
+      "trap": "Distractors that sound like plausible security activities (phishing simulations, credential stuffing) are easy to mistake for vulnerability assessment types, but they describe attack techniques or separate testing disciplines, not vulnerability assessment categories.",
+      "memory_phrase": "Active, host, wireless — real assessment types; phishing and stuffing are attacks, not assessments."
+    }
+  },
+  {
+    "id": "Q-CEH-05-012",
+    "type": "scenario",
+    "module": 5,
+    "difficulty": "hard",
+    "tags": [
+      "vulnerability-management",
+      "false-positive",
+      "lifecycle"
+    ],
+    "body": "An automated scan flags a 'Critical' SQL injection finding on a legacy internal application. Before assigning it to the development team, an analyst manually tests the affected parameter and confirms that input is properly parameterized and the injection does not actually work. The analyst documents this, suppresses the finding with justification, and schedules a re-scan after the next quarterly update. Identify what the scan result actually was, and explain which phase of the vulnerability management lifecycle the analyst's manual testing and later re-scan each represent.",
+    "answer": "The flagged finding was a false positive — the scanner reported a vulnerability that manual testing showed does not actually exist. The analyst's manual testing corresponds to the verification/validation step that should occur before remediation is assigned, confirming a finding is real and correctly prioritized. The scheduled re-scan corresponds to the later verification step used to confirm the environment remains clean and that the finding is not reintroduced by future changes. Together these actions reflect good vulnerability management lifecycle practice: identify/scan, verify, prioritize/remediate as needed, and verify again.",
+    "explanation": {
+      "answer": "This is a false positive; manual testing is a verification step, and the scheduled re-scan is a follow-up verification/monitoring step in the vulnerability management lifecycle.",
+      "why": "A false positive is a finding that does not hold up under manual verification, distinguishing it from a true positive (confirmed real vulnerability). Mature vulnerability management processes always include a human verification step before committing remediation resources, since acting on unverified scanner output can waste engineering time on non-issues; periodic re-scanning is part of the ongoing monitoring/verification phase that keeps the vulnerability inventory accurate over time.",
+      "trap": "A common mistake is to treat every 'Critical' scanner label as automatically actionable without verification — severity ratings describe potential impact if the finding is real, not certainty that it is real.",
+      "memory_phrase": "Trust, but verify — then verify again later."
+    }
+  },
+  {
+    "id": "Q-CEH-06-001",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "easy",
+    "tags": [
+      "methodology",
+      "system-hacking"
+    ],
+    "body": "Which of the following correctly represents the standard order of phases in the CEH system hacking methodology?",
+    "choices": [
+      "Gaining Access -> Escalating Privileges -> Maintaining Access -> Clearing Tracks",
+      "Escalating Privileges -> Gaining Access -> Clearing Tracks -> Maintaining Access",
+      "Maintaining Access -> Gaining Access -> Escalating Privileges -> Clearing Tracks",
+      "Gaining Access -> Clearing Tracks -> Escalating Privileges -> Maintaining Access"
+    ],
+    "answer": "Gaining Access -> Escalating Privileges -> Maintaining Access -> Clearing Tracks",
+    "explanation": {
+      "answer": "The correct order is Gaining Access, then Escalating Privileges, then Maintaining Access, then Clearing Tracks.",
+      "why": "This sequence reflects a logical attacker progression: first obtain a foothold (gain access), then increase privilege level if needed, then ensure continued access, and finally attempt to hide evidence of the intrusion. The distractor orderings place later-stage activities (like clearing tracks or maintaining access) illogically before an attacker would even have a foothold or elevated rights.",
+      "trap": "Some candidates place 'Clearing Tracks' earlier because 'covering up' sounds like something done throughout — but in the CEH model it is specifically the final phase, performed after access and persistence are established.",
+      "memory_phrase": "GEMC: Gain, Escalate, Maintain, Cover (Clear)."
+    }
+  },
+  {
+    "id": "Q-CEH-06-002",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "easy",
+    "tags": [
+      "password-hashing",
+      "authentication"
+    ],
+    "body": "What is the primary purpose of hashing a password before storing it in a system's credential database?",
+    "choices": [
+      "To store a one-way transformed value so the original plaintext password is not kept in storage, while still allowing verification of future login attempts",
+      "To compress the password so it takes up less disk space",
+      "To make the password easier for the user to remember",
+      "To automatically synchronize the password across multiple unrelated systems"
+    ],
+    "answer": "To store a one-way transformed value so the original plaintext password is not kept in storage, while still allowing verification of future login attempts",
+    "explanation": {
+      "answer": "Hashing converts a password into a fixed-length, one-way digest so the system never needs to store the plaintext, yet can still verify logins by re-hashing the entered password and comparing digests.",
+      "why": "Because cryptographic hash functions are, ideally, one-way, an attacker who steals the hash database cannot trivially recover the original passwords. Storage compression, memorability, and cross-system synchronization are not the security purposes hashing serves.",
+      "trap": "Some confuse hashing with encryption; hashing is one-way (no decryption key recovers the original), whereas encryption is reversible with the correct key.",
+      "memory_phrase": "Hash in, no password out."
+    }
+  },
+  {
+    "id": "Q-CEH-06-003",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "easy",
+    "tags": [
+      "salting",
+      "password-hashing"
+    ],
+    "body": "What security purpose does adding a unique 'salt' to a password serve before hashing it?",
+    "choices": [
+      "It ensures identical passwords produce different hash outputs and defeats precomputed hash lookup (rainbow table) attacks",
+      "It encrypts the password so it can later be decrypted back to plaintext",
+      "It shortens the resulting hash so it uses less storage",
+      "It automatically enforces a minimum password length policy"
+    ],
+    "answer": "It ensures identical passwords produce different hash outputs and defeats precomputed hash lookup (rainbow table) attacks",
+    "explanation": {
+      "answer": "A salt is random, typically-unique data combined with a password before hashing, so that even identical passwords produce different stored hashes and precomputed hash tables become far less effective.",
+      "why": "Without salting, two users with the same password would have identical hashes, and attackers could use precomputed rainbow tables to reverse hashes quickly. Salting does not encrypt (hashing remains one-way), does not shorten the hash, and does not enforce length policy — those are separate password policy controls.",
+      "trap": "Some think the salt must be kept secret like an encryption key — in practice, the salt is typically stored alongside the hash (not secret); its value comes from being unique per password, not from being hidden.",
+      "memory_phrase": "Same password, different salt, different hash."
+    }
+  },
+  {
+    "id": "Q-CEH-06-004",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "easy",
+    "tags": [
+      "password-attacks",
+      "dictionary-attack"
+    ],
+    "body": "Conceptually, what defines a 'dictionary attack' against a password?",
+    "choices": [
+      "Attempting to guess a password using a precompiled list of likely words, phrases, or previously leaked passwords",
+      "Systematically trying every possible character combination until the password is found",
+      "Using precomputed hash-to-plaintext lookup tables to reverse a captured hash",
+      "Intercepting the password as it is typed using a hardware keystroke logger"
+    ],
+    "answer": "Attempting to guess a password using a precompiled list of likely words, phrases, or previously leaked passwords",
+    "explanation": {
+      "answer": "A dictionary attack relies on a curated wordlist of likely candidate passwords rather than trying every possible combination.",
+      "why": "This distinguishes it from a brute-force attack (which exhaustively tries all combinations) and a rainbow table attack (which reverses hashes using precomputed tables rather than guessing at login). Keystroke logging is an entirely different credential-capture technique, not a guessing attack.",
+      "trap": "Dictionary and brute-force attacks are often confused; the key distinguishing factor is that dictionary attacks use a curated list of probable values, while brute-force attempts an exhaustive combinatorial search.",
+      "memory_phrase": "Dictionary attack = guessing from a wordlist, not from scratch."
+    }
+  },
+  {
+    "id": "Q-CEH-06-005",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "medium",
+    "tags": [
+      "password-attacks",
+      "brute-force"
+    ],
+    "body": "Which statement best describes a brute-force password attack?",
+    "choices": [
+      "It systematically attempts every possible combination of characters within a defined character set and length until the correct password is found",
+      "It only tries words found in a dictionary or wordlist",
+      "It relies exclusively on previously precomputed hash tables to reverse a hash instantly",
+      "It requires physical access to the target's keyboard"
+    ],
+    "answer": "It systematically attempts every possible combination of characters within a defined character set and length until the correct password is found",
+    "explanation": {
+      "answer": "Brute-force attacks exhaustively try all possible character combinations, guaranteeing eventual success but often requiring significant time/resources, especially against longer, more complex passwords.",
+      "why": "This is distinct from a dictionary attack (curated wordlist) and a rainbow table attack (precomputed hash reversal rather than combinatorial guessing). Brute-force attacks are typically conducted remotely or offline against captured hashes and do not require physical keyboard access.",
+      "trap": "Candidates sometimes assume 'brute-force' just means 'any aggressive password attack' — but on the exam it specifically refers to the exhaustive, combinatorial guessing method.",
+      "memory_phrase": "Brute-force = try everything, eventually."
+    }
+  },
+  {
+    "id": "Q-CEH-06-006",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "medium",
+    "tags": [
+      "password-attacks",
+      "rainbow-table"
+    ],
+    "body": "How does a rainbow table attack recover a password from a captured password hash?",
+    "choices": [
+      "It uses large precomputed tables mapping hash values to their corresponding plaintext, allowing fast lookup instead of computing hashes on the fly",
+      "It floods the login form with thousands of requests per second until the account locks out",
+      "It intercepts the password in plaintext while it is transmitted over an unencrypted network",
+      "It guesses the password using only common dictionary words"
+    ],
+    "answer": "It uses large precomputed tables mapping hash values to their corresponding plaintext, allowing fast lookup instead of computing hashes on the fly",
+    "explanation": {
+      "answer": "Rainbow tables are precomputed data structures that map many possible hash outputs back to their plaintext inputs, letting an attacker look up a captured hash instead of recalculating hashes for every guess.",
+      "why": "This trades storage space for speed, in contrast to brute-force (recomputes each guess on the fly) and dictionary attacks (tries wordlist entries). Flooding a login form describes an online brute-force/lockout scenario, and plaintext interception is a network sniffing issue — both unrelated to rainbow tables. Rainbow tables are also notably defeated by proper password salting.",
+      "trap": "Some conflate rainbow tables with dictionary attacks because both use precompiled data — the distinguishing feature of rainbow tables is that they map hash values (not word guesses) to plaintext for rapid reversal.",
+      "memory_phrase": "Rainbow table = pre-baked hash-to-password lookup."
+    }
+  },
+  {
+    "id": "Q-CEH-06-007",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "medium",
+    "tags": [
+      "privilege-escalation"
+    ],
+    "body": "A standard (non-admin) user on a workstation exploits a local misconfiguration to obtain SYSTEM-level access on that same machine. What type of privilege escalation does this represent?",
+    "choices": [
+      "Vertical privilege escalation",
+      "Horizontal privilege escalation",
+      "Lateral movement",
+      "Session hijacking"
+    ],
+    "answer": "Vertical privilege escalation",
+    "explanation": {
+      "answer": "This is vertical privilege escalation — gaining a higher privilege tier (standard user to SYSTEM/admin) than originally granted.",
+      "why": "Horizontal privilege escalation instead involves accessing another account's resources at the same privilege tier (e.g., one standard user accessing another standard user's files) without gaining elevated rights. Lateral movement refers to moving between different systems on a network, not necessarily changing privilege level, and session hijacking refers to taking over an existing authenticated session, not escalating local privilege.",
+      "trap": "Lateral movement and horizontal privilege escalation are easy to conflate, but lateral movement is about moving across hosts, while both forms of privilege escalation described here are about the level or scope of access on a single system or trust boundary.",
+      "memory_phrase": "Vertical = go up the ladder; horizontal = slide sideways to a peer."
+    }
+  },
+  {
+    "id": "Q-CEH-06-008",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "medium",
+    "tags": [
+      "windows",
+      "sam",
+      "authentication"
+    ],
+    "body": "On a Windows system, the SAM (Security Account Manager) file is primarily used to store what?",
+    "choices": [
+      "Hashed local user account passwords and related account security information",
+      "The complete plaintext password history for every domain user",
+      "DNS zone records for the local domain",
+      "The system's public/private TLS certificate pair"
+    ],
+    "answer": "Hashed local user account passwords and related account security information",
+    "explanation": {
+      "answer": "The SAM database stores local user account information, including password hashes, used for local authentication on a Windows system.",
+      "why": "It does not store plaintext passwords (only hashes), it is not a DNS zone file, and it has nothing to do with TLS certificate storage. The SAM is locked for direct file access while Windows is running, which is itself a protective control.",
+      "trap": "Some assume SAM stores plaintext passwords since it 'manages accounts' — Windows stores password hashes, not reversible plaintext, in the SAM.",
+      "memory_phrase": "SAM = Security Account Manager, hashes not plaintext."
+    }
+  },
+  {
+    "id": "Q-CEH-06-009",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "hard",
+    "tags": [
+      "linux",
+      "shadow-file",
+      "authentication"
+    ],
+    "body": "On modern Linux systems, why are password hashes stored in /etc/shadow rather than directly in /etc/passwd?",
+    "choices": [
+      "/etc/passwd is world-readable for basic account lookups, so moving hashes to /etc/shadow (readable only by root) prevents unprivileged users from obtaining hashes for offline cracking",
+      "/etc/shadow is required because /etc/passwd cannot technically store more than 8 characters per line",
+      "/etc/passwd is encrypted, so hashes would be stored twice for no benefit",
+      "/etc/shadow is a legacy file that modern Linux distributions no longer use"
+    ],
+    "answer": "/etc/passwd is world-readable for basic account lookups, so moving hashes to /etc/shadow (readable only by root) prevents unprivileged users from obtaining hashes for offline cracking",
+    "explanation": {
+      "answer": "/etc/passwd must remain world-readable so ordinary tools and users can resolve account/UID information, but that made early Unix systems (which stored hashes there directly) vulnerable to offline cracking by any local user. /etc/shadow, readable only by root, separates the sensitive hash data from the publicly readable account metadata.",
+      "why": "This separation is a deliberate security control (the 'shadow password' scheme), not a technical field-length limitation, and /etc/passwd is not itself encrypted. /etc/shadow remains standard and actively used on modern Linux distributions.",
+      "trap": "Assuming /etc/shadow is obsolete or that /etc/passwd is encrypted are both common misconceptions — the real reason is a readable-permissions security separation.",
+      "memory_phrase": "Passwd is public; shadow hides the hash."
+    }
+  },
+  {
+    "id": "Q-CEH-06-010",
+    "type": "true_false",
+    "module": 6,
+    "difficulty": "easy",
+    "tags": [
+      "clearing-tracks",
+      "methodology"
+    ],
+    "body": "True or False: 'Clearing Tracks' is the final phase in the CEH system hacking methodology, in which an attacker attempts to hide evidence of compromise, such as by clearing event logs or modifying timestamps.",
+    "choices": [
+      "True",
+      "False"
+    ],
+    "answer": "True",
+    "explanation": {
+      "answer": "True — Clearing Tracks is the final phase, focused on anti-forensic activity to reduce the chance of detection after the fact.",
+      "why": "After gaining access, escalating privileges, and maintaining access, an attacker following this methodology attempts to erase or obscure evidence (logs, command history, timestamps) to delay or prevent detection and attribution.",
+      "trap": "Some assume evidence-hiding happens continuously throughout an intrusion rather than being modeled as a distinct final phase — CEH methodology treats it as the last deliberate stage.",
+      "memory_phrase": "Last phase: cover the tracks, not the tracks first."
+    }
+  },
+  {
+    "id": "Q-CEH-06-011",
+    "type": "multi",
+    "module": 6,
+    "difficulty": "medium",
+    "tags": [
+      "password-attacks"
+    ],
+    "body": "Which of the following are recognized categories of password attacks? (Select all that apply.)",
+    "choices": [
+      "Dictionary attack",
+      "Brute-force attack",
+      "Rainbow table attack",
+      "Buffer overflow attack",
+      "SQL injection attack",
+      "Cross-site scripting attack"
+    ],
+    "answer": [
+      "Dictionary attack",
+      "Brute-force attack",
+      "Rainbow table attack"
+    ],
+    "explanation": {
+      "answer": "Dictionary, brute-force, and rainbow table attacks are all recognized categories of password attacks.",
+      "why": "These three (along with related variants like hybrid attacks) describe different methods of guessing or reversing a password/hash. Buffer overflow, SQL injection, and cross-site scripting are unrelated attack classes targeting memory-handling flaws and web application input validation, not password guessing or recovery.",
+      "trap": "Because all six options are 'attacks' studied in CEH, candidates may select broadly instead of narrowing to specifically password-focused categories.",
+      "memory_phrase": "Dictionary, brute-force, rainbow: the password-guessing family."
+    }
+  },
+  {
+    "id": "Q-CEH-06-012",
+    "type": "scenario",
+    "module": 6,
+    "difficulty": "hard",
+    "tags": [
+      "clearing-tracks",
+      "log-clearing",
+      "detection",
+      "countermeasures"
+    ],
+    "body": "A Windows security analyst reviewing the Security event log notices a suspicious gap: hours of expected logon/logoff and process activity events are missing, and the log instead contains a single Event ID 1102 entry at the start of the gap. What does this specific event indicate, and what defensive control would best prevent this technique from destroying the organization's only copy of the evidence?",
+    "answer": "Event ID 1102 indicates that the Security audit log was cleared, which is a classic anti-forensic 'clearing tracks' technique used to remove evidence of prior activity. The best defense is forwarding logs in real time to a centralized, access-restricted log management system or SIEM, so that even if the local log is cleared, an independent copy already exists off the host for investigators to review.",
+    "explanation": {
+      "answer": "Event ID 1102 = 'The audit log was cleared'; the key defense is centralized/forwarded logging (SIEM) so a local clear does not destroy the only copy.",
+      "why": "Attackers who successfully escalate privileges may clear the Security event log to hide evidence of their actions, but doing so itself generates a detectable Event ID 1102 record. If logs are only stored locally, an attacker with sufficient rights can delete this evidence entirely; forwarding logs continuously to a centralized system the attacker cannot reach preserves an independent, tamper-resistant copy for detection and investigation.",
+      "trap": "A tempting but incomplete answer is simply 'restrict who can clear logs' — while least-privilege helps, an attacker who has already escalated to admin/SYSTEM can typically still clear local logs, so centralized/forwarded logging is the more robust structural control.",
+      "memory_phrase": "1102 = 'the log just got wiped' — ship logs off-box before that happens."
+    }
+  }
+]

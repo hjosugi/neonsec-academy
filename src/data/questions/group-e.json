@@ -1,0 +1,658 @@
+[
+  {
+    "id": "Q-CEH-13-001",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "easy",
+    "tags": ["web-servers", "architecture"],
+    "body": "In a typical web application deployment, which component is primarily responsible for receiving HTTP requests from clients and serving static content such as HTML, images, and CSS files?",
+    "choices": ["Web server", "Database server", "Application server business logic layer", "Domain name registrar"],
+    "answer": "Web server",
+    "explanation": {
+      "answer": "The web server (e.g., Apache, Nginx, IIS) listens on HTTP/HTTPS ports, receives client requests, and serves static content directly, often forwarding dynamic requests to an application server.",
+      "why": "A web server's core role is handling HTTP(S) requests and static content; the database server stores and retrieves persistent data, the application server executes business logic for dynamic content, and a domain registrar only manages domain name records and has no runtime role in serving content.",
+      "trap": "Candidates may confuse 'web server' and 'application server' since modern stacks blur the line (e.g., embedded servers), but CEH distinguishes them by primary function.",
+      "memory_phrase": "Web server = front door for HTTP; app server = kitchen where logic is cooked."
+    }
+  },
+  {
+    "id": "Q-CEH-13-002",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "easy",
+    "tags": ["web-servers", "misconfiguration"],
+    "body": "Which of the following is an example of a web server misconfiguration that increases attack surface without providing any functional benefit to legitimate users?",
+    "choices": ["Leaving default sample applications and installation files on a production server", "Enforcing HTTPS for all client connections", "Restricting administrative interfaces to an internal management network", "Applying vendor-released security patches promptly"],
+    "answer": "Leaving default sample applications and installation files on a production server",
+    "explanation": {
+      "answer": "Default/sample apps (e.g., sample scripts, default admin consoles) shipped with web server software are common misconfigurations that attackers probe for because they often contain known vulnerabilities or reveal server details, yet they serve no purpose in production.",
+      "why": "Enforcing HTTPS, restricting admin access, and patching are all hardening best practices that reduce risk; only leaving default or sample content behind is a misconfiguration that purely adds risk.",
+      "trap": "Some may think any 'default' setting is automatically insecure, but many secure defaults exist (e.g., HTTPS enforcement) — the key issue here is unnecessary sample/default content, not defaults in general.",
+      "memory_phrase": "Default demo files: free tour for attackers, no value for users."
+    }
+  },
+  {
+    "id": "Q-CEH-13-003",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "easy",
+    "tags": ["web-servers", "directory-traversal"],
+    "body": "Conceptually, what does a directory traversal (path traversal) vulnerability allow an attacker to do?",
+    "choices": ["Access files and directories stored outside the web server's intended root folder by manipulating file path input", "Redirect victims to an attacker-controlled domain via DNS cache poisoning", "Intercept and modify traffic between two hosts on the same network segment", "Exhaust server memory by sending oversized HTTP headers"],
+    "answer": "Access files and directories stored outside the web server's intended root folder by manipulating file path input",
+    "explanation": {
+      "answer": "Directory traversal occurs when an application uses user-supplied input to build a file path without properly sanitizing sequences that navigate to parent directories, allowing access to files outside the intended web root.",
+      "why": "DNS cache poisoning, on-path traffic interception, and header-based resource exhaustion are distinct attack categories unrelated to file-path handling; only the first option describes the defining characteristic of directory traversal.",
+      "trap": "Learners sometimes conflate directory traversal with generic file upload vulnerabilities, but traversal is specifically about reading or navigating paths outside the intended scope, not uploading files.",
+      "memory_phrase": "Traversal = walking out of the sandboxed folder using relative path tricks."
+    }
+  },
+  {
+    "id": "Q-CEH-13-004",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "easy",
+    "tags": ["web-servers", "logging", "monitoring"],
+    "body": "From a defensive standpoint, why are comprehensive and properly retained web server access and error logs important?",
+    "choices": ["They provide evidence needed to detect, investigate, and reconstruct suspicious or malicious activity against the server", "They automatically patch vulnerable server software when anomalies are detected", "They replace the need for a web application firewall", "They encrypt traffic between the client and the server"],
+    "answer": "They provide evidence needed to detect, investigate, and reconstruct suspicious or malicious activity against the server",
+    "explanation": {
+      "answer": "Logs record requests, response codes, source addresses, and timestamps, which security teams use for detection, incident response, and forensic reconstruction of an attack timeline.",
+      "why": "Logging is a monitoring control, not a patching mechanism, not a WAF replacement, and not an encryption mechanism — those are separate controls that logs complement but do not substitute for.",
+      "trap": "Some may assume robust logging alone prevents attacks; logging is detective, not preventive, so it must be paired with hardening and prevention controls.",
+      "memory_phrase": "Logs don't stop the burglar, but they tell you who it was."
+    }
+  },
+  {
+    "id": "Q-CEH-13-005",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "easy",
+    "tags": ["web-servers", "http-methods"],
+    "body": "Which HTTP method is designed only to retrieve the headers that would be returned by an equivalent GET request, without transferring the response body?",
+    "choices": ["HEAD", "PUT", "DELETE", "CONNECT"],
+    "answer": "HEAD",
+    "explanation": {
+      "answer": "HEAD returns only the HTTP headers a GET request would produce, useful for checking metadata (like content length or last-modified date) without downloading the body.",
+      "why": "PUT is used to upload or replace a resource, DELETE removes a resource, and CONNECT establishes a tunnel (commonly for proxies); none of these matches the header-only retrieval behavior described.",
+      "trap": "Candidates sometimes confuse HEAD with OPTIONS; OPTIONS lists supported methods, while HEAD mirrors a GET response's headers only.",
+      "memory_phrase": "HEAD = GET's headers, no body attached."
+    }
+  },
+  {
+    "id": "Q-CEH-13-006",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "medium",
+    "tags": ["web-servers", "patch-management"],
+    "body": "What is the primary security purpose of a formal patch management process for web servers?",
+    "choices": ["To ensure known software vulnerabilities are remediated in a timely, tested, and tracked manner before attackers can exploit them", "To increase the number of open ports available on the server", "To replace the need for access control lists on administrative interfaces", "To automatically generate SSL/TLS certificates for the server"],
+    "answer": "To ensure known software vulnerabilities are remediated in a timely, tested, and tracked manner before attackers can exploit them",
+    "explanation": {
+      "answer": "Patch management systematically identifies, tests, deploys, and verifies vendor patches so that publicly known vulnerabilities are closed before threat actors can weaponize them against the server.",
+      "why": "Increasing open ports is unrelated (and counter to hardening), patching does not substitute access control mechanisms, and certificate generation is a separate PKI/TLS administration task, not the purpose of patch management.",
+      "trap": "Some assume patching only matters for the operating system; in reality it also covers the web server software, frameworks, libraries, and any installed modules or plugins.",
+      "memory_phrase": "Unpatched server = an open invitation with a known key under the mat."
+    }
+  },
+  {
+    "id": "Q-CEH-13-007",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "medium",
+    "tags": ["web-servers", "hardening"],
+    "body": "Which practice best reflects the principle of least privilege when hardening a web server?",
+    "choices": ["Running the web server process under a dedicated low-privilege service account rather than a system administrator account", "Granting the web server process local administrator or root rights so it can restart itself if it crashes", "Allowing all outbound and inbound traffic on every port to simplify troubleshooting", "Disabling all logging to reduce disk I/O overhead"],
+    "answer": "Running the web server process under a dedicated low-privilege service account rather than a system administrator account",
+    "explanation": {
+      "answer": "Running the web server as a dedicated, minimally privileged account limits the damage an attacker can do if the web server process is compromised, since it won't inherit administrative rights over the host.",
+      "why": "Granting admin/root rights, opening all ports, and disabling logging all increase risk and violate hardening principles rather than support least privilege or defense in depth.",
+      "trap": "Some may think convenience (e.g., running as admin to avoid permission errors) is an acceptable trade-off; CEH hardening guidance treats this as a high-risk anti-pattern.",
+      "memory_phrase": "Least privilege: give the web server a name badge, not the master key."
+    }
+  },
+  {
+    "id": "Q-CEH-13-008",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "medium",
+    "tags": ["web-servers", "http-methods", "misconfiguration"],
+    "body": "An administrator discovers that the PUT and DELETE HTTP methods are enabled on a production web server without any authentication or authorization checks. What is the primary security risk?",
+    "choices": ["An attacker could upload, modify, or delete files on the server, potentially leading to web defacement or remote code execution", "The server will automatically disable TLS encryption for all requests", "Client browsers will be unable to render any static HTML content", "The server's DNS records will be overwritten"],
+    "answer": "An attacker could upload, modify, or delete files on the server, potentially leading to web defacement or remote code execution",
+    "explanation": {
+      "answer": "If PUT and DELETE are enabled without proper authentication and authorization, unauthenticated users can write or remove arbitrary files on the server, which can lead to defacement or, if executable content is uploaded, remote code execution.",
+      "why": "Enabling these methods has no direct effect on TLS negotiation, static HTML rendering for clients, or DNS records — those are unrelated subsystems; the concrete risk is unauthorized file manipulation.",
+      "trap": "Some may think this is purely an availability issue; the more serious risk is integrity and confidentiality compromise via unauthorized write access, not just downtime.",
+      "memory_phrase": "PUT/DELETE without auth = handing out a master key to modify the building."
+    }
+  },
+  {
+    "id": "Q-CEH-13-009",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "medium",
+    "tags": ["web-servers", "tls-ssl"],
+    "body": "Why is continuing to support the SSLv3 and TLS 1.0 protocols on a production web server considered a security risk today?",
+    "choices": ["They contain known cryptographic weaknesses (e.g., susceptibility to downgrade and padding oracle attacks) that can allow attackers to compromise encrypted sessions", "They are incompatible with all modern web browsers", "They automatically expose the server's source code to any visitor", "They prevent the use of any digital certificate"],
+    "answer": "They contain known cryptographic weaknesses (e.g., susceptibility to downgrade and padding oracle attacks) that can allow attackers to compromise encrypted sessions",
+    "explanation": {
+      "answer": "SSLv3 and TLS 1.0 have documented cryptographic weaknesses (such as the POODLE padding oracle issue) and are deprecated by major standards bodies because they can be exploited to weaken or break the confidentiality of encrypted sessions.",
+      "why": "They are not universally incompatible with browsers (many still technically negotiate them unless disabled), they don't expose source code, and they don't prevent certificate use at all — certificates work independently of protocol version negotiation.",
+      "trap": "Candidates might think the risk is simply 'old equals bad' without understanding the specific cryptographic flaws; the exam expects awareness of concrete weaknesses like padding oracle attacks.",
+      "memory_phrase": "SSLv3/TLS 1.0: the rusty locks security auditors keep flagging."
+    }
+  },
+  {
+    "id": "Q-CEH-13-010",
+    "type": "true_false",
+    "module": 13,
+    "difficulty": "medium",
+    "tags": ["web-servers", "http-methods", "xst"],
+    "body": "True or False: The HTTP TRACE method, when enabled on a web server, can be leveraged in conjunction with client-side scripting to facilitate a Cross-Site Tracing (XST) attack that may expose sensitive header data such as cookies.",
+    "choices": ["True", "False"],
+    "answer": "True",
+    "explanation": {
+      "answer": "TRACE causes the server to echo back the exact request it received, including headers; if combined with certain client-side scripting techniques, this echoing behavior can be abused (XST) to reveal header contents such as cookies that would otherwise be protected, which is why security guidance recommends disabling TRACE in production.",
+      "why": "This is a well-documented, historically recognized risk (Cross-Site Tracing), which is why hardening guides and CEH material recommend disabling TRACE unless explicitly required.",
+      "trap": "Some may dismiss TRACE as harmless because it 'just echoes requests,' overlooking that the echoing itself is precisely the mechanism attackers abuse.",
+      "memory_phrase": "TRACE echoes everything back — including what should stay secret."
+    }
+  },
+  {
+    "id": "Q-CEH-13-011",
+    "type": "multi",
+    "module": 13,
+    "difficulty": "hard",
+    "tags": ["web-servers", "hardening", "defense"],
+    "body": "Which of the following are widely recommended defensive measures for hardening a production web server against common attacks? (Select all that apply.)",
+    "choices": [
+      "Remove or disable unused HTTP methods, modules, and default/sample applications",
+      "Run the web server software with the latest vendor security patches applied",
+      "Restrict administrative/management interfaces to trusted networks and enforce strong authentication",
+      "Leave directory listing (browsing) enabled on all folders for easier troubleshooting",
+      "Send full stack traces and internal file paths in error responses to help developers debug remotely",
+      "Disable HTTPS in favor of plaintext HTTP to reduce server CPU load"
+    ],
+    "answer": ["Remove or disable unused HTTP methods, modules, and default/sample applications", "Run the web server software with the latest vendor security patches applied", "Restrict administrative/management interfaces to trusted networks and enforce strong authentication"],
+    "explanation": {
+      "answer": "Hardening best practice includes minimizing attack surface (disabling unused methods, modules, and samples), maintaining current patches, and locking down administrative access to trusted sources with strong authentication.",
+      "why": "Leaving directory listing enabled, returning full stack traces and internal paths, and disabling HTTPS all leak sensitive information or remove essential protections; they are the incorrect options because they increase, not reduce, attacker advantage.",
+      "trap": "Directory listing is sometimes seen as a harmless convenience feature, but it enables attackers to enumerate files and directories they wouldn't otherwise discover.",
+      "memory_phrase": "Harden = shrink the surface, silence the errors, lock the admin door."
+    }
+  },
+  {
+    "id": "Q-CEH-13-012",
+    "type": "scenario",
+    "module": 13,
+    "difficulty": "hard",
+    "tags": ["web-servers", "misconfiguration", "directory-listing"],
+    "body": "During an authorized web server assessment, a tester requests a folder URL that has no default index page, and the server responds by rendering a full listing of every file and subdirectory within that folder, including a backup file named with a .bak extension containing what appears to be old configuration data. As the assessor writing the finding for the client, what is the vulnerability, its primary risk, and the recommended remediation?",
+    "answer": "Vulnerability: directory listing (directory browsing) is enabled on the web server, allowing unauthenticated enumeration of the folder's contents. Primary risk: it exposes files never meant for public access (such as the .bak configuration backup), which may leak credentials, internal file paths, or architecture details that assist further attacks. Remediation: disable directory listing/browsing at the web server configuration level, remove or relocate backup and temporary files out of the web root (or block access to sensitive file extensions), and ensure every publicly accessible directory has a default index page.",
+    "explanation": {
+      "answer": "The finding should name directory listing as the root cause and connect it to concrete impact (sensitive file disclosure) with actionable, standard remediation steps.",
+      "why": "Correctly diagnosing this requires recognizing that the auto-generated file index is the vulnerability (not just the presence of the .bak file itself), while remediation must address both the listing behavior and the underlying exposed sensitive file — reporting only one half of the issue is an incomplete finding.",
+      "trap": "A weak answer would only say there is a backup file with sensitive data without identifying that directory listing being enabled is what exposed it, or would suggest only deleting the one file without fixing the underlying misconfiguration that would expose the next stray file.",
+      "memory_phrase": "An open directory listing is a guided tour of everything you forgot to hide."
+    }
+  },
+  {
+    "id": "Q-CEH-14-001",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "easy",
+    "tags": ["web-apps", "broken-access-control", "owasp"],
+    "body": "Broken access control vulnerabilities, such as an Insecure Direct Object Reference (IDOR), typically allow an attacker to do which of the following?",
+    "choices": ["Access or modify data or resources belonging to another user by manipulating a reference (such as an ID) without proper authorization checks", "Force a victim's browser to execute attacker-supplied JavaScript in the context of a trusted site", "Intercept plaintext credentials transmitted over an unencrypted network link", "Cause the web application's database service to crash due to malformed input"],
+    "answer": "Access or modify data or resources belonging to another user by manipulating a reference (such as an ID) without proper authorization checks",
+    "explanation": {
+      "answer": "Broken access control (including IDOR) occurs when an application fails to properly verify that the requesting user is authorized to access or modify the specific object referenced, letting an attacker simply change an identifier (like a record ID in a URL) to reach another user's data.",
+      "why": "Forcing script execution describes XSS, intercepting plaintext credentials describes a network sniffing/eavesdropping issue, and crashing a database describes an availability/DoS issue — none of these define broken access control specifically.",
+      "trap": "Some conflate broken access control with authentication failure; access control is about what an authenticated user is permitted to do or see, not about proving identity in the first place.",
+      "memory_phrase": "IDOR: change the number in the URL, get someone else's stuff."
+    }
+  },
+  {
+    "id": "Q-CEH-14-002",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "easy",
+    "tags": ["web-apps", "xss"],
+    "body": "Which type of Cross-Site Scripting (XSS) occurs when malicious script is permanently saved on the target server (for example, in a database) and then served to every user who views the affected page?",
+    "choices": ["Stored XSS", "Reflected XSS", "DOM-based XSS", "Blind SQL injection"],
+    "answer": "Stored XSS",
+    "explanation": {
+      "answer": "Stored (persistent) XSS saves the malicious script server-side, so it is delivered to any user who subsequently loads the compromised page, without the attacker needing to trick each victim into clicking a crafted link.",
+      "why": "Reflected XSS requires the payload to be part of the request and immediately echoed back in the response (not persisted), DOM-based XSS occurs purely through client-side script manipulating the page's DOM without server involvement, and blind SQL injection is an unrelated database attack category, not an XSS type.",
+      "trap": "Candidates sometimes mix up stored and reflected XSS; the key differentiator is persistence — stored XSS lives in application data and affects multiple future visitors, while reflected XSS is a one-time, per-request echo.",
+      "memory_phrase": "Stored XSS: plant it once, it grows for every visitor."
+    }
+  },
+  {
+    "id": "Q-CEH-14-003",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "easy",
+    "tags": ["web-apps", "csrf"],
+    "body": "What is the core mechanism exploited by a Cross-Site Request Forgery (CSRF) attack?",
+    "choices": ["Tricking an authenticated victim's browser into unknowingly submitting a forged request to a trusted site where the victim already has an active session", "Directly reading the contents of a victim's encrypted database backups", "Guessing weak administrative passwords through automated dictionary attacks", "Exploiting a buffer overflow in the web server's TCP/IP stack"],
+    "answer": "Tricking an authenticated victim's browser into unknowingly submitting a forged request to a trusted site where the victim already has an active session",
+    "explanation": {
+      "answer": "CSRF abuses the fact that browsers automatically attach session credentials (like cookies) to requests; if an attacker can get a logged-in victim's browser to issue a request to the trusted site, that request appears legitimate and executes with the victim's privileges.",
+      "why": "Reading encrypted backups, password guessing, and TCP/IP buffer overflows are all unrelated attack techniques that do not involve abusing an existing authenticated browser session.",
+      "trap": "Some confuse CSRF with session hijacking; CSRF does not steal or need to know the session token — it rides on the browser's automatic inclusion of it.",
+      "memory_phrase": "CSRF: the browser signs the check without reading it."
+    }
+  },
+  {
+    "id": "Q-CEH-14-004",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "easy",
+    "tags": ["web-apps", "ssrf"],
+    "body": "In a Server-Side Request Forgery (SSRF) vulnerability, what does the attacker primarily manipulate?",
+    "choices": ["The server-side application into making unintended HTTP or other network requests on the attacker's behalf, potentially reaching internal-only systems", "The client's local hosts file to redirect DNS resolution", "The victim's browser cache to serve stale pages", "The web server's TLS certificate chain to appear as a trusted authority"],
+    "answer": "The server-side application into making unintended HTTP or other network requests on the attacker's behalf, potentially reaching internal-only systems",
+    "explanation": {
+      "answer": "SSRF happens when an application accepts a URL or address as input (e.g., for fetching a remote resource) and an attacker supplies a value that causes the server itself to issue requests to unintended destinations, including internal services not normally reachable from the internet.",
+      "why": "Manipulating the client's hosts file, browser cache, or the TLS certificate chain are unrelated client-side or PKI concepts, not what defines SSRF, which is specifically about coercing the server's own outbound requests.",
+      "trap": "Some assume SSRF only targets external sites; the more dangerous real-world impact is usually reaching internal or private network resources (like cloud metadata services) that are otherwise unreachable from outside.",
+      "memory_phrase": "SSRF turns the server into the attacker's personal request proxy."
+    }
+  },
+  {
+    "id": "Q-CEH-14-005",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "easy",
+    "tags": ["web-apps", "insecure-deserialization"],
+    "body": "What is the fundamental security concern with insecure deserialization?",
+    "choices": ["Untrusted, attacker-controlled serialized data is processed by the application and reconstructed into objects, which can lead to unexpected behavior such as remote code execution or object injection", "The application takes too long to convert objects into a serialized format, causing denial of service", "Serialized data is always transmitted in plaintext, making it visible to any observer", "Deserialization always requires administrator privileges to execute"],
+    "answer": "Untrusted, attacker-controlled serialized data is processed by the application and reconstructed into objects, which can lead to unexpected behavior such as remote code execution or object injection",
+    "explanation": {
+      "answer": "When an application deserializes data without validating its origin or integrity, an attacker can craft malicious serialized objects that, once reconstructed, trigger unintended code paths, object injection, or remote code execution.",
+      "why": "Performance/timing issues, plaintext transmission, and privilege requirements are not the defining risk of insecure deserialization; the core issue is trusting and reconstructing attacker-supplied object data without validation.",
+      "trap": "Some think encrypting the serialized data alone solves the problem; encryption protects confidentiality in transit but does not, by itself, validate that the deserialized content is safe to reconstruct.",
+      "memory_phrase": "Deserialization without trust checks: unwrapping a gift that might be a bomb."
+    }
+  },
+  {
+    "id": "Q-CEH-14-006",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "easy",
+    "tags": ["web-apps", "security-misconfiguration"],
+    "body": "Which scenario is the clearest example of a security misconfiguration in a web application?",
+    "choices": ["A production application left running with verbose debug mode enabled, exposing detailed stack traces and internal configuration values to end users", "A development team using code reviews before merging changes", "An application enforcing multi-factor authentication for administrative accounts", "A database that stores passwords using a strong, salted hashing algorithm"],
+    "answer": "A production application left running with verbose debug mode enabled, exposing detailed stack traces and internal configuration values to end users",
+    "explanation": {
+      "answer": "Security misconfiguration refers to insecure default or leftover settings — such as debug mode, verbose errors, or unnecessary features enabled in production — that expose sensitive internal details or increase attack surface without being an intentional flaw in the application's core logic.",
+      "why": "Code reviews, MFA enforcement, and salted password hashing are all positive security controls, not misconfigurations, so they cannot be examples of the vulnerability class being tested.",
+      "trap": "Candidates might look for the most technical-sounding answer, but this OWASP category is really about operational and configuration hygiene, not a coding flaw.",
+      "memory_phrase": "Debug mode left on in production: leaving the blueprints taped to the front door."
+    }
+  },
+  {
+    "id": "Q-CEH-14-007",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "medium",
+    "tags": ["web-apps", "authentication"],
+    "body": "Which of the following most directly represents a broken authentication weakness in a web application?",
+    "choices": ["The application allows unlimited login attempts without any account lockout, rate limiting, or CAPTCHA, enabling automated credential-stuffing attacks", "The application requires a minimum password length of 12 characters", "The application hashes passwords with a modern, salted, adaptive algorithm", "The application logs out inactive sessions after a defined timeout period"],
+    "answer": "The application allows unlimited login attempts without any account lockout, rate limiting, or CAPTCHA, enabling automated credential-stuffing attacks",
+    "explanation": {
+      "answer": "Lacking protections against automated login attempts (lockout, throttling, CAPTCHA) directly enables attackers to brute-force or credential-stuff accounts at scale, which is a textbook broken authentication weakness.",
+      "why": "Enforcing a strong minimum password length, using modern salted adaptive hashing, and enforcing session timeouts are all authentication and session security best practices, not weaknesses.",
+      "trap": "Learners may assume any authentication-related statement is a flaw by default; three of the four options actually describe correct, recommended controls.",
+      "memory_phrase": "No lockout, no limit: an open door for password-guessing bots."
+    }
+  },
+  {
+    "id": "Q-CEH-14-008",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "medium",
+    "tags": ["web-apps", "session-management"],
+    "body": "What is session fixation, as a session management vulnerability?",
+    "choices": ["An attacker sets or predicts a victim's session identifier before authentication and then uses that same identifier to hijack the session once the victim logs in", "A session token that never expires regardless of user activity", "A web server that fails to use HTTPS for the login page only", "An application that stores session data exclusively in server-side memory"],
+    "answer": "An attacker sets or predicts a victim's session identifier before authentication and then uses that same identifier to hijack the session once the victim logs in",
+    "explanation": {
+      "answer": "In session fixation, the attacker supplies or forces a known session ID onto the victim (e.g., via a crafted link) prior to login; because the application fails to regenerate the session ID after successful authentication, the attacker's pre-set ID becomes valid and can be reused to impersonate the victim.",
+      "why": "A never-expiring token describes a separate weak session-timeout issue, HTTPS only on the login page is a transport security gap (not session fixation specifically), and server-side session storage location is an architectural detail unrelated to the fixation flaw.",
+      "trap": "Some confuse session fixation with session hijacking in general; the defining trait of fixation is that the attacker chooses or knows the session ID in advance, rather than stealing an ID after the fact.",
+      "memory_phrase": "Fixation: attacker hands the victim a pre-made key, then walks in with the same key later."
+    }
+  },
+  {
+    "id": "Q-CEH-14-009",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "medium",
+    "tags": ["web-apps", "xss", "secure-coding"],
+    "body": "Which secure coding control is most effective at mitigating Cross-Site Scripting (XSS) by preventing browsers from executing unauthorized inline or externally sourced scripts?",
+    "choices": ["Implementing a strict Content Security Policy (CSP) combined with proper output encoding of user-supplied data", "Increasing the web server's maximum request timeout value", "Enabling HTTP compression for all responses", "Switching the database engine to a NoSQL platform"],
+    "answer": "Implementing a strict Content Security Policy (CSP) combined with proper output encoding of user-supplied data",
+    "explanation": {
+      "answer": "A strict CSP restricts which script sources the browser is allowed to execute, and properly encoding output ensures user-supplied data is rendered as inert text rather than executable markup, together providing layered defense against XSS.",
+      "why": "Request timeout values, HTTP compression, and the choice of database engine have no bearing on whether injected script executes in a victim's browser, so none of them mitigate XSS.",
+      "trap": "Some assume input validation alone is sufficient; while useful, output encoding and CSP are the more direct, defense-in-depth controls against XSS because they address how data is rendered and executed, not just what is accepted on input.",
+      "memory_phrase": "CSP + output encoding: tell the browser which scripts are allowed to speak."
+    }
+  },
+  {
+    "id": "Q-CEH-14-010",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "medium",
+    "tags": ["web-apps", "csrf", "secure-coding"],
+    "body": "Which combination of controls is the standard secure-coding defense against Cross-Site Request Forgery (CSRF)?",
+    "choices": ["Unique, unpredictable anti-CSRF tokens validated on state-changing requests, combined with SameSite cookie attributes", "Increasing the length of the session ID to 256 characters", "Storing all session data in a client-side cookie without server-side validation", "Disabling HTTPS to simplify request handling"],
+    "answer": "Unique, unpredictable anti-CSRF tokens validated on state-changing requests, combined with SameSite cookie attributes",
+    "explanation": {
+      "answer": "Anti-CSRF tokens ensure that state-changing requests include a value an attacker cannot predict or forge, and the SameSite cookie attribute restricts when cookies are automatically sent on cross-site requests, together closing the gap CSRF relies on.",
+      "why": "Merely lengthening a session ID does not stop a forged request from an authenticated browser, storing session data client-side without validation would weaken security further, and disabling HTTPS removes confidentiality and integrity protections entirely rather than addressing CSRF.",
+      "trap": "Some think HTTPS alone prevents CSRF because it secures the connection; encryption in transit does not stop a trusted browser from submitting a legitimate-looking forged request.",
+      "memory_phrase": "CSRF token + SameSite: proof the request really came from the real page."
+    }
+  },
+  {
+    "id": "Q-CEH-14-011",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "medium",
+    "tags": ["web-apps", "ssrf", "cloud"],
+    "body": "In cloud-hosted environments, why is SSRF considered particularly dangerous?",
+    "choices": ["It can allow an attacker to reach the cloud instance metadata service, potentially exposing temporary credentials or sensitive configuration data", "It always results in the immediate deletion of all cloud storage buckets", "It automatically grants the attacker root access to the hypervisor", "It disables the cloud provider's billing system"],
+    "answer": "It can allow an attacker to reach the cloud instance metadata service, potentially exposing temporary credentials or sensitive configuration data",
+    "explanation": {
+      "answer": "Cloud platforms commonly expose an internal-only metadata endpoint that provides instance configuration and, in many setups, temporary IAM credentials; SSRF lets an attacker coerce the vulnerable server into querying that internal endpoint on the attacker's behalf, potentially leaking those credentials.",
+      "why": "SSRF does not inherently delete storage, grant hypervisor-level root access, or interfere with billing systems; its realistic, well-documented cloud risk is credential and metadata exposure via the internal-only endpoint.",
+      "trap": "Some think SSRF impact is limited to reading an internal webpage; in cloud environments the escalation path to stolen temporary credentials is what makes it a critical-severity finding.",
+      "memory_phrase": "SSRF + cloud metadata endpoint = attacker borrowing the server's own ID badge."
+    }
+  },
+  {
+    "id": "Q-CEH-14-012",
+    "type": "true_false",
+    "module": 14,
+    "difficulty": "medium",
+    "tags": ["web-apps", "broken-access-control", "secure-coding"],
+    "body": "True or False: Relying solely on client-side JavaScript validation to enforce access control decisions (such as hiding an 'admin' button in the UI) is sufficient to prevent unauthorized users from performing that administrative action.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "Client-side controls (hiding buttons, disabling links) only affect what is displayed in the browser; a user can still craft and send the underlying request directly, so access control decisions must always be enforced server-side.",
+      "why": "This statement is false because client-side checks are trivially bypassed (e.g., via browser developer tools or direct API calls); genuine authorization must be validated on the server for every sensitive request, regardless of what the UI shows.",
+      "trap": "Developers sometimes treat UI hiding as good enough since typical users won't see the option, but CEH and OWASP guidance is explicit that this is a broken access control anti-pattern, not a real control.",
+      "memory_phrase": "Hiding the button isn't locking the door — the server must check every time."
+    }
+  },
+  {
+    "id": "Q-CEH-14-013",
+    "type": "multi",
+    "module": 14,
+    "difficulty": "hard",
+    "tags": ["web-apps", "ssrf", "secure-coding"],
+    "body": "Which of the following are effective, standard mitigations against Server-Side Request Forgery (SSRF)? (Select all that apply.)",
+    "choices": [
+      "Enforce strict allow-listing of permitted destination hosts/IP ranges for server-initiated requests",
+      "Block or restrict outbound requests from application servers to internal/private IP address ranges by default",
+      "Validate and sanitize any user-supplied URL or hostname before the server uses it to make a request",
+      "Trust any URL supplied by the client as long as it uses HTTPS",
+      "Allow the application server unrestricted outbound access to simplify integration with third-party APIs"
+    ],
+    "answer": ["Enforce strict allow-listing of permitted destination hosts/IP ranges for server-initiated requests", "Block or restrict outbound requests from application servers to internal/private IP address ranges by default", "Validate and sanitize any user-supplied URL or hostname before the server uses it to make a request"],
+    "explanation": {
+      "answer": "Effective SSRF mitigation combines allow-listing trusted destinations, network-level segmentation that blocks server access to internal ranges by default, and rigorous validation of any URL or host input before it is used to make a request.",
+      "why": "Trusting any client-supplied URL simply because it is HTTPS ignores that HTTPS only protects transport confidentiality, not destination legitimacy, and giving the application server unrestricted outbound access removes the very network segmentation that limits SSRF impact — both are the incorrect, unsafe options.",
+      "trap": "HTTPS is often mistaken for a blanket trust signal; it says nothing about whether the destination is internal, malicious, or otherwise unintended.",
+      "memory_phrase": "SSRF defense: allow-list destinations, fence off the internal network, trust nothing by URL scheme alone."
+    }
+  },
+  {
+    "id": "Q-CEH-14-014",
+    "type": "scenario",
+    "module": 14,
+    "difficulty": "hard",
+    "tags": ["web-apps", "idor", "broken-access-control"],
+    "body": "During an authorized assessment of a customer web portal, a tester logs in as a low-privilege user and views an invoice at a URL containing a numeric invoice identifier. By changing that numeric identifier to a nearby value in the same request, the tester is able to view another customer's invoice, including that customer's name, address, and billing details, without any additional authentication. As the report author, identify the vulnerability class, explain the business impact, and recommend the core remediation.",
+    "answer": "Vulnerability class: broken access control, specifically an Insecure Direct Object Reference (IDOR) — the application uses a predictable, sequential identifier to look up records but fails to verify that the logged-in user is actually authorized to view the specific invoice requested. Business impact: any authenticated user can enumerate identifiers to read other customers' personally identifiable and billing information, resulting in a data privacy breach, potential regulatory exposure, and loss of customer trust. Remediation: enforce server-side authorization checks on every object access, verifying the requested invoice belongs to the requesting user's account, in addition to authentication, and avoid relying on exposed sequential or predictable identifiers as the sole access control mechanism.",
+    "explanation": {
+      "answer": "A complete answer names IDOR/broken access control specifically, ties it to the missing per-object authorization check (not merely weak IDs), states the concrete privacy/business impact, and gives the standard remediation of enforcing server-side ownership verification on every request.",
+      "why": "The root cause is the missing authorization check on the server for each object access — simply making IDs random or hard to guess (security through obscurity) reduces casual discovery but does not fix the underlying missing authorization logic, which is why the remediation must center on server-side ownership verification.",
+      "trap": "A common incomplete answer blames only predictable IDs and recommends solely randomizing identifiers; this weak fix does not address the real defect, which is the application never checking whether the requester is entitled to that specific record.",
+      "memory_phrase": "IDOR fix isn't hiding the ID better — it's checking 'is this yours?' every single time."
+    }
+  },
+  {
+    "id": "Q-CEH-15-001",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "easy",
+    "tags": ["sqli", "fundamentals"],
+    "body": "At a conceptual level, what is SQL injection?",
+    "choices": ["A vulnerability where untrusted input is incorporated into a SQL query in a way that allows an attacker to alter the query's intended logic or structure", "A network-layer attack that intercepts SQL traffic between a database server and its replicas", "A denial-of-service technique that floods a database server with connection requests", "A social engineering technique used to trick database administrators into revealing passwords"],
+    "answer": "A vulnerability where untrusted input is incorporated into a SQL query in a way that allows an attacker to alter the query's intended logic or structure",
+    "explanation": {
+      "answer": "SQL injection arises when an application builds SQL statements using untrusted input without proper separation between code and data, letting an attacker change what the query actually does.",
+      "why": "Intercepting replication traffic, flooding connections, and social engineering administrators are all different attack categories (network interception, denial of service, and human-focused attacks respectively) and do not describe how SQL injection actually works.",
+      "trap": "Some assume SQLi requires network-level access to the database; in reality it is exploited entirely through the application's normal input channels (such as web forms or API parameters), not direct database connectivity.",
+      "memory_phrase": "SQLi: user input sneaks in and rewrites the question the app asks the database."
+    }
+  },
+  {
+    "id": "Q-CEH-15-002",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "easy",
+    "tags": ["sqli", "impact"],
+    "body": "Which of the following best describes a realistic business impact of a successful, unmitigated SQL injection attack?",
+    "choices": ["Unauthorized disclosure, modification, or deletion of sensitive data stored in the backend database, and potentially authentication bypass", "Guaranteed physical damage to the database server's hardware", "Automatic revocation of the attacker's own network access", "Permanent encryption of the web application's source code by the database engine"],
+    "answer": "Unauthorized disclosure, modification, or deletion of sensitive data stored in the backend database, and potentially authentication bypass",
+    "explanation": {
+      "answer": "Because SQLi lets an attacker influence query logic, it can expose confidential records, alter or destroy data, and in login contexts, bypass authentication checks entirely — making it one of the highest-impact web application vulnerabilities.",
+      "why": "Physical hardware damage, self-revocation of attacker access, and source-code encryption by the database are not realistic or documented consequences of SQL injection; the real impact centers on data confidentiality, integrity, and availability.",
+      "trap": "Learners sometimes underestimate SQLi as just a data leak; it can also lead to full authentication bypass and, in some configurations, further compromise of the underlying host.",
+      "memory_phrase": "Successful SQLi: the keys to the entire filing cabinet, not just one folder."
+    }
+  },
+  {
+    "id": "Q-CEH-15-003",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "easy",
+    "tags": ["sqli", "classification", "in-band"],
+    "body": "In-band SQL injection, which includes error-based and UNION-based techniques, is characterized by which of the following?",
+    "choices": ["The attacker uses the same communication channel, such as the application's normal response, to both launch the attack and directly retrieve the results", "The attacker must physically access the database server console to run queries", "The results of the injected query are sent exclusively to a separate out-of-band channel like DNS or email", "The technique only works against databases that do not use SQL syntax"],
+    "answer": "The attacker uses the same communication channel, such as the application's normal response, to both launch the attack and directly retrieve the results",
+    "explanation": {
+      "answer": "In-band SQLi is defined by using the same channel — typically the application's HTTP response — to both send the malicious input and observe the resulting output, such as error messages or additional data returned via a UNION query.",
+      "why": "Physical console access is not required since SQLi is exploited remotely through the application, out-of-band channels like DNS or email define a different, separate SQLi category, and SQL injection by definition targets SQL-based databases, not non-SQL systems.",
+      "trap": "Candidates sometimes think 'in-band' refers to network bandwidth; it actually refers to using one single channel for both attack delivery and result retrieval, as opposed to blind or out-of-band techniques.",
+      "memory_phrase": "In-band: ask the question and read the answer on the very same screen."
+    }
+  },
+  {
+    "id": "Q-CEH-15-004",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "easy",
+    "tags": ["sqli", "classification", "blind"],
+    "body": "Blind boolean-based SQL injection is best described as a technique where the attacker:",
+    "choices": ["Infers information about the database by observing differences in the application's behavior or response content depending on whether an injected true/false condition evaluates as true or false", "Directly views the full result set of the injected query printed in the page content", "Receives query results delivered to an external attacker-controlled server via DNS lookups", "Requires no interaction with the application whatsoever"],
+    "answer": "Infers information about the database by observing differences in the application's behavior or response content depending on whether an injected true/false condition evaluates as true or false",
+    "explanation": {
+      "answer": "In blind boolean-based SQLi, the application does not directly display query results or database errors; instead, the attacker crafts conditions and infers true/false answers one piece at a time from subtle differences in the application's response, such as a different page, message, or behavior.",
+      "why": "Directly viewing full result sets describes in-band/UNION-based SQLi, receiving results via DNS describes out-of-band SQLi, and blind SQLi still requires repeated interaction with the application through many requests, so 'no interaction' is incorrect.",
+      "trap": "Some assume 'blind' means the attacker gets nothing useful; in fact, blind techniques can still fully extract data, just far more slowly, by asking many true/false questions.",
+      "memory_phrase": "Blind boolean SQLi: twenty questions with the database, one bit at a time."
+    }
+  },
+  {
+    "id": "Q-CEH-15-005",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "easy",
+    "tags": ["sqli", "classification", "time-based"],
+    "body": "How does time-based blind SQL injection allow an attacker to infer information when the application gives no visible difference in its response content?",
+    "choices": ["By injecting conditional logic that triggers a deliberate database delay (such as a sleep or wait function) only when a condition is true, and measuring the response time", "By reading the response time of the victim's DNS resolver exclusively", "By forcing the web server to restart, then timing how long the reboot takes", "By requiring the database administrator to manually confirm each guess over the phone"],
+    "answer": "By injecting conditional logic that triggers a deliberate database delay (such as a sleep or wait function) only when a condition is true, and measuring the response time",
+    "explanation": {
+      "answer": "Time-based blind SQLi infers true/false answers purely from measurable response delay: if the injected conditional delay executes, the response takes noticeably longer, letting the attacker deduce the condition's truth value without any visible content difference.",
+      "why": "DNS resolver timing and web server reboot timing are unrelated measurement channels not used in this technique, and the technique is fully automatable, not dependent on manual administrator confirmation.",
+      "trap": "Some conflate time-based with out-of-band SQLi; time-based still uses the same request/response channel for observation, but measures timing rather than content, whereas true out-of-band relies on an entirely separate protocol or channel for exfiltration.",
+      "memory_phrase": "Time-based blind SQLi: no answer shown, just a stopwatch."
+    }
+  },
+  {
+    "id": "Q-CEH-15-006",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "easy",
+    "tags": ["sqli", "prevention", "parameterized-queries"],
+    "body": "What is the primary reason parameterized queries (prepared statements) are considered the most effective defense against SQL injection?",
+    "choices": ["They enforce a strict separation between the SQL code structure and the user-supplied data values, so input can never be interpreted as part of the query logic", "They automatically encrypt the entire database at rest", "They eliminate the need for a database access control model", "They increase query execution speed enough to prevent timing-based attacks"],
+    "answer": "They enforce a strict separation between the SQL code structure and the user-supplied data values, so input can never be interpreted as part of the query logic",
+    "explanation": {
+      "answer": "Parameterized queries define the SQL command structure first and bind user input strictly as data values afterward, so even malicious-looking input is treated as a literal value rather than executable query syntax, which structurally prevents classic SQL injection.",
+      "why": "Parameterized queries do not provide encryption at rest, do not remove the need for a proper database access control model since least privilege still matters, and are not a performance or timing control — their value is architectural separation of code and data.",
+      "trap": "Some think simply escaping special characters is equivalent to parameterization; escaping can be error-prone and context-dependent, whereas parameterized queries structurally prevent the input from ever being parsed as code.",
+      "memory_phrase": "Parameterized queries: data stays data, code stays code — never the same thing."
+    }
+  },
+  {
+    "id": "Q-CEH-15-007",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "medium",
+    "tags": ["sqli", "classification", "out-of-band"],
+    "body": "Out-of-band SQL injection is typically used by an attacker when:",
+    "choices": ["The application's normal response channel does not reliably return data or timing differences, so the attacker relies on the database making an outbound connection, such as a DNS or HTTP request, to exfiltrate data through a separate channel", "The attacker wants to avoid using any SQL syntax at all", "The database server has no network connectivity of any kind", "The application always displays full, unfiltered query results on screen"],
+    "answer": "The application's normal response channel does not reliably return data or timing differences, so the attacker relies on the database making an outbound connection, such as a DNS or HTTP request, to exfiltrate data through a separate channel",
+    "explanation": {
+      "answer": "Out-of-band SQLi is chosen specifically when in-band and blind techniques are unreliable or too slow; it depends on the database server's ability to initiate outbound network requests, such as DNS lookups, to carry stolen data to an attacker-controlled listener on a separate channel.",
+      "why": "This technique still relies entirely on SQL syntax being injected, requires the database server to have some outbound network capability which is the opposite of no connectivity, and is used precisely when the application does not display full results directly, unlike in-band scenarios.",
+      "trap": "Some think out-of-band SQLi is rare or purely theoretical; it is a recognized, real technique used specifically in constrained environments where in-band and blind methods are impractical or too slow.",
+      "memory_phrase": "Out-of-band SQLi: whisper the stolen data out through a side door like DNS."
+    }
+  },
+  {
+    "id": "Q-CEH-15-008",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "medium",
+    "tags": ["sqli", "classification", "union-based"],
+    "body": "For a UNION-based SQL injection technique to successfully combine an injected query with the original query's results, what condition must generally be satisfied?",
+    "choices": ["The injected SELECT statement must return the same number of columns, in a compatible order and data type, as the original query", "The application must be running on a Windows-based operating system", "The database must not use any form of authentication", "The web server must support the TRACE HTTP method"],
+    "answer": "The injected SELECT statement must return the same number of columns, in a compatible order and data type, as the original query",
+    "explanation": {
+      "answer": "The SQL UNION operator requires both combined queries to return the same number of columns with compatible data types; attackers must determine this column count and type alignment before a UNION-based injection can successfully merge extracted data into the visible output.",
+      "why": "UNION-based SQLi is not tied to any specific operating system, does not require the database to lack authentication since it exploits the application's query construction rather than authentication absence, and has no relationship to the unrelated HTTP TRACE method.",
+      "trap": "Some think UNION-based SQLi will work regardless of query structure; mismatched column counts or incompatible types will cause the query to fail, which is why attackers must first enumerate the correct column count.",
+      "memory_phrase": "UNION SQLi: your extra rows must match the original table's shape exactly."
+    }
+  },
+  {
+    "id": "Q-CEH-15-009",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "medium",
+    "tags": ["sqli", "classification", "error-based"],
+    "body": "Error-based SQL injection primarily relies on which application or database behavior to succeed?",
+    "choices": ["The database or application returning verbose, detailed error messages that reveal information about the query structure or underlying data", "The application encrypting all outbound traffic with TLS 1.3", "The database enforcing strict input length limits on every field", "The web server caching all dynamic responses for faster delivery"],
+    "answer": "The database or application returning verbose, detailed error messages that reveal information about the query structure or underlying data",
+    "explanation": {
+      "answer": "Error-based SQLi depends on the application surfacing detailed database error messages to the client; attackers craft input that deliberately triggers errors whose text leaks useful information such as table names, column names, or data values.",
+      "why": "TLS encryption, strict length limits, and response caching are unrelated to whether verbose error content is exposed; none of them determine whether error-based techniques will succeed.",
+      "trap": "Some think any SQL error occurring means error-based injection is happening; the technique specifically requires that error details are exposed back to the attacker, which is why suppressing verbose errors is a core defensive control.",
+      "memory_phrase": "Error-based SQLi: let the database's own complaint letter spill the secrets."
+    }
+  },
+  {
+    "id": "Q-CEH-15-010",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "medium",
+    "tags": ["sqli", "prevention", "least-privilege"],
+    "body": "Why is configuring the web application's database account with least-privilege permissions considered an important defense-in-depth measure against SQL injection, even when parameterized queries are already used?",
+    "choices": ["It limits the damage an attacker can cause if a SQL injection flaw is ever found or introduced, by restricting what actions and data the compromised database session can actually perform", "It makes parameterized queries unnecessary", "It automatically detects and blocks all injection attempts in real time", "It removes the need for input validation entirely"],
+    "answer": "It limits the damage an attacker can cause if a SQL injection flaw is ever found or introduced, by restricting what actions and data the compromised database session can actually perform",
+    "explanation": {
+      "answer": "Least-privilege database accounts act as a safety net: even if a query-building flaw slips through, a restricted account, such as read-only access to only the necessary tables with no administrative rights, limits what an attacker can read, modify, or execute, embodying defense in depth.",
+      "why": "Least privilege does not replace parameterized queries, does not itself detect or block attacks since it is a containment control rather than a detection control, and does not eliminate the separate need for input validation — all layers work together.",
+      "trap": "Some treat controls as mutually exclusive, assuming that once parameterized queries are used, privileges don't matter; CEH emphasizes layered defenses because no single control is guaranteed to be perfectly implemented everywhere in a codebase.",
+      "memory_phrase": "Least privilege: even if the lock fails, the safe inside is still empty."
+    }
+  },
+  {
+    "id": "Q-CEH-15-011",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "medium",
+    "tags": ["sqli", "prevention", "waf"],
+    "body": "What is an accurate statement about the role of a Web Application Firewall (WAF) in defending against SQL injection?",
+    "choices": ["A WAF can help detect and block many known SQL injection patterns as a compensating control, but it should not be relied upon as a substitute for secure coding practices like parameterized queries", "A WAF eliminates the need for secure coding because it rewrites all vulnerable queries automatically", "A WAF physically isolates the database server from the internet", "A WAF guarantees that zero-day or obfuscated injection techniques will always be blocked"],
+    "answer": "A WAF can help detect and block many known SQL injection patterns as a compensating control, but it should not be relied upon as a substitute for secure coding practices like parameterized queries",
+    "explanation": {
+      "answer": "A WAF provides valuable pattern- and signature-based filtering that can catch many common injection attempts, but skilled attackers can sometimes craft input that evades detection, so it is best used as one layer among several rather than the sole defense.",
+      "why": "WAFs do not rewrite application code or queries, do not provide physical network isolation of the database, and cannot guarantee blocking of all novel or obfuscated attack variants — overselling any of these creates false confidence.",
+      "trap": "Some treat a WAF as a complete fix for SQLi; CEH guidance is clear that secure coding, namely parameterized queries and input validation, is the primary defense, with a WAF serving as a supplementary, compensating layer.",
+      "memory_phrase": "WAF is a safety net, not a replacement for building the code correctly."
+    }
+  },
+  {
+    "id": "Q-CEH-15-012",
+    "type": "true_false",
+    "module": 15,
+    "difficulty": "medium",
+    "tags": ["sqli", "stored-procedures", "prevention"],
+    "body": "True or False: Simply using stored procedures in the database guarantees protection against SQL injection, regardless of how the stored procedure's SQL statements are constructed internally.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "Stored procedures only provide protection when they use parameterized or bound input internally; if a stored procedure builds a SQL string by concatenating unvalidated input (dynamic SQL) inside the procedure itself, it remains just as vulnerable to injection as inline application code.",
+      "why": "This statement is false because the security benefit comes from how parameters are handled, not merely from wrapping logic in a stored procedure — a poorly written stored procedure using dynamic string concatenation offers no real protection.",
+      "trap": "Many assume 'stored procedure' is automatically synonymous with 'safe from SQL injection'; CEH material specifically flags this as a common misconception that needs the caveat about dynamic SQL construction.",
+      "memory_phrase": "Stored procedures aren't magic — they're only as safe as the SQL built inside them."
+    }
+  },
+  {
+    "id": "Q-CEH-15-013",
+    "type": "multi",
+    "module": 15,
+    "difficulty": "hard",
+    "tags": ["sqli", "prevention", "secure-coding"],
+    "body": "Which of the following are recognized, effective components of a defense-in-depth strategy against SQL injection? (Select all that apply.)",
+    "choices": [
+      "Using parameterized queries or prepared statements for all database access involving user-supplied input",
+      "Applying strict server-side input validation (allow-listing expected formats and types) in addition to safe query construction",
+      "Granting the application's database account only the minimum privileges needed for its function",
+      "Relying exclusively on client-side JavaScript input validation before submission",
+      "Displaying detailed database error messages and stack traces directly to end users to aid transparency"
+    ],
+    "answer": ["Using parameterized queries or prepared statements for all database access involving user-supplied input", "Applying strict server-side input validation (allow-listing expected formats and types) in addition to safe query construction", "Granting the application's database account only the minimum privileges needed for its function"],
+    "explanation": {
+      "answer": "A layered SQLi defense combines parameterized queries as the primary structural fix, server-side input validation as an additional filter, and least-privilege database accounts to contain any breach that does occur.",
+      "why": "Client-side-only validation is trivially bypassed by an attacker who does not use the browser at all, such as calling the API directly, and exposing detailed database errors to end users actively helps attackers refine injection attempts — both are the incorrect, unsafe options.",
+      "trap": "Client-side validation feels like a real control because it improves user experience, but it enforces nothing for a determined attacker; only server-side checks count as security controls.",
+      "memory_phrase": "Layer it: parameterize, validate server-side, and restrict privileges."
+    }
+  },
+  {
+    "id": "Q-CEH-15-014",
+    "type": "scenario",
+    "module": 15,
+    "difficulty": "hard",
+    "tags": ["sqli", "blind", "detection"],
+    "body": "During an authorized web application assessment, a tester notices that a search feature returns a generic 'no results found' page whenever certain crafted input is submitted, and a normal results page for other crafted input, even though the underlying data should be identical. There are no visible database errors and no data is displayed beyond the normal result set. As the report author, which class of SQL injection does this behavior most likely indicate, and what remediation should be recommended?",
+    "answer": "This behavior is most consistent with blind boolean-based SQL injection: the application does not expose database errors or extra data directly, but its response (results page versus 'no results found') changes depending on whether an injected true/false condition evaluates as true or false, allowing an attacker to infer data one piece at a time through repeated requests. Recommended remediation: convert all dynamic query construction for this feature to parameterized queries or prepared statements, apply server-side input validation on the search parameter, ensure the account used by the application has least-privilege database access, and add monitoring or rate-limiting to detect high volumes of probing requests.",
+    "explanation": {
+      "answer": "The correct classification hinges on recognizing that a content-based true/false behavioral difference, without an error message and without full extracted data, is the signature of blind boolean-based SQLi, and the remediation must lead with structural query fixes (parameterization) rather than only surface-level fixes.",
+      "why": "A common mistake is to label this error-based SQLi, which requires visible database error text, or UNION-based SQLi, which requires directly displayed extracted data; neither matches the described symptoms, since only the page's overall outcome changes, not its error content or embedded data.",
+      "trap": "A weak answer might just say there is a SQL injection vulnerability without identifying the specific blind boolean-based class, or might recommend only adding a WAF instead of leading with the structural fix of parameterized queries.",
+      "memory_phrase": "Same data, different page based on true/false input — that's blind boolean SQLi whispering through behavior."
+    }
+  }
+]

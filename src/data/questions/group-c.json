@@ -1,0 +1,698 @@
+[
+  {
+    "id": "Q-CEH-07-001",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "easy",
+    "tags": ["malware", "trojan"],
+    "body": "Which statement BEST describes a Trojan horse in the context of malware classification?",
+    "choices": [
+      "Malicious code that self-replicates and spreads across a network without any user interaction",
+      "Software that appears legitimate or useful but performs hidden malicious actions once installed",
+      "Malicious code that attaches itself to a host executable and requires the host to run",
+      "A program that encrypts a victim's files and demands payment for the decryption key"
+    ],
+    "answer": "Software that appears legitimate or useful but performs hidden malicious actions once installed",
+    "explanation": {
+      "answer": "A Trojan horse disguises itself as legitimate or desirable software while secretly performing malicious actions.",
+      "why": "Unlike a Trojan, a worm (option 1) self-replicates and spreads autonomously across a network. A virus (option 3) attaches to a host executable and needs that host to run. Option 4 describes ransomware, which is a payload a Trojan can deliver but not the definition of a Trojan itself.",
+      "trap": "Confusing ransomware's encryption behavior with the Trojan delivery mechanism — many ransomware strains ARE delivered via a Trojan, but the term Trojan itself refers to the deceptive disguise, not the encryption payload.",
+      "memory_phrase": "Trojans deceive; they don't self-replicate."
+    }
+  },
+  {
+    "id": "Q-CEH-07-002",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "easy",
+    "tags": ["malware", "worm"],
+    "body": "What key characteristic distinguishes a worm from a virus?",
+    "choices": [
+      "A worm can self-replicate and propagate across a network without attaching to a host file or needing user action",
+      "A worm always encrypts data on the infected host",
+      "A worm requires the user to open an infected attachment before it can spread",
+      "A worm can only spread through removable USB media"
+    ],
+    "answer": "A worm can self-replicate and propagate across a network without attaching to a host file or needing user action",
+    "explanation": {
+      "answer": "Worms are standalone malicious programs that self-replicate and spread across networks autonomously, without needing to attach to a host file or trick a user into executing them.",
+      "why": "Option 2 describes ransomware behavior, not a defining trait of worms. Option 3 describes typical virus behavior, which depends on user execution of an infected host file. Option 4 is an inaccurate limitation — worms commonly spread via network shares, email, or vulnerable services, not solely USB media.",
+      "trap": "Assuming all self-spreading malware needs a user click — the key distinction is autonomous network propagation (worm) versus host-file dependency (virus).",
+      "memory_phrase": "Worms wiggle on their own; viruses need a ride."
+    }
+  },
+  {
+    "id": "Q-CEH-07-003",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "easy",
+    "tags": ["malware", "virus"],
+    "body": "Which of the following best defines a computer virus?",
+    "choices": [
+      "Self-contained code that spreads across networks by exploiting vulnerabilities, with no host file required",
+      "Malicious code that attaches to a legitimate program or file and requires that host to be executed in order to run and spread",
+      "A hidden component that modifies the operating system kernel to conceal an attacker's presence",
+      "A covert tool that records keystrokes and browsing habits for exfiltration"
+    ],
+    "answer": "Malicious code that attaches to a legitimate program or file and requires that host to be executed in order to run and spread",
+    "explanation": {
+      "answer": "A virus attaches itself to a legitimate host file or program; it only executes and spreads when that infected host is run, often requiring user action.",
+      "why": "Option 1 describes a worm's autonomous network propagation. Option 3 describes a rootkit's concealment function. Option 4 describes spyware's data-collection purpose. Only the correct answer captures the host-dependent nature that defines a virus.",
+      "trap": "Treating 'virus' as a generic synonym for all malware — each malware family has a distinct technical definition on the exam.",
+      "memory_phrase": "No host, no virus — it needs a program to infect."
+    }
+  },
+  {
+    "id": "Q-CEH-07-004",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "easy",
+    "tags": ["malware", "ransomware"],
+    "body": "What is the primary objective of ransomware?",
+    "choices": [
+      "To silently monitor user activity and exfiltrate credentials over time",
+      "To render a victim's files or systems inaccessible (typically via encryption) and demand payment for restoration",
+      "To grant an attacker a hidden, persistent remote foothold without the victim's knowledge",
+      "To flood a target service with traffic until it becomes unavailable"
+    ],
+    "answer": "To render a victim's files or systems inaccessible (typically via encryption) and demand payment for restoration",
+    "explanation": {
+      "answer": "Ransomware denies the victim access to their own data or systems, most often by encrypting files, and demands a ransom in exchange for restoring access.",
+      "why": "Option 1 describes spyware. Option 3 describes a backdoor/remote access trojan. Option 4 describes a denial-of-service attack, not ransomware. Ransomware's defining goal is extortion through denial of access.",
+      "trap": "Confusing ransomware with pure data theft — some modern strains also exfiltrate data for added leverage ('double extortion'), but the core defining behavior is denial of access plus a ransom demand.",
+      "memory_phrase": "Ransomware locks it, then asks for cash to unlock it."
+    }
+  },
+  {
+    "id": "Q-CEH-07-005",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "easy",
+    "tags": ["malware", "spyware"],
+    "body": "Which description best matches spyware?",
+    "choices": [
+      "Software that covertly collects information about a user's activity, such as keystrokes or browsing habits, without consent",
+      "Malware that hides its own presence by modifying core operating system components",
+      "Malware that demands payment after denying access to files",
+      "Self-replicating code that spreads automatically across a network"
+    ],
+    "answer": "Software that covertly collects information about a user's activity, such as keystrokes or browsing habits, without consent",
+    "explanation": {
+      "answer": "Spyware secretly gathers information about a user or system, such as keystrokes, credentials, or browsing behavior, typically sending it to an attacker without the victim's knowledge or consent.",
+      "why": "Option 2 describes a rootkit's concealment behavior. Option 3 describes ransomware. Option 4 describes a worm. Spyware's hallmark is covert data collection, not OS concealment, extortion, or network propagation.",
+      "trap": "Mixing up spyware (data collection) with rootkits (system concealment) — both are stealthy, but they serve different purposes.",
+      "memory_phrase": "Spyware watches you; it doesn't need to hide the whole system to do it."
+    }
+  },
+  {
+    "id": "Q-CEH-07-006",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "medium",
+    "tags": ["malware", "rootkit"],
+    "body": "Why are kernel-mode rootkits generally considered more dangerous and harder to detect than typical user-mode malware?",
+    "choices": [
+      "They only run when the victim opens a specific email attachment",
+      "They operate at the same privilege level as the operating system core, allowing them to intercept and manipulate system calls and hide files, processes, and network connections from standard tools",
+      "They exclusively spread through infected USB drives",
+      "They automatically remove themselves after a set time period to avoid detection"
+    ],
+    "answer": "They operate at the same privilege level as the operating system core, allowing them to intercept and manipulate system calls and hide files, processes, and network connections from standard tools",
+    "explanation": {
+      "answer": "Kernel-mode rootkits run with the same high privilege as the OS kernel, letting them intercept system calls and hide malicious files, processes, registry entries, or network connections from security tools and even the OS itself.",
+      "why": "Options 1 and 3 describe delivery/propagation vectors, not the technical reason rootkits are hard to detect. Option 4 is not a defining rootkit trait; persistence, not self-removal, is typically the goal. The correct answer captures the privilege-level concealment mechanism.",
+      "trap": "Confusing delivery method (how it arrives) with the technical mechanism that makes rootkits stealthy (where they run and what they can intercept).",
+      "memory_phrase": "Kernel-mode rootkits sit where the OS trusts everything, so the OS ends up lying for them."
+    }
+  },
+  {
+    "id": "Q-CEH-07-007",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "medium",
+    "tags": ["malware-analysis", "static-analysis"],
+    "body": "In malware analysis, what best describes static analysis?",
+    "choices": [
+      "Executing the suspicious file in an isolated environment and observing its behavior in real time",
+      "Examining a suspicious file's code, strings, headers, and file hashes without executing it",
+      "Deploying the sample to production systems to measure real-world impact",
+      "Interviewing the user who first encountered the suspicious file"
+    ],
+    "answer": "Examining a suspicious file's code, strings, headers, and file hashes without executing it",
+    "explanation": {
+      "answer": "Static analysis examines a file's structure, such as disassembled code, embedded strings, headers, and cryptographic hashes, without ever running it, reducing risk to the analyst's environment.",
+      "why": "Option 1 describes dynamic analysis, which involves execution, typically inside a sandbox. Option 3 is unsafe and not a recognized analysis method. Option 4 is basic incident triage, not a formal analysis technique.",
+      "trap": "Assuming any inspection of a suspicious file counts as 'static' analysis — the defining line is whether the code is ever executed.",
+      "memory_phrase": "Static stays still; no execution involved."
+    }
+  },
+  {
+    "id": "Q-CEH-07-008",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "medium",
+    "tags": ["malware-analysis", "dynamic-analysis", "sandbox"],
+    "body": "A malware analyst runs a suspicious sample inside an isolated, monitored virtual environment to observe the file operations, registry changes, and network connections it generates. Which analysis technique is being performed?",
+    "choices": [
+      "Static analysis",
+      "Dynamic analysis",
+      "Passive footprinting",
+      "Vulnerability scanning"
+    ],
+    "answer": "Dynamic analysis",
+    "explanation": {
+      "answer": "Dynamic analysis involves executing a suspicious sample in a controlled, isolated environment (a sandbox) and observing its real-time behavior, such as file, registry, and network activity.",
+      "why": "Static analysis explicitly avoids execution. Passive footprinting refers to reconnaissance about an organization, not malware behavior. Vulnerability scanning identifies weaknesses in systems and is unrelated to observing a malware sample's runtime behavior.",
+      "trap": "Forgetting that dynamic analysis requires isolation — running an unknown sample outside a sandbox risks infecting the analyst's own environment.",
+      "memory_phrase": "Dynamic means detonate and watch, safely, inside a sandbox."
+    }
+  },
+  {
+    "id": "Q-CEH-07-009",
+    "type": "true_false",
+    "module": 7,
+    "difficulty": "medium",
+    "tags": ["malware", "fileless"],
+    "body": "True or False: Fileless malware typically operates by loading and executing malicious activity directly in system memory using legitimate tools, such as scripting engines or system administration utilities, rather than installing an executable file on disk, which makes it harder for traditional signature-based antivirus to detect.",
+    "choices": ["True", "False"],
+    "answer": "True",
+    "explanation": {
+      "answer": "True. Fileless malware leverages trusted, built-in system tools and runs primarily in memory, leaving little or no traditional file-based footprint for signature scanners to catch.",
+      "why": "This statement accurately reflects how fileless techniques abuse legitimate 'living-off-the-land' utilities and in-memory execution to evade file-hash and signature-based detection, which is why behavior-based EDR and memory forensics are recommended defenses.",
+      "trap": "Assuming 'fileless' means it leaves absolutely no trace anywhere — fileless malware still commonly leaves indicators in logs, memory, and process activity, which is exactly what behavioral detection is designed to catch.",
+      "memory_phrase": "No file on disk doesn't mean no footprint in memory."
+    }
+  },
+  {
+    "id": "Q-CEH-07-010",
+    "type": "multi",
+    "module": 7,
+    "difficulty": "medium",
+    "tags": ["detection", "edr", "antivirus"],
+    "body": "Which of the following are capabilities that distinguish modern Endpoint Detection and Response (EDR) solutions from traditional signature-based antivirus? (Select all that apply.)",
+    "choices": [
+      "Continuous behavioral monitoring and telemetry collection across endpoint activity",
+      "Detection of previously unknown threats based on suspicious behavior patterns, not just known file signatures",
+      "Guaranteed prevention of 100% of all malware infections with zero false negatives",
+      "Support for threat hunting and incident investigation using historical endpoint activity data",
+      "Complete elimination of the need for any human security analyst to review alerts"
+    ],
+    "answer": [
+      "Continuous behavioral monitoring and telemetry collection across endpoint activity",
+      "Detection of previously unknown threats based on suspicious behavior patterns, not just known file signatures",
+      "Support for threat hunting and incident investigation using historical endpoint activity data"
+    ],
+    "explanation": {
+      "answer": "EDR platforms add continuous behavioral monitoring and telemetry, detection of unknown threats through behavior analytics, and support for threat hunting and investigation, beyond what signature-based AV typically offers.",
+      "why": "No security control offers a guaranteed 100% prevention rate with zero false negatives. EDR is also designed to support, not replace, human analysts; it generates rich telemetry and alerts that still require triage and investigation by security personnel.",
+      "trap": "Absolute claims like '100% guaranteed' or 'no human needed' are common wrong-answer patterns — EDR increases visibility and response capability, but still depends on skilled analysts to act on what it detects.",
+      "memory_phrase": "EDR watches behavior over time and needs analysts; AV mostly checks a list of known bad hashes."
+    }
+  },
+  {
+    "id": "Q-CEH-07-011",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "hard",
+    "tags": ["ioc", "incident-response"],
+    "body": "A security analyst is compiling a list of Indicators of Compromise (IOCs) after a malware incident. Which of the following is the BEST example of a technical IOC?",
+    "choices": [
+      "The organization's documented patch management policy",
+      "A file hash and an associated set of unusual outbound connections to the same external host, observed on multiple infected endpoints",
+      "An employee's personal opinion that a recent email 'looked suspicious'",
+      "The vendor's published end-of-life date for the affected operating system"
+    ],
+    "answer": "A file hash and an associated set of unusual outbound connections to the same external host, observed on multiple infected endpoints",
+    "explanation": {
+      "answer": "Concrete, observable technical artifacts, such as a malicious file hash paired with anomalous outbound network connections seen across multiple infected hosts, are core examples of IOCs used to confirm and scope a compromise.",
+      "why": "A patch management policy is administrative documentation, not evidence of compromise. An employee's subjective impression, while a useful trigger for investigation, is not itself a technical IOC until corroborated with observable artifacts. An OS end-of-life date is lifecycle planning information unrelated to any specific incident.",
+      "trap": "Treating a 'soft' signal, like an employee's gut feeling, as equivalent to a hard technical IOC — user reports are valuable and worth investigating, but IOCs specifically refer to objective, observable technical evidence such as hashes, IPs, domains, registry keys, or traffic patterns.",
+      "memory_phrase": "IOCs are observable evidence, like hashes and hosts, not policy documents or opinions."
+    }
+  },
+  {
+    "id": "Q-CEH-07-012",
+    "type": "scenario",
+    "module": 7,
+    "difficulty": "hard",
+    "tags": ["apt", "fileless", "scenario"],
+    "body": "During an authorized incident response engagement, a SOC analyst observes that a workstation has been making low-and-slow, intermittent outbound connections to a small set of external hosts over several months. No new executable files were dropped on disk; the activity instead traces to heavily obfuscated scripting-engine commands launched through a legitimate system administration utility, and the attacker appears to be selectively targeting specific high-value files rather than causing immediate, visible damage. Which combination of concepts BEST characterizes this activity, and what is the most appropriate next step?",
+    "answer": "This activity is characteristic of an Advanced Persistent Threat (APT) using fileless, living-off-the-land techniques (abusing a legitimate scripting or administration utility to run malicious commands in memory rather than dropping a file) to maintain long-term, stealthy access. The most appropriate next step is to escalate to formal incident response: preserve volatile evidence such as memory captures and command-line logs, use EDR and behavioral telemetry plus memory forensics to trace the full scope of activity and identify persistence mechanisms and other affected hosts, and contain and eradicate under the organization's authorized incident response plan rather than relying on a signature-based antivirus scan alone.",
+    "explanation": {
+      "answer": "APT plus fileless/living-off-the-land technique; escalate to full incident response with memory forensics and EDR-driven scope analysis rather than a routine antivirus scan.",
+      "why": "The long duration, low-volume and stealthy communication, selective targeting of valuable data, and lack of a dropped executable are hallmark APT and fileless indicators. Traditional signature-based antivirus is unlikely to catch this because no known-bad file exists on disk; the correct response leans on behavioral and EDR telemetry, memory analysis, and a structured incident response process to find the full extent of compromise before eradication.",
+      "trap": "Treating this as a simple, isolated malware infection solvable by a single antivirus scan and file deletion — that approach misses the persistence and broader compromise typical of a targeted, long-term APT campaign.",
+      "memory_phrase": "Slow, quiet, targeted, and memory-only points to APT and fileless, not a one-off virus."
+    }
+  },
+  {
+    "id": "Q-CEH-08-001",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "easy",
+    "tags": ["sniffing", "passive-sniffing"],
+    "body": "What is the defining characteristic of passive sniffing?",
+    "choices": [
+      "The attacker injects crafted packets onto the network to manipulate traffic flow",
+      "The attacker captures traffic that is already visible to their network interface, without injecting or altering any packets",
+      "The attacker floods a switch's MAC address table to force it into broadcast mode",
+      "The attacker forges ARP replies to redirect traffic through their own machine"
+    ],
+    "answer": "The attacker captures traffic that is already visible to their network interface, without injecting or altering any packets",
+    "explanation": {
+      "answer": "Passive sniffing simply listens to and captures network traffic that is already reaching the sniffing interface, such as traffic on a hub-based shared network, without sending or modifying any packets.",
+      "why": "Options 1, 3, and 4 all describe active techniques that inject or manipulate traffic, such as crafted packets, MAC flooding, or ARP spoofing, to force traffic to become visible on a switched network. Passive sniffing requires no such manipulation because the traffic is already observable.",
+      "trap": "Assuming sniffing is always passive by nature — on modern switched networks, attackers usually must actively manipulate traffic, for example through ARP poisoning, to see traffic that isn't destined for them.",
+      "memory_phrase": "Passive just listens; active makes the traffic come to it."
+    }
+  },
+  {
+    "id": "Q-CEH-08-002",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "easy",
+    "tags": ["sniffing", "mac-flooding", "switch"],
+    "body": "Conceptually, what does a MAC flooding attack attempt to achieve?",
+    "choices": [
+      "Exhaust a DHCP server's IP address pool so legitimate clients cannot obtain an address",
+      "Overwhelm a switch's content-addressable memory (CAM) table with bogus MAC addresses so the switch fails open and broadcasts traffic to all ports like a hub",
+      "Forge DNS responses so a domain name resolves to an attacker-controlled IP address",
+      "Send forged ARP replies to associate the attacker's MAC address with a victim's IP address"
+    ],
+    "answer": "Overwhelm a switch's content-addressable memory (CAM) table with bogus MAC addresses so the switch fails open and broadcasts traffic to all ports like a hub",
+    "explanation": {
+      "answer": "MAC flooding saturates a switch's finite CAM (MAC address) table with a large number of fake MAC addresses; once full, many switches fail open and broadcast unknown-destination frames out every port, letting an attacker on a switched network passively capture traffic they normally could not see.",
+      "why": "Option 1 describes DHCP starvation, option 3 describes DNS poisoning, and option 4 describes ARP poisoning/spoofing, each a distinct sniffing-related technique with a different mechanism and target.",
+      "trap": "Mixing up MAC flooding, which targets the switch's CAM table, with ARP poisoning, which targets host ARP caches — both can enable sniffing on switched networks but through very different mechanisms.",
+      "memory_phrase": "Flood the CAM table and the switch starts acting like a hub."
+    }
+  },
+  {
+    "id": "Q-CEH-08-003",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "easy",
+    "tags": ["sniffing", "arp-poisoning", "mitm"],
+    "body": "What best describes ARP poisoning (ARP spoofing)?",
+    "choices": [
+      "Sending forged ARP reply messages to associate the attacker's MAC address with the IP address of another host, redirecting traffic through the attacker for interception",
+      "Overloading a switch's MAC address table until it broadcasts all traffic",
+      "Requesting more DHCP leases than are available so legitimate hosts cannot obtain an IP address",
+      "Modifying a DNS server's cached records to redirect a domain name to a malicious IP address"
+    ],
+    "answer": "Sending forged ARP reply messages to associate the attacker's MAC address with the IP address of another host, redirecting traffic through the attacker for interception",
+    "explanation": {
+      "answer": "ARP poisoning exploits the lack of authentication in ARP by sending forged replies that map a victim's IP address to the attacker's MAC address, causing other hosts to send traffic intended for the victim to the attacker instead, a common man-in-the-middle setup.",
+      "why": "Option 2 describes MAC flooding, option 3 describes DHCP starvation, and option 4 describes DNS poisoning. Each is a distinct technique even though all can support traffic interception.",
+      "trap": "Assuming ARP poisoning requires exploiting a software vulnerability — it actually abuses ARP's inherent lack of authentication, a protocol design weakness rather than a bug.",
+      "memory_phrase": "ARP poisoning lies about who owns an IP address."
+    }
+  },
+  {
+    "id": "Q-CEH-08-004",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "easy",
+    "tags": ["sniffing", "dhcp-starvation"],
+    "body": "What is the goal of a DHCP starvation attack?",
+    "choices": [
+      "To exhaust the DHCP server's pool of available IP addresses using bogus requests, often to then deploy a rogue DHCP server that hands out attacker-controlled network settings",
+      "To flood a switch's MAC table so it broadcasts all frames",
+      "To forge DNS responses so clients resolve a domain to a malicious address",
+      "To capture cleartext credentials from an unencrypted protocol"
+    ],
+    "answer": "To exhaust the DHCP server's pool of available IP addresses using bogus requests, often to then deploy a rogue DHCP server that hands out attacker-controlled network settings",
+    "explanation": {
+      "answer": "DHCP starvation floods a legitimate DHCP server with a high volume of bogus lease requests, often using spoofed MAC addresses, until its address pool is exhausted, opening the door for the attacker to stand up a rogue DHCP server that assigns clients a malicious default gateway or DNS server.",
+      "why": "Option 2 describes MAC flooding, option 3 describes DNS poisoning, and option 4 describes the general goal of protocol sniffing rather than DHCP starvation specifically. DHCP starvation's defining trait is exhausting the address pool to enable a follow-on rogue DHCP attack.",
+      "trap": "Confusing DHCP starvation with simply 'a lot of devices joining the network' — the key is malicious exhaustion of the pool to enable a rogue DHCP server.",
+      "memory_phrase": "Starve the real DHCP server, then feed victims a rogue one."
+    }
+  },
+  {
+    "id": "Q-CEH-08-005",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "easy",
+    "tags": ["sniffing", "span", "network-tap"],
+    "body": "A network administrator configures a switch to copy all traffic from several production ports to a dedicated monitoring port where a legitimate intrusion detection sensor is connected. What is this technique called?",
+    "choices": [
+      "ARP poisoning",
+      "DHCP starvation",
+      "Port mirroring (SPAN)",
+      "MAC flooding"
+    ],
+    "answer": "Port mirroring (SPAN)",
+    "explanation": {
+      "answer": "Port mirroring, often called a Switched Port Analyzer (SPAN) port, is a legitimate switch feature that copies traffic from one or more ports to a monitoring port, commonly used by IDS/IPS sensors and packet analyzers for authorized monitoring.",
+      "why": "ARP poisoning, DHCP starvation, and MAC flooding are all malicious techniques used to force traffic visibility without authorization; SPAN/port mirroring, along with hardware network TAPs, is the sanctioned, built-in method administrators use to legitimately capture traffic for monitoring.",
+      "trap": "Assuming any traffic-capturing technique must be malicious — SPAN ports and TAPs are standard, authorized tools for defenders and network monitoring, not attacker techniques.",
+      "memory_phrase": "SPAN mirrors traffic on purpose, for the defenders."
+    }
+  },
+  {
+    "id": "Q-CEH-08-006",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "medium",
+    "tags": ["sniffing", "cleartext-protocols"],
+    "body": "An analyst is reviewing captured traffic and wants to flag protocols most at risk of exposing credentials in plaintext if sniffed. Which of the following protocol pairs BEST represents legacy protocols known for transmitting credentials in cleartext?",
+    "choices": [
+      "SSH and HTTPS",
+      "Telnet and FTP",
+      "TLS and IPsec",
+      "SFTP and SNMPv3"
+    ],
+    "answer": "Telnet and FTP",
+    "explanation": {
+      "answer": "Telnet and traditional FTP both transmit authentication credentials and data in plaintext by default, making them classic targets for credential capture via sniffing.",
+      "why": "SSH and HTTPS encrypt their sessions by design. TLS and IPsec are themselves encryption and security protocols, not cleartext ones. SFTP, which runs over SSH, and SNMPv3, which added authentication and encryption over earlier SNMP versions, are the secured counterparts to their insecure predecessors.",
+      "trap": "Forgetting that similarly named protocols can have very different security properties — FTP is cleartext while SFTP and FTPS are secured, and SNMPv1/v2c is largely cleartext while SNMPv3 supports authentication and encryption.",
+      "memory_phrase": "Telnet and FTP talk in the open, so anyone sniffing can read along."
+    }
+  },
+  {
+    "id": "Q-CEH-08-007",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "medium",
+    "tags": ["sniffing", "arp-poisoning", "defense", "dai"],
+    "body": "Which switch security feature is specifically designed to mitigate ARP poisoning by validating ARP packets against a trusted IP-to-MAC binding table before forwarding them?",
+    "choices": [
+      "Dynamic ARP Inspection (DAI)",
+      "Port mirroring (SPAN)",
+      "DHCP starvation prevention",
+      "802.1X port-based authentication"
+    ],
+    "answer": "Dynamic ARP Inspection (DAI)",
+    "explanation": {
+      "answer": "Dynamic ARP Inspection inspects ARP packets on untrusted switch ports and validates them against a trusted binding table, commonly built from DHCP snooping data, dropping ARP packets with invalid IP-to-MAC mappings to prevent ARP poisoning.",
+      "why": "Port mirroring is a monitoring feature, not a preventive control. 'DHCP starvation prevention' is not the name of the ARP-specific control; that role is filled by DHCP snooping, a related but separate feature. 802.1X handles port-based authentication of devices joining the network, not validation of ARP packet contents.",
+      "trap": "Confusing DAI with DHCP snooping — DAI typically depends on the DHCP snooping binding table to know which IP-to-MAC pairs are legitimate, but the two features address different attacks: ARP poisoning versus rogue DHCP and DHCP starvation.",
+      "memory_phrase": "DAI checks ARP replies against a trusted list before letting them through."
+    }
+  },
+  {
+    "id": "Q-CEH-08-008",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "medium",
+    "tags": ["sniffing", "dhcp-starvation", "defense", "dhcp-snooping"],
+    "body": "Which switch feature helps defend against DHCP starvation and rogue DHCP servers by allowing DHCP server responses only on explicitly trusted ports and rate-limiting DHCP messages on untrusted ports?",
+    "choices": [
+      "DHCP snooping",
+      "Dynamic ARP Inspection (DAI)",
+      "Port mirroring (SPAN)",
+      "Static ARP entries"
+    ],
+    "answer": "DHCP snooping",
+    "explanation": {
+      "answer": "DHCP snooping classifies switch ports as trusted or untrusted, permits DHCP server messages such as OFFER and ACK only from trusted ports, and can rate-limit DHCP traffic on untrusted ports, directly mitigating rogue DHCP servers and DHCP starvation floods.",
+      "why": "Dynamic ARP Inspection addresses ARP poisoning specifically, though it often relies on the DHCP snooping binding table. Port mirroring is a monitoring feature unrelated to DHCP validation. Static ARP entries can help resist ARP poisoning on small networks but do not address DHCP-based attacks and are hard to scale.",
+      "trap": "Mixing up DHCP snooping, which protects the DHCP process, with DAI, which protects the ARP process — remembering that DAI often relies on the DHCP snooping binding table helps keep the relationship straight.",
+      "memory_phrase": "DHCP snooping only trusts DHCP replies from ports it trusts."
+    }
+  },
+  {
+    "id": "Q-CEH-08-009",
+    "type": "true_false",
+    "module": 8,
+    "difficulty": "medium",
+    "tags": ["sniffing", "switched-network"],
+    "body": "True or False: Replacing a hub with a switch on a local network completely eliminates the risk of an attacker sniffing other hosts' unicast traffic.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "False. Switches significantly reduce sniffing exposure compared to hubs by forwarding unicast frames only to the intended port, but techniques such as ARP poisoning, MAC flooding, and misuse of port mirroring can still allow an attacker to intercept traffic on a switched network.",
+      "why": "Switches greatly limit passive sniffing compared to a shared-media hub, but they do not make active sniffing techniques impossible. Claiming complete elimination ignores well-documented switch-targeted attacks, such as MAC flooding and ARP poisoning, that are specifically designed to defeat switch traffic segmentation.",
+      "trap": "Absolute words like 'completely eliminates' are a red flag — switches raise the bar against sniffing but do not guarantee protection against all sniffing techniques.",
+      "memory_phrase": "Switches shrink the attack surface for sniffing; they don't erase it."
+    }
+  },
+  {
+    "id": "Q-CEH-08-010",
+    "type": "multi",
+    "module": 8,
+    "difficulty": "medium",
+    "tags": ["sniffing", "defense"],
+    "body": "Which of the following are recognized, effective defenses against network sniffing and related switch-based attacks? (Select all that apply.)",
+    "choices": [
+      "Using encrypted protocols, such as HTTPS, SSH, and SFTP, instead of their cleartext equivalents",
+      "Enabling port security to limit the number of MAC addresses learned per switch port",
+      "Enabling Dynamic ARP Inspection (DAI) and DHCP snooping on switches",
+      "Disabling all security logging to reduce the attacker's ability to see monitoring activity",
+      "Publishing the network's internal IP addressing scheme on a public website for transparency"
+    ],
+    "answer": [
+      "Using encrypted protocols, such as HTTPS, SSH, and SFTP, instead of their cleartext equivalents",
+      "Enabling port security to limit the number of MAC addresses learned per switch port",
+      "Enabling Dynamic ARP Inspection (DAI) and DHCP snooping on switches"
+    ],
+    "explanation": {
+      "answer": "Effective defenses include encrypting traffic so sniffed data is unreadable, using port security to blunt MAC flooding, and enabling DAI and DHCP snooping to block ARP poisoning and rogue DHCP activity.",
+      "why": "Disabling security logging removes defenders' visibility and makes detection and response harder; it is the opposite of a defense, not a protection against attackers. Publishing internal IP addressing publicly increases attacker reconnaissance value and provides no protective benefit, making it an information-disclosure risk rather than a control.",
+      "trap": "Watch for choices that sound like reducing complexity or increasing transparency but actually remove a defensive capability, such as logging, or leak useful reconnaissance information to attackers.",
+      "memory_phrase": "Encrypt it, limit it, and inspect it — don't blind yourself or broadcast your map."
+    }
+  },
+  {
+    "id": "Q-CEH-08-011",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "hard",
+    "tags": ["sniffing", "dns-poisoning"],
+    "body": "Which statement BEST explains the mechanism behind DNS cache poisoning (DNS spoofing)?",
+    "choices": [
+      "An attacker exhausts a DHCP server's address pool so no legitimate clients can obtain a lease",
+      "An attacker injects a forged DNS response, or otherwise corrupts a resolver's cache, so that a legitimate domain name resolves to an attacker-controlled IP address, redirecting victims without their knowledge",
+      "An attacker floods a switch's CAM table to force it to broadcast frames to every port",
+      "An attacker captures cleartext HTTP Basic Authentication headers from an unencrypted session"
+    ],
+    "answer": "An attacker injects a forged DNS response, or otherwise corrupts a resolver's cache, so that a legitimate domain name resolves to an attacker-controlled IP address, redirecting victims without their knowledge",
+    "explanation": {
+      "answer": "DNS cache poisoning corrupts the records held by a DNS resolver, or spoofs responses to a query, so that a trusted domain name incorrectly resolves to an IP address chosen by the attacker, silently redirecting users who trust that domain name.",
+      "why": "Option 1 describes DHCP starvation. Option 3 describes MAC flooding. Option 4 describes generic cleartext credential sniffing, a separate technique that could follow a successful redirect but does not itself define DNS poisoning.",
+      "trap": "Assuming DNS poisoning requires compromising the DNS server outright — it can also be achieved by exploiting weaknesses in the query and response process, such as predictable transaction identifiers or lack of response validation, to inject a forged answer before the legitimate one arrives, without ever touching the real server.",
+      "memory_phrase": "DNS poisoning teaches the resolver a lie about a real name."
+    }
+  },
+  {
+    "id": "Q-CEH-08-012",
+    "type": "scenario",
+    "module": 8,
+    "difficulty": "hard",
+    "tags": ["sniffing", "arp-poisoning", "scenario", "mitm"],
+    "body": "During an authorized internal security assessment, an analyst notices that two separate hosts on the same subnet are intermittently reporting the same MAC address for the network's default gateway IP address, and several internal users report brief, unexplained connectivity drops around the same times. Cleartext FTP credentials were also observed in a packet capture taken during one of these windows. What attack does this pattern most likely indicate, and what are two appropriate defensive controls to recommend?",
+    "answer": "This pattern is most consistent with ARP poisoning (ARP spoofing) being used to conduct a man-in-the-middle attack. The conflicting MAC-to-IP binding for the gateway and the intermittent connectivity drops from ARP table churn are classic symptoms, and the exposed FTP credentials show the attacker was intercepting and reading unencrypted traffic. Appropriate defenses include enabling Dynamic ARP Inspection together with DHCP snooping on the switches to validate ARP bindings, and migrating cleartext protocols like FTP to encrypted alternatives such as SFTP or FTPS so intercepted traffic cannot be read even if a man-in-the-middle position is achieved again.",
+    "explanation": {
+      "answer": "ARP poisoning enabling a man-in-the-middle position; recommend Dynamic ARP Inspection with DHCP snooping plus replacing cleartext protocols with encrypted equivalents.",
+      "why": "Two different hosts claiming the same MAC address for the gateway's IP is a textbook ARP cache conflict caused by spoofed ARP replies, and the intermittent connectivity issues fit the instability this causes as poisoned ARP entries repeatedly change. Combined with cleartext FTP credentials appearing in a capture taken at the same time, this strongly indicates traffic was being funneled through an attacker-controlled host. DAI directly prevents the forged ARP replies from being accepted, while encrypting the vulnerable protocol limits the damage even if interception happens again.",
+      "trap": "Focusing only on who sent the forged ARP reply and forgetting the second necessary control — even a well-defended ARP configuration does not help if credentials are still sent in cleartext elsewhere on the network, so defense in depth combining protocol encryption and ARP validation is expected in a complete answer.",
+      "memory_phrase": "Duplicate MAC for the gateway plus cleartext creds in a capture equals ARP-poisoning MITM — fix both the ARP trust and the cleartext protocol."
+    }
+  },
+  {
+    "id": "Q-CEH-09-001",
+    "type": "mcq",
+    "module": 9,
+    "difficulty": "easy",
+    "tags": ["social-engineering", "phishing"],
+    "body": "Which of the following best defines phishing?",
+    "choices": [
+      "A fraudulent attempt, typically via email, to trick a recipient into revealing sensitive information or installing malware by impersonating a trustworthy source",
+      "Following an authorized employee through a secure door without presenting credentials",
+      "A phone call in which the caller impersonates a trusted party to extract sensitive information",
+      "Offering a free service or item in exchange for login credentials or access"
+    ],
+    "answer": "A fraudulent attempt, typically via email, to trick a recipient into revealing sensitive information or installing malware by impersonating a trustworthy source",
+    "explanation": {
+      "answer": "Phishing is a social engineering technique, most commonly delivered by email, that impersonates a legitimate sender to trick the victim into disclosing sensitive data, clicking a malicious link, or installing malware.",
+      "why": "Option 2 describes tailgating/piggybacking. Option 3 describes vishing. Option 4 describes quid pro quo. Each is a distinct social engineering technique that uses a different delivery channel or hook.",
+      "trap": "Treating phishing as a catch-all term for every social engineering technique — the exam expects a specific distinction by channel: email for phishing, phone for vishing, SMS for smishing, and so on.",
+      "memory_phrase": "PHishing is email PHraud."
+    }
+  },
+  {
+    "id": "Q-CEH-09-002",
+    "type": "mcq",
+    "module": 9,
+    "difficulty": "easy",
+    "tags": ["social-engineering", "vishing"],
+    "body": "An attacker calls an employee, claiming to be from the IT help desk, and asks the employee to read back their one-time passcode to 'verify their identity.' What social engineering technique is this?",
+    "choices": [
+      "Smishing",
+      "Vishing",
+      "Tailgating",
+      "Dumpster diving"
+    ],
+    "answer": "Vishing",
+    "explanation": {
+      "answer": "Vishing, or voice phishing, uses a live or automated phone call to impersonate a trusted party and manipulate the victim into revealing sensitive information, such as a one-time passcode.",
+      "why": "Smishing uses SMS text messages, not phone calls. Tailgating is a physical-access technique involving following someone through a secured entrance. Dumpster diving involves searching discarded materials for useful information, not a live conversation.",
+      "trap": "Confusing vishing with phishing simply because both aim to deceive — the distinguishing factor tested is the channel: a voice or phone call for vishing versus email for phishing.",
+      "memory_phrase": "Vishing is voice plus phishing."
+    }
+  },
+  {
+    "id": "Q-CEH-09-003",
+    "type": "mcq",
+    "module": 9,
+    "difficulty": "easy",
+    "tags": ["social-engineering", "smishing"],
+    "body": "What is smishing?",
+    "choices": [
+      "Social engineering conducted through SMS or text messages, often containing a malicious link or a request for sensitive information",
+      "Social engineering conducted by physically following an authorized person into a restricted area",
+      "Social engineering conducted by sifting through an organization's discarded trash for sensitive documents",
+      "Social engineering conducted by offering a benefit in exchange for access or information"
+    ],
+    "answer": "Social engineering conducted through SMS or text messages, often containing a malicious link or a request for sensitive information",
+    "explanation": {
+      "answer": "Smishing is SMS-based phishing: an attacker sends a deceptive text message, often with a malicious link or urgent request, to trick the recipient into revealing information or taking a harmful action.",
+      "why": "Option 2 describes tailgating/piggybacking. Option 3 describes dumpster diving. Option 4 describes quid pro quo. Smishing's defining trait is the SMS/text delivery channel.",
+      "trap": "Overlooking that mobile-first attacks like smishing can bypass email security controls, since organizational email filtering has no visibility into SMS traffic.",
+      "memory_phrase": "Smishing is SMS plus phishing."
+    }
+  },
+  {
+    "id": "Q-CEH-09-004",
+    "type": "mcq",
+    "module": 9,
+    "difficulty": "easy",
+    "tags": ["social-engineering", "tailgating", "physical-security"],
+    "body": "An individual without a badge follows closely behind an employee through a badge-controlled door, relying on the employee holding the door open out of courtesy. What is this technique called?",
+    "choices": [
+      "Pretexting",
+      "Quid pro quo",
+      "Tailgating (piggybacking)",
+      "Vishing"
+    ],
+    "answer": "Tailgating (piggybacking)",
+    "explanation": {
+      "answer": "Tailgating, also called piggybacking, is a physical social engineering technique in which an unauthorized person gains entry to a restricted area by closely following an authorized person, exploiting courtesy or inattention.",
+      "why": "Pretexting relies on a fabricated scenario or false identity, typically to obtain information rather than physical entry specifically. Quid pro quo involves offering something in exchange for access or information. Vishing is a phone-based technique, not a physical-access one.",
+      "trap": "Assuming tailgating always requires deception or a fake story — it often succeeds purely through social courtesy, such as holding a door, without the attacker saying anything at all.",
+      "memory_phrase": "Tailgating rides in on someone else's badge swipe."
+    }
+  },
+  {
+    "id": "Q-CEH-09-005",
+    "type": "mcq",
+    "module": 9,
+    "difficulty": "medium",
+    "tags": ["social-engineering", "pretexting"],
+    "body": "Which scenario best illustrates pretexting?",
+    "choices": [
+      "An attacker leaves an infected USB drive labeled 'Payroll 2025' in a parking lot, hoping an employee plugs it in",
+      "An attacker fabricates a false identity and scenario, such as posing as a vendor auditor with a plausible cover story, to gain an employee's trust and extract sensitive information",
+      "An attacker sends a mass email pretending to be a bank, asking recipients to confirm their account details",
+      "An attacker sifts through an organization's recycling bin looking for discarded documents"
+    ],
+    "answer": "An attacker fabricates a false identity and scenario, such as posing as a vendor auditor with a plausible cover story, to gain an employee's trust and extract sensitive information",
+    "explanation": {
+      "answer": "Pretexting is built on a fabricated identity and a believable, invented scenario, or pretext, that the attacker uses to build trust and manipulate a target into divulging information or performing an action.",
+      "why": "Option 1 describes a baiting technique using physical media. Option 3 describes phishing via mass email. Option 4 describes dumpster diving. Pretexting's defining feature is the constructed false backstory or identity used in direct interaction with the target.",
+      "trap": "Confusing pretexting with generic dishonesty in any social engineering attempt — pretexting specifically emphasizes an elaborate, sustained false identity or scenario, often researched in advance, rather than a single false claim.",
+      "memory_phrase": "Pretexting is acting a role, backstory and all."
+    }
+  },
+  {
+    "id": "Q-CEH-09-006",
+    "type": "mcq",
+    "module": 9,
+    "difficulty": "medium",
+    "tags": ["social-engineering", "quid-pro-quo"],
+    "body": "An attacker calls multiple employees claiming to offer free IT troubleshooting help, and in exchange for 'fixing' a fictitious issue, asks each employee to disable their antivirus temporarily and provide remote access. What social engineering technique does this best represent?",
+    "choices": [
+      "Quid pro quo",
+      "Tailgating",
+      "Dumpster diving",
+      "Shoulder surfing"
+    ],
+    "answer": "Quid pro quo",
+    "explanation": {
+      "answer": "Quid pro quo social engineering offers the victim something of perceived value, here, free IT help, in exchange for an action or piece of information that benefits the attacker, such as disabling security controls or granting remote access.",
+      "why": "Tailgating is a physical-access technique, unrelated to offering a service. Dumpster diving involves searching discarded materials. Shoulder surfing involves visually observing someone entering credentials. None involve the reciprocal exchange that defines quid pro quo.",
+      "trap": "Confusing quid pro quo with simple pretexting — quid pro quo specifically hinges on an exchange, where the victim believes they are receiving a benefit in return for cooperation, while pretexting relies purely on a fabricated identity or story without necessarily offering anything back.",
+      "memory_phrase": "Quid pro quo means 'I'll help you' in exchange for access."
+    }
+  },
+  {
+    "id": "Q-CEH-09-007",
+    "type": "mcq",
+    "module": 9,
+    "difficulty": "medium",
+    "tags": ["social-engineering", "classification"],
+    "body": "Which pairing correctly matches the social engineering category with an example?",
+    "choices": [
+      "Human-based: impersonating a help desk technician in a face-to-face conversation to request a password reset",
+      "Computer-based: impersonating a delivery driver to gain physical access to a building",
+      "Human-based: sending a mass phishing email with a malicious attachment",
+      "Computer-based: an insider physically handing a USB drive with sensitive files to an unauthorized third party"
+    ],
+    "answer": "Human-based: impersonating a help desk technician in a face-to-face conversation to request a password reset",
+    "explanation": {
+      "answer": "Human-based social engineering relies on direct interpersonal interaction, in person or by voice; impersonating a help desk technician face-to-face is a classic human-based example.",
+      "why": "Option 2 describes physical impersonation, which is human-based, not computer-based. Option 3, a mass phishing email, is a computer-based technique because it relies on a technology channel rather than direct human interaction. Option 4 describes an insider threat and physical data exfiltration scenario, not a computer-based social engineering technique.",
+      "trap": "Assuming computer-based just means anything involving technology at some point — the classification hinges on whether the deception is delivered through direct human interaction, such as in person or by phone for human-based, or through a technology medium, such as email or fake websites, for computer-based.",
+      "memory_phrase": "Human-based talks to you; computer-based emails or pops up at you."
+    }
+  },
+  {
+    "id": "Q-CEH-09-008",
+    "type": "true_false",
+    "module": 9,
+    "difficulty": "medium",
+    "tags": ["social-engineering", "insider-threat"],
+    "body": "True or False: An insider threat can only be a malicious current employee who intentionally causes harm; it cannot include negligent employees or former employees with retained access.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "False. Insider threats include malicious insiders acting intentionally, but also negligent or careless insiders who unintentionally cause harm, for example by falling for social engineering or mishandling data, as well as former employees or contractors whose access was not properly revoked.",
+      "why": "Limiting the definition to only intentional, current-employee actors ignores well-documented categories of insider risk, including negligent insiders and improperly offboarded accounts, both commonly tested insider threat concepts.",
+      "trap": "Narrowing insider threat to only deliberate sabotage — many real-world insider incidents are accidental, such as a well-meaning employee tricked by pretexting or phishing, and timely access revocation after termination is a key control precisely because former-employee access is a recognized risk.",
+      "memory_phrase": "Insiders can hurt you on purpose, by accident, or after they've already left."
+    }
+  },
+  {
+    "id": "Q-CEH-09-009",
+    "type": "multi",
+    "module": 9,
+    "difficulty": "hard",
+    "tags": ["social-engineering", "defense", "awareness-training"],
+    "body": "Which of the following are effective organizational defenses against social engineering attacks? (Select all that apply.)",
+    "choices": [
+      "Regular, scenario-based security awareness training that teaches employees to recognize phishing, vishing, pretexting, and tailgating attempts",
+      "A documented process for verifying a requester's identity through an independent, trusted channel before acting on sensitive requests, such as password resets or wire transfers",
+      "Encouraging employees to report suspicious contacts or incidents promptly, without fear of blame, to a defined security contact",
+      "Removing all visitor badge and sign-in procedures to speed up guest access to the building",
+      "Telling employees that IT and security teams will always handle social engineering, so individual employees do not need to stay alert"
+    ],
+    "answer": [
+      "Regular, scenario-based security awareness training that teaches employees to recognize phishing, vishing, pretexting, and tailgating attempts",
+      "A documented process for verifying a requester's identity through an independent, trusted channel before acting on sensitive requests, such as password resets or wire transfers",
+      "Encouraging employees to report suspicious contacts or incidents promptly, without fear of blame, to a defined security contact"
+    ],
+    "explanation": {
+      "answer": "Effective defenses include ongoing scenario-based awareness training, independent identity-verification procedures for sensitive requests, and a supportive, blame-free reporting culture.",
+      "why": "Removing visitor sign-in and badge controls increases physical social engineering risk, such as tailgating, rather than reducing it. Telling employees that security is entirely someone else's job removes the human vigilance layer that is essential, since social engineering specifically targets people rather than technical controls, so every employee is part of the defense.",
+      "trap": "Watch for options presented as convenience or reassurance that actually remove a control, such as dropping visitor procedures, or shift all responsibility away from the very people being targeted.",
+      "memory_phrase": "Train people, verify independently, and make reporting easy and blame-free."
+    }
+  },
+  {
+    "id": "Q-CEH-09-010",
+    "type": "scenario",
+    "module": 9,
+    "difficulty": "hard",
+    "tags": ["social-engineering", "scenario", "pretexting", "identity-verification"],
+    "body": "An employee in the finance department receives a phone call from someone claiming to be the company's CFO, who is 'traveling and unable to access email.' The caller speaks with urgency, references a real, recently announced acquisition to sound credible, and asks the employee to immediately process a wire transfer to a 'new vendor' account, insisting it must happen before the caller's flight boards and that involving anyone else would 'slow down the deal.' What social engineering techniques are being combined here, and what should the employee do before taking any action?",
+    "answer": "This combines pretexting, a fabricated identity and scenario impersonating the CFO with a plausible, researched cover story, and vishing, delivered via a phone call, reinforced by urgency and an appeal to secrecy and authority, which are classic social engineering pressure tactics. Before taking any action, the employee should refuse to act solely on the caller's say-so, independently verify the requester's identity and the request through a separate, trusted channel, for example calling the CFO back on a known internal number or using an established out-of-band approval process, and involve a second authorized person rather than bypassing normal controls. The request to not involve anyone else and the urgency to bypass verification are themselves red flags that should be reported to the security team regardless of whether the transfer is ultimately made.",
+    "explanation": {
+      "answer": "Pretexting plus vishing with urgency and authority pressure; verify independently through a known channel and report the suspicious request rather than acting on urgency alone.",
+      "why": "The fabricated authority figure and invented urgent backstory are pretexting; the phone delivery is vishing; the request to skip normal verification and involve no one else is a manipulation tactic that isolates the victim from checks that would expose the fraud, a hallmark of business-email-compromise-style or CEO-fraud social engineering. The safe response mirrors real organizational controls: independent out-of-band verification and mandatory reporting, never approving high-risk actions purely because of urgency or claimed authority.",
+      "trap": "Being swayed by legitimate-sounding details, such as a real acquisition, and by urgency and authority pressure — attackers deliberately use real, public information to sound credible, and urgency is used specifically to short-circuit normal verification steps.",
+      "memory_phrase": "Urgent, plus don't tell anyone, plus a request to bypass normal process is the signature of pretexting and CEO fraud — verify independently, every time."
+    }
+  }
+]

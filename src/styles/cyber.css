@@ -1,0 +1,184 @@
+/* ============================================================
+   Cyberpunk atmosphere layer
+   Ambient only — never applied over question/explanation text.
+   ============================================================ */
+
+/* Fixed background: deep gradient + neon corner bloom + perspective grid + scanlines.
+   Implemented as body pseudo-elements so it sits behind everything and never scrolls. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(1200px 700px at 12% -8%, rgba(0, 245, 255, 0.1), transparent 60%),
+    radial-gradient(1000px 700px at 100% 0%, rgba(255, 43, 214, 0.09), transparent 55%),
+    radial-gradient(900px 900px at 50% 120%, rgba(157, 78, 221, 0.12), transparent 60%),
+    var(--bg-deep-space);
+}
+
+/* Scanline + faint grid overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0) 0px,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, 0.16) 3px,
+      rgba(0, 0, 0, 0) 4px
+    );
+  background-size:
+    46px 46px,
+    46px 46px,
+    100% 4px;
+  opacity: 0.5;
+  mask-image: radial-gradient(circle at 50% 40%, #000 55%, transparent 100%);
+}
+
+:root.no-scanlines body::after {
+  background-image:
+    linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+  background-size: 46px 46px, 46px 46px;
+}
+
+/* ---- Neon text helpers ---- */
+.neon-cyan {
+  color: var(--border-cyan);
+  text-shadow: var(--text-glow-cyan);
+}
+.neon-magenta {
+  color: var(--neon-magenta);
+}
+.neon-green {
+  color: var(--acid-green);
+}
+.neon-amber {
+  color: var(--warning-amber);
+}
+.neon-red {
+  color: var(--danger-red);
+}
+
+/* ---- Glitch title (used sparingly on brand/hero only) ---- */
+.glitch {
+  position: relative;
+  color: var(--text-main);
+}
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 0);
+  pointer-events: none;
+}
+.glitch::before {
+  color: var(--neon-magenta);
+  transform: translate(-1px, 0);
+  animation: glitchx 3.5s steps(2, end) infinite;
+  opacity: 0.7;
+}
+.glitch::after {
+  color: var(--border-cyan);
+  transform: translate(1px, 0);
+  animation: glitchx 2.6s steps(2, end) infinite reverse;
+  opacity: 0.7;
+}
+@keyframes glitchx {
+  0%,
+  92%,
+  100% {
+    clip-path: inset(0 0 100% 0);
+  }
+  93% {
+    clip-path: inset(20% 0 40% 0);
+  }
+  96% {
+    clip-path: inset(60% 0 10% 0);
+  }
+}
+
+/* Flicker for status LEDs */
+.flicker {
+  animation: flicker 4s infinite;
+}
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  48% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+  52% {
+    opacity: 1;
+  }
+}
+
+/* Sweep animation for meters / loaders */
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise-in {
+  animation: riseIn var(--dur) var(--ease) both;
+}
+
+/* Typewriter caret */
+.caret::after {
+  content: '▋';
+  color: var(--border-cyan);
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   Motion / effect kill-switches (accessibility + settings)
+   ============================================================ */
+:root.reduce-motion *,
+:root.reduce-motion *::before,
+:root.reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

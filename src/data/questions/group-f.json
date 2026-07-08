@@ -1,0 +1,680 @@
+[
+  {
+    "id": "Q-CEH-16-001",
+    "type": "mcq",
+    "module": 16,
+    "difficulty": "easy",
+    "tags": ["wireless-standards", "802.11", "wifi6"],
+    "body": "Which IEEE 802.11 amendment is marketed as 'Wi-Fi 6' and, through its Wi-Fi 6E extension, can operate in the 6 GHz band in addition to 2.4 GHz and 5 GHz?",
+    "choices": ["802.11ac", "802.11ax", "802.11n", "802.11g"],
+    "answer": "802.11ax",
+    "explanation": {
+      "answer": "802.11ax is the amendment branded Wi-Fi 6.",
+      "why": "802.11ax (Wi-Fi 6) adds efficiency features like OFDMA for dense environments and, via the Wi-Fi 6E certification, extends into 6 GHz. 802.11ac (Wi-Fi 5) is limited to 5 GHz. 802.11n operates on 2.4/5 GHz but predates Wi-Fi 6 features. 802.11g is an older 2.4 GHz-only standard with much lower throughput.",
+      "trap": "Mixing up the marketing name 'Wi-Fi 6' with 802.11ac (Wi-Fi 5) is a common exam mix-up.",
+      "memory_phrase": "6 comes after 5: Wi-Fi 6 = 802.11ax, Wi-Fi 5 = 802.11ac."
+    }
+  },
+  {
+    "id": "Q-CEH-16-002",
+    "type": "mcq",
+    "module": 16,
+    "difficulty": "easy",
+    "tags": ["WEP", "encryption", "legacy-wifi"],
+    "body": "What is the primary cryptographic weakness that makes WEP encryption insecure?",
+    "choices": [
+      "It relies on a short 24-bit initialization vector (IV) with RC4, causing IV reuse that enables key/keystream recovery from captured traffic",
+      "It uses AES-256 in an incompatible cipher mode",
+      "It mandates a RADIUS server that most consumer routers cannot support",
+      "It encrypts only management frames and never data frames"
+    ],
+    "answer": "It relies on a short 24-bit initialization vector (IV) with RC4, causing IV reuse that enables key/keystream recovery from captured traffic",
+    "explanation": {
+      "answer": "WEP's short 24-bit IV combined with the RC4 stream cipher leads to IV collisions that expose keystream data and ultimately the key.",
+      "why": "WEP never used AES; it is built entirely on RC4. WEP does not require RADIUS — that is associated with WPA/WPA2-Enterprise 802.1X, not WEP. WEP protects data frames, not management frames; management-frame protection is a WPA3/802.11w concept introduced much later.",
+      "trap": "Some assume WEP's flaw is a weak passphrase policy rather than the underlying IV/RC4 cryptographic design.",
+      "memory_phrase": "WEP = Weak (because of the) IV, Encrypted Poorly."
+    }
+  },
+  {
+    "id": "Q-CEH-16-003",
+    "type": "mcq",
+    "module": 16,
+    "difficulty": "easy",
+    "tags": ["CCMP", "WPA2", "AES"],
+    "body": "Which encryption protocol, built on AES in Counter Mode with CBC-MAC, is the mandatory data-confidentiality protocol under WPA2?",
+    "choices": ["TKIP", "CCMP", "SAE", "PEAP"],
+    "answer": "CCMP",
+    "explanation": {
+      "answer": "CCMP (Counter Mode CBC-MAC Protocol) is the AES-based cipher required by WPA2 under 802.11i.",
+      "why": "TKIP is the RC4-based interim protocol used by WPA, not the mandatory WPA2 cipher. SAE is a WPA3 authentication method, not a link-layer encryption protocol. PEAP is an EAP type used with 802.1X authentication, unrelated to frame encryption.",
+      "trap": "TKIP and CCMP are easy to mix up since both trace back to 802.11i; remember TKIP = WPA/RC4, CCMP = WPA2/AES.",
+      "memory_phrase": "CCMP Carries the AES Crypto Payload."
+    }
+  },
+  {
+    "id": "Q-CEH-16-004",
+    "type": "mcq",
+    "module": 16,
+    "difficulty": "easy",
+    "tags": ["TKIP", "WPA", "encryption"],
+    "body": "TKIP (Temporal Key Integrity Protocol) was introduced with WPA primarily to:",
+    "choices": [
+      "Provide a stronger, firmware-upgradable replacement for WEP's key management that could still run on legacy WEP-era hardware",
+      "Replace AES with a faster block cipher for WPA3-Enterprise",
+      "Remove the need for any encryption on open guest networks",
+      "Serve as the core authentication method in WPA3-Enterprise 192-bit mode"
+    ],
+    "answer": "Provide a stronger, firmware-upgradable replacement for WEP's key management that could still run on legacy WEP-era hardware",
+    "explanation": {
+      "answer": "TKIP added per-packet key mixing, a sequence counter, and the Michael message integrity check to patch WEP's weaknesses without requiring new radio hardware.",
+      "why": "TKIP still uses RC4, not AES, so it cannot be a WPA3 cipher. It has no relevance to open, unencrypted networks. WPA3-Enterprise 192-bit mode uses stronger AES/GCMP-based suites, not TKIP.",
+      "trap": "Some assume TKIP is as strong as CCMP simply because it followed WEP; TKIP was only ever an interim fix and was itself later deprecated.",
+      "memory_phrase": "TKIP: a Temporary fiX for WEP hardware, not a final answer."
+    }
+  },
+  {
+    "id": "Q-CEH-16-005",
+    "type": "true_false",
+    "module": 16,
+    "difficulty": "easy",
+    "tags": ["ssid", "best-practices", "misconception"],
+    "body": "Disabling SSID broadcast on an access point reliably prevents attackers from discovering the wireless network's SSID.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "False — hiding the SSID does not provide real security.",
+      "why": "Even with broadcast disabled, the SSID still appears in plaintext in client probe requests and in the AP's responses/association traffic, so it can be observed with passive wireless monitoring. This makes it obscurity rather than a genuine access control.",
+      "trap": "Beginners often treat a 'hidden SSID' as a security control comparable to encryption or authentication, when it is not.",
+      "memory_phrase": "Hidden SSID hides from casual users, not from anyone actually looking."
+    }
+  },
+  {
+    "id": "Q-CEH-16-006",
+    "type": "mcq",
+    "module": 16,
+    "difficulty": "medium",
+    "tags": ["WPA3", "SAE", "authentication"],
+    "body": "Which WPA3 mechanism replaces the WPA2-Personal pre-shared key exchange to provide resistance to offline dictionary/password-guessing attacks and forward secrecy?",
+    "choices": ["TKIP", "SAE (Simultaneous Authentication of Equals)", "WPS PIN exchange", "Open System Authentication"],
+    "answer": "SAE (Simultaneous Authentication of Equals)",
+    "explanation": {
+      "answer": "SAE, based on the Dragonfly key exchange, replaces the WPA2 PSK four-way handshake in WPA3-Personal.",
+      "why": "TKIP is an older WPA/RC4 mechanism unrelated to WPA3. WPS PIN exchange is a separate, weaker setup mechanism, not part of WPA3's core authentication. Open System Authentication is the original 802.11 'no real authentication' method used before an encrypted association is established.",
+      "trap": "SAE can be mistaken for a simple password check because it is still password-based, but its handshake design prevents offline guessing even if the exchange is captured, unlike the WPA2 four-way handshake.",
+      "memory_phrase": "SAE Stops offline Attacks Effectively."
+    }
+  },
+  {
+    "id": "Q-CEH-16-007",
+    "type": "mcq",
+    "module": 16,
+    "difficulty": "medium",
+    "tags": ["802.11w", "PMF", "deauth-defense"],
+    "body": "Which standard, when enabled, cryptographically protects Wi-Fi management frames (such as deauthentication and disassociation frames) from being spoofed by an attacker?",
+    "choices": ["802.1X", "802.11i", "802.11w (Protected Management Frames)", "802.11e"],
+    "answer": "802.11w (Protected Management Frames)",
+    "explanation": {
+      "answer": "802.11w defines Protected Management Frames (PMF), which authenticate and/or encrypt management frames.",
+      "why": "802.1X is a port-based network access control framework for authentication, not management-frame integrity. 802.11i defined WPA2/CCMP for data frames but, on its own, left most management frames unprotected. 802.11e addresses quality-of-service (QoS) prioritization, not security.",
+      "trap": "802.11i is often assumed to cover management-frame protection since it is the broader WPA2 security amendment; that specific gap is what 802.11w closes.",
+      "memory_phrase": "802.11w = Watches over management frames."
+    }
+  },
+  {
+    "id": "Q-CEH-16-008",
+    "type": "mcq",
+    "module": 16,
+    "difficulty": "medium",
+    "tags": ["evil-twin", "rogue-ap", "concept"],
+    "body": "An attacker sets up an access point using the exact same SSID (and often a spoofed BSSID) as a legitimate corporate network, hoping nearby employee devices will connect to it instead of the real AP. This specific technique is best described as:",
+    "choices": ["A rogue AP left behind by an employee for convenience", "An evil twin attack", "A WPS Pixie Dust attack", "MAC address filtering bypass"],
+    "answer": "An evil twin attack",
+    "explanation": {
+      "answer": "Impersonating a legitimate SSID/BSSID to lure victims is the defining characteristic of an evil twin attack.",
+      "why": "A generic 'rogue AP' is any unauthorized AP on or near the network (for example, an employee's personal router) and does not necessarily impersonate an existing SSID. A WPS Pixie Dust attack concerns exploiting WPS PIN design weaknesses, unrelated to SSID impersonation. MAC filtering bypass involves spoofing an allowed client's MAC address, not standing up a fake AP.",
+      "trap": "'Rogue AP' and 'evil twin' are often used interchangeably in casual speech, but CEH treats evil twin as the impersonation-specific case of a rogue AP.",
+      "memory_phrase": "Evil twin looks just like you — same SSID, very different intent."
+    }
+  },
+  {
+    "id": "Q-CEH-16-009",
+    "type": "mcq",
+    "module": 16,
+    "difficulty": "medium",
+    "tags": ["WPS", "authentication", "design-flaw"],
+    "body": "Why has Wi-Fi Protected Setup (WPS) PIN authentication been considered a significant security weakness on many consumer routers?",
+    "choices": [
+      "The 8-digit PIN is validated by the AP in two separate halves, drastically reducing the number of guesses needed compared to testing the full PIN as one unit",
+      "WPS PINs are transmitted to the vendor's cloud service in plaintext by design",
+      "Enabling WPS disables all Wi-Fi encryption on the network",
+      "WPS only functions if the attacker already has physical possession of the router"
+    ],
+    "answer": "The 8-digit PIN is validated by the AP in two separate halves, drastically reducing the number of guesses needed compared to testing the full PIN as one unit",
+    "explanation": {
+      "answer": "The split validation of the PIN's two halves (with the final digit acting as a checksum) shrinks the effective search space, which is the well-documented design flaw behind WPS's brute-force weakness. Because of this, the accepted mitigation is simply to disable WPS entirely.",
+      "why": "WPS phoning PINs to a vendor cloud is not the core design flaw. Enabling WPS does not disable the network's underlying WPA2/CCMP data encryption. The flaw is a protocol design issue, not a physical-access requirement — the affected exchange can occur over the air within radio range.",
+      "trap": "Test-takers may assume the risk is simply 'a short PIN' rather than the specific two-half validation design flaw.",
+      "memory_phrase": "Split PIN, split the problem in half — and the guesswork too."
+    }
+  },
+  {
+    "id": "Q-CEH-16-010",
+    "type": "multi",
+    "module": 16,
+    "difficulty": "medium",
+    "tags": ["best-practices", "wlan-hardening"],
+    "body": "Which of the following are recommended best practices for securing an enterprise wireless network? (Select all that apply.)",
+    "choices": [
+      "Use WPA3-Enterprise (or at minimum WPA2-Enterprise) with 802.1X/EAP authentication against a RADIUS server",
+      "Disable WPS on all access points",
+      "Rely on MAC address filtering as the sole access control mechanism",
+      "Place guest Wi-Fi traffic on a separate VLAN isolated from internal resources",
+      "Leave default administrative credentials on access points unchanged to simplify support"
+    ],
+    "answer": [
+      "Use WPA3-Enterprise (or at minimum WPA2-Enterprise) with 802.1X/EAP authentication against a RADIUS server",
+      "Disable WPS on all access points",
+      "Place guest Wi-Fi traffic on a separate VLAN isolated from internal resources"
+    ],
+    "explanation": {
+      "answer": "Strong Enterprise authentication, disabling WPS, and guest VLAN segmentation are all recognized best practices.",
+      "why": "MAC filtering is trivially bypassed because MAC addresses can be spoofed once an allowed address is observed, so it must never be the sole control. Leaving default admin credentials unchanged is a classic misconfiguration that hands attackers easy administrative access — the opposite of best practice.",
+      "trap": "MAC filtering feels intuitive as an added layer but only adds minor friction; it should never be relied on alone.",
+      "memory_phrase": "802.1X, no WPS, VLAN the guests — never trust a MAC alone."
+    }
+  },
+  {
+    "id": "Q-CEH-16-011",
+    "type": "mcq",
+    "module": 16,
+    "difficulty": "hard",
+    "tags": ["KRACK", "WPA2", "handshake"],
+    "body": "The KRACK (Key Reinstallation Attack) technique targets a logic flaw in which part of WPA/WPA2?",
+    "choices": [
+      "The RC4 pseudo-random generation algorithm",
+      "Nonce reuse caused by manipulating retransmissions of the four-way handshake, forcing a device to reinstall an already-in-use encryption key",
+      "The RADIUS shared-secret exchange between the AP and the authentication server",
+      "The checksum validation used in the WPS PIN exchange"
+    ],
+    "answer": "Nonce reuse caused by manipulating retransmissions of the four-way handshake, forcing a device to reinstall an already-in-use encryption key",
+    "explanation": {
+      "answer": "KRACK exploits how some client/AP implementations handle retransmitted four-way handshake messages, tricking a device into reinstalling a key with a reused nonce, undermining the guarantees of CCMP/TKIP encryption.",
+      "why": "KRACK is not about RC4's keystream generation — that weakness belongs to WEP/TKIP's underlying cipher, not this handshake logic flaw. It does not target the AP-to-RADIUS shared secret, and it is unrelated to the WPS PIN checksum design flaw.",
+      "trap": "Because WPA2 is widely associated with strong AES/CCMP security, some assume it has no implementation-level flaws; KRACK demonstrates that protocol logic flaws can exist even with a strong cipher.",
+      "memory_phrase": "KRACK cracks the handshake's nonce, not the cipher itself."
+    }
+  },
+  {
+    "id": "Q-CEH-16-012",
+    "type": "scenario",
+    "module": 16,
+    "difficulty": "hard",
+    "tags": ["deauth", "802.11w", "scenario", "evil-twin"],
+    "body": "During an authorized wireless assessment, a monitoring tool shows a burst of deauthentication frames flooding a corporate WLAN, causing repeated, synchronized client disconnections shortly before several clients are observed re-associating to an AP with unusually strong signal strength broadcasting the same corporate SSID. As the analyst writing the remediation recommendation, what standards-based control should you recommend enabling on the WLAN, and why does it address this scenario?",
+    "answer": "Recommend enabling 802.11w (Protected Management Frames / PMF) on the WLAN. PMF cryptographically authenticates and/or encrypts 802.11 management frames — including deauthentication and disassociation frames — so spoofed deauth frames from an attacker are rejected by compliant clients and APs instead of being honored, removing the forced-disconnect step attackers use to push victims toward a rogue or evil-twin AP. This should be paired with a Wireless Intrusion Prevention System (WIPS) to detect and alert on the rogue AP and anomalous deauth activity, since PMF alone does not identify the rogue AP's presence.",
+    "explanation": {
+      "answer": "802.11w/PMF stops spoofed management frames from succeeding; WIPS detection complements it by flagging the rogue AP.",
+      "why": "The scenario describes the classic deauth-then-evil-twin pattern: forcing clients off the legitimate AP so they reconnect to an attacker-controlled AP with the same SSID. Only a control that authenticates management frames (802.11w) directly prevents the deauth frames from succeeding; changing the passphrase or enabling MAC filtering would not stop spoofed management frames, and disabling SSID broadcast would not address the forced disconnects at all.",
+      "trap": "It is tempting to recommend 'a stronger passphrase' or 'a new SSID,' but the root cause here is unauthenticated management frames, not a weak key.",
+      "memory_phrase": "Deauth flood plus evil twin = enable PMF, then hunt with WIPS."
+    }
+  },
+  {
+    "id": "Q-CEH-17-001",
+    "type": "mcq",
+    "module": 17,
+    "difficulty": "easy",
+    "tags": ["sandboxing", "mobile-architecture"],
+    "body": "In mobile operating systems such as Android and iOS, what is the primary security purpose of application sandboxing?",
+    "choices": [
+      "To isolate each app's data, memory, and resources so one app cannot directly access another app's data or core OS resources without explicit permission",
+      "To automatically compress installed app files to save storage space",
+      "To speed up app launch time by preloading every installed app into RAM",
+      "To automatically encrypt all outbound network traffic regardless of the app"
+    ],
+    "answer": "To isolate each app's data, memory, and resources so one app cannot directly access another app's data or core OS resources without explicit permission",
+    "explanation": {
+      "answer": "Sandboxing confines each app to its own execution and data space.",
+      "why": "Sandboxing is an isolation/access-control mechanism, not a storage-compression or performance feature. Encrypting network traffic in transit depends on the app or OS configuration (such as TLS use), not on sandboxing itself.",
+      "trap": "Sandboxing and encryption are both 'security' terms, which leads some to conflate them; sandboxing is about isolation, not confidentiality of data in transit.",
+      "memory_phrase": "Sandboxing builds walls between apps, not tunnels for traffic."
+    }
+  },
+  {
+    "id": "Q-CEH-17-002",
+    "type": "mcq",
+    "module": 17,
+    "difficulty": "easy",
+    "tags": ["rooting", "jailbreaking", "risk"],
+    "body": "What is a major security risk introduced by rooting an Android device or jailbreaking an iOS device?",
+    "choices": [
+      "It automatically enables stronger full-disk encryption by default",
+      "It removes the platform's built-in sandboxing and code-signing/permission restrictions, allowing apps to gain elevated privileges and increasing exposure to malware",
+      "It forces the device to install only vendor-signed system apps going forward",
+      "It permanently disables the device's cellular radio"
+    ],
+    "answer": "It removes the platform's built-in sandboxing and code-signing/permission restrictions, allowing apps to gain elevated privileges and increasing exposure to malware",
+    "explanation": {
+      "answer": "Rooting or jailbreaking grants elevated (superuser/root-equivalent) access that bypasses the OS's normal isolation, code-signing, and permission model.",
+      "why": "Neither rooting nor jailbreaking enables encryption by default — both can actually undermine platform security features designed to protect data. Neither restricts installs to vendor-signed apps only; the opposite is true, as both typically make it easier to install software from outside official, vetted channels. Neither has anything to do with disabling a cellular radio.",
+      "trap": "Some treat rooting/jailbreaking as a purely cosmetic 'power user convenience' with no security downside; CEH frames it as materially increasing attack surface.",
+      "memory_phrase": "Root or jailbreak removes the roof (sandbox) protecting the app."
+    }
+  },
+  {
+    "id": "Q-CEH-17-003",
+    "type": "mcq",
+    "module": 17,
+    "difficulty": "easy",
+    "tags": ["MDM", "BYOD", "enterprise-mobility"],
+    "body": "Which capability is a core function of Mobile Device Management (MDM) / Enterprise Mobility Management solutions in a corporate BYOD program?",
+    "choices": [
+      "Automatically jailbreaking or rooting enrolled devices for IT convenience",
+      "Enforcing passcode and encryption policy on enrolled devices, and enabling remote wipe of corporate data if a device is lost",
+      "Granting every managed app root-level access to the operating system",
+      "Permanently disabling all app sandboxing to improve app performance"
+    ],
+    "answer": "Enforcing passcode and encryption policy on enrolled devices, and enabling remote wipe of corporate data if a device is lost",
+    "explanation": {
+      "answer": "MDM/EMM centrally enforces security policy (such as passcode and encryption requirements) and supports remote wipe or lock for enrolled devices.",
+      "why": "MDM does the opposite of jailbreaking or rooting devices — it typically detects and can block jailbroken or rooted devices from enrolling. It does not grant apps root access or disable sandboxing; either would weaken, not strengthen, device security.",
+      "trap": "Confusing MDM's administrative control over a device with granting elevated privileges to apps is a common error — MDM restricts and monitors, it does not privilege-escalate apps.",
+      "memory_phrase": "MDM locks it down and can wipe it clean, not root it open."
+    }
+  },
+  {
+    "id": "Q-CEH-17-004",
+    "type": "mcq",
+    "module": 17,
+    "difficulty": "easy",
+    "tags": ["owasp-mobile-top10", "insecure-storage"],
+    "body": "A mobile app stores a user's authentication token in a local SQLite database file without any encryption. Which OWASP Mobile Top 10 risk category best describes this issue?",
+    "choices": ["Insecure Data Storage", "Extraneous Functionality", "Client Code Quality", "Improper Platform Usage"],
+    "answer": "Insecure Data Storage",
+    "explanation": {
+      "answer": "Storing sensitive data unencrypted on the device is the definition of Insecure Data Storage.",
+      "why": "Extraneous Functionality refers to leftover hidden or debug features, not storage encryption. Client Code Quality concerns implementation-level coding bugs (such as buffer overflows) in the client, not data-at-rest protection. Improper Platform Usage refers to misusing OS features, permissions, or APIs against platform guidelines, a different category from how data is stored.",
+      "trap": "It's easy to lump every mobile flaw under a generic 'insecure app' label instead of mapping it to the specific OWASP category being tested.",
+      "memory_phrase": "Unencrypted data at rest = Insecure Data Storage, every time."
+    }
+  },
+  {
+    "id": "Q-CEH-17-005",
+    "type": "true_false",
+    "module": 17,
+    "difficulty": "easy",
+    "tags": ["mobile-malware", "app-stores", "misconception"],
+    "body": "Apps distributed exclusively through official app stores (such as Google Play or the Apple App Store) are guaranteed to be completely free of malware.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "False — official store vetting reduces but does not eliminate the risk of malicious or later-compromised apps.",
+      "why": "Both major app stores have documented cases of malware slipping past automated or human review, or of legitimate apps being updated after approval with malicious functionality. Vetting is a risk-reduction control, not an absolute guarantee.",
+      "trap": "Assuming 'official store equals completely safe' can lead users to skip other precautions, such as reviewing requested app permissions.",
+      "memory_phrase": "An official store lowers the risk; it doesn't zero it out."
+    }
+  },
+  {
+    "id": "Q-CEH-17-006",
+    "type": "mcq",
+    "module": 17,
+    "difficulty": "medium",
+    "tags": ["android", "ios", "platform-comparison"],
+    "body": "Which statement accurately contrasts the default security models of Android and iOS regarding app distribution?",
+    "choices": [
+      "Android apps are always digitally reviewed and signed by Google before any installation, while iOS allows arbitrary unsigned code execution",
+      "iOS has historically enforced mandatory App Store review and strict code-signing before installation, while Android has historically allowed sideloading apps from outside its official store",
+      "Both platforms forbid installing any app not listed in their respective official stores under all circumstances",
+      "Neither platform performs any code-signing verification prior to app installation"
+    ],
+    "answer": "iOS has historically enforced mandatory App Store review and strict code-signing before installation, while Android has historically allowed sideloading apps from outside its official store",
+    "explanation": {
+      "answer": "iOS's traditional walled-garden model requires Apple review and signing; Android's more open model has long permitted installing APKs from outside Google Play (sideloading).",
+      "why": "Android apps can be self-signed by developers and are not necessarily reviewed as strictly as iOS apps before distribution outside Google Play. iOS does not allow arbitrary unsigned code execution under normal, non-jailbroken operation. Both platforms do perform code-signing checks, so the claim that neither does is false.",
+      "trap": "Assuming both ecosystems are equally 'closed' or equally 'open' ignores the well-documented architectural difference tested on the CEH exam.",
+      "memory_phrase": "iOS: walled garden. Android: open yard with a gate that can be propped open."
+    }
+  },
+  {
+    "id": "Q-CEH-17-007",
+    "type": "mcq",
+    "module": 17,
+    "difficulty": "medium",
+    "tags": ["mobile-malware", "overlay-attack", "banking-trojan"],
+    "body": "A mobile banking trojan draws a fake login screen on top of the legitimate banking app's interface to capture the victim's entered credentials. This technique is known as:",
+    "choices": ["Smishing", "An overlay attack", "Bluejacking", "SIM swapping"],
+    "answer": "An overlay attack",
+    "explanation": {
+      "answer": "Overlay attacks render a malicious UI layer above a legitimate app to intercept user input.",
+      "why": "Smishing is SMS-based phishing, a delivery/social-engineering vector rather than a UI-layering technique. Bluejacking is an unrelated Bluetooth nuisance technique involving sending unsolicited messages. SIM swapping involves fraudulently porting a victim's phone number to an attacker-controlled SIM, a telecom/identity attack, not a UI overlay.",
+      "trap": "All four terms relate broadly to mobile threats, but only overlay attack specifically describes the fake-screen-on-top technique.",
+      "memory_phrase": "Overlay attack: a fake layer laid over the real app."
+    }
+  },
+  {
+    "id": "Q-CEH-17-008",
+    "type": "mcq",
+    "module": 17,
+    "difficulty": "medium",
+    "tags": ["secure-storage", "credentials", "best-practices"],
+    "body": "Which practice provides the strongest protection for sensitive credentials that must be stored locally on a mobile device?",
+    "choices": [
+      "Storing credentials in a plaintext configuration file bundled with the app",
+      "Storing credentials using the platform's hardware-backed secure storage (such as Android Keystore or iOS Keychain/Secure Enclave)",
+      "Storing credentials in unencrypted shared preferences",
+      "Hardcoding credentials directly into the app's compiled source code"
+    ],
+    "answer": "Storing credentials using the platform's hardware-backed secure storage (such as Android Keystore or iOS Keychain/Secure Enclave)",
+    "explanation": {
+      "answer": "Hardware-backed secure storage keeps keys and credentials isolated from the general app sandbox and filesystem, resisting extraction even on a compromised device.",
+      "why": "Plaintext configuration files, unencrypted shared preferences, and hardcoded credentials in source or compiled binaries are all classic Insecure Data Storage anti-patterns that are readily recoverable by anyone with file access or reverse-engineering access to the device or app.",
+      "trap": "Developers sometimes believe shared preferences are 'private enough' because they are sandboxed per app, but sandboxing alone does not protect against a rooted device or a full backup extraction.",
+      "memory_phrase": "Keychain or Keystore, not a key sitting in a text file."
+    }
+  },
+  {
+    "id": "Q-CEH-17-009",
+    "type": "mcq",
+    "module": 17,
+    "difficulty": "medium",
+    "tags": ["MDM", "containerization", "BYOD"],
+    "body": "In enterprise mobility management, what is the purpose of 'containerization' on a BYOD (Bring Your Own Device) smartphone?",
+    "choices": [
+      "To physically partition the device's hardware into separate chips",
+      "To logically separate and encrypt corporate apps/data from the user's personal apps/data on the same physical device",
+      "To root or jailbreak the device so IT has full administrative access",
+      "To permanently disable the device's camera and microphone"
+    ],
+    "answer": "To logically separate and encrypt corporate apps/data from the user's personal apps/data on the same physical device",
+    "explanation": {
+      "answer": "Containerization creates a managed, encrypted logical boundary for corporate data and apps, distinct from personal use on the same device.",
+      "why": "There is no physical hardware partitioning involved; it is a software/logical separation. Containerization is unrelated to rooting or jailbreaking, which would actually undermine the container's security guarantees. Disabling the camera or microphone is a separate, optional MDM policy control, not the definition of containerization.",
+      "trap": "Containerization is sometimes conflated with generic 'app restrictions' rather than the specific corporate/personal data-separation concept it actually describes.",
+      "memory_phrase": "Container: one device, two separate rooms — work and personal."
+    }
+  },
+  {
+    "id": "Q-CEH-17-010",
+    "type": "multi",
+    "module": 17,
+    "difficulty": "medium",
+    "tags": ["secure-mobile-practices", "best-practices", "MDM"],
+    "body": "Which of the following are recommended practices for securing mobile devices in an enterprise environment? (Select all that apply.)",
+    "choices": [
+      "Install apps only from official, vetted app stores and review requested permissions before granting them",
+      "Keep the device OS and apps updated with vendor security patches",
+      "Root or jailbreak corporate devices so IT can access every file for easier troubleshooting",
+      "Enroll devices in MDM/EMM to enforce passcode, encryption, and remote-wipe policies",
+      "Disable the device screen lock to speed up daily access"
+    ],
+    "answer": [
+      "Install apps only from official, vetted app stores and review requested permissions before granting them",
+      "Keep the device OS and apps updated with vendor security patches",
+      "Enroll devices in MDM/EMM to enforce passcode, encryption, and remote-wipe policies"
+    ],
+    "explanation": {
+      "answer": "Vetted app sources with permission review, timely patching, and MDM enrollment are core secure mobile practices.",
+      "why": "Rooting or jailbreaking corporate devices for IT convenience directly removes the platform's security model and is a risk, not a best practice — legitimate remote management and troubleshooting do not require breaking sandboxing. Disabling the screen lock removes a basic control against unauthorized physical access and directly contradicts device-hardening guidance.",
+      "trap": "IT-convenience arguments, such as 'root it so we can see everything,' can sound operationally reasonable but violate the core security model the platform provides.",
+      "memory_phrase": "Patch it, MDM it, vet the store — never root it for convenience."
+    }
+  },
+  {
+    "id": "Q-CEH-17-011",
+    "type": "mcq",
+    "module": 17,
+    "difficulty": "hard",
+    "tags": ["owasp-mobile-top10", "code-tampering"],
+    "body": "Which OWASP Mobile Top 10 category addresses risks from an attacker modifying an app's compiled binary or runtime behavior — for example, patching out a license check or bypassing jailbreak/root-detection logic?",
+    "choices": ["Insecure Authorization", "Code Tampering", "Insecure Communication", "Client Code Quality"],
+    "answer": "Code Tampering",
+    "explanation": {
+      "answer": "Code Tampering covers binary modification, repackaging, and runtime manipulation of an app's logic after it has been built.",
+      "why": "Insecure Authorization concerns flawed access-control decisions, such as a regular user reaching admin-only functions, not binary modification. Insecure Communication concerns weak transport-layer protection for data in transit. Client Code Quality concerns implementation-level bugs the developer introduced, such as buffer overflows or format-string issues, rather than deliberate post-build tampering by an attacker.",
+      "trap": "Client Code Quality and Code Tampering are easy to confuse since both relate to 'the client app's code'; Code Tampering is about an attacker changing the app after release, while Client Code Quality is about a bug the developer introduced from the start.",
+      "memory_phrase": "Tampering: the attacker edits it later. Code Quality: the developer's bug from day one."
+    }
+  },
+  {
+    "id": "Q-CEH-17-012",
+    "type": "scenario",
+    "module": 17,
+    "difficulty": "hard",
+    "tags": ["owasp-mobile-top10", "scenario", "insecure-storage", "extraneous-functionality"],
+    "body": "During an authorized security assessment of a corporate Android banking app, the team finds two issues: (1) the app caches full payment card numbers in an unencrypted local file for 'faster checkout,' and (2) the app binary still contains a hidden debug menu, left over from development, that bypasses login when a specific tap sequence is used. Identify the OWASP Mobile Top 10 category that best fits each issue and recommend a remediation for each.",
+    "answer": "Issue 1 maps to Insecure Data Storage: caching unencrypted full card numbers on-device violates data-protection expectations. Remediation: avoid persisting full card numbers locally, use tokenization from the payment processor instead, and if any cached data is required, encrypt it using platform hardware-backed storage with strict expiry. Issue 2 maps to Extraneous Functionality: a hidden debug/login-bypass menu shipped in a production build is a leftover developer feature that expands the attack surface. Remediation: strip all debug/test hooks before release via a secure build pipeline, enforce code review and static analysis gates that flag hidden entry points, and disable debuggable builds in production configuration.",
+    "explanation": {
+      "answer": "Card caching maps to Insecure Data Storage; the hidden debug bypass maps to Extraneous Functionality.",
+      "why": "The two issues are conceptually distinct: one concerns how sensitive data is stored, the other concerns unintended functionality left accessible in a shipped build. Treating both as 'the same bug' would miss that they need different remediations — data-protection controls versus secure release and build hygiene.",
+      "trap": "It's tempting to label the debug backdoor as an authentication flaw rather than Extraneous Functionality; the distinguishing factor is that the feature was never meant to exist in production at all, versus a poorly designed but intentional authentication mechanism.",
+      "memory_phrase": "Card in a text file is a storage problem. A secret backdoor menu is a leftover-functionality problem."
+    }
+  },
+  {
+    "id": "Q-CEH-18-001",
+    "type": "mcq",
+    "module": 18,
+    "difficulty": "easy",
+    "tags": ["MQTT", "iot-protocols", "pubsub"],
+    "body": "MQTT, a protocol widely used for IoT device messaging, is best described as which type of protocol?",
+    "choices": [
+      "A lightweight publish/subscribe messaging protocol that typically runs over TCP via a central broker",
+      "A synchronous, connectionless remote procedure call framework designed for gigabit LANs",
+      "A wireless mesh radio standard defined by IEEE 802.15.4",
+      "A disk-level full encryption standard for embedded flash storage"
+    ],
+    "answer": "A lightweight publish/subscribe messaging protocol that typically runs over TCP via a central broker",
+    "explanation": {
+      "answer": "MQTT is a lightweight publish/subscribe protocol built for constrained devices and unreliable networks, using a broker to route messages between publishers and subscribers.",
+      "why": "MQTT is not a remote procedure call framework, not a wireless radio/mesh standard (that describes Zigbee), and not a storage encryption standard.",
+      "trap": "Because MQTT is closely associated with IoT, some assume it must be a radio/hardware standard like Zigbee rather than an application-layer messaging protocol that commonly runs over TCP/IP.",
+      "memory_phrase": "MQTT: a tiny, thrifty message queue — publish/subscribe over TCP."
+    }
+  },
+  {
+    "id": "Q-CEH-18-002",
+    "type": "mcq",
+    "module": 18,
+    "difficulty": "easy",
+    "tags": ["CoAP", "iot-protocols", "udp"],
+    "body": "CoAP (Constrained Application Protocol) is designed to run over which transport protocol, making it suitable for low-power, lossy IoT networks?",
+    "choices": ["TCP", "UDP", "SCTP", "Bluetooth Classic only"],
+    "answer": "UDP",
+    "explanation": {
+      "answer": "CoAP is a REST-like protocol built on UDP for resource-constrained devices and networks.",
+      "why": "TCP's connection setup and retransmission overhead make it less suited to very constrained nodes, which is why CoAP was designed around UDP instead. SCTP is a separate transport protocol not used by CoAP. CoAP is not tied to Bluetooth Classic; it is commonly used over IP-based low-power networks.",
+      "trap": "Because CoAP mirrors HTTP's GET/POST/PUT/DELETE semantics, some assume it must run over TCP like HTTP does; CoAP deliberately uses UDP for lower overhead.",
+      "memory_phrase": "CoAP copies HTTP's verbs but rides on UDP, not TCP."
+    }
+  },
+  {
+    "id": "Q-CEH-18-003",
+    "type": "mcq",
+    "module": 18,
+    "difficulty": "easy",
+    "tags": ["zigbee", "iot-protocols", "802.15.4"],
+    "body": "Zigbee, a low-power wireless mesh networking standard commonly used in home and building automation, is based on which IEEE specification?",
+    "choices": ["IEEE 802.11", "IEEE 802.15.4", "IEEE 802.3", "IEEE 802.1X"],
+    "answer": "IEEE 802.15.4",
+    "explanation": {
+      "answer": "Zigbee's physical and MAC layers are defined by IEEE 802.15.4, a standard for low-rate wireless personal area networks.",
+      "why": "IEEE 802.11 defines Wi-Fi, a much higher-throughput, higher-power standard. IEEE 802.3 defines wired Ethernet. IEEE 802.1X is a port-based network access control framework, unrelated to Zigbee's radio layer.",
+      "trap": "The similar numbering of 802.11 and 802.15.4 leads some to confuse Wi-Fi's standard family with Zigbee's.",
+      "memory_phrase": "Zigbee zig-zags on 802.15.4, not 802.11."
+    }
+  },
+  {
+    "id": "Q-CEH-18-004",
+    "type": "mcq",
+    "module": 18,
+    "difficulty": "easy",
+    "tags": ["SCADA", "ICS", "ot-basics"],
+    "body": "What does the acronym SCADA stand for in an operational technology (OT) / industrial control systems (ICS) context?",
+    "choices": [
+      "Supervisory Control and Data Acquisition",
+      "Secure Control and Device Authentication",
+      "System Configuration and Data Analytics",
+      "Standard Control Access and Diagnostic Architecture"
+    ],
+    "answer": "Supervisory Control and Data Acquisition",
+    "explanation": {
+      "answer": "SCADA systems provide centralized supervisory monitoring and control of geographically distributed industrial processes.",
+      "why": "The other expansions are plausible-sounding but are not the actual acronym; they are designed to test whether the reader has memorized the real term rather than pattern-matching on similar-sounding security jargon.",
+      "trap": "Mixing up SCADA with generic phrases like 'secure control' just because both start with similar letters is a common surface-level error.",
+      "memory_phrase": "SCADA Supervises and Acquires Data — control at a distance."
+    }
+  },
+  {
+    "id": "Q-CEH-18-005",
+    "type": "true_false",
+    "module": 18,
+    "difficulty": "easy",
+    "tags": ["it-vs-ot", "cia-triad", "priorities"],
+    "body": "In most OT/ICS environments, availability and physical safety are generally prioritized above confidentiality, which contrasts with the traditional IT security priority order of Confidentiality, Integrity, Availability (CIA).",
+    "choices": ["True", "False"],
+    "answer": "True",
+    "explanation": {
+      "answer": "True — OT environments commonly prioritize safety and availability (keeping the physical process running safely) over confidentiality.",
+      "why": "A control system outage or an unsafe state, such as a halted turbine or a mis-controlled valve, can cause physical harm, environmental damage, or major financial loss. This is why OT teams tend to resist changes, like aggressive patching or scanning, that risk downtime, even if it means slower adoption of confidentiality-focused controls than a typical IT network would apply.",
+      "trap": "Applying IT's CIA priority order directly to OT without adjustment is a common conceptual mistake that can lead to unsafe recommendations, such as scanning live PLCs the same way IT scans ordinary servers.",
+      "memory_phrase": "IT protects data first; OT protects the process — and people — first."
+    }
+  },
+  {
+    "id": "Q-CEH-18-006",
+    "type": "mcq",
+    "module": 18,
+    "difficulty": "medium",
+    "tags": ["BLE", "bluetooth", "pairing"],
+    "body": "Among Bluetooth Low Energy (BLE) pairing association models, which one provides no protection against man-in-the-middle interception because it performs no real out-of-band or numeric verification between the two devices?",
+    "choices": ["Numeric Comparison", "Passkey Entry", "Just Works", "Out of Band (OOB)"],
+    "answer": "Just Works",
+    "explanation": {
+      "answer": "Just Works pairing was designed for devices with minimal input/output capability, such as no screen or keypad, and performs no authentication of the key exchange, leaving it open to man-in-the-middle interception.",
+      "why": "Numeric Comparison has both devices display and confirm a matching number, providing MITM protection. Passkey Entry requires entering a code shown on one device into the other, adding a verification factor. Out of Band uses a separate channel, such as NFC, to exchange authentication data, which also protects against MITM.",
+      "trap": "Because 'Just Works' sounds convenient and harmless, its lack of any authentication step is easy to overlook compared with the other three pairing models.",
+      "memory_phrase": "Just Works just trusts — no real check performed."
+    }
+  },
+  {
+    "id": "Q-CEH-18-007",
+    "type": "mcq",
+    "module": 18,
+    "difficulty": "medium",
+    "tags": ["purdue-model", "ics-architecture"],
+    "body": "In the Purdue Enterprise Reference Architecture (Purdue Model) used to structure IT/OT networks, at which level are PLCs and RTUs that directly interface with field sensors and actuators typically classified?",
+    "choices": ["Level 0 (Physical Process)", "Level 1 (Basic Control)", "Level 3 (Site Operations)", "Level 5 (Enterprise Network)"],
+    "answer": "Level 1 (Basic Control)",
+    "explanation": {
+      "answer": "Level 1 covers basic control devices, including PLCs, RTUs, and similar controllers, that directly command actuators and read sensors.",
+      "why": "Level 0 is the physical process itself (the sensors, actuators, and equipment), not the controllers that manage them. Level 3 covers site-level operations, such as manufacturing execution systems (MES) and production scheduling. Level 5 is the enterprise/corporate IT network, such as ERP and email systems, far removed from real-time control.",
+      "trap": "Level 0 and Level 1 are frequently confused since both are 'close to the machinery'; the distinguishing factor is that Level 0 is the physical equipment/process, while Level 1 is the controller logic that operates it.",
+      "memory_phrase": "Level 0 is the machine; Level 1 is what makes the machine move."
+    }
+  },
+  {
+    "id": "Q-CEH-18-008",
+    "type": "mcq",
+    "module": 18,
+    "difficulty": "medium",
+    "tags": ["owasp-iot-top10", "default-credentials"],
+    "body": "An IoT security camera ships with a fixed default administrator password that end users cannot change. Which OWASP IoT Top 10 category does this best represent?",
+    "choices": [
+      "Lack of Secure Update Mechanism",
+      "Weak, Guessable, or Hardcoded Passwords",
+      "Insecure Data Transfer and Storage",
+      "Lack of Device Management"
+    ],
+    "answer": "Weak, Guessable, or Hardcoded Passwords",
+    "explanation": {
+      "answer": "A non-changeable, factory-set credential is the textbook example of the 'Weak, Guessable, or Hardcoded Passwords' category.",
+      "why": "Lack of Secure Update Mechanism concerns firmware/software update processes, such as unsigned or unencrypted updates, not credentials. Insecure Data Transfer and Storage concerns how data is protected in transit or at rest, not authentication credentials. Lack of Device Management concerns the absence of provisioning, monitoring, and decommissioning capability across the device fleet, not one device's password policy.",
+      "trap": "Any password-related issue can get lumped into a vague 'authentication problem' bucket instead of the precise OWASP IoT category being tested.",
+      "memory_phrase": "Can't change the password? That's Hardcoded Passwords, plain and simple."
+    }
+  },
+  {
+    "id": "Q-CEH-18-009",
+    "type": "mcq",
+    "module": 18,
+    "difficulty": "medium",
+    "tags": ["modbus", "ics-protocols", "legacy-risk"],
+    "body": "Legacy industrial protocols such as Modbus are frequently flagged in OT security assessments primarily because they:",
+    "choices": [
+      "Require expensive proprietary hardware that most vendors refuse to support",
+      "Were designed without built-in authentication or encryption, trusting that only authorized devices exist on the network",
+      "Mandate multi-factor authentication for every read/write command, slowing operations",
+      "Only operate over satellite links, making them inherently high-latency"
+    ],
+    "answer": "Were designed without built-in authentication or encryption, trusting that only authorized devices exist on the network",
+    "explanation": {
+      "answer": "Modbus and many other legacy ICS protocols were designed decades ago under the assumption of a trusted, isolated network, so they lack native authentication or encryption.",
+      "why": "Modbus is not tied to expensive proprietary hardware; it is simple and widely implemented across vendors. It does not mandate multi-factor authentication — it generally has no authentication at all. It is not inherently satellite-based; it commonly runs over serial links or TCP/IP on local industrial networks.",
+      "trap": "Assuming legacy protocol weaknesses are about cost or performance misses the actual root cause: an implicit trust model with no cryptographic protections.",
+      "memory_phrase": "Modbus trusts everyone on the wire, because decades ago, everyone usually was authorized."
+    }
+  },
+  {
+    "id": "Q-CEH-18-010",
+    "type": "multi",
+    "module": 18,
+    "difficulty": "medium",
+    "tags": ["ot-security", "best-practices", "segmentation"],
+    "body": "Which of the following are recommended security best practices for protecting OT/ICS environments? (Select all that apply.)",
+    "choices": [
+      "Segment OT networks from IT networks using a DMZ, consistent with the Purdue model",
+      "Run the same aggressive, unthrottled active vulnerability scans against live production PLCs that are used on IT servers, without any prior risk assessment",
+      "Change default vendor credentials on field devices, PLCs, and HMIs",
+      "Maintain a comprehensive, current asset inventory of ICS/SCADA components",
+      "Allow unrestricted direct remote access from the internet to HMIs for operator convenience"
+    ],
+    "answer": [
+      "Segment OT networks from IT networks using a DMZ, consistent with the Purdue model",
+      "Change default vendor credentials on field devices, PLCs, and HMIs",
+      "Maintain a comprehensive, current asset inventory of ICS/SCADA components"
+    ],
+    "explanation": {
+      "answer": "Network segmentation via an IT/OT DMZ, credential hygiene on field devices, and accurate asset inventories are foundational OT security practices.",
+      "why": "Running unthrottled, IT-style active scans directly against live PLCs risks crashing fragile control devices, which can create unsafe conditions; this needs a risk assessment and is often better done passively or against a test environment instead. Exposing HMIs directly to the internet without restriction massively expands the attack surface into safety-critical control systems and contradicts segmentation principles.",
+      "trap": "Practices that are routine and safe in IT, such as broad active scanning or convenient remote access, can be actively dangerous when applied unmodified to OT.",
+      "memory_phrase": "Segment it, inventory it, change the default password — don't blast it with an IT-style scanner."
+    }
+  },
+  {
+    "id": "Q-CEH-18-011",
+    "type": "mcq",
+    "module": 18,
+    "difficulty": "hard",
+    "tags": ["ot-security", "vulnerability-scanning", "safety"],
+    "body": "Why do OT security teams typically avoid running traditional IT-style active vulnerability scanners directly against live, in-production PLCs and RTUs?",
+    "choices": [
+      "Active scanning is universally illegal under international law regardless of authorization",
+      "Many legacy OT devices have limited processing resources and fragile network stacks that can crash, hang, or misbehave under unexpected traffic, risking process safety and availability",
+      "PLCs and RTUs are completely immune to any form of network-based probing",
+      "Vulnerability scanners are physically incapable of generating any traffic on serial or industrial Ethernet networks"
+    ],
+    "answer": "Many legacy OT devices have limited processing resources and fragile network stacks that can crash, hang, or misbehave under unexpected traffic, risking process safety and availability",
+    "explanation": {
+      "answer": "Constrained legacy hardware and immature network stacks in many ICS devices mean that even routine scan traffic can cause instability, unlike typical modern IT servers, which tolerate scanning well.",
+      "why": "Active scanning is not universally illegal; authorized, carefully scoped assessments are performed in OT environments with appropriate precautions. PLCs and RTUs are not immune to network probing, which is precisely why care is required. Scanners can and do generate traffic on industrial networks, including serial-to-IP gateways, so that option is factually wrong rather than the actual concern.",
+      "trap": "Assuming the concern is purely legal or compliance-related, rather than the real engineering risk of destabilizing fragile real-time control devices, misses the core safety rationale being tested here.",
+      "memory_phrase": "A crashed PLC isn't just downtime — it can become a safety incident."
+    }
+  },
+  {
+    "id": "Q-CEH-18-012",
+    "type": "scenario",
+    "module": 18,
+    "difficulty": "hard",
+    "tags": ["purdue-model", "scenario", "dmz", "default-credentials"],
+    "body": "During an authorized OT security assessment, the team finds that the corporate IT network has a direct, unrestricted routable path to the Level 2 supervisory control (SCADA/HMI) network with no intermediate DMZ, and that the HMI is still running its factory-default administrator credentials. Referencing the Purdue model, what two remediations should be prioritized, and why does each matter for reducing OT risk?",
+    "answer": "First, insert and enforce an IT/OT DMZ (Purdue Level 3.5) between the enterprise network (Levels 4/5) and the supervisory control network (Level 2), removing the direct routable path so that a compromise on the IT side cannot reach supervisory control systems without traversing a controlled, monitored boundary; this limits lateral movement toward the systems that directly influence the physical process. Second, replace the HMI's factory-default administrator credentials with strong, unique credentials and bring the HMI under a proper credential management and rotation policy, eliminating a trivial, well-known unauthorized-access path into the system that supervises the control network. Together, these reduce the likelihood that a routine IT compromise escalates into unauthorized access to, or manipulation of, systems that affect the safety and availability of the physical process.",
+    "explanation": {
+      "answer": "Insert an IT/OT DMZ at Level 3.5, and eliminate the default HMI credentials.",
+      "why": "The finding describes two independent, compounding weaknesses: a flat, unsegmented network path (an architecture problem) and weak access control on a critical interface (a credential problem). Fixing only one leaves the other exploitable — segmenting the network does not help if a still-permitted path reaches an HMI with default credentials, and changing credentials does not help if the flat network still allows broad, uncontrolled reachability from IT into Level 2.",
+      "trap": "Focusing only on the more visible default-credential fix while ignoring the underlying flat network architecture, or vice versa, leaves significant residual risk; both must be addressed.",
+      "memory_phrase": "Wall it off with a DMZ and lock the door with real credentials — one without the other still leaves a way in."
+    }
+  }
+]

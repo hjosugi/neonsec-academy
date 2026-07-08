@@ -1,0 +1,598 @@
+[
+  {
+    "id": "Q-CEHX-PENTEST-001",
+    "type": "mcq",
+    "module": 0,
+    "track": "pentest",
+    "difficulty": "medium",
+    "tags": [
+      "scope",
+      "rules-of-engagement"
+    ],
+    "body": "During an authorized external penetration test for a client, a tester finds that a discovered web application resolves to an IP address that is NOT listed in the signed Statement of Work (SOW) or scope document, although it appears to belong to the same client based on branding. What is the correct next action?",
+    "choices": [
+      "Continue testing since it clearly belongs to the client",
+      "Pause testing of that asset and confirm written scope authorization with the client before proceeding",
+      "Run only passive reconnaissance against it, since passive activity does not require authorization",
+      "Test it after business hours to reduce the chance of detection"
+    ],
+    "answer": "Pause testing of that asset and confirm written scope authorization with the client before proceeding",
+    "explanation": {
+      "answer": "Pause testing of that asset and confirm written scope authorization with the client before proceeding.",
+      "why": "Scope defines the legal and contractual boundary of an engagement. Testing anything outside the written SOW, even something that looks related, can create legal liability and violates the rules of engagement, so the correct move is to stop, document the discovery, and get written authorization (an SOW amendment) before touching it. Brand or apparent ownership similarity is not authorization; the asset could be shared hosting, a third-party SaaS product, a CDN, a decommissioned system, or another business unit entirely. Passive-only testing does not resolve the authorization gap in a strict engagement, and testing after hours addresses detection risk, not the missing authorization.",
+      "trap": "Assuming visual or apparent ownership is equivalent to documented scope, or assuming 'passive-only' or 'off-hours' sidesteps the authorization requirement.",
+      "memory_phrase": "If it's not on the SOW, it's not in scope."
+    }
+  },
+  {
+    "id": "Q-CEHX-PENTEST-002",
+    "type": "mcq",
+    "module": 0,
+    "track": "pentest",
+    "difficulty": "medium",
+    "tags": [
+      "rules-of-engagement",
+      "engagement-workflow"
+    ],
+    "body": "Which of the following is the PRIMARY purpose of a Rules of Engagement (RoE) document in a penetration test?",
+    "choices": [
+      "To list the tools and exploit code the tester plans to use",
+      "To define authorized testing windows, boundaries, escalation contacts, and permitted techniques for the engagement",
+      "To provide the client's incident response plan for the tester to reference",
+      "To replace the need for a signed contract with the client"
+    ],
+    "answer": "To define authorized testing windows, boundaries, escalation contacts, and permitted techniques for the engagement",
+    "explanation": {
+      "answer": "To define authorized testing windows, boundaries, escalation contacts, and permitted techniques for the engagement.",
+      "why": "RoE operationalizes the contract: it specifies what can be tested, when, how aggressive testing may be (for example, whether disruptive tests are allowed), who to call in an emergency, and how to halt testing if something goes wrong. A tool or exploit inventory is methodology detail, not the purpose of RoE. The client's internal incident response plan is a separate artifact that testers are not typically handed in full. RoE supplements the legal contract and SOW; it does not replace them.",
+      "trap": "Confusing RoE (operational boundaries and escalation process) with a tool/technique inventory or with the legal contract itself.",
+      "memory_phrase": "RoE answers who, what, when, how far, and who to call."
+    }
+  },
+  {
+    "id": "Q-CEHX-PENTEST-003",
+    "type": "mcq",
+    "module": 0,
+    "track": "pentest",
+    "difficulty": "hard",
+    "tags": [
+      "evidence-handling",
+      "chain-of-custody"
+    ],
+    "body": "A pentester captures a screenshot proving successful exploitation of a finding on a client's staging server. Which practice BEST preserves the evidentiary value of that screenshot for the final report?",
+    "choices": [
+      "Save it with a generic filename like screenshot1.png and store it on a personal cloud drive for convenience",
+      "Capture the full screen including a visible timestamp and system identifier, then store it in the engagement's controlled evidence repository with a descriptive filename and hash",
+      "Edit the screenshot in an image editor to highlight the vulnerable field before saving it as the only copy",
+      "Describe the finding in text only and skip the screenshot to save time"
+    ],
+    "answer": "Capture the full screen including a visible timestamp and system identifier, then store it in the engagement's controlled evidence repository with a descriptive filename and hash",
+    "explanation": {
+      "answer": "Capture the full screen including a visible timestamp and system identifier, then store it in the engagement's controlled evidence repository with a descriptive filename and hash.",
+      "why": "Evidentiary value depends on being able to show when, where, and how something was captured, plus custody: where the file lived and who could access or alter it. Full-context screenshots with timestamps and system identifiers, a hash, and controlled storage support reproducibility if a client later disputes a finding. Personal, unmanaged cloud storage breaks chain of custody and may violate confidentiality terms, and a generic filename makes evidence hard to trace back to a finding. Editing the only copy destroys the unaltered original; an annotated version should always be an addition, never a replacement. Skipping the screenshot weakens the report's credibility and reproducibility.",
+      "trap": "Believing an annotated or edited image can substitute for the untouched original capture, or assuming storage location does not matter as long as the image exists somewhere.",
+      "memory_phrase": "Raw evidence first, annotate second, never overwrite the original."
+    }
+  },
+  {
+    "id": "Q-CEHX-PENTEST-004",
+    "type": "mcq",
+    "module": 0,
+    "track": "pentest",
+    "difficulty": "medium",
+    "tags": [
+      "finding-triage",
+      "severity",
+      "retest"
+    ],
+    "body": "A client remediates a finding that was originally rated Critical (unauthenticated remote code execution) by applying a vendor patch. What is the correct next step before the finding can be closed in the final report?",
+    "choices": [
+      "Close the finding immediately because the client confirmed the patch was applied",
+      "Lower the severity to Informational automatically once any fix is applied",
+      "Perform a retest to independently verify the fix mitigates the original exploitation path, then update the finding status based on the results",
+      "Remove the finding from the report entirely since it no longer reflects the current state"
+    ],
+    "answer": "Perform a retest to independently verify the fix mitigates the original exploitation path, then update the finding status based on the results",
+    "explanation": {
+      "answer": "Perform a retest to independently verify the fix mitigates the original exploitation path, then update the finding status based on the results.",
+      "why": "Self-reported remediation is not the same as verified remediation; patches can be misapplied, partially deployed, or bypassed. A retest reproduces the original steps against the fixed environment and confirms the specific exploitation path is closed before the status changes to Remediated. Taking the client's word for it or automatically downgrading severity skips independent verification. Deleting the finding destroys the audit trail; a properly retested finding is updated with a Remediated status and retest evidence, not erased from the report.",
+      "trap": "Treating 'a patch was applied' as equivalent to 'the vulnerability is confirmed fixed' without independent verification.",
+      "memory_phrase": "Trust, but retest."
+    }
+  },
+  {
+    "id": "Q-CEHX-PENTEST-005",
+    "type": "scenario",
+    "module": 0,
+    "track": "pentest",
+    "difficulty": "hard",
+    "tags": [
+      "reporting",
+      "engagement-workflow",
+      "escalation"
+    ],
+    "body": "You are two days into an authorized two-week internal network penetration test for a mid-size company. You gain access to a file share and discover what appears to be an active, ongoing compromise by an unrelated third party: unfamiliar persistence mechanisms and outbound beaconing that predate your engagement and do not match any of your own testing activity. The RoE includes an emergency-contact escalation clause for critical discoveries. Describe the correct immediate course of action and explain why continuing the planned test unchanged would be inappropriate.",
+    "answer": "Stop further exploitation of that system, avoid destructive new probing, and immediately escalate through the RoE's emergency contact channel to tell the client there are signs of an active, unrelated compromise, since this is more urgent than the planned test. Continuing the test unchanged would risk contaminating evidence of the real incident, tipping off the actual intruder, or the tester being blamed for the intruder's damage, so the client needs to be alerted immediately rather than at the final report.",
+    "explanation": {
+      "answer": "Immediately escalate via the RoE emergency contact, stop actions that could interfere with the live incident, and let the client's incident response process take over rather than waiting for the scheduled report.",
+      "why": "A pentest assumes the environment reflects normal operating conditions, so discovering signs of a real, active adversary falls outside the test's threat model and creates duties beyond the SOW. Prompt escalation lets the client contain a real breach faster, reduces the risk of the tester being mistaken for or blamed alongside the intruder, and avoids contaminating evidence needed for a future forensic investigation.",
+      "trap": "Assuming that because you are authorized to test the network, any exploitation activity found in scope must be your own or is safe to keep probing at normal test cadence, or waiting until the final report because 'it isn't one of my findings.'",
+      "memory_phrase": "Real intrusion found mid-test: stop, preserve, escalate now, don't wait for the report."
+    }
+  },
+  {
+    "id": "Q-CEHX-APPSEC-001",
+    "type": "mcq",
+    "module": 0,
+    "track": "appsec",
+    "difficulty": "medium",
+    "tags": [
+      "authz",
+      "authn",
+      "idor"
+    ],
+    "body": "A web application correctly requires users to log in with a valid session token before viewing an invoice at /invoices/{id}. However, any authenticated user can view any other user's invoice simply by changing the {id} value in the URL. What category of flaw is this?",
+    "choices": [
+      "Authentication failure, because the session token is not being validated",
+      "Broken object-level authorization, because authentication succeeds but the app never checks whether this user owns this invoice",
+      "An input validation flaw, because the ID parameter accepts unexpected values",
+      "A secrets management flaw, because invoice IDs should be encrypted"
+    ],
+    "answer": "Broken object-level authorization, because authentication succeeds but the app never checks whether this user owns this invoice",
+    "explanation": {
+      "answer": "Broken object-level authorization, because authentication succeeds but the app never checks whether this user owns this invoice.",
+      "why": "Authentication, proving who the user is, is working correctly here since the session is valid. The missing control is authorization: whether this specific user is allowed to see this specific object, commonly called an IDOR or broken object-level authorization issue. It is not an input validation bug, because the ID value itself is a well-formed, valid invoice ID; the problem is the missing ownership check, not malformed input. It is not fundamentally a secrets or encryption issue either; obscuring or randomizing IDs is only a weak mitigation, since the real fix is a server-side ownership check on every request.",
+      "trap": "Mislabeling an authorization gap as an authentication problem just because a login step exists somewhere in the flow.",
+      "memory_phrase": "Authentication asks who you are. Authorization asks what you're allowed to touch."
+    }
+  },
+  {
+    "id": "Q-CEHX-APPSEC-002",
+    "type": "mcq",
+    "module": 0,
+    "track": "appsec",
+    "difficulty": "medium",
+    "tags": [
+      "input-validation",
+      "sql-injection",
+      "secure-coding"
+    ],
+    "body": "In a secure code review, which approach to preventing SQL injection is considered the strongest primary defense?",
+    "choices": [
+      "Blocklisting known-dangerous keywords like SELECT and DROP in user input",
+      "Using parameterized queries or prepared statements so user input is always treated as data, never as executable SQL syntax",
+      "Encoding all apostrophes in user input as HTML entities before building the query string",
+      "Relying on the database account used by the application having read-only permissions"
+    ],
+    "answer": "Using parameterized queries or prepared statements so user input is always treated as data, never as executable SQL syntax",
+    "explanation": {
+      "answer": "Using parameterized queries or prepared statements so user input is always treated as data, never as executable SQL syntax.",
+      "why": "Parameterized queries structurally separate code from data, so injected syntax cannot change query logic, which closes the root cause. Keyword blocklists are well known to be bypassable through case variation, encoding, comments, or synonyms, and are considered a weak anti-pattern. HTML-entity encoding defends against a completely different context, cross-site scripting in HTML output, not SQL syntax injection. A read-only database account is a useful defense-in-depth layer that limits damage, but it does not stop injection and does not prevent data exfiltration through SELECT-based injection, so it is a mitigation rather than the primary fix.",
+      "trap": "Treating a compensating control such as a read-only database account, or a mismatched-context encoding scheme, as if it were the root-cause fix.",
+      "memory_phrase": "Parameterize the query, don't sanitize the symptoms."
+    }
+  },
+  {
+    "id": "Q-CEHX-APPSEC-003",
+    "type": "mcq",
+    "module": 0,
+    "track": "appsec",
+    "difficulty": "medium",
+    "tags": [
+      "secrets-management",
+      "code-review"
+    ],
+    "body": "During a code review you find a cloud storage access key hardcoded as a string literal directly in a committed source file. The key still works. What is the MOST complete remediation?",
+    "choices": [
+      "Delete the line containing the key in the latest commit and merge the fix",
+      "Revoke and rotate the exposed key immediately, then move configuration to a secrets manager or environment variable, and treat the key as compromised even after it is removed from the latest code",
+      "Add the file containing the key to .gitignore going forward",
+      "Base64-encode the key in place so it is not human-readable in the source"
+    ],
+    "answer": "Revoke and rotate the exposed key immediately, then move configuration to a secrets manager or environment variable, and treat the key as compromised even after it is removed from the latest code",
+    "explanation": {
+      "answer": "Revoke and rotate the exposed key immediately, then move configuration to a secrets manager or environment variable, and treat the key as compromised even after it is removed from the latest code.",
+      "why": "Once a secret is committed, it typically remains recoverable from version control history, and possibly forks, CI logs, or cached copies, even after being deleted from the latest commit, so rotation is mandatory rather than optional. Deleting only the current line, or adding the file to .gitignore going forward, does not remove the secret from history and leaves the still-valid key exposed. Base64 is encoding, not protection; it is trivially reversible and provides no real confidentiality.",
+      "trap": "Believing that removing a secret from the current version of a file also removes it from git history, or that obfuscation such as Base64 is equivalent to protection.",
+      "memory_phrase": "Committed once, compromised forever, rotate, don't just delete."
+    }
+  },
+  {
+    "id": "Q-CEHX-APPSEC-004",
+    "type": "mcq",
+    "module": 0,
+    "track": "appsec",
+    "difficulty": "hard",
+    "tags": [
+      "dependency-risk",
+      "supply-chain"
+    ],
+    "body": "A security scan flags a critical vulnerability in a package that your application does not import directly, but that is pulled in as a dependency of a dependency several levels deep. What is generally the BEST first step?",
+    "choices": [
+      "Ignore the finding since your code never calls that package directly",
+      "Determine whether the vulnerable code path is actually reachable in your build, and update or pin the transitive dependency to a patched version if it is",
+      "Remove the top-level dependency entirely without further investigation to eliminate the risk",
+      "Wait for the maintainer of your direct dependency to release an update before taking any action"
+    ],
+    "answer": "Determine whether the vulnerable code path is actually reachable in your build, and update or pin the transitive dependency to a patched version if it is",
+    "explanation": {
+      "answer": "Determine whether the vulnerable code path is actually reachable in your build, and update or pin the transitive dependency to a patched version if it is.",
+      "why": "Transitive vulnerabilities still ship inside your final build artifact, so not importing the package directly is not a valid reason to ignore it; reachability analysis, whether the vulnerable function is actually invoked in your app's execution paths, should drive urgency, but the dependency is present in your supply chain regardless. Most modern package managers support pinning or overriding a transitive version without waiting on the direct dependency's maintainer, so passively waiting is unnecessarily slow when a safe override exists. Removing the top-level dependency outright without investigation risks breaking functionality and may not even be necessary if a targeted override resolves the issue.",
+      "trap": "Assuming indirect inclusion means indirect responsibility, or assuming the only fix path is waiting on an upstream maintainer.",
+      "memory_phrase": "It's in your build either way, pin the transitive fix, don't wait it out."
+    }
+  },
+  {
+    "id": "Q-CEHX-APPSEC-005",
+    "type": "scenario",
+    "module": 0,
+    "track": "appsec",
+    "difficulty": "hard",
+    "tags": [
+      "secure-fix",
+      "code-review",
+      "authz"
+    ],
+    "body": "A code review turns up this toy pseudocode for an internal admin API endpoint:\n\n```\nfunction deleteUser(request):\n    userIdToDelete = request.params.id\n    db.deleteUser(userIdToDelete)\n    return \"deleted\"\n```\n\nThe endpoint requires a valid logged-in session to be called at all. Identify the primary security flaw and describe the fix you would recommend, without providing exploit steps.",
+    "answer": "The primary flaw is missing authorization: the function only checks that a session exists, which is authentication, but never verifies that the calling user actually holds a role or permission entitled to delete users, so any authenticated user could delete any account. The fix is to add an explicit server-side authorization check, ideally through a centralized policy or middleware, confirming the caller's permission for this specific action before calling db.deleteUser, and to fail closed by denying the action if the check is missing or inconclusive.",
+    "explanation": {
+      "answer": "Add a server-side role or permission check confirming the caller is authorized to delete users before performing the deletion, and fail closed by default.",
+      "why": "The pseudocode conflates 'logged in' with 'allowed to perform this specific privileged action,' a classic broken access control pattern often called missing function-level authorization. Session validity only proves identity, not entitlement. Centralizing the check rather than scattering ad hoc checks across endpoints, and defaulting to deny, reduce the chance that a future endpoint forgets the same protection.",
+      "trap": "Assuming that because a session or login check exists somewhere in the app, every sensitive endpoint is automatically protected, or treating an authentication check as if it were an authorization check.",
+      "memory_phrase": "Logged in is not the same as allowed."
+    }
+  },
+  {
+    "id": "Q-CEHX-CLOUD-001",
+    "type": "mcq",
+    "module": 0,
+    "track": "cloud",
+    "difficulty": "medium",
+    "tags": [
+      "iam",
+      "least-privilege"
+    ],
+    "body": "An IAM review finds that a CI/CD pipeline's service account has been granted full administrator permissions across the entire cloud account, even though the pipeline only needs to deploy code to one specific storage bucket and one compute service. What is the BEST recommendation?",
+    "choices": [
+      "Leave the permissions as-is since admin access guarantees the pipeline will never fail due to permissions errors",
+      "Scope the service account down to a custom policy granting only the specific actions needed on the specific storage bucket and compute service resources it uses",
+      "Remove all permissions from the service account so it has zero access by default",
+      "Share the organization's root or owner account credentials with the pipeline instead of using a service account"
+    ],
+    "answer": "Scope the service account down to a custom policy granting only the specific actions needed on the specific storage bucket and compute service resources it uses",
+    "explanation": {
+      "answer": "Scope the service account down to a custom policy granting only the specific actions needed on the specific storage bucket and compute service resources it uses.",
+      "why": "This directly applies least privilege: grant only what is needed for the job, scoped to the specific resources involved. Broad admin access turns a compromised CI/CD pipeline, a common real-world attack path since pipelines often run untrusted build scripts or third-party actions, into a full account takeover. Removing all access breaks the pipeline's actual function instead of right-sizing it. Using root or owner credentials directly is worse than the current state, since it removes accountability and auditability and violates the basic principle of using dedicated, scoped identities for automation.",
+      "trap": "Treating 'give it admin so it never breaks' as a reasonable tradeoff, or swinging to the opposite extreme of removing all access instead of scoping it correctly.",
+      "memory_phrase": "Scope the key to the door it actually needs to open."
+    }
+  },
+  {
+    "id": "Q-CEHX-CLOUD-002",
+    "type": "mcq",
+    "module": 0,
+    "track": "cloud",
+    "difficulty": "medium",
+    "tags": [
+      "public-exposure",
+      "storage-config"
+    ],
+    "body": "During a cloud configuration review, you find an object storage bucket used to hold customer-uploaded documents is configured with public read access enabled at the bucket level, and its contents are indexed by internet search engines. The application only ever needs the backend service to read these files. What is the most appropriate remediation?",
+    "choices": [
+      "Leave public read enabled but ask engineering to rename the bucket to something less guessable",
+      "Disable public access on the bucket, restrict access to the specific backend service identity, and use short-lived signed URLs if end users need temporary direct access to specific files",
+      "Add a password requirement to the company's website login page",
+      "Enable public write access as well, to simplify future uploads from other systems"
+    ],
+    "answer": "Disable public access on the bucket, restrict access to the specific backend service identity, and use short-lived signed URLs if end users need temporary direct access to specific files",
+    "explanation": {
+      "answer": "Disable public access on the bucket, restrict access to the specific backend service identity, and use short-lived signed URLs if end users need temporary direct access to specific files.",
+      "why": "Public read on a bucket holding customer documents is a direct data exposure risk, one of the most common real-world causes of cloud data breaches, and search-engine indexing confirms the exposure is already actively discoverable. The fix is removing public access and granting least-privilege access to only the identities that need it, using time-limited signed URLs for any legitimate temporary direct access instead of blanket public exposure. Renaming the bucket is security through obscurity and does not fix the access control failure, since enumeration and already-indexed links would still work. Website login is unrelated to storage-layer access control, and enabling public write would make the exposure dramatically worse.",
+      "trap": "Confusing obscurity, such as an unguessable name, with an actual access control fix, or assuming an unrelated control like site login mitigates a storage misconfiguration.",
+      "memory_phrase": "A hidden public bucket is still a public bucket."
+    }
+  },
+  {
+    "id": "Q-CEHX-CLOUD-003",
+    "type": "mcq",
+    "module": 0,
+    "track": "cloud",
+    "difficulty": "hard",
+    "tags": [
+      "logging",
+      "monitoring",
+      "detection"
+    ],
+    "body": "A cloud security assessment finds that account-level API activity logging, the service that records who called which API, when, and from where, has been disabled in the production account for the past six months, with no equivalent logging in place elsewhere. Why is this significant from a security standpoint, independent of any specific vulnerability?",
+    "choices": [
+      "It is not significant, since logging only affects billing accuracy",
+      "It removes the audit trail needed to detect unauthorized activity, investigate incidents, and support forensic reconstruction of any compromise that occurred during that window",
+      "It only matters if the account has more than one administrator",
+      "It is significant only for compliance paperwork, not for actual security outcomes"
+    ],
+    "answer": "It removes the audit trail needed to detect unauthorized activity, investigate incidents, and support forensic reconstruction of any compromise that occurred during that window",
+    "explanation": {
+      "answer": "It removes the audit trail needed to detect unauthorized activity, investigate incidents, and support forensic reconstruction of any compromise that occurred during that window.",
+      "why": "API activity logs are a foundational detective control; without them, defenders cannot reliably answer what happened, who did it, and when if something goes wrong, and six months without logging means a compromise in that window could be effectively unprovable and unscopable afterward. This is a real security gap regardless of whether a specific exploit is known, so framing it as only a billing feature misses the point. It matters regardless of administrator count, since any single compromised identity, human or automated, benefits from the same blind spot. Compliance frameworks require logging precisely because it drives real detection and response outcomes, so treating it as paperwork only misunderstands its purpose.",
+      "trap": "Treating a foundational detective control as a nice-to-have or a purely administrative checkbox rather than as core incident-detection infrastructure.",
+      "memory_phrase": "No logs, no evidence, no story of what happened."
+    }
+  },
+  {
+    "id": "Q-CEHX-CLOUD-004",
+    "type": "scenario",
+    "module": 0,
+    "track": "cloud",
+    "difficulty": "hard",
+    "tags": [
+      "encryption",
+      "secrets-management",
+      "config-review"
+    ],
+    "body": "A cloud configuration review of a fictional company's managed database finds: (1) data is encrypted at rest using the provider's default encryption, (2) client applications connect to the database using plaintext, unencrypted connections over the internal network, and (3) the database password is stored in a plaintext configuration file baked into the application's container image. Identify the two additional issues beyond encryption at rest that need remediation, and briefly state the fix for each.",
+    "answer": "First, data in transit is not encrypted: connections between the application and database should require TLS so that credentials and query data cannot be read by anyone with visibility into the internal network, so the database should enforce TLS-only connections. Second, the database password is hardcoded into a plaintext file baked into the container image, which is effectively exposed to anyone who can pull that image, so it should be removed from the image, injected at runtime from a secrets manager, and rotated since the existing value must be treated as already compromised.",
+    "explanation": {
+      "answer": "Enforce encryption in transit with TLS for all database connections, and move the database credential out of the container image into a secrets manager with rotation of the already-exposed password.",
+      "why": "Encryption at rest only protects data on disk from someone who steals the physical or virtual storage; it does nothing for data moving across the network, so plaintext internal connections remain interceptable by anyone with visibility into that network segment, such as a compromised adjacent host. Separately, secrets baked into container images are effectively accessible to anyone who can pull that image, including through registry access or cached layers, so the credential must be treated as exposed and rotated, with future credentials injected at runtime instead of stored in the image.",
+      "trap": "Assuming encrypted at rest covers all encryption needs, or assuming a config file inside a container image is private just because it is not in the source code repository.",
+      "memory_phrase": "At rest is not in transit, and inside the image is not a secret."
+    }
+  },
+  {
+    "id": "Q-CEHX-SOC-001",
+    "type": "mcq",
+    "module": 0,
+    "track": "soc",
+    "difficulty": "medium",
+    "tags": [
+      "timeline",
+      "log-analysis"
+    ],
+    "body": "While building an incident timeline from four separate log sources (firewall, endpoint, authentication server, and proxy), an analyst notices each system reports timestamps in its own local timezone. What must the analyst do FIRST before sequencing events across these sources?",
+    "choices": [
+      "Ignore timestamps entirely and rely only on the order log lines were reviewed",
+      "Normalize all timestamps to a single consistent time reference, such as UTC, before attempting to sequence events across sources",
+      "Only use the firewall log timestamps since firewalls are considered the most trustworthy source",
+      "Assume all systems are already synchronized and proceed with sequencing as-is"
+    ],
+    "answer": "Normalize all timestamps to a single consistent time reference, such as UTC, before attempting to sequence events across sources",
+    "explanation": {
+      "answer": "Normalize all timestamps to a single consistent time reference, such as UTC, before attempting to sequence events across sources.",
+      "why": "Cross-source correlation is only valid if events are compared on the same time reference; mismatched timezones or clock drift can make an attacker's action appear to happen before or after a related event, producing a false timeline and wrong conclusions about cause and effect. Discarding timestamps throws away the most precise sequencing data available. Trusting a single source exclusively discards evidence needed to correlate activity across systems, such as tying a login on the authentication server to a related proxy request. Assuming synchronization without verifying it is a common real-world root cause of timeline errors.",
+      "trap": "Assuming logging infrastructure is automatically time-synchronized, or picking one trusted source and ignoring the rest instead of normalizing all of them.",
+      "memory_phrase": "Normalize the clocks before you trust the sequence."
+    }
+  },
+  {
+    "id": "Q-CEHX-SOC-002",
+    "type": "mcq",
+    "module": 0,
+    "track": "soc",
+    "difficulty": "medium",
+    "tags": [
+      "indicators-of-compromise",
+      "detection"
+    ],
+    "body": "Which of the following, observed together on a single endpoint, is the STRONGEST combined indicator of compromise warranting escalation, compared to routine noise?",
+    "choices": [
+      "A single failed login attempt for one user account during business hours",
+      "A scheduled task created under a SYSTEM-level context immediately after an unusual outbound connection to a rare, newly seen external destination, followed by a spike in outbound data volume",
+      "A user's browser cache clearing during a normal end-of-day shutdown",
+      "A software update service checking for new versions overnight"
+    ],
+    "answer": "A scheduled task created under a SYSTEM-level context immediately after an unusual outbound connection to a rare, newly seen external destination, followed by a spike in outbound data volume",
+    "explanation": {
+      "answer": "A scheduled task created under a SYSTEM-level context immediately after an unusual outbound connection to a rare, newly seen external destination, followed by a spike in outbound data volume.",
+      "why": "This option combines several independently weak signals into a coherent, suspicious chain consistent with establishing persistence through a scheduled task, plus command-and-control or exfiltration behavior through a rare destination followed by a data volume spike; correlating signals like this is what raises confidence far above any single log line. A single failed login is routine noise on its own, and routine cache clearing or scheduled update checks are expected, benign background activity in most environments.",
+      "trap": "Escalating on a single, common, low-signal event in isolation while under-weighting a correlated chain of otherwise individually minor signals that together tell a coherent story.",
+      "memory_phrase": "One weird thing is noise. A chain of weird things is a story."
+    }
+  },
+  {
+    "id": "Q-CEHX-SOC-003",
+    "type": "mcq",
+    "module": 0,
+    "track": "soc",
+    "difficulty": "hard",
+    "tags": [
+      "scoping",
+      "lateral-movement"
+    ],
+    "body": "An analyst confirms that Workstation-A was compromised through a malicious email attachment. Logs show Workstation-A authenticated to File-Server-B using a domain admin credential shortly afterward, a credential that workstation's normal user should never need or use. What is the correct next step in scoping the incident?",
+    "choices": [
+      "Consider the incident fully scoped to Workstation-A alone, since that is where the initial infection occurred",
+      "Treat File-Server-B and the domain admin credential itself as potentially compromised too, and investigate what that credential and File-Server-B accessed afterward, expanding scope as new evidence warrants",
+      "Wait until Workstation-A is fully cleaned before checking any other systems",
+      "Only check systems that run the same operating system as Workstation-A"
+    ],
+    "answer": "Treat File-Server-B and the domain admin credential itself as potentially compromised too, and investigate what that credential and File-Server-B accessed afterward, expanding scope as new evidence warrants",
+    "explanation": {
+      "answer": "Treat File-Server-B and the domain admin credential itself as potentially compromised too, and investigate what that credential and File-Server-B accessed afterward, expanding scope as new evidence warrants.",
+      "why": "Use of an unexpected, highly privileged credential from a compromised host is a strong lateral-movement signal, so scope must expand to follow both the credential and the destination system, since either could now be a foothold. Stopping scope at the initial host ignores clear evidence of onward movement. Delaying investigation of other systems until cleanup finishes lets an active intruder keep operating elsewhere while the team focuses narrowly. Limiting scope by operating system is an arbitrary criterion unrelated to how compromise actually spreads through credentials and trust relationships.",
+      "trap": "Anchoring scope to the first infected host only and failing to follow credential and lateral-movement evidence to everywhere it leads.",
+      "memory_phrase": "Follow the credential, not just the first host."
+    }
+  },
+  {
+    "id": "Q-CEHX-SOC-004",
+    "type": "mcq",
+    "module": 0,
+    "track": "soc",
+    "difficulty": "medium",
+    "tags": [
+      "triage",
+      "alert-prioritization"
+    ],
+    "body": "A SOC analyst's queue has four new alerts at the same time. Which should generally be triaged FIRST?",
+    "choices": [
+      "A low-severity alert for a single blocked port scan attempt from an external address that was automatically dropped by the firewall",
+      "A high-severity alert indicating a domain admin account authenticated successfully from a new external geographic location never seen before for that account",
+      "An informational alert that a routine vulnerability scan completed successfully",
+      "A medium-severity alert for a user's third failed password attempt within an hour, within normal thresholds"
+    ],
+    "answer": "A high-severity alert indicating a domain admin account authenticated successfully from a new external geographic location never seen before for that account",
+    "explanation": {
+      "answer": "A high-severity alert indicating a domain admin account authenticated successfully from a new external geographic location never seen before for that account.",
+      "why": "Triage priority follows potential impact combined with likelihood: a successful authentication, not merely an attempt, on a highly privileged account from a location with no prior history for that account has high potential impact and a credible signal of account compromise, warranting immediate attention. A blocked, automatically dropped scan already failed to achieve anything and is common background noise. A completed vulnerability scan is expected, routine activity, and a handful of failed logins within normal thresholds is common and lower urgency than a privileged account's unusual successful login.",
+      "trap": "Prioritizing by superficial familiarity, such as 'failed login' sounding alarming, rather than by actual severity times likelihood of real impact, and undervaluing a successful, anomalous, high-privilege event.",
+      "memory_phrase": "Successful and privileged and anomalous beats blocked and routine."
+    }
+  },
+  {
+    "id": "Q-CEHX-SOC-005",
+    "type": "scenario",
+    "module": 0,
+    "track": "soc",
+    "difficulty": "hard",
+    "tags": [
+      "containment",
+      "log-analysis",
+      "soc-workflow"
+    ],
+    "body": "Synthetic log excerpt from a fictional company: endpoint WKSTN-07 executes an unfamiliar script at 02:14 UTC. At 02:15 UTC, WKSTN-07 initiates repeated outbound connections to a previously unseen external address, 203.0.113.44 (a documentation-range address used here only as a placeholder), on an unusual port. At 02:20 UTC, an internal server, FILESHARE-02, shows a new inbound connection from WKSTN-07 that it has never received traffic from before, followed by a large volume of file read activity. Based only on this evidence, propose one immediate, proportionate containment action and explain what you would confirm before taking it.",
+    "answer": "Isolate WKSTN-07 from the network, for example through EDR quarantine or disabling its switch port, to stop further command-and-control traffic and lateral access to FILESHARE-02, while keeping the host powered on and intact for forensic analysis rather than wiping or rebuilding it immediately. Before or during isolation, quickly confirm the business impact and notify the asset owner per the incident process, and check other endpoints for the same script or destination indicators so containment scope is not limited to just one host.",
+    "explanation": {
+      "answer": "Isolate or quarantine WKSTN-07 from the network while preserving it for forensics, and confirm business impact and check for the same indicators elsewhere before or while isolating.",
+      "why": "The evidence chain, an unfamiliar script execution followed by anomalous outbound command-and-control-like traffic followed by unprecedented lateral access with bulk file reads, points to an actively compromised host accessing sensitive data. Network isolation is the standard proportionate first step that stops ongoing damage without destroying evidence, unlike powering off, which can lose volatile memory evidence, or wiping, which destroys the investigation entirely. Confirming impact and ownership avoids an uncoordinated action causing unnecessary business disruption, and checking other hosts for the same indicators prevents under-scoping containment to just one machine.",
+      "trap": "Jumping straight to a destructive response such as powering off or reimaging immediately, which feels decisive but destroys volatile evidence, or containing only the first host without checking whether the same indicators exist elsewhere.",
+      "memory_phrase": "Isolate to stop it, don't destroy it, evidence first, then eradicate."
+    }
+  },
+  {
+    "id": "Q-CEHX-IR-001",
+    "type": "mcq",
+    "module": 0,
+    "track": "ir",
+    "difficulty": "medium",
+    "tags": [
+      "ir-lifecycle"
+    ],
+    "body": "In the standard incident response lifecycle (Preparation, Identification, Containment, Eradication, Recovery, Lessons Learned), removing the attacker's malware and backdoors and closing the initial vulnerability that allowed access belongs to which phase?",
+    "choices": [
+      "Identification",
+      "Containment",
+      "Eradication",
+      "Lessons Learned"
+    ],
+    "answer": "Eradication",
+    "explanation": {
+      "answer": "Eradication.",
+      "why": "Eradication is specifically about removing the root cause: malware, backdoors, attacker-created accounts, and the vulnerability that enabled initial access, after the incident has already been contained. Identification is about detecting and confirming that an incident occurred, before removal begins. Containment is about limiting spread and impact, such as isolating hosts, and typically happens before full removal, since stopping the bleeding comes first. Lessons Learned happens after recovery and focuses on process improvement, not technical removal.",
+      "trap": "Confusing containment, limiting the damage and stopping the spread, with eradication, removing the actual cause, since both can involve touching the compromised system.",
+      "memory_phrase": "Contain to stop the spread. Eradicate to remove the cause."
+    }
+  },
+  {
+    "id": "Q-CEHX-IR-002",
+    "type": "mcq",
+    "module": 0,
+    "track": "ir",
+    "difficulty": "hard",
+    "tags": [
+      "containment",
+      "decision-making"
+    ],
+    "body": "During an active ransomware incident, a critical production database server is actively encrypting files and is also the only system currently processing customer transactions. Isolating it immediately will stop the encryption from spreading further but will also interrupt live customer transactions. What principle should primarily guide this containment decision?",
+    "choices": [
+      "Always prioritize business availability over security actions, so the server should stay online no matter what",
+      "Always isolate immediately with no analysis, since any delay is automatically unacceptable in every incident",
+      "Make a risk-based decision, weighing the cost of continued spread or data loss against the cost of the outage, ideally per a pre-defined IR plan or with input from business stakeholders, and act decisively once the call is made",
+      "Wait for law enforcement to make the containment decision before taking any technical action"
+    ],
+    "answer": "Make a risk-based decision, weighing the cost of continued spread or data loss against the cost of the outage, ideally per a pre-defined IR plan or with input from business stakeholders, and act decisively once the call is made",
+    "explanation": {
+      "answer": "Make a risk-based decision, weighing the cost of continued spread or data loss against the cost of the outage, ideally per a pre-defined IR plan or with input from business stakeholders, and act decisively once the call is made.",
+      "why": "Real containment decisions involve tradeoffs, and mature IR practice pre-negotiates these tradeoffs in an IR plan or playbook with business stakeholder input, so responders are not guessing under pressure, while still acting quickly once the call is made. Treating availability as always paramount could let ransomware spread further and cause larger eventual damage and downtime. Treating immediate isolation with zero analysis as an absolute rule ignores that business impact legitimately matters and that this exact tradeoff is why IR plans define decision authority in advance. Waiting for law enforcement before taking any technical containment step is not realistic, since law enforcement engagement is usually parallel to, not a prerequisite for, technical containment.",
+      "trap": "Turning a genuine risk-based tradeoff into a rigid absolute rule in either direction, or outsourcing a time-critical technical decision to an external party that is not positioned to make it in time.",
+      "memory_phrase": "Containment is a weighed decision, not a reflex, but make it fast."
+    }
+  },
+  {
+    "id": "Q-CEHX-IR-003",
+    "type": "scenario",
+    "module": 0,
+    "track": "ir",
+    "difficulty": "hard",
+    "tags": [
+      "evidence-preservation",
+      "containment"
+    ],
+    "body": "A responder wants to contain a compromised Linux server suspected of being used for data exfiltration by immediately powering it off to stop the activity. What evidence-preservation concern does this raise, and what alternative containment approach would better balance stopping the activity with preserving investigative value?",
+    "answer": "Powering off the server immediately destroys volatile evidence in memory, such as running processes, active network connections, and in-memory credentials or encryption keys, none of which can be recovered afterward, which can significantly limit root-cause analysis. A better approach is to contain the server by isolating it at the network layer while leaving it powered on, and to capture volatile memory, process, and network-state evidence first if the IR plan allows it, preserving both containment and investigative value.",
+    "explanation": {
+      "answer": "Prefer network-layer isolation, and capturing volatile memory and state evidence first, over an immediate power-off, to avoid losing RAM-resident evidence.",
+      "why": "Volatile evidence such as RAM contents, active connections, and running processes is lost the instant a system loses power, and it often contains exactly the artifacts needed to understand scope and root cause, such as in-memory-only malware, active command-and-control sessions, or encryption keys. Network isolation achieves the containment goal of stopping further exfiltration or spread without immediately destroying that evidence, giving responders the option to capture volatile data first.",
+      "trap": "Treating an immediate power-off as universally the safest, fastest containment choice without weighing the evidentiary cost of losing volatile memory data.",
+      "memory_phrase": "Pulling the plug pulls the evidence too, isolate first, capture memory before you kill power."
+    }
+  },
+  {
+    "id": "Q-CEHX-TM-001",
+    "type": "mcq",
+    "module": 0,
+    "track": "threat-model",
+    "difficulty": "medium",
+    "tags": [
+      "stride",
+      "threat-categories"
+    ],
+    "body": "In the STRIDE threat modeling framework, a threat where an attacker forges a request to appear as if it came from a legitimate, trusted user, without necessarily viewing or altering data, primarily maps to which category?",
+    "choices": [
+      "Spoofing",
+      "Repudiation",
+      "Information Disclosure",
+      "Denial of Service"
+    ],
+    "answer": "Spoofing",
+    "explanation": {
+      "answer": "Spoofing.",
+      "why": "Spoofing is specifically about illegitimately claiming or forging someone else's identity so an action appears to originate from a trusted party. Repudiation is about a party denying they performed an action, and the system lacking sufficient proof to counter that denial, a related but distinct concept from forging identity in the first place. Information Disclosure concerns exposing data to parties who should not see it, which is not the threat described. Denial of Service concerns availability being degraded or denied, unrelated to identity forgery.",
+      "trap": "Confusing spoofing, forging identity, with repudiation, denying having done something, since both relate to questions of who really did this.",
+      "memory_phrase": "Spoofing forges who you are. Repudiation denies what you did."
+    }
+  },
+  {
+    "id": "Q-CEHX-TM-002",
+    "type": "mcq",
+    "module": 0,
+    "track": "threat-model",
+    "difficulty": "medium",
+    "tags": [
+      "trust-boundaries",
+      "architecture"
+    ],
+    "body": "In a data flow diagram used for threat modeling, what does a trust boundary represent?",
+    "choices": [
+      "The physical distance between two servers in different data centers",
+      "A point where data or a request crosses between components that operate under different levels of trust or privilege, such as from the public internet into an internal network, or from a regular user process into an admin process",
+      "The maximum allowed size of a network packet",
+      "A firewall rule that permits all outbound traffic"
+    ],
+    "answer": "A point where data or a request crosses between components that operate under different levels of trust or privilege, such as from the public internet into an internal network, or from a regular user process into an admin process",
+    "explanation": {
+      "answer": "A point where data or a request crosses between components that operate under different levels of trust or privilege, such as from the public internet into an internal network, or from a regular user process into an admin process.",
+      "why": "Trust boundaries mark where incoming data or requests should no longer be trusted at face value and must be validated, authenticated, or authorized, because the components on either side operate at different trust levels; these boundaries are exactly where threat modelers focus attention, since crossing them is where many real vulnerabilities live. Physical distance and packet size are unrelated networking or infrastructure details, not trust concepts. A permissive outbound firewall rule is one specific configuration choice, not the general architectural concept of a trust boundary.",
+      "trap": "Confusing a trust boundary, a conceptual trust-level transition, with a physical or purely network-configuration detail.",
+      "memory_phrase": "Trust boundary: where you stop assuming and start verifying."
+    }
+  },
+  {
+    "id": "Q-CEHX-TM-003",
+    "type": "scenario",
+    "module": 0,
+    "track": "threat-model",
+    "difficulty": "hard",
+    "tags": [
+      "mitigation-prioritization",
+      "risk"
+    ],
+    "body": "A threat model for a fictional internal HR application identifies two mitigations the team cannot both complete before the next release given limited engineering time: (1) adding multi-factor authentication for HR admin accounts that can view all employee salary and personal data, and (2) improving the visual styling of an internal error page that occasionally shows a generic stack trace to authenticated internal employees only. Which should be prioritized, and what reasoning should drive that prioritization in a threat modeling exercise?",
+    "answer": "Prioritize adding multi-factor authentication for HR admin accounts. Threat modeling prioritization should be risk-based, weighing impact, here the breadth and sensitivity of data exposed across all employees, and likelihood, since credential-based attacks against admin accounts are common and high value, against the cost of mitigation. The stack-trace styling issue has low impact, since it is limited, low-sensitivity information disclosure to already-authenticated internal users rather than attacker-facing external exposure, and is far less urgent than a control protecting highly sensitive data behind a privileged account from credential compromise.",
+    "explanation": {
+      "answer": "Prioritize MFA for HR admin accounts, because it addresses a much higher-impact, higher-likelihood risk than the low-severity internal error page issue.",
+      "why": "Mitigation prioritization in threat modeling should follow risk, impact multiplied by likelihood, rather than effort or visibility alone. A control protecting broad, highly sensitive data behind a privileged account addresses a far more severe potential outcome than a cosmetic, low-sensitivity internal disclosure limited to already-authenticated internal users. Effective threat modeling explicitly ranks mitigations this way so limited engineering time goes to the highest-risk gaps first.",
+      "trap": "Treating all identified issues as equally worth fixing next, or letting a highly visible but low-impact cosmetic issue crowd out a less visible but far more severe access-control gap.",
+      "memory_phrase": "Fix the highest risk first, not the most visible."
+    }
+  }
+]

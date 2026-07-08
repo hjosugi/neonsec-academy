@@ -1,0 +1,659 @@
+[
+  {
+    "id": "Q-CEH-10-001",
+    "type": "mcq",
+    "module": 10,
+    "difficulty": "easy",
+    "tags": ["dos-vs-ddos", "fundamentals"],
+    "body": "What is the key distinguishing factor between a Denial-of-Service (DoS) attack and a Distributed Denial-of-Service (DDoS) attack?",
+    "choices": [
+      "A DoS attack targets availability while a DDoS attack targets confidentiality",
+      "A DoS attack originates from a single source, while a DDoS attack originates from multiple coordinated sources",
+      "A DoS attack only affects web servers, while a DDoS attack only affects DNS servers",
+      "A DoS attack is always volumetric, while a DDoS attack is always application-layer"
+    ],
+    "answer": "A DoS attack originates from a single source, while a DDoS attack originates from multiple coordinated sources",
+    "explanation": {
+      "answer": "DDoS attacks are launched from many distributed systems (often a botnet) simultaneously, whereas a DoS attack comes from one attacking host.",
+      "why": "The single-source vs. multi-source distinction is the defining characteristic. Both DoS and DDoS target availability, not confidentiality, so option A is wrong. Both attack types can target any network service, not just web or DNS servers, ruling out option C. Either attack type can use volumetric, protocol, or application-layer techniques, so option D incorrectly limits each to one category.",
+      "trap": "Candidates often assume 'distributed' refers to the targets being spread out, when it actually refers to the attack sources.",
+      "memory_phrase": "DoS = one attacker, one gun; DDoS = an army of borrowed guns (the botnet)."
+    }
+  },
+  {
+    "id": "Q-CEH-10-002",
+    "type": "mcq",
+    "module": 10,
+    "difficulty": "easy",
+    "tags": ["botnet", "ddos", "command-and-control"],
+    "body": "In the context of DDoS attacks, what is a 'botnet'?",
+    "choices": [
+      "A specialized firewall appliance that filters flood traffic",
+      "A network of compromised devices ('bots' or 'zombies') remotely controlled by an attacker to perform coordinated actions",
+      "A honeypot designed to lure attackers away from production servers",
+      "A protocol used exclusively for encrypted DNS amplification"
+    ],
+    "answer": "A network of compromised devices ('bots' or 'zombies') remotely controlled by an attacker to perform coordinated actions",
+    "explanation": {
+      "answer": "A botnet is a collection of malware-infected devices (zombies) that a botmaster controls, typically through a command-and-control (C&C) channel, to launch coordinated attacks such as DDoS floods.",
+      "why": "Option A describes a defensive appliance, not an attack resource. Option C describes a honeypot, an unrelated defensive decoy. Option D is a fabricated, non-existent concept — DNS amplification is a technique, not a protocol tied to botnets specifically.",
+      "trap": "Some candidates confuse 'botnet' with the DDoS attack itself; the botnet is the infrastructure/weapon, the flood is the action performed with it.",
+      "memory_phrase": "Bot-net = a net full of robot zombies awaiting the botmaster's command."
+    }
+  },
+  {
+    "id": "Q-CEH-10-003",
+    "type": "mcq",
+    "module": 10,
+    "difficulty": "easy",
+    "tags": ["syn-flood", "tcp-handshake", "protocol-attack"],
+    "body": "A SYN flood attack achieves denial of service by exploiting which part of TCP communication?",
+    "choices": [
+      "The DNS resolution process before a connection begins",
+      "The three-way handshake, by leaving many connections half-open",
+      "The TLS certificate validation chain",
+      "The final FIN/ACK teardown of an established session"
+    ],
+    "answer": "The three-way handshake, by leaving many connections half-open",
+    "explanation": {
+      "answer": "SYN flood attacks send a large number of TCP SYN packets and never complete the handshake with a final ACK, leaving numerous half-open connections that exhaust the target's connection backlog table.",
+      "why": "DNS resolution (A) and TLS validation (C) occur outside of, or after, the TCP handshake and aren't what a SYN flood targets. The FIN/ACK teardown (D) is the connection-closing process, not the opening handshake that SYN floods abuse.",
+      "trap": "Candidates sometimes confuse SYN floods with attacks on encryption (TLS) rather than the underlying transport-layer handshake.",
+      "memory_phrase": "SYN flood = knock, knock, knock... and never open the door (never send the final ACK)."
+    }
+  },
+  {
+    "id": "Q-CEH-10-004",
+    "type": "mcq",
+    "module": 10,
+    "difficulty": "easy",
+    "tags": ["volumetric-attack", "taxonomy", "bandwidth"],
+    "body": "What is the primary goal of a volumetric DoS/DDoS attack?",
+    "choices": [
+      "To exploit a specific application logic flaw with a handful of crafted requests",
+      "To saturate available network bandwidth with a massive volume of traffic",
+      "To silently exfiltrate confidential data from the target",
+      "To decrypt TLS traffic between the client and server"
+    ],
+    "answer": "To saturate available network bandwidth with a massive volume of traffic",
+    "explanation": {
+      "answer": "Volumetric attacks (e.g., UDP floods, ICMP floods, amplification floods) aim to consume all available bandwidth so legitimate traffic cannot reach the target, typically measured in bits per second.",
+      "why": "Option A describes an application-layer attack, which uses low traffic volume but targets processing logic instead. Options C and D describe confidentiality attacks (data theft/decryption), not denial-of-service, which is an availability attack.",
+      "trap": "Because volumetric attacks 'feel' the most dramatic, learners sometimes assume all DDoS attacks are volumetric — but protocol and application-layer attacks can achieve DoS with far less bandwidth.",
+      "memory_phrase": "Volumetric = flood the pipe until nothing else fits."
+    }
+  },
+  {
+    "id": "Q-CEH-10-005",
+    "type": "mcq",
+    "module": 10,
+    "difficulty": "medium",
+    "tags": ["protocol-attack", "fragmentation", "taxonomy"],
+    "body": "Which of the following is classified as a protocol-layer DoS attack rather than a volumetric or application-layer attack?",
+    "choices": [
+      "A fragmentation attack that sends a stream of fragmented packets designed to force the target to expend excessive resources reassembling them, disrupting devices such as firewalls and load balancers",
+      "An HTTP GET flood that repeatedly requests a large file from a web server",
+      "A Slowloris attack that opens many connections and sends partial HTTP headers slowly",
+      "A DDoS attack that simply floods a link with the maximum possible bandwidth of random UDP packets"
+    ],
+    "answer": "A fragmentation attack that sends a stream of fragmented packets designed to force the target to expend excessive resources reassembling them, disrupting devices such as firewalls and load balancers",
+    "explanation": {
+      "answer": "Fragmentation attacks are classified as protocol attacks because they exploit the packet fragmentation/reassembly mechanism of the IP protocol itself to exhaust the processing and state resources of network infrastructure like firewalls and load balancers, rather than simply consuming raw bandwidth or targeting a specific application.",
+      "why": "HTTP GET floods (B) and Slowloris (C) both operate at the application layer (Layer 7), targeting web server resources like threads or connection pools rather than lower-layer protocol mechanics. A raw bandwidth flood of random UDP packets (D) is a volumetric attack focused purely on saturating bandwidth, not exploiting a specific protocol process like fragmentation and reassembly.",
+      "trap": "Learners often assume any attack involving packets at the network layer is automatically volumetric, but protocol attacks are specifically defined by exploiting a protocol mechanism (like fragmentation, handshakes, or state tracking) to exhaust processing/state resources, which is measured in packets per second rather than raw bandwidth.",
+      "memory_phrase": "Protocol attacks abuse the rules of packet handling itself (like reassembly); volumetric attacks just overwhelm the pipe with sheer size."
+    }
+  },
+  {
+    "id": "Q-CEH-10-006",
+    "type": "mcq",
+    "module": 10,
+    "difficulty": "medium",
+    "tags": ["application-layer-attack", "slowloris", "taxonomy"],
+    "body": "Which characteristic best describes an application-layer (Layer 7) DoS attack such as Slowloris?",
+    "choices": [
+      "It requires massive bandwidth exceeding tens of gigabits per second to succeed",
+      "It exhausts server resources like worker threads or connection pools using comparatively low traffic volume that mimics legitimate requests",
+      "It relies exclusively on spoofing the victim's IP address to reflect traffic from third-party servers",
+      "It targets network routers and switches by exhausting their routing tables"
+    ],
+    "answer": "It exhausts server resources like worker threads or connection pools using comparatively low traffic volume that mimics legitimate requests",
+    "explanation": {
+      "answer": "Application-layer attacks such as Slowloris keep many connections open with slow, partial requests, exhausting the web server's limited pool of worker threads/connections without needing large bandwidth, and the traffic can closely resemble legitimate user activity.",
+      "why": "Option A describes volumetric attacks, which need high bandwidth; application-layer attacks are effective precisely because they need very little. Option C describes reflection/amplification, a technique usually classified under protocol or volumetric attacks, not the defining trait of application-layer attacks. Option D describes attacks against network infrastructure state tables, which is more characteristic of protocol-layer attacks.",
+      "trap": "Because application-layer attacks use low bandwidth, students sometimes assume they are 'less dangerous,' but they can be highly effective and hard to detect precisely because they blend in with legitimate traffic.",
+      "memory_phrase": "Slowloris trickles just enough to keep every door held open, starving everyone else waiting in line."
+    }
+  },
+  {
+    "id": "Q-CEH-10-007",
+    "type": "mcq",
+    "module": 10,
+    "difficulty": "medium",
+    "tags": ["amplification", "reflection", "dns-amplification"],
+    "body": "In a DNS amplification (reflection) attack, what technique allows the attacker to direct a magnified volume of traffic at the victim?",
+    "choices": [
+      "The attacker compromises the victim's DNS server directly and reconfigures its zone files",
+      "The attacker spoofs the victim's IP address in queries sent to open DNS resolvers, causing large responses to be sent to the victim instead of the attacker",
+      "The attacker encrypts all DNS queries so the victim's firewall cannot inspect them",
+      "The attacker brute-forces the DNS server's administrative password to redirect traffic"
+    ],
+    "answer": "The attacker spoofs the victim's IP address in queries sent to open DNS resolvers, causing large responses to be sent to the victim instead of the attacker",
+    "explanation": {
+      "answer": "The attacker sends small DNS queries with a spoofed source address (the victim's IP) to open resolvers; each resolver replies with a much larger response, all directed at the victim — amplifying the attacker's original bandwidth many times over while hiding the attacker's identity.",
+      "why": "Option A describes direct server compromise, which is unrelated to the reflection/amplification technique and requires a completely different attack path. Option C is irrelevant — encryption of the query itself doesn't create amplification. Option D describes credential brute-forcing, a different attack category entirely, not the spoofing mechanism that defines reflection attacks.",
+      "trap": "Candidates sometimes think amplification requires compromising the reflector (the DNS server); in reality, the reflector is an innocent, often misconfigured open resolver that is abused, not compromised.",
+      "memory_phrase": "Amplification = whisper a tiny lie about who you are, and let a megaphone (the resolver) shout the reply at your victim."
+    }
+  },
+  {
+    "id": "Q-CEH-10-008",
+    "type": "true_false",
+    "module": 10,
+    "difficulty": "medium",
+    "tags": ["syn-cookies", "defense", "syn-flood"],
+    "body": "True or False: SYN cookies defend against SYN flood attacks by allowing a server to avoid allocating connection state (memory) for a TCP connection until the final ACK of the three-way handshake is verified as legitimate.",
+    "choices": ["True", "False"],
+    "answer": "True",
+    "explanation": {
+      "answer": "True. SYN cookies encode connection information cryptographically into the initial sequence number sent in the SYN-ACK, so the server does not need to store per-connection state until the client responds with a valid final ACK, defeating the resource exhaustion goal of a SYN flood.",
+      "why": "This is a correct description of how SYN cookies work — they let the server reconstruct the needed connection state from the returning ACK rather than pre-allocating a backlog queue entry for every SYN received, which is exactly what a SYN flood tries to exhaust.",
+      "trap": "Some learners believe SYN cookies block the flood traffic outright; in reality, they mitigate the resource-exhaustion impact by removing the need to statefully track half-open connections, rather than filtering or rate-limiting the packets themselves.",
+      "memory_phrase": "SYN cookies: don't remember the guest until they knock twice and mean it."
+    }
+  },
+  {
+    "id": "Q-CEH-10-009",
+    "type": "multi",
+    "module": 10,
+    "difficulty": "hard",
+    "tags": ["mitigation", "ddos-defense", "rate-limiting", "blackholing"],
+    "body": "Which of the following are legitimate, commonly used DDoS mitigation techniques? (Select three.)",
+    "choices": [
+      "Rate limiting connections or requests per source over a defined time window",
+      "Black-hole (null) routing malicious traffic to drop it before it reaches the target",
+      "Redirecting suspected attack traffic through a cloud-based scrubbing/anti-DDoS service that filters malicious packets",
+      "Permanently disabling all firewall logging to reduce processing overhead during an attack",
+      "Publishing the target server's private encryption keys so traffic can be inspected faster",
+      "Consolidating all servers behind a single, non-redundant link to simplify traffic monitoring"
+    ],
+    "answer": [
+      "Rate limiting connections or requests per source over a defined time window",
+      "Black-hole (null) routing malicious traffic to drop it before it reaches the target",
+      "Redirecting suspected attack traffic through a cloud-based scrubbing/anti-DDoS service that filters malicious packets"
+    ],
+    "explanation": {
+      "answer": "Rate limiting, black-hole routing, and scrubbing-service redirection are all standard, defensible DDoS mitigation controls used to reduce the impact of an ongoing attack.",
+      "why": "Rate limiting caps abusive traffic per source; black-holing sacrifices traffic to a targeted destination (or the target itself) to protect the rest of the network; scrubbing services filter malicious packets out of the stream before forwarding clean traffic. Disabling firewall logging removes visibility exactly when it's needed most and does nothing to stop the flood. Publishing private keys is a nonsensical, actively harmful action that would compromise confidentiality with no DDoS benefit. Consolidating servers onto a single non-redundant link removes failover capacity and makes the attack easier, not harder, to succeed.",
+      "trap": "Candidates may be tempted by options that sound like they involve 'controlling' the incident (like disabling logging) but that reduce security posture rather than mitigating the attack.",
+      "memory_phrase": "Fight floods with limits, sinkholes, and scrubbers — never by going blind or handing over the keys."
+    }
+  },
+  {
+    "id": "Q-CEH-10-010",
+    "type": "scenario",
+    "module": 10,
+    "difficulty": "hard",
+    "tags": ["detection", "volumetric", "botnet", "incident-response"],
+    "body": "A SOC team observes a sudden, massive spike in inbound UDP traffic to a customer-facing application, originating simultaneously from tens of thousands of distinct source IP addresses located in many different countries, none of which have a prior legitimate relationship with the application. Bandwidth utilization on the perimeter link reaches 100%, causing legitimate users to be unable to connect. Identify the most likely attack category and source, and describe two appropriate mitigation actions the team could take.",
+    "answer": "This is most consistent with a volumetric DDoS attack launched from a botnet — the sheer number of distinct, geographically dispersed source IPs generating simultaneous high-bandwidth UDP traffic is characteristic of many compromised 'zombie' devices flooding the target in a coordinated fashion, rather than a single attacker or an application-layer/protocol-specific technique. Appropriate mitigation actions include: (1) engaging an upstream cloud-based anti-DDoS/scrubbing service or the ISP to absorb and filter the flood before it reaches the perimeter link, since the volume already exceeds local link capacity and cannot be resolved by on-premises filtering alone; and (2) applying rate limiting/traffic shaping at the edge (and potentially temporary black-hole routing of the most saturated destination) to preserve service for as many legitimate users as possible while the scrubbing redirection takes effect, alongside working with upstream providers on ingress filtering to reduce the impact of spoofed traffic.",
+    "explanation": {
+      "answer": "The scenario describes a classic volumetric DDoS attack driven by a large botnet, evidenced by the sheer number of distinct, globally dispersed sources overwhelming available bandwidth.",
+      "why": "A single attacker or a small set of hosts could not plausibly generate traffic from tens of thousands of distinct global IPs simultaneously — this scale and distribution pattern is the hallmark of a botnet. Because the perimeter link itself is saturated (100% utilization), purely on-premises controls (like local firewall rules) cannot solve the problem, since the link is already full before traffic reaches those devices — this is precisely why upstream scrubbing/ISP-level mitigation is necessary for true volumetric floods, whereas application-layer attacks could often be mitigated with local web-tier controls alone.",
+      "trap": "A common mistake is proposing only local firewall/rate-limiting rules as a complete fix; when the upstream link itself is fully saturated, filtering after the link is already the bottleneck provides limited benefit, so upstream/cloud-based mitigation is essential.",
+      "memory_phrase": "When the pipe itself is already full, you need help upstream, not just a stricter guard at your own door."
+    }
+  },
+  {
+    "id": "Q-CEH-11-001",
+    "type": "mcq",
+    "module": 11,
+    "difficulty": "easy",
+    "tags": ["session-hijacking", "fundamentals"],
+    "body": "What best defines 'session hijacking' in the context of web and network security?",
+    "choices": [
+      "Guessing a user's password through repeated login attempts",
+      "Taking over a valid, already-authenticated session between a client and server by exploiting the session identifier",
+      "Installing a keylogger to capture future keystrokes",
+      "Physically stealing a laptop to access saved credentials"
+    ],
+    "answer": "Taking over a valid, already-authenticated session between a client and server by exploiting the session identifier",
+    "explanation": {
+      "answer": "Session hijacking specifically refers to an attacker seizing control of a legitimate, already-established session — typically by obtaining or predicting the session identifier/token — rather than compromising credentials from scratch.",
+      "why": "Password guessing (A) is a brute-force/credential attack, not session hijacking, since no valid session exists yet. Keylogging (C) is a credential/data-capture technique used before a session is created. Physical theft (D) is a separate physical-security attack vector, unrelated to exploiting session state.",
+      "trap": "Learners often conflate any account-takeover technique with session hijacking; the defining trait is the exploitation of an existing valid session token, not obtaining new credentials.",
+      "memory_phrase": "Hijacking steals the seat someone already sat down in, not the key to the house."
+    }
+  },
+  {
+    "id": "Q-CEH-11-002",
+    "type": "mcq",
+    "module": 11,
+    "difficulty": "easy",
+    "tags": ["session-token", "session-id", "fundamentals"],
+    "body": "What is the primary purpose of a session ID (session token) issued by a web application after a user logs in?",
+    "choices": [
+      "To encrypt the user's password before storage in the database",
+      "To uniquely identify and maintain the authenticated state of a user's session across multiple stateless HTTP requests",
+      "To serve as the DNS record that resolves the application's domain name",
+      "To act as the digital certificate that proves the server's identity to the browser"
+    ],
+    "answer": "To uniquely identify and maintain the authenticated state of a user's session across multiple stateless HTTP requests",
+    "explanation": {
+      "answer": "Because HTTP is inherently stateless, a session ID is issued so the server can recognize the same authenticated user across subsequent requests, typically stored in a cookie, URL parameter, or hidden form field.",
+      "why": "Password encryption/hashing (A) is a separate credential-storage concern unrelated to session tracking. DNS resolution (C) is a naming-system function unrelated to session state. Digital certificates (D) authenticate the server's identity as part of TLS, not the user's ongoing session.",
+      "trap": "Candidates sometimes confuse session tokens with authentication credentials (passwords) themselves; a session ID proves 'this request belongs to an already-logged-in session,' not 'here is my password again.'",
+      "memory_phrase": "Session ID = the wristband stamped at the door so you don't have to show ID at every single request."
+    }
+  },
+  {
+    "id": "Q-CEH-11-003",
+    "type": "mcq",
+    "module": 11,
+    "difficulty": "easy",
+    "tags": ["httponly", "cookies", "xss-defense"],
+    "body": "What does setting the 'HttpOnly' attribute on a session cookie protect against?",
+    "choices": [
+      "It prevents the cookie from being transmitted over unencrypted HTTP connections",
+      "It prevents client-side scripts (such as JavaScript) from reading the cookie's value, reducing the risk of theft via cross-site scripting (XSS)",
+      "It forces the browser to delete the cookie after exactly one hour",
+      "It automatically rotates the session ID on every request"
+    ],
+    "answer": "It prevents client-side scripts (such as JavaScript) from reading the cookie's value, reducing the risk of theft via cross-site scripting (XSS)",
+    "explanation": {
+      "answer": "The HttpOnly flag instructs the browser to withhold the cookie's value from client-side scripting APIs, meaning an XSS payload cannot directly read and exfiltrate the session cookie.",
+      "why": "Restricting transmission to encrypted connections only (A) is the job of the 'Secure' flag, not HttpOnly. HttpOnly has no built-in expiration timer (C); cookie lifetime is controlled separately via Expires/Max-Age attributes. Automatic session ID rotation (D) is an application-layer design choice, not a cookie attribute.",
+      "trap": "Students often mix up 'HttpOnly' (blocks script access) with 'Secure' (restricts transmission to HTTPS) — they defend against different threats.",
+      "memory_phrase": "HttpOnly = hands off, JavaScript — this cookie isn't for scripts to read."
+    }
+  },
+  {
+    "id": "Q-CEH-11-004",
+    "type": "mcq",
+    "module": 11,
+    "difficulty": "easy",
+    "tags": ["secure-flag", "cookies", "https"],
+    "body": "What is the effect of the 'Secure' attribute on an HTTP cookie?",
+    "choices": [
+      "The browser will only send the cookie over an encrypted HTTPS connection, never over plain HTTP",
+      "The cookie's value is automatically encrypted with AES before being stored on disk",
+      "The cookie becomes inaccessible to any server-side code",
+      "The cookie is shared across all subdomains and top-level domains automatically"
+    ],
+    "answer": "The browser will only send the cookie over an encrypted HTTPS connection, never over plain HTTP",
+    "explanation": {
+      "answer": "The Secure attribute tells the browser to transmit the cookie only over HTTPS connections, preventing it from being sent in the clear where it could be intercepted by network sniffing.",
+      "why": "The Secure flag does not itself perform encryption of the cookie's contents (B) — it only controls the transport channel used to send it. It does not block server-side access (C); the server still reads the cookie normally over HTTPS. It also does not control domain/subdomain scoping (D), which is governed by the cookie's Domain and Path attributes.",
+      "trap": "Candidates sometimes think 'Secure' means the cookie's contents are encrypted; it actually just restricts the transport channel, relying on TLS for the encryption itself.",
+      "memory_phrase": "Secure flag = this cookie only rides in the armored car (HTTPS), never on an open truck (HTTP)."
+    }
+  },
+  {
+    "id": "Q-CEH-11-005",
+    "type": "mcq",
+    "module": 11,
+    "difficulty": "medium",
+    "tags": ["application-level", "network-level", "taxonomy"],
+    "body": "How does application-level session hijacking primarily differ from network-level session hijacking?",
+    "choices": [
+      "Application-level hijacking targets the session ID/token used by an application (e.g., a cookie), while network-level hijacking exploits transport/network protocol mechanisms such as TCP sequence numbers",
+      "Application-level hijacking only works against mobile apps, while network-level hijacking only works against web browsers",
+      "Application-level hijacking requires physical access to network cabling, while network-level hijacking is always remote",
+      "Application-level hijacking cannot be defended against, while network-level hijacking can always be prevented with a firewall"
+    ],
+    "answer": "Application-level hijacking targets the session ID/token used by an application (e.g., a cookie), while network-level hijacking exploits transport/network protocol mechanisms such as TCP sequence numbers",
+    "explanation": {
+      "answer": "Application-level session hijacking focuses on obtaining or predicting the application's session identifier (e.g., a web cookie or URL token), while network-level hijacking operates lower in the stack, exploiting mechanisms like TCP sequence number prediction or spoofing to intercept or redirect an established connection.",
+      "why": "Option B incorrectly restricts each category to specific client types, which isn't accurate — application-level hijacking applies to any client using session tokens, and network-level hijacking is not limited to a particular app type. Option C is false; neither category inherently requires physical cable access — both are typically performed remotely or via a positioned network vantage point. Option D is an overstatement; neither category is 'undefendable,' and firewalls alone don't guarantee prevention of network-level attacks.",
+      "trap": "Learners sometimes think the 'level' refers to the skill level of the attacker rather than the OSI layer/mechanism being targeted.",
+      "memory_phrase": "Application-level steals the wristband; network-level intercepts the conversation itself."
+    }
+  },
+  {
+    "id": "Q-CEH-11-006",
+    "type": "mcq",
+    "module": 11,
+    "difficulty": "medium",
+    "tags": ["session-fixation", "attack-technique"],
+    "body": "Which scenario best describes a session fixation attack?",
+    "choices": [
+      "An attacker sniffs an active session cookie off an unencrypted Wi-Fi network and reuses it immediately",
+      "An attacker tricks a victim into authenticating using a session identifier that the attacker already knows in advance, then uses that same identifier after the victim logs in",
+      "An attacker floods a login page with thousands of requests to exhaust the authentication server",
+      "An attacker guesses a weak password through a dictionary attack"
+    ],
+    "answer": "An attacker tricks a victim into authenticating using a session identifier that the attacker already knows in advance, then uses that same identifier after the victim logs in",
+    "explanation": {
+      "answer": "In session fixation, the attacker supplies or 'fixes' a known session ID to the victim (for example, via a crafted link) before authentication occurs. Once the victim logs in using that pre-set ID, the session becomes authenticated, and the attacker — who already knows the ID — can use it to access the account.",
+      "why": "Sniffing an active cookie off Wi-Fi (A) describes session sniffing/eavesdropping, a different theft vector where the attacker captures an ID rather than pre-supplying one. Flooding a login page (C) describes a denial-of-service attack, unrelated to session identifiers. Dictionary attacks (D) target passwords/credentials, not session tokens at all.",
+      "trap": "Session fixation is often confused with generic 'session stealing'; the key distinguishing detail is that the attacker chooses the session ID in advance rather than capturing one that was randomly generated by the server.",
+      "memory_phrase": "Fixation: the attacker hands the victim a pre-made key, then just waits for them to unlock the door with it."
+    }
+  },
+  {
+    "id": "Q-CEH-11-007",
+    "type": "mcq",
+    "module": 11,
+    "difficulty": "medium",
+    "tags": ["token-theft", "xss", "sniffing"],
+    "body": "Which of the following is a conceptual vector by which an attacker could obtain a victim's session token, assuming no encryption or output-sanitization protections are in place?",
+    "choices": [
+      "Capturing the session cookie via a cross-site scripting (XSS) payload that reads and exfiltrates the cookie value from the victim's browser",
+      "Directly requesting the session token from the application's public API documentation",
+      "Compiling the target application's source code from a public code repository",
+      "Sending the victim a legitimate password-reset email from the application"
+    ],
+    "answer": "Capturing the session cookie via a cross-site scripting (XSS) payload that reads and exfiltrates the cookie value from the victim's browser",
+    "explanation": {
+      "answer": "If a session cookie lacks HttpOnly protection and the application is vulnerable to XSS, injected script can read the cookie value and send it to an attacker-controlled destination, effectively stealing the live session token.",
+      "why": "Public API documentation (B) would never legitimately expose another user's live session token. Compiling public source code (C) reveals application logic but not a specific victim's live session data. A legitimate password-reset email (D) is a normal account-recovery mechanism, not a token-theft vector, and doesn't hand over an active session.",
+      "trap": "Some candidates think session theft always requires network-level packet capture; XSS-based theft is a very common application-level vector that doesn't require the attacker to be on the same network.",
+      "memory_phrase": "Unprotected cookie plus XSS = the script reads the wristband and mails it to the attacker."
+    }
+  },
+  {
+    "id": "Q-CEH-11-008",
+    "type": "true_false",
+    "module": 11,
+    "difficulty": "medium",
+    "tags": ["mfa", "session-hijacking", "defense-limits"],
+    "body": "True or False: Enabling multi-factor authentication (MFA) on user logins fully prevents an attacker from hijacking a session after the token has already been issued, because MFA re-verifies every subsequent request.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "False. MFA strengthens the login process by making unauthorized initial authentication harder, but it does not, by itself, re-verify every subsequent request — so if a valid session token is later stolen (e.g., via XSS or sniffing), the attacker can still reuse that already-authenticated session without needing the second factor again.",
+      "why": "MFA's protection is concentrated at the authentication event, not continuously applied to every request in a session. Defending against post-authentication token theft requires additional controls such as HTTPS everywhere, HttpOnly/Secure cookies, session rotation, short timeouts, and step-up re-authentication for sensitive actions — not MFA alone.",
+      "trap": "Candidates often assume MFA is a blanket fix for all session-related attacks, but it specifically hardens the login/authentication step, not an already-issued, active session token.",
+      "memory_phrase": "MFA guards the front door; it doesn't patrol the hallway after you're already inside."
+    }
+  },
+  {
+    "id": "Q-CEH-11-009",
+    "type": "multi",
+    "module": 11,
+    "difficulty": "hard",
+    "tags": ["defenses", "best-practices", "cookies", "session-management"],
+    "body": "Which of the following are recognized defenses that reduce the risk or impact of session hijacking? (Select three.)",
+    "choices": [
+      "Enforcing HTTPS/TLS across the entire application to prevent session tokens from being transmitted in cleartext",
+      "Regenerating the session identifier immediately after successful login and after any privilege-level change",
+      "Setting both the Secure and HttpOnly attributes on session cookies",
+      "Embedding the session ID directly in the page URL so it is easy to bookmark and share",
+      "Using a fixed, predictable session ID format based on the username and login timestamp to simplify debugging",
+      "Disabling session expiration entirely so users are never logged out"
+    ],
+    "answer": [
+      "Enforcing HTTPS/TLS across the entire application to prevent session tokens from being transmitted in cleartext",
+      "Regenerating the session identifier immediately after successful login and after any privilege-level change",
+      "Setting both the Secure and HttpOnly attributes on session cookies"
+    ],
+    "explanation": {
+      "answer": "TLS everywhere, session ID regeneration at login/privilege changes, and Secure+HttpOnly cookie flags are all standard, well-established defenses against session hijacking.",
+      "why": "Enforcing HTTPS prevents cleartext sniffing of tokens; regenerating the session ID at authentication defeats session fixation attacks; Secure+HttpOnly limits exposure to network sniffing and XSS-based theft respectively. Embedding session IDs in URLs is a known anti-pattern — it leaks tokens via browser history, referrer headers, and shared links. Predictable session IDs make guessing/brute-forcing trivial, directly undermining security. Disabling session expiration increases the window of opportunity for a stolen token to remain valid indefinitely, which is the opposite of a defense.",
+      "trap": "Some distractors sound like 'convenience' features (URL-embedded IDs, disabled expiration) that a busy developer might rationalize, but each directly weakens session security.",
+      "memory_phrase": "Encrypt it, rotate it, flag it — never expose it in a URL or leave it valid forever."
+    }
+  },
+  {
+    "id": "Q-CEH-11-010",
+    "type": "scenario",
+    "module": 11,
+    "difficulty": "hard",
+    "tags": ["detection", "anomaly", "incident-response"],
+    "body": "A security analyst reviewing web application logs notices that the same session ID is being used to perform actions from two IP addresses in two different countries within a two-minute window, and the user agent string changes between requests despite the same session ID. Explain what this indicates and describe two appropriate defensive/response actions.",
+    "answer": "This pattern strongly indicates that the session has been hijacked — the same session token is being replayed from a location and client environment inconsistent with a single legitimate user, which is not physically plausible within that timeframe (impossible travel), and the user-agent mismatch further suggests two different devices/browsers are using the same token. Appropriate actions include: (1) immediately invalidate/terminate the affected session server-side and force re-authentication (ideally with MFA) before a new session is issued, and (2) investigate and remediate the token-theft vector — for example, check for XSS vulnerabilities, unencrypted transport, or malware on the legitimate user's device — while also notifying the affected user and reviewing logs for further suspicious activity from either IP. Longer-term, the organization should consider anomaly-based session-monitoring rules (impossible travel, user-agent/IP consistency checks) to detect similar hijacking attempts earlier.",
+    "explanation": {
+      "answer": "The scenario describes classic session-hijacking indicators: impossible-travel geolocation combined with a user-agent mismatch on an identical session token, meaning the token is being used by more than one party.",
+      "why": "A legitimate single user cannot generate authenticated requests from two distant countries within two minutes, and a genuine single client would not change its user-agent string mid-session. Together these are strong anomaly signals (not just coincidental noise), pointing to token theft/replay rather than normal user behavior like switching networks or devices sequentially.",
+      "trap": "Analysts might dismiss a single anomalous signal (e.g., an IP change alone, which could stem from a legitimate VPN or mobile network handoff) — but the combination of impossible travel timing plus a simultaneous user-agent change is what elevates this from 'maybe fine' to a high-confidence hijacking indicator.",
+      "memory_phrase": "One session token, two continents, two minutes — that's not a frequent flyer, that's a hijacker."
+    }
+  },
+  {
+    "id": "Q-CEH-12-001",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "easy",
+    "tags": ["ids", "ips", "fundamentals"],
+    "body": "What is the fundamental functional difference between an Intrusion Detection System (IDS) and an Intrusion Prevention System (IPS)?",
+    "choices": [
+      "An IDS passively monitors and alerts on suspicious activity, while an IPS is deployed inline and can actively block or prevent detected threats",
+      "An IDS only works on wireless networks, while an IPS only works on wired networks",
+      "An IDS encrypts network traffic, while an IPS decrypts it",
+      "An IDS is a type of honeypot, while an IPS is a type of firewall rule set"
+    ],
+    "answer": "An IDS passively monitors and alerts on suspicious activity, while an IPS is deployed inline and can actively block or prevent detected threats",
+    "explanation": {
+      "answer": "An IDS typically operates out-of-band (e.g., via a mirrored port), observing traffic and generating alerts without altering it, whereas an IPS sits inline in the traffic path and can actively drop, block, or reset connections it deems malicious.",
+      "why": "Both IDS and IPS can be deployed on wired or wireless networks, so option B's restriction is incorrect. Neither system's core purpose is encryption/decryption of traffic (that's the role of protocols like TLS), making option C wrong. Option D mischaracterizes both terms — an IDS is not a honeypot, and an IPS is not merely a firewall rule set, though they can complement those tools.",
+      "trap": "Because IDS and IPS often use the same detection engines (signatures/anomaly analysis), candidates sometimes think they're identical products; the deployment mode and response capability (passive/alert vs. inline/block) is the true distinguishing factor.",
+      "memory_phrase": "IDS = smoke detector (alerts you); IPS = sprinkler system (also acts to stop it)."
+    }
+  },
+  {
+    "id": "Q-CEH-12-002",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "easy",
+    "tags": ["nids", "hids", "taxonomy"],
+    "body": "How does a Host-based Intrusion Detection System (HIDS) differ from a Network-based Intrusion Detection System (NIDS)?",
+    "choices": [
+      "A HIDS monitors activity on an individual host (e.g., system calls, file integrity, logs), while a NIDS monitors traffic traversing the network segment",
+      "A HIDS can only detect attacks against web servers, while a NIDS can only detect attacks against database servers",
+      "A HIDS requires no software installation, while a NIDS must be installed on every endpoint",
+      "A HIDS operates exclusively in the cloud, while a NIDS operates exclusively on-premises"
+    ],
+    "answer": "A HIDS monitors activity on an individual host (e.g., system calls, file integrity, logs), while a NIDS monitors traffic traversing the network segment",
+    "explanation": {
+      "answer": "A HIDS is installed on a specific host and inspects local activity such as system calls, file integrity changes, and log files, while a NIDS is positioned on the network (e.g., via a tap or mirrored port) to inspect traffic flowing across that segment.",
+      "why": "Option B incorrectly limits each system to a specific server type; both HIDS and NIDS can protect any kind of host or network segment. Option C reverses the actual deployment model — a HIDS is the one requiring installation on each endpoint, while a NIDS is deployed at network chokepoints, not on every host. Option D is a fabricated restriction; deployment location (cloud vs. on-premises) is unrelated to the host-based vs. network-based classification.",
+      "trap": "Learners sometimes assume 'network' in NIDS means it protects a specific network application, when it actually refers to the vantage point (watching network traffic) rather than the target being protected.",
+      "memory_phrase": "HIDS watches one house from the inside; NIDS watches the whole street from the road."
+    }
+  },
+  {
+    "id": "Q-CEH-12-003",
+    "type": "true_false",
+    "module": 12,
+    "difficulty": "easy",
+    "tags": ["signature-based-detection", "zero-day", "ids-limitations"],
+    "body": "True or False: A purely signature-based IDS can reliably detect a brand-new, previously unseen (zero-day) attack technique.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "False. Signature-based (misuse) detection relies on a database of known attack patterns; if no signature exists yet for a novel technique, the IDS will not flag it, which is why zero-day attacks often evade purely signature-based systems.",
+      "why": "This limitation is precisely why anomaly-based (behavior-based) detection is used as a complementary approach — it flags deviations from an established baseline of normal activity and can catch previously unseen attacks, at the cost of a higher false-positive rate. Signature-based detection excels at accurately and efficiently catching known threats but is fundamentally reactive, requiring the signature database to be updated after a new attack is identified.",
+      "trap": "Candidates sometimes assume any 'intrusion detection system' inherently catches all attack types; the detection method used (signature vs. anomaly) determines this capability, and signature-based systems are specifically weak against unknown threats.",
+      "memory_phrase": "Signatures can only recognize a face they've already seen in the mugshot book."
+    }
+  },
+  {
+    "id": "Q-CEH-12-004",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "easy",
+    "tags": ["packet-filtering-firewall", "stateless", "fundamentals"],
+    "body": "What is a defining characteristic of a basic packet-filtering firewall?",
+    "choices": [
+      "It inspects and decrypts the full application-layer payload of every packet before forwarding",
+      "It makes allow/deny decisions per packet based on header attributes like source/destination IP, port, and protocol, without tracking connection state",
+      "It always requires a proxy server to relay every connection on behalf of clients",
+      "It automatically deploys decoy services to attract attackers"
+    ],
+    "answer": "It makes allow/deny decisions per packet based on header attributes like source/destination IP, port, and protocol, without tracking connection state",
+    "explanation": {
+      "answer": "A packet-filtering firewall is a relatively simple, typically stateless device that evaluates each packet independently against a rule set matching header fields such as IP addresses, ports, and protocol type.",
+      "why": "Deep decryption and full application-payload inspection (A) describes more advanced devices like proxy firewalls or NGFWs, not basic packet filters. Requiring a proxy to relay every connection (C) describes an application-level gateway/proxy firewall, a different firewall category. Deploying decoy services (D) describes a honeypot, an unrelated defensive tool.",
+      "trap": "Candidates sometimes assume all firewalls track connection state by default; the classic packet-filtering firewall is stateless, examining each packet in isolation, which is what distinguishes it from a stateful inspection firewall.",
+      "memory_phrase": "Packet filter = a bouncer checking ID at the door for every single person, with no memory of who already went in."
+    }
+  },
+  {
+    "id": "Q-CEH-12-005",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "easy",
+    "tags": ["dmz", "network-architecture", "fundamentals"],
+    "body": "What is the primary security purpose of placing public-facing servers (such as web or mail servers) in a DMZ (demilitarized zone)?",
+    "choices": [
+      "To give those servers unrestricted, direct access to the internal trusted network",
+      "To create a buffered network segment that isolates public-facing services from the internal network, limiting exposure if a DMZ host is compromised",
+      "To physically relocate the servers outside the organization's building",
+      "To guarantee that DMZ servers never require patching or maintenance"
+    ],
+    "answer": "To create a buffered network segment that isolates public-facing services from the internal network, limiting exposure if a DMZ host is compromised",
+    "explanation": {
+      "answer": "A DMZ sits between the internal (trusted) network and the untrusted internet, hosting services that must be externally reachable while adding an additional layer of separation — typically enforced with firewalls on both sides — so that a compromise of a DMZ host doesn't directly grant access to the internal network.",
+      "why": "Granting DMZ servers unrestricted access to the internal network (A) defeats the entire purpose of network segmentation and would be a security failure, not a design goal. Physical relocation outside the building (C) confuses a logical network security zone with physical premises — a DMZ is a network architecture concept, not a physical location requirement. Claiming DMZ servers never need patching (D) is simply false; DMZ hosts are actually higher-risk, internet-facing systems that require rigorous patching.",
+      "trap": "Some learners think a DMZ is about physically isolating hardware; it's actually a logical network segmentation strategy enforced through firewall rules and routing.",
+      "memory_phrase": "DMZ = the lobby where visitors are allowed, keeping them out of the private offices upstairs."
+    }
+  },
+  {
+    "id": "Q-CEH-12-006",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "medium",
+    "tags": ["stateful-firewall", "connection-tracking"],
+    "body": "What capability distinguishes a stateful inspection firewall from a basic stateless packet-filtering firewall?",
+    "choices": [
+      "A stateful firewall tracks the context of active connections (a state table) and can make filtering decisions based on whether traffic belongs to an established, legitimate session",
+      "A stateful firewall can only filter outbound traffic, never inbound traffic",
+      "A stateful firewall eliminates the need for any firewall rules entirely",
+      "A stateful firewall operates only at the physical layer of the OSI model"
+    ],
+    "answer": "A stateful firewall tracks the context of active connections (a state table) and can make filtering decisions based on whether traffic belongs to an established, legitimate session",
+    "explanation": {
+      "answer": "Stateful inspection firewalls maintain a state table of active connections and use that context to determine whether an incoming packet is part of a legitimate, already-established session or is unsolicited, allowing more intelligent filtering than examining each packet in isolation.",
+      "why": "Stateful firewalls filter both inbound and outbound traffic, so option B's one-directional restriction is inaccurate. Firewalls (stateful or not) still require configured rule sets to make decisions, so option C is false — state tracking supplements rules, it doesn't eliminate them. Stateful inspection operates at the network/transport layers (and sometimes higher), not the physical layer, making option D incorrect.",
+      "trap": "Candidates sometimes think 'stateful' just means 'more rules' rather than understanding it specifically refers to tracking connection context/state across a session.",
+      "memory_phrase": "Stateful firewall remembers the conversation, not just the individual words (packets)."
+    }
+  },
+  {
+    "id": "Q-CEH-12-007",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "medium",
+    "tags": ["proxy-firewall", "application-gateway"],
+    "body": "What is a key operational trait of an application-level gateway (proxy firewall)?",
+    "choices": [
+      "It forwards raw packets between client and server without inspecting or terminating either connection",
+      "It acts as an intermediary that terminates the client connection and establishes a separate connection to the server, allowing full inspection of application-layer content and hiding internal network details",
+      "It can only be used to filter ICMP traffic",
+      "It operates exclusively at Layer 2 of the OSI model, filtering by MAC address only"
+    ],
+    "answer": "It acts as an intermediary that terminates the client connection and establishes a separate connection to the server, allowing full inspection of application-layer content and hiding internal network details",
+    "explanation": {
+      "answer": "A proxy/application-level gateway sits between client and server as a true intermediary — it terminates the incoming connection, inspects the application-layer content, and then originates a new connection to the destination, which also has the side benefit of masking internal network topology from external parties.",
+      "why": "Simply forwarding raw packets without inspection (A) describes basic packet filtering or routing, not a proxy's defining behavior. Restricting filtering to ICMP only (C) is a fabricated, overly narrow limitation with no basis. Claiming Layer 2/MAC-only filtering (D) describes a very different, much simpler device (like a basic switch ACL), not an application-level gateway, which operates at Layer 7.",
+      "trap": "Students sometimes confuse a proxy firewall with a simple NAT device; the key differentiator is that a proxy fully terminates and re-establishes connections while inspecting application content, rather than just translating addresses.",
+      "memory_phrase": "Proxy firewall = a strict receptionist who reads your entire request, then relays a new, sanitized version to the person you wanted to reach."
+    }
+  },
+  {
+    "id": "Q-CEH-12-008",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "medium",
+    "tags": ["ngfw", "next-gen-firewall", "dpi"],
+    "body": "Which set of capabilities is most characteristic of a Next-Generation Firewall (NGFW) compared to a traditional stateful firewall?",
+    "choices": [
+      "Deep packet inspection, application awareness/control, and integrated intrusion prevention capabilities",
+      "The ability to function without any configured security policy",
+      "Exclusive reliance on MAC address filtering with no IP awareness",
+      "Automatic conversion of all traffic into an unencrypted format for easier storage"
+    ],
+    "answer": "Deep packet inspection, application awareness/control, and integrated intrusion prevention capabilities",
+    "explanation": {
+      "answer": "NGFWs extend traditional stateful firewall functionality by adding deep packet inspection (DPI), the ability to identify and control traffic by specific application (not just port/protocol), and often built-in IPS, threat intelligence, and identity-awareness features.",
+      "why": "Functioning without any security policy (B) describes a misconfigured or non-functional firewall, not a defining NGFW feature. Exclusive MAC-only filtering (C) describes a primitive Layer 2 control, the opposite of an NGFW's advanced Layer 7 capabilities. Converting traffic to an unencrypted storage format (D) is not a firewall function at all and would be a serious security anti-pattern.",
+      "trap": "Candidates sometimes think NGFW is just marketing for 'a firewall that's newer,' missing the specific technical additions (DPI, app-awareness, integrated IPS) that define the category.",
+      "memory_phrase": "NGFW = traditional firewall plus X-ray vision into the application layer."
+    }
+  },
+  {
+    "id": "Q-CEH-12-009",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "medium",
+    "tags": ["honeypot", "deception", "fundamentals"],
+    "body": "What is the primary purpose of deploying a honeypot in a network?",
+    "choices": [
+      "To serve as the primary production database for customer transactions",
+      "To act as a decoy system that attracts, detects, and helps analyze attacker activity while diverting attackers away from real production assets",
+      "To replace the organization's firewall entirely",
+      "To automatically patch vulnerabilities on production servers"
+    ],
+    "answer": "To act as a decoy system that attracts, detects, and helps analyze attacker activity while diverting attackers away from real production assets",
+    "explanation": {
+      "answer": "A honeypot is an intentionally exposed decoy resource with no legitimate production purpose, so any interaction with it is inherently suspicious — making it valuable for early detection, attacker behavior analysis, and threat intelligence gathering, while also potentially distracting attackers from real targets.",
+      "why": "Using a honeypot as an actual production database (A) would defeat its purpose and expose real data to risk. A honeypot does not replace a firewall (C); it is a detection/deception tool, not an access-control device. Honeypots don't patch vulnerabilities (D); they are observation/deception tools, not remediation tools.",
+      "trap": "Learners sometimes think a honeypot needs to contain fake-but-plausible production data to work; its core value actually comes from having no legitimate traffic reason to be touched at all, so any interaction is a strong malicious indicator.",
+      "memory_phrase": "Honeypot = a decoy jar of honey no real bee (legitimate user) should ever touch."
+    }
+  },
+  {
+    "id": "Q-CEH-12-010",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "medium",
+    "tags": ["honeypot", "low-interaction", "high-interaction"],
+    "body": "What is the main trade-off between a low-interaction honeypot and a high-interaction honeypot?",
+    "choices": [
+      "Low-interaction honeypots emulate limited services and are lower-risk/easier to maintain but gather less detailed attacker data; high-interaction honeypots provide real or fully-featured systems, yielding richer intelligence but carrying greater operational risk",
+      "Low-interaction honeypots are always illegal to deploy, while high-interaction honeypots are always legal",
+      "Low-interaction honeypots require no network connectivity, while high-interaction honeypots must be air-gapped",
+      "Low-interaction honeypots can only detect insider threats, while high-interaction honeypots can only detect external attackers"
+    ],
+    "answer": "Low-interaction honeypots emulate limited services and are lower-risk/easier to maintain but gather less detailed attacker data; high-interaction honeypots provide real or fully-featured systems, yielding richer intelligence but carrying greater operational risk",
+    "explanation": {
+      "answer": "Low-interaction honeypots simulate a limited set of services/responses, making them simpler to deploy and safer since attackers can't gain deep access, but they capture less about attacker tactics. High-interaction honeypots offer genuine or near-genuine operating systems and services for attackers to fully engage with, yielding much richer behavioral data at the cost of higher risk if not properly contained (e.g., potential use as a pivot point).",
+      "why": "Legality (B) is not a distinguishing factor between the two types — both are used within the same legal/ethical deployment frameworks when properly authorized. Network connectivity requirements (C) are backwards and fabricated; honeypots of either type typically need network exposure to attract traffic, and air-gapping isn't a defining trait of high-interaction honeypots specifically. Restricting detection scope to insider vs. external threats (D) is an invented distinction unrelated to the interaction-level concept.",
+      "trap": "Candidates sometimes assume 'high-interaction' simply means 'better' in every way, overlooking that it also introduces greater containment risk and operational overhead compared to low-interaction honeypots.",
+      "memory_phrase": "Low-interaction = a shallow decoy puddle; high-interaction = a real pool the attacker can actually swim in (and might climb out of)."
+    }
+  },
+  {
+    "id": "Q-CEH-12-011",
+    "type": "multi",
+    "module": 12,
+    "difficulty": "hard",
+    "tags": ["evasion", "ids-evasion", "fragmentation", "obfuscation"],
+    "body": "Which of the following are recognized conceptual techniques attackers may use to evade signature-based IDS/IPS detection? (Select three.)",
+    "choices": [
+      "Fragmenting malicious payloads across multiple packets so no single packet matches a complete known signature",
+      "Encoding or obfuscating attack payloads (e.g., alternate character encoding) so they don't match a literal signature pattern while still executing correctly on the target",
+      "Tunneling or encrypting traffic so a signature-based inspection engine cannot read the payload content",
+      "Publicly announcing the exact attack timeline in advance to the target's security team",
+      "Sending attack traffic at the maximum possible speed to guarantee an alert is generated immediately",
+      "Using only well-known, unmodified exploit code with no timing or encoding changes to ensure maximum signature match confidence"
+    ],
+    "answer": [
+      "Fragmenting malicious payloads across multiple packets so no single packet matches a complete known signature",
+      "Encoding or obfuscating attack payloads (e.g., alternate character encoding) so they don't match a literal signature pattern while still executing correctly on the target",
+      "Tunneling or encrypting traffic so a signature-based inspection engine cannot read the payload content"
+    ],
+    "explanation": {
+      "answer": "Fragmentation, payload obfuscation/encoding, and encryption/tunneling are all well-documented conceptual categories of IDS/IPS evasion that reduce the likelihood that a signature-matching engine will recognize malicious content.",
+      "why": "Fragmentation exploits differences in how the IDS versus the target host reassemble packets, potentially hiding the full malicious pattern from the inspecting sensor. Obfuscation/encoding alters the byte-level representation of an attack while preserving its effect on the target, defeating literal pattern matching. Encryption/tunneling hides payload content from inspection entirely unless the device can decrypt/terminate the traffic. Publicly announcing an attack in advance is nonsensical and would defeat the attacker's own goals, not evade detection. Attacking at maximum speed to guarantee an alert is the opposite of evasion — it maximizes detectability. Using unmodified, well-known exploit code with no obfuscation maximizes the chance of a signature match, which is also the opposite of evasion.",
+      "trap": "The two 'maximize detection' distractors are designed to catch candidates who don't carefully read whether an option helps the attacker hide or actually increases visibility.",
+      "memory_phrase": "Evasion = split it, disguise it, or wrap it in a locked box the sensor can't open."
+    }
+  },
+  {
+    "id": "Q-CEH-12-012",
+    "type": "scenario",
+    "module": 12,
+    "difficulty": "hard",
+    "tags": ["evasion", "detection", "packet-reassembly", "defense"],
+    "body": "During an authorized security assessment, a network defender observes that an authorized penetration tester was able to get a known malicious payload past the organization's signature-based NIDS by splitting it across several small IP fragments, each of which individually appeared benign. The target host's OS successfully reassembled the fragments and executed the full malicious payload, but the NIDS did not generate an alert. Explain the underlying evasion concept demonstrated here and recommend one defensive improvement to prevent recurrence.",
+    "answer": "This demonstrates a fragmentation-based IDS evasion technique: by splitting the payload across multiple small fragments, no single fragment contained the complete byte pattern the NIDS's signature was looking for, so pattern matching failed even though the destination host's TCP/IP stack correctly reassembled the fragments into the full, executable malicious payload. The core issue is a reassembly/interpretation mismatch between what the NIDS sees and how the target host actually processes the traffic. Recommended defensive improvement: deploy or configure the NIDS/IPS to perform full packet/stream reassembly (normalization) that mirrors the target host's own reassembly behavior before applying signature matching, rather than inspecting fragments in isolation; complementary measures include enabling anomaly-based detection to flag unusual fragmentation patterns, keeping IDS/IPS signature and reassembly logic updated, and, where feasible, normalizing or dropping ambiguous/overlapping fragments at the network perimeter.",
+    "explanation": {
+      "answer": "The scenario is a textbook example of fragmentation-based signature evasion, exploiting the gap between how the IDS inspects traffic and how the destination host reassembles it.",
+      "why": "A signature-based engine that inspects packets individually (or reassembles differently than the target) can be evaded by attackers who understand and exploit that mismatch — a foundational insertion/evasion concept in IDS theory. The fix is not simply 'add more signatures' but to ensure the inspection engine reconstructs traffic the same way the destination system does, closing the interpretation gap, and to layer in anomaly detection as a complementary safety net.",
+      "trap": "A common but insufficient answer is 'just update the signature database' — that doesn't address the root cause, which is the reassembly/inspection mismatch itself; a new fragmentation pattern could bypass an updated signature just as easily if the underlying reassembly gap remains unresolved.",
+      "memory_phrase": "If the sensor doesn't reassemble the puzzle the same way the target does, the full picture (and the danger) stays hidden."
+    }
+  }
+]
