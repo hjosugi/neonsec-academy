@@ -14,8 +14,10 @@ import groupF from './questions/group-f.json'
 import groupG from './questions/group-g.json'
 import groupH from './questions/group-h.json'
 import groupI from './questions/group-i.json'
+import groupJ from './questions/group-j.json'
+import groupL from './questions/group-l.json'
 
-const GROUPS = [groupA, groupB, groupC, groupD, groupE, groupF, groupG, groupH, groupI]
+const GROUPS = [groupA, groupB, groupC, groupD, groupE, groupF, groupG, groupH, groupI, groupJ, groupL]
 
 /** Attach display fields; returns null for structurally invalid rows. */
 export function enrichQuestion(q: RawQuestion): Question | null {

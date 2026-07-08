@@ -1,0 +1,713 @@
+[
+  {
+    "id": "Q-CEHB-13-001",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "easy",
+    "tags": [
+      "web-servers",
+      "hardening",
+      "information-disclosure",
+      "banner-grabbing"
+    ],
+    "body": "A web server administrator configures the server to suppress or alter the 'Server' and 'X-Powered-By' HTTP response headers that normally reveal the exact web server software and version in use. From a security standpoint, how should this hardening action be correctly characterized?",
+    "choices": [
+      "It reduces the ease of automated fingerprinting and targeted exploit selection, but it is a defense-in-depth measure that does not replace actually patching known vulnerabilities",
+      "It fully prevents any attacker from ever determining the underlying web server software",
+      "It is pointless because HTTP response headers are never used for reconnaissance",
+      "It automatically defeats every vulnerability scanner regardless of the fingerprinting technique used"
+    ],
+    "answer": "It reduces the ease of automated fingerprinting and targeted exploit selection, but it is a defense-in-depth measure that does not replace actually patching known vulnerabilities",
+    "explanation": {
+      "answer": "Suppressing version-revealing banners is a legitimate, low-cost hardening step that raises the effort required for casual or automated fingerprinting, but it must be paired with real patching and configuration hardening — it does not remove the underlying vulnerabilities, only some of the reconnaissance signal pointing to them.",
+      "why": "Claiming it 'fully prevents' determination of the software overstates its effect, since behavior-based fingerprinting (error page quirks, response ordering, default file paths, timing) can still reveal the platform; claiming headers are never used for reconnaissance is factually wrong, since banner grabbing is a standard early reconnaissance technique; and claiming it defeats every scanner regardless of technique ignores that many scanners fingerprint through behavior rather than headers alone.",
+      "trap": "Treating banner suppression as either completely useless or a complete fix are both wrong extremes — the exam-safe framing is that it is one limited, supplementary hardening control among many.",
+      "memory_phrase": "Hiding the sign slows the scouts down; it doesn't fix the locks."
+    }
+  },
+  {
+    "id": "Q-CEHB-13-002",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "easy",
+    "tags": [
+      "web-servers",
+      "tls-ssl",
+      "hsts"
+    ],
+    "body": "An organization enables the HTTP Strict-Transport-Security (HSTS) response header with a long max-age value on its production web server. Which limitation of HSTS should the security team still account for?",
+    "choices": [
+      "HSTS cannot protect the very first connection a browser makes to the site over plain HTTP before it has ever received the header, unless the domain is included in browsers' preload lists",
+      "HSTS encrypts DNS lookups so that no observer can see which domains a user visits",
+      "HSTS removes the need for the server to present a valid TLS certificate",
+      "HSTS automatically renews a web server's TLS certificate before it expires"
+    ],
+    "answer": "HSTS cannot protect the very first connection a browser makes to the site over plain HTTP before it has ever received the header, unless the domain is included in browsers' preload lists",
+    "explanation": {
+      "answer": "HSTS instructs a browser that has already seen the header to refuse plain HTTP connections to that host for the specified duration, but a user's very first visit (or a visit after the policy has expired or been cleared) can still be intercepted before that instruction is ever received; browser HSTS preload lists exist specifically to close this trust-on-first-use gap for participating domains.",
+      "why": "HSTS is an HTTP response header enforced by the browser, not a DNS confidentiality mechanism, so it has no bearing on DNS query privacy; it also does not replace certificate validation, since HSTS-protected connections still require a valid, trusted TLS certificate to succeed; and it has no role in certificate issuance or renewal automation, which is a separate PKI/ACME concern.",
+      "trap": "Assuming HSTS is a complete fix for SSL-stripping attacks; the well-documented first-connection trust-on-first-use gap is exactly why preload lists were created.",
+      "memory_phrase": "HSTS locks the door after your first knock; preload lists lock it before you ever visit."
+    }
+  },
+  {
+    "id": "Q-CEHB-13-003",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "medium",
+    "tags": [
+      "web-servers",
+      "security-headers",
+      "clickjacking"
+    ],
+    "body": "Which statement accurately distinguishes the X-Frame-Options header from the Content-Security-Policy (CSP) frame-ancestors directive when both are used to mitigate clickjacking?",
+    "choices": [
+      "Both can restrict whether the page may be embedded in a frame or iframe, but frame-ancestors is more flexible (it can allow multiple specific origins) and is the modern CSP-based control generally recommended when CSP is already deployed",
+      "X-Frame-Options controls which JavaScript sources are allowed to execute on the page, while frame-ancestors controls session cookie scope",
+      "The frame-ancestors directive only takes effect on connections that use plain, unencrypted HTTP",
+      "X-Frame-Options and frame-ancestors are both designed specifically to prevent SQL injection attacks"
+    ],
+    "answer": "Both can restrict whether the page may be embedded in a frame or iframe, but frame-ancestors is more flexible (it can allow multiple specific origins) and is the modern CSP-based control generally recommended when CSP is already deployed",
+    "explanation": {
+      "answer": "Both headers can prevent a page from being loaded inside a frame on an unauthorized origin, which is the core clickjacking defense; frame-ancestors is the more capable, list-based option (part of CSP) and is the currently recommended primary control, with X-Frame-Options often retained alongside it for older browser compatibility.",
+      "why": "JavaScript source restriction is the job of CSP's script-src directive, not frame-ancestors, and neither header manages cookie scope, which is the SameSite/cookie attribute's job; neither header has any HTTP-only restriction, since CSP and X-Frame-Options both function over HTTPS; and neither header has anything to do with SQL injection, which is a backend query-construction issue entirely unrelated to framing controls.",
+      "trap": "Assuming X-Frame-Options is simply obsolete and irrelevant; it remains a useful compatibility fallback, while frame-ancestors is the more flexible, modern primary control — the distinction is about capability and layering, not one being 'the real header' and the other being useless.",
+      "memory_phrase": "X-Frame-Options is one lock; CSP frame-ancestors is a keypad with a guest list."
+    }
+  },
+  {
+    "id": "Q-CEHB-13-004",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "medium",
+    "tags": [
+      "web-servers",
+      "directory-traversal",
+      "input-validation",
+      "canonicalization"
+    ],
+    "body": "A web application resolves user-supplied file paths by first checking the input against a blacklist that rejects the literal string '../' before opening the requested file. During an authorized test, a tester bypasses this filter using an alternate path representation and still retrieves a file outside the intended directory. Which defense would most robustly prevent this entire class of bypass?",
+    "choices": [
+      "Canonicalize (fully resolve and normalize) the path on the server side, then verify the resulting absolute path is still located within the intended base directory before granting access, rejecting the request otherwise",
+      "Continue expanding the blacklist with additional string patterns each time a new encoding variant is discovered",
+      "Rely on client-side JavaScript to strip traversal sequences from the input before the request is submitted",
+      "Increase the web server's maximum request timeout value"
+    ],
+    "answer": "Canonicalize (fully resolve and normalize) the path on the server side, then verify the resulting absolute path is still located within the intended base directory before granting access, rejecting the request otherwise",
+    "explanation": {
+      "answer": "Canonicalizing the path (resolving it to its final, absolute form and normalizing encoding) and then checking that the resolved path is still inside the permitted base directory closes off every representation of a traversal sequence at once, because the check happens after resolution rather than by pattern-matching the raw input.",
+      "why": "Continuously expanding a blacklist is a reactive, incomplete strategy that will always lag behind newly discovered encodings or representations; client-side JavaScript validation is trivially bypassed by any request that does not go through the browser, such as a direct API call; and request timeout settings have no relationship to path safety or file access control.",
+      "trap": "The instinct to 'just block more patterns' feels productive but never closes the underlying vulnerability class — this mirrors why parameterized queries beat blacklist filtering for SQL injection: fixing the structural handling beats chasing every disguise.",
+      "memory_phrase": "Don't chase every disguise for '..' — resolve the real path and check where it actually lands."
+    }
+  },
+  {
+    "id": "Q-CEHB-13-005",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "medium",
+    "tags": [
+      "web-servers",
+      "http-methods",
+      "verb-tampering",
+      "access-control"
+    ],
+    "body": "In an HTTP verb tampering (HTTP method substitution) attack against access control, what underlying weakness does the attacker exploit?",
+    "choices": [
+      "Authentication or authorization is enforced for a resource only when accessed with one HTTP method, such as GET, while the same resource's handler still processes other methods, such as POST, HEAD, or PUT, without the equivalent checks being applied",
+      "The attacker overwhelms the server with an excessive number of simultaneous TCP connection requests",
+      "The attacker forces a downgrade to a weak TLS cipher suite to read the encrypted session",
+      "The attacker predicts a session identifier that was generated using a weak random number source"
+    ],
+    "answer": "Authentication or authorization is enforced for a resource only when accessed with one HTTP method, such as GET, while the same resource's handler still processes other methods, such as POST, HEAD, or PUT, without the equivalent checks being applied",
+    "explanation": {
+      "answer": "Verb tampering exploits access-control rules that were scoped to a specific HTTP method rather than to the resource itself; if the underlying application logic will still process a request using a different method, an attacker simply switches methods to reach the same functionality while sidestepping the check that was only ever wired up for one verb.",
+      "why": "Overwhelming the server with connections describes a denial-of-service technique, not an access-control bypass; forcing a weak cipher suite describes a TLS downgrade attack against confidentiality, not method-based access control; and predicting a weak session identifier describes session hijacking, a distinct vulnerability from a method-scoped authorization gap.",
+      "trap": "Verb tampering is easy to lump in with 'broken access control' generically, but the CEH-testable distinction is specifically that the SAME endpoint is reachable through a method the access-control rule never covered, often due to a server- or framework-level rule mistakenly restricted to a single verb.",
+      "memory_phrase": "Lock the front door for GET, forget the side door for POST — same room, different verb."
+    }
+  },
+  {
+    "id": "Q-CEHB-13-006",
+    "type": "true_false",
+    "module": 13,
+    "difficulty": "medium",
+    "tags": [
+      "web-servers",
+      "error-handling",
+      "information-disclosure"
+    ],
+    "body": "True or False: Fully mitigating information disclosure through web server or application error handling requires suppressing verbose error detail at its source, in the application or server configuration, and routing that detail only to secured internal logs — simply swapping in a friendlier-looking custom error page for end users, without addressing where the verbose detail is generated, is not sufficient on its own.",
+    "choices": [
+      "True",
+      "False"
+    ],
+    "answer": "True",
+    "explanation": {
+      "answer": "This statement is true. A generic custom error page only addresses the direct, in-response leak for the one error condition a tester happened to trigger; genuinely closing the exposure requires disabling verbose error generation at its source across the application and server stack, and ensuring detailed error information is captured only in access-controlled internal logs rather than shown to any client.",
+      "why": "The statement correctly describes both halves of a complete fix: suppressing verbose output at its source, and routing detail to secured logs. A team that only changes the page displayed to end users while leaving verbose debug or error settings enabled elsewhere — other endpoints, APIs, or components — has not actually removed the underlying exposure, only hidden one visible symptom of it.",
+      "trap": "Because the statement describes more work than a simple page swap, it can be tempting to mark it False as an overstatement; CEH and OWASP guidance actually identifies exactly these additional steps as necessary for a complete remediation, not optional extras.",
+      "memory_phrase": "A real fix kills verbose output at the source and locks the logs — it doesn't just repaint the error page."
+    }
+  },
+  {
+    "id": "Q-CEHB-13-007",
+    "type": "multi",
+    "module": 13,
+    "difficulty": "hard",
+    "tags": [
+      "web-servers",
+      "hardening",
+      "webdav",
+      "defense-in-depth"
+    ],
+    "body": "Which of the following are recognized, effective components of defense-in-depth hardening for a production web server? (Select all that apply.)",
+    "choices": [
+      "Disable or tightly restrict WebDAV, including its extended methods such as PROPFIND, MKCOL, and PUT, unless it is explicitly required for business functionality",
+      "Enforce HSTS and disable deprecated TLS/SSL protocol versions and weak cipher suites",
+      "Canonicalize and validate resolved file paths against the intended web root before serving any requested resource",
+      "Leave the HTTP TRACE method enabled in every environment to simplify remote debugging",
+      "Configure production error handling to return raw stack traces and internal file paths so developers can review them after an incident"
+    ],
+    "answer": [
+      "Disable or tightly restrict WebDAV, including its extended methods such as PROPFIND, MKCOL, and PUT, unless it is explicitly required for business functionality",
+      "Enforce HSTS and disable deprecated TLS/SSL protocol versions and weak cipher suites",
+      "Canonicalize and validate resolved file paths against the intended web root before serving any requested resource"
+    ],
+    "explanation": {
+      "answer": "Standard web server hardening restricts or disables WebDAV and its extended methods when unused (since PROPFIND can enumerate resources and PUT/MKCOL can allow unauthorized file writes if access control is weak), combines HSTS with removal of deprecated TLS versions and weak ciphers, and canonicalizes file paths before serving them.",
+      "why": "Leaving TRACE enabled everywhere reintroduces the well-documented Cross-Site Tracing (XST) risk instead of reducing it, and returning raw stack traces and internal file paths in production is a textbook information-disclosure misconfiguration — any detail a developer needs post-incident should come from access-controlled internal logs, never from a response visible to any client, including an attacker.",
+      "trap": "The 'return raw stack traces so developers can review them' option sounds operationally reasonable, which is exactly what makes it a tempting wrong answer — legitimate post-incident review should always rely on secured internal logging, not on exposing the same detail to every client.",
+      "memory_phrase": "Harden = turn off what you don't need (WebDAV, TRACE), lock what you keep (TLS, paths), and never hand attackers your stack trace."
+    }
+  },
+  {
+    "id": "Q-CEHB-13-008",
+    "type": "scenario",
+    "module": 13,
+    "difficulty": "hard",
+    "tags": [
+      "web-servers",
+      "http-methods",
+      "verb-tampering",
+      "access-control"
+    ],
+    "body": "During an authorized assessment, a tester finds that an administrative configuration page requires valid authenticated-admin credentials when requested with the GET method, correctly redirecting any unauthenticated GET request to a login page. The tester then sends a request for the identical path using the POST method with no session cookie at all, and the server processes it as a valid administrative action, returning a success response. As the report author, identify the vulnerability, explain the likely root cause, and recommend the remediation.",
+    "answer": "Vulnerability: HTTP verb tampering (HTTP method substitution) resulting in broken access control — the authentication check was enforced only for the GET method on this path, while the same underlying handler still accepts and executes the administrative action for POST requests with no equivalent check. Likely root cause: the access restriction was implemented at the web server or framework routing/configuration level and scoped to one specific HTTP method (for example, a rule that only restricts GET on that path) instead of being applied to the resource or handler itself regardless of method, so any method the rule does not explicitly name reaches the handler unauthenticated. Remediation: enforce authentication and authorization inside the application/handler logic itself (or via a server/framework construct that covers all methods on the resource, not a single verb), deny by default for any method not explicitly permitted, and add automated tests or scanning that probe every protected endpoint with multiple HTTP methods to catch this class of gap before release.",
+    "explanation": {
+      "answer": "A complete answer names verb tampering specifically (not just 'broken access control' in general), pins the root cause on a method-scoped rather than resource-scoped access rule, and recommends fixing enforcement at the layer that actually governs access for every method, not merely patching this one instance.",
+      "why": "The finding requires connecting the observed symptom (GET protected, POST is not) to the structural cause — an access rule wired to one HTTP verb instead of the endpoint as a whole — so that the fix addresses the pattern rather than the single path.",
+      "trap": "A weak answer recommends only 'also block POST on this path,' which patches this one instance without fixing the systemic issue — the same class of gap could reappear with PUT, HEAD, or any other method the original rule never anticipated.",
+      "memory_phrase": "If auth only checks one verb, every other verb walks right past it."
+    }
+  },
+  {
+    "id": "Q-CEHB-14-001",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "medium",
+    "tags": [
+      "web-apps",
+      "owasp-top-10",
+      "risk-classification"
+    ],
+    "body": "Which statement correctly reflects a documented change between the OWASP Top 10 2017 edition and the OWASP Top 10 2021 edition?",
+    "choices": [
+      "Broken Access Control moved up to become the number one risk category in 2021, after ranking lower in the 2017 list",
+      "Injection flaws were completely removed from the Top 10 list in the 2021 edition",
+      "Cross-Site Scripting (XSS) became an entirely separate, standalone Top 10 category distinct from Injection in the 2021 edition",
+      "Insecure Deserialization remained its own separate, unchanged Top 10 category in the 2021 edition"
+    ],
+    "answer": "Broken Access Control moved up to become the number one risk category in 2021, after ranking lower in the 2017 list",
+    "explanation": {
+      "answer": "The 2021 edition reordered categories based on aggregated frequency, exploitability, and impact data, and Broken Access Control rose to the number one position, reflecting how commonly it was found across the contributing datasets, whereas it ranked fifth in the 2017 edition.",
+      "why": "Injection flaws were not removed; the Injection category still appears in the 2021 list and now also folds in Cross-Site Scripting under it, which means XSS did not become its own standalone category — it was consolidated into the broader Injection category in 2021; and Insecure Deserialization did not remain unchanged as a standalone category — it was merged into the broader Software and Data Integrity Failures category in the 2021 edition.",
+      "trap": "Assuming the 2021 list is simply the 2017 list with items added, when several 2017 categories were actually merged, renamed, reordered by risk data, or broadened to include related issues.",
+      "memory_phrase": "2021 didn't just add categories — it reranked, merged, and broadened several of them, with Broken Access Control taking the top spot."
+    }
+  },
+  {
+    "id": "Q-CEHB-14-002",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "hard",
+    "tags": [
+      "web-apps",
+      "ssrf",
+      "cloud",
+      "metadata"
+    ],
+    "body": "A cloud provider's instance metadata service historically allowed any simple, unauthenticated GET-style request from the instance to retrieve metadata and temporary credentials, making it a high-value target for SSRF. Which mitigation, adopted by major cloud providers, specifically hardens the metadata service itself against this kind of SSRF-driven credential theft?",
+    "choices": [
+      "Requiring a session-oriented request, such as first obtaining a short-lived token via a special request or header before metadata can be read, which most simple SSRF primitives cannot easily reproduce",
+      "Encrypting all metadata values at rest using the instance's own TLS certificate",
+      "Disabling the metadata service entirely for all instances by default across every cloud provider",
+      "Requiring the requesting application to present a valid client-side browser cookie before metadata is returned"
+    ],
+    "answer": "Requiring a session-oriented request, such as first obtaining a short-lived token via a special request or header before metadata can be read, which most simple SSRF primitives cannot easily reproduce",
+    "explanation": {
+      "answer": "Newer, session-oriented metadata service designs (referred to by names such as IMDSv2 in AWS environments, with similar session-oriented protections in other clouds) require the caller to first perform a request that returns a short-lived token, which must then be included in the subsequent metadata request; this extra step means a basic SSRF primitive that only causes a single simple outbound request often cannot complete the full sequence, meaningfully raising the bar compared to a single-request retrieval design.",
+      "why": "Encrypting metadata values at rest does not address the core issue, since the vulnerable step is the server being tricked into requesting the still internally trusted endpoint, not data-at-rest confidentiality; the metadata service is not disabled by default across providers, since many workloads depend on it for legitimate credential delivery; and requiring a browser cookie makes no sense for a service consumed by server-side application code rather than a browser.",
+      "trap": "Assuming SSRF-to-metadata theft is now a fully solved problem industry-wide; the hardened, session-oriented design meaningfully raises the bar against simple SSRF primitives, but only where it has actually been enabled and enforced, since applications must still be configured to require it rather than accepting an older, simpler retrieval method.",
+      "memory_phrase": "Simple GET-and-go metadata access is the easy target — requiring a token-fetch step first closes the door on basic SSRF."
+    }
+  },
+  {
+    "id": "Q-CEHB-14-003",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "medium",
+    "tags": [
+      "web-apps",
+      "insecure-deserialization",
+      "secure-coding"
+    ],
+    "body": "When an application must deserialize data that originates from a less-trusted source, which mitigation most directly reduces the risk of insecure deserialization leading to remote code execution or object injection?",
+    "choices": [
+      "Enforce strict allow-listing of the specific classes or types permitted to be reconstructed during deserialization, and verify the integrity of the serialized payload, such as with a digital signature, before processing it",
+      "Compress the serialized data before transmitting it to reduce its size",
+      "Transmit the serialized data exclusively over a TLS-encrypted connection",
+      "Increase the application server's memory allocation to handle larger deserialized objects"
+    ],
+    "answer": "Enforce strict allow-listing of the specific classes or types permitted to be reconstructed during deserialization, and verify the integrity of the serialized payload, such as with a digital signature, before processing it",
+    "explanation": {
+      "answer": "Restricting deserialization to a known-safe, explicitly allowed set of classes prevents attacker-supplied data from instantiating unexpected or dangerous object types, and verifying a signature or integrity check on the payload beforehand ensures the data was produced by a trusted source and has not been tampered with in transit.",
+      "why": "Compression only affects payload size and has no bearing on which object types get reconstructed; TLS protects the data in transit from eavesdropping or tampering by third parties, but does nothing to stop a legitimately delivered, attacker-crafted payload from the trusted-looking source itself from exploiting the deserialization logic; and increasing memory allocation addresses capacity and performance, not the trust or type-safety of the reconstructed objects.",
+      "trap": "Assuming TLS 'secures' deserialization because it secures the connection; encryption in transit is unrelated to whether the deserialization logic can be tricked into instantiating dangerous objects once the still attacker-controlled payload arrives.",
+      "memory_phrase": "Don't just encrypt the gift-wrapped box — check who's allowed to send gifts, and that the seal wasn't broken."
+    }
+  },
+  {
+    "id": "Q-CEHB-14-004",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "easy",
+    "tags": [
+      "web-apps",
+      "xxe",
+      "xml"
+    ],
+    "body": "What is the core mechanism behind an XML External Entity (XXE) injection vulnerability?",
+    "choices": [
+      "A vulnerable XML parser processes an external entity reference contained within untrusted XML input, causing the application to resolve that reference and potentially disclose local files, reach internal or external network resources, or exhaust resources",
+      "An attacker floods the XML parser with malformed HTTP headers until the TCP connection resets",
+      "An attacker steals a valid XML digital signature and replays it against a different, unrelated request",
+      "The application fails to compress XML payloads, leading to excessive bandwidth consumption"
+    ],
+    "answer": "A vulnerable XML parser processes an external entity reference contained within untrusted XML input, causing the application to resolve that reference and potentially disclose local files, reach internal or external network resources, or exhaust resources",
+    "explanation": {
+      "answer": "XXE arises because many XML parsers, by default, will resolve external entity and external DTD references defined within the XML document being parsed; if that document comes from an untrusted source, the parser can be directed to read local files, make outbound network requests with an SSRF-like effect, or, with deeply nested entity definitions, exhaust server resources.",
+      "why": "Flooding with malformed headers describes a resource-exhaustion or malformed-request issue unrelated to entity resolution; replaying a stolen digital signature describes a signature or authentication replay issue, not entity processing; and failing to compress XML is a performance consideration with no security implication for entity handling.",
+      "trap": "Some assume XXE is just 'a malformed XML' problem; the defining trait is specifically that the parser is willing to resolve external references defined inside the document, not merely that the document is unusual or malformed.",
+      "memory_phrase": "XXE: the parser trustingly follows a reference the attacker planted inside the document itself."
+    }
+  },
+  {
+    "id": "Q-CEHB-14-005",
+    "type": "true_false",
+    "module": 14,
+    "difficulty": "hard",
+    "tags": [
+      "web-apps",
+      "csrf",
+      "samesite",
+      "cookies"
+    ],
+    "body": "True or False: Setting the SameSite=Lax attribute on a session cookie, by itself, fully prevents Cross-Site Request Forgery (CSRF) attacks against an application's state-changing actions.",
+    "choices": [
+      "True",
+      "False"
+    ],
+    "answer": "False",
+    "explanation": {
+      "answer": "SameSite=Lax still allows the cookie to be sent on top-level, cross-site GET navigations, such as a user following a link from another site, so if an application performs a state-changing action in response to a GET request, that action remains forgeable even with SameSite=Lax set; Lax primarily blocks the cookie on cross-site subrequests, such as forms submitted via POST from another origin or embedded resource loads, not on top-level GET navigation.",
+      "why": "The statement is false because SameSite=Lax is not a complete CSRF defense on its own — the well-known gap is state-changing GET endpoints, plus edge cases across related subdomains and older or non-compliant browsers; standard guidance is to never perform state changes via GET and to still use explicit anti-CSRF tokens alongside SameSite as layered defenses, with SameSite=Strict offering tighter, though less convenient, protection than Lax.",
+      "trap": "Treating 'I set SameSite=Lax' as a checkbox that fully replaces anti-CSRF tokens, when the real, structural fix also requires never using GET for state changes and, ideally, keeping explicit CSRF tokens as a second layer.",
+      "memory_phrase": "SameSite=Lax still waves GET requests through the door — never let GET change state."
+    }
+  },
+  {
+    "id": "Q-CEHB-14-006",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "medium",
+    "tags": [
+      "web-apps",
+      "xss",
+      "dom-based"
+    ],
+    "body": "Which characteristic most clearly distinguishes DOM-based Cross-Site Scripting (XSS) from stored and reflected XSS?",
+    "choices": [
+      "The malicious data flow and script execution can occur entirely within client-side JavaScript acting on attacker-influenced data, such as a URL fragment, meaning the payload may never need to be sent to, or echoed back by, the server at all",
+      "DOM-based XSS can only occur on pages served exclusively over unencrypted HTTP",
+      "DOM-based XSS requires the payload to first be permanently stored in the application's backend database",
+      "DOM-based XSS can only be triggered by an administrator account, never by a regular user"
+    ],
+    "answer": "The malicious data flow and script execution can occur entirely within client-side JavaScript acting on attacker-influenced data, such as a URL fragment, meaning the payload may never need to be sent to, or echoed back by, the server at all",
+    "explanation": {
+      "answer": "DOM-based XSS happens when client-side JavaScript reads attacker-influenced data from a source the browser controls, such as the URL fragment after '#', which browsers do not send to the server, or document.referrer, and writes it into a dangerous sink, such as directly setting page HTML, without safe handling — entirely within the browser, which is why it may leave no trace in server-side logs or be missed by server-focused defenses that only inspect requests reaching the server.",
+      "why": "DOM-based XSS is unrelated to whether the connection uses HTTP or HTTPS, since it is a client-side JavaScript data-flow issue rather than a transport-layer one; it does not require backend storage, which is what defines stored XSS instead; and it has no dependency on the victim's account privilege level, since any user viewing the vulnerable page in their own browser can be affected.",
+      "trap": "Assuming that because there is no visible database storage step, as in stored XSS, and no obviously reflected server response, as in reflected XSS, the vulnerability must not exist — DOM-based XSS is exactly the case where neither server-side signal may be present, which is why source code and client-side script review are needed to find it.",
+      "memory_phrase": "DOM XSS never has to leave the browser to do its damage — the server may never even see it."
+    }
+  },
+  {
+    "id": "Q-CEHB-14-007",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "easy",
+    "tags": [
+      "web-apps",
+      "broken-access-control",
+      "testing-methodology"
+    ],
+    "body": "When testing access control, what is the key difference between probing for horizontal privilege escalation versus vertical privilege escalation?",
+    "choices": [
+      "Horizontal escalation tests whether a user can access another user's data or functions at the same privilege level, while vertical escalation tests whether a lower-privileged user can reach functionality reserved for a higher-privileged role",
+      "Horizontal escalation only applies to mobile applications, while vertical escalation only applies to web applications",
+      "Horizontal escalation requires network-level access to the database server, while vertical escalation requires only application-level access",
+      "Horizontal escalation always requires stolen multi-factor authentication tokens, while vertical escalation never does"
+    ],
+    "answer": "Horizontal escalation tests whether a user can access another user's data or functions at the same privilege level, while vertical escalation tests whether a lower-privileged user can reach functionality reserved for a higher-privileged role",
+    "explanation": {
+      "answer": "Horizontal privilege escalation is about breadth at the same tier — for example, one regular customer viewing or modifying another regular customer's records; vertical privilege escalation is about climbing tiers — for example, a regular user reaching an administrator-only function or data set; both are access-control testing categories, but they target different assumptions in the application's authorization logic.",
+      "why": "The horizontal/vertical distinction is not platform-specific, since it applies equally to web, mobile, and API testing; it is not about network-level database access, since both are typically tested purely through the application's own interfaces; and neither is inherently tied to stolen MFA tokens, which is an authentication concern rather than what defines these two access-control testing categories.",
+      "trap": "Confusing 'horizontal' and 'vertical' terminology; remember horizontal moves sideways, same level, different account, while vertical moves up, lower privilege reaching higher-privilege functionality.",
+      "memory_phrase": "Horizontal: peek at your neighbor's data. Vertical: climb into the admin's office."
+    }
+  },
+  {
+    "id": "Q-CEHB-14-008",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "easy",
+    "tags": [
+      "web-apps",
+      "security-misconfiguration",
+      "cloud"
+    ],
+    "body": "Which of the following is a clear example of security misconfiguration in a cloud-hosted web application environment?",
+    "choices": [
+      "A cloud object storage bucket containing application data is left configured for public read and write access when it was only ever intended for internal use",
+      "The application enforces role-based access control checks on every administrative API endpoint",
+      "The cloud storage bucket is configured with logging enabled and access restricted to specific authenticated service roles",
+      "The development team rotates cloud service credentials on a regular schedule"
+    ],
+    "answer": "A cloud object storage bucket containing application data is left configured for public read and write access when it was only ever intended for internal use",
+    "explanation": {
+      "answer": "A storage bucket left open to public read and write access when it was meant for internal-only use is a textbook security misconfiguration — an insecure default or leftover setting that was never intentionally hardened, directly exposing or endangering data without any attacker needing to find a coding flaw.",
+      "why": "Enforcing role-based access checks, restricting bucket access to specific authenticated roles with logging enabled, and rotating credentials on a schedule are all positive, correctly implemented controls, not misconfigurations — they represent what proper hardening looks like, which is the opposite of what the question is asking for.",
+      "trap": "Assuming security misconfiguration only applies to on-premises web or application servers; in modern stacks, the same class of issue, insecure defaults and unintentionally permissive settings, shows up just as often in cloud storage, container, and managed-service configuration.",
+      "memory_phrase": "A public read/write bucket meant to be private is the cloud-era version of leaving the vault door open."
+    }
+  },
+  {
+    "id": "Q-CEHB-14-009",
+    "type": "multi",
+    "module": 14,
+    "difficulty": "medium",
+    "tags": [
+      "web-apps",
+      "vulnerable-components",
+      "dependency-risk",
+      "sca"
+    ],
+    "body": "Which of the following are effective, recognized practices for managing the risk of using vulnerable and outdated third-party components? (Select all that apply.)",
+    "choices": [
+      "Maintain an accurate inventory, such as a Software Bill of Materials, of both direct and transitive third-party components in use",
+      "Use Software Composition Analysis (SCA) tooling to continuously check in-use components against known-vulnerability databases",
+      "Establish a defined process to apply vendor security patches and version updates in a timely manner, and retire components that are no longer maintained",
+      "Assume a dependency is safe as long as the application's own code never directly calls its vulnerable function",
+      "Pin every dependency version permanently at first release and never revisit those versions again, to avoid introducing breaking changes"
+    ],
+    "answer": [
+      "Maintain an accurate inventory, such as a Software Bill of Materials, of both direct and transitive third-party components in use",
+      "Use Software Composition Analysis (SCA) tooling to continuously check in-use components against known-vulnerability databases",
+      "Establish a defined process to apply vendor security patches and version updates in a timely manner, and retire components that are no longer maintained"
+    ],
+    "explanation": {
+      "answer": "Effective dependency risk management combines a complete inventory of direct and transitive components (an SBOM), continuous automated vulnerability scanning of those components via SCA tooling, and an actual patching and update process so known-vulnerable or abandoned components don't linger indefinitely in production.",
+      "why": "Assuming an unused code path makes a vulnerable component safe ignores that the vulnerable function can become reachable through future code changes, other dependencies, or indirect execution paths that the developer never explicitly called; and permanently pinning versions to avoid breaking changes guarantees that known vulnerabilities discovered after release are never remediated, which directly contradicts the goal of managing this risk.",
+      "trap": "The 'we never call that vulnerable function directly' reasoning feels safe but ignores transitive and indirect reachability, and the fact that dependency graphs change over time as other code and other dependencies evolve.",
+      "memory_phrase": "Know what you're running, watch it continuously, and actually update it — an unused function today can become reachable tomorrow."
+    }
+  },
+  {
+    "id": "Q-CEHB-14-010",
+    "type": "scenario",
+    "module": 14,
+    "difficulty": "hard",
+    "tags": [
+      "web-apps",
+      "xxe",
+      "xml",
+      "secure-coding"
+    ],
+    "body": "During an authorized assessment, a tester finds a data-import feature that accepts an uploaded XML file and parses it using the XML library's default configuration. When the tester submits a crafted XML file that defines an external entity referencing a local file path on the server, the application's response includes the contents of that local file. As the report author, identify the vulnerability class, its realistic impact beyond this single file disclosure, and the primary remediation.",
+    "answer": "Vulnerability class: XML External Entity (XXE) injection — the XML parser was configured, by default, to resolve external entity references defined within untrusted, attacker-supplied XML input, and it followed a reference pointing at a local file path, returning that file's contents in the response. Realistic impact beyond this single disclosure: the same underlying weakness can typically be leveraged for further local file disclosure of other sensitive files, for server-side request forgery by defining an entity that references an internal-only network resource, and, in some parser and configuration combinations, for denial of service through deeply nested or recursive entity definitions that exhaust memory or CPU. Primary remediation: reconfigure the XML parser to disable resolution of external entities and external DTDs by default, since most modern XML libraries support a hardened or secure-processing configuration mode, apply this hardened configuration to every XML parser instance used across the application rather than only the one endpoint that was tested, and, where the full flexibility of XML is not actually required, consider using a simpler data format such as JSON for the feature instead.",
+    "explanation": {
+      "answer": "A complete answer names XXE specifically, not just 'an XML vulnerability,' extends the impact beyond the single demonstrated file read to the realistic further impacts of broader file disclosure, SSRF via entity definitions, and denial of service via entity expansion, and centers remediation on disabling external entity and DTD resolution at the parser configuration level everywhere it is used, not just patching the one tested feature.",
+      "why": "The root cause is the parser's default willingness to resolve external entities from untrusted input; recommending only 'validate the uploaded file' without addressing the parser configuration itself would leave the same class of flaw exploitable through any other field or feature that parses XML with the same default, unhardened parser settings.",
+      "trap": "A weak answer treats this as a one-off 'file disclosure bug' tied to a single field, recommends deleting or restricting that one sensitive file, and misses that the actual defect is in how the parser is configured everywhere XML input is processed, plus the related SSRF and denial-of-service impact that XXE typically also enables.",
+      "memory_phrase": "One leaked file is the symptom; a parser that trusts external entities anywhere is the disease."
+    }
+  },
+  {
+    "id": "Q-CEHB-15-001",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "easy",
+    "tags": [
+      "sqli",
+      "classification",
+      "error-based",
+      "detection"
+    ],
+    "body": "During an authorized test, a tester submits a single crafted character into a search field and the application returns an HTTP 500 error page containing a verbose database driver error string, including a visible fragment of the failing SQL statement. This response is the clearest evidence of which SQL injection sub-type, and what is the key remediation?",
+    "choices": [
+      "Error-based (in-band) SQL injection; the key remediation is to use parameterized queries and to suppress verbose database error detail from ever reaching the client, logging full detail only server-side",
+      "Blind time-based SQL injection; the key remediation is to rate-limit the search endpoint",
+      "Out-of-band SQL injection; the key remediation is to block all outbound DNS traffic from the database server",
+      "Second-order SQL injection; the key remediation is to re-validate data every time a batch report job runs"
+    ],
+    "answer": "Error-based (in-band) SQL injection; the key remediation is to use parameterized queries and to suppress verbose database error detail from ever reaching the client, logging full detail only server-side",
+    "explanation": {
+      "answer": "A verbose database error string returned directly in the response, containing query fragments, is the signature of error-based SQL injection, an in-band technique since the attack and the observed result travel over the same response channel; the structural fix is parameterized queries, paired with generic, non-verbose error handling so database error detail is never exposed to the client.",
+      "why": "Blind time-based SQLi is inferred purely from response delay with no visible error content, so it does not match a scenario where an actual error string is shown; out-of-band SQLi relies on a separate exfiltration channel, such as DNS, rather than a directly visible error page; and second-order SQLi describes a delayed trigger through separately reused stored data, not an immediate error returned from the same request that submitted the input.",
+      "trap": "Because the underlying flaw is still 'SQL injection' in a general sense, it's tempting to pick any SQLi-sounding distractor; the exam-relevant skill is matching the specific observed evidence, a verbose error with query fragments in the same response, to the correct sub-type, since each sub-type has a distinct evidentiary signature.",
+      "memory_phrase": "A verbose 500 page with SQL fragments in it is error-based SQLi announcing itself."
+    }
+  },
+  {
+    "id": "Q-CEHB-15-002",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "medium",
+    "tags": [
+      "sqli",
+      "orm",
+      "parameterization",
+      "secure-coding"
+    ],
+    "body": "An application uses an Object-Relational Mapping (ORM) framework that generates parameterized queries by default for its standard query-building methods. Which common development practice can still reintroduce SQL injection risk despite the ORM's built-in protection?",
+    "choices": [
+      "Developers dropping down to the ORM's raw or native SQL execution method, or building a dynamic query fragment such as a filter or sort clause via string concatenation, instead of using the ORM's parameter-binding API",
+      "Developers using the ORM's standard object-mapped query methods for all routine data access",
+      "Enabling connection pooling for the ORM's underlying database connections",
+      "Caching the results of read-only ORM queries to reduce database load"
+    ],
+    "answer": "Developers dropping down to the ORM's raw or native SQL execution method, or building a dynamic query fragment such as a filter or sort clause via string concatenation, instead of using the ORM's parameter-binding API",
+    "explanation": {
+      "answer": "ORMs reduce SQL injection risk specifically because their standard query-building API generates parameterized SQL automatically, but nearly every ORM also exposes an escape hatch for raw or native SQL execution for cases the abstraction doesn't cover well; if a developer uses that escape hatch, or otherwise concatenates untrusted input into a query fragment, instead of the parameter-binding API, the same injection risk as hand-written SQL returns, entirely bypassing the ORM's protection.",
+      "why": "Using the ORM's standard object-mapped methods for routine access is precisely the safe, intended usage pattern and does not introduce risk; connection pooling is a performance and resource-management feature unrelated to query construction safety; and caching read-only query results is also a performance optimization with no bearing on whether injected input can alter query logic.",
+      "trap": "Assuming 'we use an ORM' is an automatic, blanket guarantee against SQL injection; the protection is only as strong as consistent use of the ORM's safe parameter-binding API — any raw-query escape hatch or manual string-built fragment reopens the same class of vulnerability.",
+      "memory_phrase": "An ORM only protects you while you stay on its paved road — raw query escape hatches lead right back to injection."
+    }
+  },
+  {
+    "id": "Q-CEHB-15-003",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "medium",
+    "tags": [
+      "sqli",
+      "parameterization",
+      "identifiers",
+      "secure-coding"
+    ],
+    "body": "A developer wants to let users choose which column to sort search results by, passing a column name as input. Parameterized queries safely bind user-supplied data as literal values, but why is a bind parameter generally unusable for the column name itself?",
+    "choices": [
+      "Bind parameters are designed to substitute literal data values into a fixed query structure; SQL identifiers such as table and column names, and keywords like sort direction, are part of the query's structure, not data, so most database drivers do not support binding them directly — the safe approach is to validate the requested identifier against a strict allow-list of known-safe values",
+      "Bind parameters can only hold numeric data types, never text of any kind",
+      "Database engines do not allow any query to include more than one bind parameter",
+      "Bind parameters require the database connection to be re-established for every query"
+    ],
+    "answer": "Bind parameters are designed to substitute literal data values into a fixed query structure; SQL identifiers such as table and column names, and keywords like sort direction, are part of the query's structure, not data, so most database drivers do not support binding them directly — the safe approach is to validate the requested identifier against a strict allow-list of known-safe values",
+    "explanation": {
+      "answer": "Parameterization protects the data portion of a query by keeping it structurally separate from the SQL syntax; a column name, table name, or keyword like ASC/DESC is part of that syntax and structure itself, so it generally cannot be supplied through a bind variable — the safe pattern for dynamic identifiers is to check the requested value against a fixed, known-safe allow-list before using it to build that part of the query.",
+      "why": "Bind parameters routinely hold text, dates, and other non-numeric data types, so that restriction is false; queries commonly use many bind parameters at once, so that restriction is also false; and using bind parameters has no relationship to needing to re-establish the database connection for each query.",
+      "trap": "Assuming that because parameterized queries 'solve' SQL injection for typical form fields, they can be applied identically to every dynamic part of a query, including identifiers — this is a genuine limitation of the parameterization mechanism itself, not a coding mistake in how it's used for data values.",
+      "memory_phrase": "Bind parameters protect the data you're asking about — not the words used to ask the question."
+    }
+  },
+  {
+    "id": "Q-CEHB-15-004",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "easy",
+    "tags": [
+      "sqli",
+      "least-privilege",
+      "database-hardening"
+    ],
+    "body": "Beyond restricting an application's database account to only the specific tables and operations it needs, why do database hardening guides also recommend disabling or restricting powerful built-in administrative stored procedures and extended functions on the database engine itself?",
+    "choices": [
+      "If a SQL injection flaw is ever exploited, an attacker's ability to escalate from data access toward broader system compromise, such as operating-system command execution, often depends on such powerful built-in features being reachable from the compromised database session, so removing or restricting them reduces the post-exploitation impact",
+      "Disabling these features is required before parameterized queries can be used at all",
+      "These features are only ever used for routine daily backups and have no relevance to security",
+      "Restricting these features guarantees that SQL injection can no longer occur anywhere in the application"
+    ],
+    "answer": "If a SQL injection flaw is ever exploited, an attacker's ability to escalate from data access toward broader system compromise, such as operating-system command execution, often depends on such powerful built-in features being reachable from the compromised database session, so removing or restricting them reduces the post-exploitation impact",
+    "explanation": {
+      "answer": "Least privilege for a SQL injection context extends beyond table and row-level permissions to the database engine's own powerful built-in capabilities; some database platforms ship administrative stored procedures or extended functions capable of far more than data access, and if those remain reachable, a successful injection can pivot from reading some rows toward much broader compromise, so disabling what isn't needed shrinks that post-exploitation blast radius.",
+      "why": "Parameterized queries work independently of whether such administrative features are disabled, so there's no such prerequisite relationship; these features are not solely backup-related and are directly security-relevant given their potential for abuse; and restricting them is a containment measure for what happens after a breach, not a guarantee that prevents injection flaws themselves from existing.",
+      "trap": "Treating database engine hardening as unrelated to application-layer SQL injection defense; in a real incident, whether powerful engine-level features were left reachable often determines whether a SQLi finding stays a data-disclosure issue or escalates into full host compromise.",
+      "memory_phrase": "Least privilege doesn't stop at the table — power features left switched on turn a data leak into a takeover."
+    }
+  },
+  {
+    "id": "Q-CEHB-15-005",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "medium",
+    "tags": [
+      "sqli",
+      "waf",
+      "virtual-patching",
+      "sdlc"
+    ],
+    "body": "A security team deploys a Web Application Firewall (WAF) rule to block a newly discovered SQL injection pattern in a specific input field while the development team works on a proper code-level fix. In application security lifecycle terms, what is this WAF rule correctly serving as?",
+    "choices": [
+      "Temporary 'virtual patching' — a compensating control that reduces exploitation risk during the window between discovery and a verified, permanent secure-coding fix, which should be reconciled or removed once that fix, such as parameterization, is deployed and confirmed",
+      "A permanent replacement for fixing the vulnerable query construction in the affected code",
+      "Proof that the underlying vulnerability no longer exists and no code change is required",
+      "A database-level access control mechanism equivalent to a least-privilege account"
+    ],
+    "answer": "Temporary 'virtual patching' — a compensating control that reduces exploitation risk during the window between discovery and a verified, permanent secure-coding fix, which should be reconciled or removed once that fix, such as parameterization, is deployed and confirmed",
+    "explanation": {
+      "answer": "Virtual patching describes using a compensating control, commonly a WAF rule, to reduce risk quickly while the actual root-cause fix is developed, tested, and released; it is explicitly meant to be temporary and should be revisited once the real code fix is in place, not left indefinitely as the only defense.",
+      "why": "Treating the WAF rule as a permanent replacement, or as proof the vulnerability 'no longer exists,' both contradict the compensating-control concept, since the underlying insecure query construction still exists in the code until it is actually fixed; and a WAF rule operates at the network and application-request layer, which is a different control entirely from a database account's assigned privileges.",
+      "trap": "Once a WAF rule appears to successfully block the known attack pattern, teams can be tempted to deprioritize or forget the actual code fix — CEH and secure-SDLC guidance treats this as an incomplete remediation if the compensating control is never followed by the structural one.",
+      "memory_phrase": "A WAF rule buys time for the real fix — it isn't the real fix."
+    }
+  },
+  {
+    "id": "Q-CEHB-15-006",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "medium",
+    "tags": [
+      "sqli",
+      "detection",
+      "logging",
+      "monitoring"
+    ],
+    "body": "Which monitoring approach is most effective for detecting an active blind SQL injection probing attempt against a database-backed application?",
+    "choices": [
+      "Correlating application, WAF, and database activity logs for anomalous patterns from a single source, such as a high volume of malformed or failed queries, unusual query structures, or abnormal response-timing variance within a short window",
+      "Relying solely on network firewall rules that block traffic based on destination TCP port number",
+      "Relying solely on antivirus signature scanning running on the database server's host operating system",
+      "Disabling application and database logging to reduce storage costs and noise"
+    ],
+    "answer": "Correlating application, WAF, and database activity logs for anomalous patterns from a single source, such as a high volume of malformed or failed queries, unusual query structures, or abnormal response-timing variance within a short window",
+    "explanation": {
+      "answer": "Blind SQL injection is characterized by many repeated requests probing true/false or timing conditions from the same source, so correlating logs across the application, WAF, and database layers to spot volume, structural, or timing anomalies is the practical way to surface an in-progress probing campaign, since no single successful or failed login counter or isolated log line reveals the pattern.",
+      "why": "SQL injection traffic rides over the same web port already allowed for legitimate application traffic, so port-based network firewall rules provide no meaningful detection; antivirus signature scanning targets malware files and processes, not malicious query patterns embedded in otherwise normal application requests; and disabling logging removes the exact evidence needed to detect or investigate the activity, which is the opposite of a detective control.",
+      "trap": "Assuming existing perimeter controls, such as port-based firewall rules or host antivirus, already cover this; blind SQLi probing looks like ordinary HTTP traffic to those tools and is only visible through application-aware log correlation and anomaly detection.",
+      "memory_phrase": "Blind SQLi hides in plain sight on the normal web port — only log correlation across layers reveals the pattern."
+    }
+  },
+  {
+    "id": "Q-CEHB-15-007",
+    "type": "true_false",
+    "module": 15,
+    "difficulty": "hard",
+    "tags": [
+      "sqli",
+      "classification",
+      "in-band",
+      "error-based",
+      "union-based"
+    ],
+    "body": "True or False: Because UNION-based and error-based SQL injection are both classified as in-band techniques, an application that is immune to UNION-based injection, for example because of a strictly enforced column-count mismatch, is therefore also immune to error-based injection.",
+    "choices": [
+      "True",
+      "False"
+    ],
+    "answer": "False",
+    "explanation": {
+      "answer": "UNION-based and error-based SQL injection share only the trait of being 'in-band' — the attack and the retrieved result travel over the same response channel — but the actual mechanisms differ: UNION-based relies on successfully combining an injected result set with the original query's output, while error-based relies on triggering and reading verbose database error messages, which has nothing to do with column-count alignment.",
+      "why": "The statement is false because defeating the precondition for one in-band mechanism, matching column counts for UNION, does not touch the separate precondition for the other, the application surfacing verbose database error text; an application could easily reject mismatched UNION attempts while still leaking full error detail on a malformed query, remaining fully exploitable via the error-based technique.",
+      "trap": "Assuming that because two techniques share a category label, 'in-band,' a defense that neutralizes one automatically neutralizes the other — the category groups them by how results are retrieved, not by what technical precondition makes each one work.",
+      "memory_phrase": "Same category, different locks — closing the UNION door doesn't close the error-message door."
+    }
+  },
+  {
+    "id": "Q-CEHB-15-008",
+    "type": "multi",
+    "module": 15,
+    "difficulty": "hard",
+    "tags": [
+      "sqli",
+      "parameterization",
+      "second-order",
+      "orm",
+      "identifiers"
+    ],
+    "body": "Which of the following require additional controls beyond simply using a parameterized query at the original point of input, because standard parameterization alone does not fully address them? (Select all that apply.)",
+    "choices": [
+      "Second-order SQL injection, where input that was safely parameterized when first stored is later reused unsafely in a different, non-parameterized query",
+      "A user-selectable sort column or table name incorporated into a query, since SQL identifiers generally cannot be bound as query parameters",
+      "Use of an ORM's raw or native SQL execution method with string-concatenated input, which bypasses the ORM's normal parameter-binding protection",
+      "A login form's password field, whose value is bound as a literal parameter in a single parameterized query",
+      "A search box's search term, whose value is bound as a literal parameter in a single parameterized query"
+    ],
+    "answer": [
+      "Second-order SQL injection, where input that was safely parameterized when first stored is later reused unsafely in a different, non-parameterized query",
+      "A user-selectable sort column or table name incorporated into a query, since SQL identifiers generally cannot be bound as query parameters",
+      "Use of an ORM's raw or native SQL execution method with string-concatenated input, which bypasses the ORM's normal parameter-binding protection"
+    ],
+    "explanation": {
+      "answer": "Three scenarios sit outside what a single parameterized query at the original input point can guarantee: second-order injection triggers later, at a completely different and possibly unparameterized query; identifiers like column and table names structurally cannot be passed as bind parameters at all, requiring allow-listing instead; and an ORM's raw-query escape hatch bypasses the ORM's automatic parameterization entirely when developers use it with concatenated input.",
+      "why": "The password field and search term examples each describe exactly the case parameterized queries are designed for — a literal data value bound into a single, properly constructed query — so both are already fully addressed by standard parameterization and do not require anything additional.",
+      "trap": "Assuming that 'we use parameterized queries' is a single blanket guarantee across the whole application; the correct options mark out the specific, real boundaries of that guarantee — later reuse of stored data, identifiers instead of values, and escape hatches that skip parameterization altogether.",
+      "memory_phrase": "Parameterization guarantees the value you bind, right there, in that query — not what happens to that value later, or anything that isn't a value at all."
+    }
+  },
+  {
+    "id": "Q-CEHB-15-009",
+    "type": "scenario",
+    "module": 15,
+    "difficulty": "hard",
+    "tags": [
+      "sqli",
+      "second-order",
+      "secure-coding",
+      "code-review"
+    ],
+    "body": "During an authorized assessment, a tester registers a new account through a registration form that is strictly parameterized, so the submitted username is stored safely as literal data. Days later, an internal nightly reporting job builds a summary email by concatenating each stored username directly into a dynamically constructed SQL string, without parameterization or re-validation, and the tester's previously registered username causes unintended query behavior in that job. As the report author, identify the vulnerability class, explain why a code review limited to the registration endpoint alone would have missed it, and recommend the remediation.",
+    "answer": "Vulnerability class: second-order SQL injection. The registration endpoint itself has no flaw — the attacker-controlled value is safely parameterized at the point it is first submitted and stored — but the same value is later retrieved and unsafely concatenated into a different, dynamically built SQL statement in the nightly reporting job, where the injection actually triggers. Why a narrow review would miss it: reviewing only the registration endpoint's query construction would correctly conclude that endpoint is safe, because it genuinely is; the vulnerability exists entirely in a separate, downstream consumer of the previously stored data, so tracing only the input point, and not everywhere that stored value is subsequently used, leaves the real flaw undiscovered. Remediation: apply parameterized queries or equivalent safe query construction at every point stored data is used in a SQL statement, not only at its original entry point; treat all data retrieved from storage as untrusted at each subsequent use, regardless of how safely it was originally captured; and extend secure code review and testing practices to trace stored data through its full lifecycle across the application, including batch jobs, reports, and background processing, rather than stopping at the initial input boundary.",
+    "explanation": {
+      "answer": "The correct classification hinges on recognizing that the entry point is genuinely safe and the flaw is purely in a later, separate use of the same stored data — this delayed-trigger, different-location pattern is the defining signature of second-order SQL injection, distinct from ordinary first-order injection where input and vulnerable query happen in the same request.",
+      "why": "A common mistake is to conclude there is no vulnerability at all, because the registration endpoint tests clean, or to mislabel this as a flaw in the registration form itself; the actual defect is entirely in the reporting job's unsafe reuse of previously stored, attacker-controlled data, which is why remediation must cover every downstream use of stored data, not just the original input.",
+      "trap": "A weak answer stops at 'the registration form is vulnerable' or recommends re-validating input only at registration, missing that the fix must be applied at the reporting job's query construction, and more broadly at every place stored data later flows into a SQL statement.",
+      "memory_phrase": "Second-order SQLi plants the seed safely and lets it sprout somewhere else entirely — trace stored data to every query it ever touches."
+    }
+  },
+  {
+    "id": "Q-CEHB-15-010",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "easy",
+    "tags": [
+      "sqli",
+      "waf",
+      "prevention",
+      "defense-in-depth"
+    ],
+    "body": "A security team notes that their WAF successfully blocks several known SQL injection attack patterns during testing. Which conclusion about this result is most accurate?",
+    "choices": [
+      "The WAF is functioning as one useful, pattern-based layer of defense, but secure coding practices such as parameterized queries remain the primary control, since skilled attackers can craft input that evades signature-based detection",
+      "The application's SQL injection vulnerabilities have been completely eliminated and no further code-level remediation is needed",
+      "The WAF result proves the application's database account is already configured with least-privilege permissions",
+      "The WAF result means input validation and parameterized queries are now redundant and can be safely removed"
+    ],
+    "answer": "The WAF is functioning as one useful, pattern-based layer of defense, but secure coding practices such as parameterized queries remain the primary control, since skilled attackers can craft input that evades signature-based detection",
+    "explanation": {
+      "answer": "A WAF successfully catching known attack patterns during testing demonstrates the WAF is providing value as a compensating, pattern-based layer, but it does not verify or guarantee that the underlying query-construction code is actually safe, since novel, obfuscated, or previously unseen injection techniques can still evade signature-based filtering.",
+      "why": "Blocking some known patterns says nothing about whether every injection point in the application has been fixed at the code level, so 'completely eliminated' is unsupported; a WAF operates at the network and application-request layer and has no visibility into or influence over database account permission configuration; and removing parameterized queries or input validation because a WAF exists directly contradicts defense-in-depth, since the WAF is meant to supplement, not replace, those controls.",
+      "trap": "Successful WAF test results can create false confidence that the underlying code is secure; CEH guidance is explicit that a WAF is a compensating control, not verification that the root-cause vulnerability has been fixed.",
+      "memory_phrase": "A WAF catching known attacks in a test tells you the net works — it doesn't tell you the code is safe."
+    }
+  }
+]

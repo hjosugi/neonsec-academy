@@ -1,0 +1,475 @@
+[
+  {
+    "id": "Q-CEHB-05-001",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "easy",
+    "tags": ["vulnerability-analysis", "cve", "cwe", "capec"],
+    "body": "Which statement correctly describes the hierarchical relationship among CAPEC, CWE, and CVE as used across MITRE's vulnerability and weakness catalogs?",
+    "choices": [
+      "A CAPEC attack pattern exploits a category of weakness defined by CWE, and a specific, real-world instance of that weakness in a particular product is then cataloged as a CVE.",
+      "A CVE entry exploits a category of weakness defined by CAPEC, and a specific instance of that CVE is then cataloged as a CWE.",
+      "A CWE entry exploits a category of weakness defined by CVE, and a specific instance of that CWE is then cataloged as a CAPEC.",
+      "CAPEC, CWE, and CVE are three independent catalogs maintained by unrelated organizations, with no defined relationship between them."
+    ],
+    "answer": "A CAPEC attack pattern exploits a category of weakness defined by CWE, and a specific, real-world instance of that weakness in a particular product is then cataloged as a CVE.",
+    "explanation": {
+      "answer": "The correct direction is CAPEC (attack pattern) exploits CWE (weakness class), which manifests as a CVE (specific instance).",
+      "why": "CAPEC (Common Attack Pattern Enumeration and Classification) documents attacker-centric methods of exploitation and maps each pattern to the CWE weakness type(s) it commonly targets. CWE (Common Weakness Enumeration) is a taxonomy of underlying weakness types, such as CWE-89 SQL Injection, abstracted away from any specific product. CVE (Common Vulnerabilities and Exposures) is the dictionary of specific, publicly disclosed vulnerability instances in particular products/versions, each of which is typically an example of one or more CWE categories. All three catalogs are MITRE-maintained and are deliberately cross-referenced, not independent. Choices 2 and 3 scramble this hierarchy in different directions, and choice 4 falsely denies any relationship exists.",
+      "trap": "It's tempting to treat all three as roughly synonymous 'vulnerability lists,' but the exam tests whether the candidate knows the specific direction of the relationship: pattern exploits weakness class, which manifests as a concrete instance.",
+      "memory_phrase": "CAPEC the pattern exploits CWE the class, which shows up as a CVE the instance."
+    }
+  },
+  {
+    "id": "Q-CEHB-05-002",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "easy",
+    "tags": ["vulnerability-analysis", "cvss", "cvss-base-metrics", "attack-complexity"],
+    "body": "In CVSS v3.1, a vulnerability's Base metric 'Attack Complexity (AC)' is rated High. What does this indicate about exploitation?",
+    "choices": [
+      "Successful exploitation depends on conditions beyond the attacker's control, such as a race condition or a specific configuration that must already exist on the target.",
+      "The vulnerability requires the attacker to already hold valid credentials on the target system.",
+      "The attacker must have physical access to the target device to exploit the flaw.",
+      "The exploit requires a victim to click a link or open a malicious file."
+    ],
+    "answer": "Successful exploitation depends on conditions beyond the attacker's control, such as a race condition or a specific configuration that must already exist on the target.",
+    "explanation": {
+      "answer": "High Attack Complexity means exploitation depends on conditions outside the attacker's control.",
+      "why": "Attack Complexity measures whether special conditions beyond the attacker's control, such as timing windows, a particular configuration, defeating a mitigation, or gathering extra target-specific information, must exist for the attack to succeed; a rating of Low means no such conditions are needed. Choice 2 describes the Privileges Required metric, choice 3 describes an Attack Vector of Physical, and choice 4 describes User Interaction, each a separate CVSS Base metric measuring a different dimension.",
+      "trap": "Attack Complexity is frequently confused with Privileges Required or User Interaction because all three 'make exploitation harder,' but CVSS scores each as an independent dimension.",
+      "memory_phrase": "Attack Complexity asks whether the stars must align for the exploit to work, separate from privileges or victim clicks."
+    }
+  },
+  {
+    "id": "Q-CEHB-05-003",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "medium",
+    "tags": ["vulnerability-analysis", "credentialed-scan", "least-privilege"],
+    "body": "An organization performs credentialed vulnerability scans using a domain service account with local administrator rights on every scanned Windows host. What is the MOST important security practice to apply to that scanning account itself?",
+    "choices": [
+      "Restrict it to the least privilege needed for scanning, limit which hosts it can log on from and to, vault and rotate its credential, and monitor its use for anomalous activity.",
+      "Grant the account Domain Admin rights so it never encounters a permission error during a scan.",
+      "Disable logging of the scanning account's activity to reduce SIEM noise from routine scan traffic.",
+      "Share the scanning account's credential across multiple third-party scanning tools to simplify vendor management."
+    ],
+    "answer": "Restrict it to the least privilege needed for scanning, limit which hosts it can log on from and to, vault and rotate its credential, and monitor its use for anomalous activity.",
+    "explanation": {
+      "answer": "Treat the scanning account itself as a high-value credential: least privilege, restricted logon scope, vaulting/rotation, and monitoring.",
+      "why": "A credentialed scanner's service account effectively has broad administrative reach across every host it scans, making it an attractive target; if compromised, an attacker could use it exactly as the scanner does, to touch every scanned system. Good practice treats it like any other privileged account: grant only the minimum rights actually needed, restrict logon rights to the scanning infrastructure, vault the credential with regular rotation, and monitor or alert on its use outside expected scan windows. Granting Domain Admin (choice 2) needlessly maximizes the blast radius of a compromise; disabling logging (choice 3) removes visibility into misuse of a highly privileged account; sharing the credential across tools (choice 4) creates unnecessary shared-credential exposure.",
+      "trap": "Choice 2 looks like it would eliminate scan-permission errors, but Domain Admin is far broader than scanning requires; recognizing least-privilege violations dressed up as a convenience fix is a recurring exam pattern.",
+      "memory_phrase": "The scanning account can touch everything the scanner can, guard it like your most privileged credential, because it is one."
+    }
+  },
+  {
+    "id": "Q-CEHB-05-004",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "medium",
+    "tags": ["vulnerability-analysis", "false-positive", "false-negative", "scanner-tuning"],
+    "body": "A team aggressively tunes its vulnerability scanner to suppress noisy findings until false positives are eliminated almost entirely. What risk does this practice introduce?",
+    "choices": [
+      "Overly aggressive tuning can suppress legitimate findings along with the noise, increasing the false negative rate and creating blind spots the organization is unaware of.",
+      "It removes the need for periodic rescanning, since a perfectly tuned scanner never needs to run again.",
+      "It automatically raises the CVSS Base Score of every remaining finding to compensate for the suppressed ones.",
+      "It has no downside; eliminating false positives is a purely beneficial goal with no tradeoffs."
+    ],
+    "answer": "Overly aggressive tuning can suppress legitimate findings along with the noise, increasing the false negative rate and creating blind spots the organization is unaware of.",
+    "explanation": {
+      "answer": "Aggressive false-positive suppression trades noise reduction for an increased risk of false negatives.",
+      "why": "Detection tuning involves a precision/recall tradeoff: rules or thresholds broad enough to catch every true positive will also catch some false positives, while rules narrowed to eliminate false positives risk also filtering out real vulnerabilities, silently converting them into false negatives, which is the more dangerous failure mode because the organization believes it is clean. Effective tuning targets specific, verified-noisy signatures rather than broadly raising thresholds. Choice 2 is false; tuning doesn't remove the need for rescanning. Choice 3 describes a nonexistent, automatic scoring behavior. Choice 4 ignores the real tradeoff being tested.",
+      "trap": "It's tempting to treat 'fewer false positives' as an unambiguous win, but the exam wants recognition that suppression tuning can quietly increase false negatives if not scoped narrowly and validated.",
+      "memory_phrase": "Silence the noise too aggressively and you may silence a real alarm along with it."
+    }
+  },
+  {
+    "id": "Q-CEHB-05-005",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "medium",
+    "tags": ["vulnerability-analysis", "scan-cadence"],
+    "body": "Beyond a fixed periodic schedule, such as monthly, which event should ALSO trigger an ad hoc vulnerability scan of the affected systems?",
+    "choices": [
+      "A significant environmental change, such as a new server deployment, major patch, firewall rule change, or application release.",
+      "The end of the fiscal quarter, regardless of whether any systems changed.",
+      "A request from the marketing team for updated dashboard screenshots.",
+      "The vulnerability scanner vendor releasing a new user-interface theme."
+    ],
+    "answer": "A significant environmental change, such as a new server deployment, major patch, firewall rule change, or application release.",
+    "explanation": {
+      "answer": "Significant environmental or configuration changes warrant an out-of-cycle scan.",
+      "why": "Scan cadence should combine a regular schedule with event-driven scans, because new deployments, major patches, and network or firewall changes can introduce new exposure that would otherwise go undetected until the next scheduled cycle. This 'scan-on-change' practice shortens the window of unknown risk. The other options are calendar-driven or cosmetic events unrelated to actual risk changes.",
+      "trap": "Candidates sometimes assume a fixed calendar cadence alone is sufficient; the exam expects recognition that change events independently justify a scan regardless of where the calendar stands.",
+      "memory_phrase": "Scan on the calendar, and scan on change."
+    }
+  },
+  {
+    "id": "Q-CEHB-05-006",
+    "type": "true_false",
+    "module": 5,
+    "difficulty": "medium",
+    "tags": ["vulnerability-analysis", "cvss", "cvss-environmental-metrics"],
+    "body": "True or False: The CVSS Environmental metric group lets an organization adjust a vulnerability's score to reflect its own environment, such as applying modified Base metric equivalents or assigning Confidentiality, Integrity, and Availability Requirements that capture how important the affected asset actually is to that organization.",
+    "choices": ["True", "False"],
+    "answer": "True",
+    "explanation": {
+      "answer": "True.",
+      "why": "The Environmental metric group exists specifically so an organization can re-contextualize the Base score for its own environment: Modified Base metrics let an assessor override a Base metric (for example, if a compensating control changes the effective Attack Complexity), and the Security Requirements (Confidentiality, Integrity, Availability Requirements) let the organization weight impact based on how critical that asset actually is to them. This produces an Environmental Score that can differ meaningfully from the vendor-published Base Score, which is why risk prioritization should not rely on Base Score alone.",
+      "trap": "It's easy to assume CVSS produces one universal severity number for everyone; the exam expects recognition that the Environmental group exists precisely to let organizations customize that number for their own context.",
+      "memory_phrase": "Base is generic and public; Environmental is yours to recalculate."
+    }
+  },
+  {
+    "id": "Q-CEHB-05-007",
+    "type": "multi",
+    "module": 5,
+    "difficulty": "hard",
+    "tags": ["vulnerability-analysis", "cvss", "cvss-base-metrics", "cvss-temporal-metrics"],
+    "body": "Which THREE of the following belong to the CVSS v3.1 BASE metric group, as opposed to the Temporal metric group?",
+    "choices": [
+      "Attack Vector (AV)",
+      "Exploit Code Maturity (E)",
+      "Privileges Required (PR)",
+      "Remediation Level (RL)",
+      "User Interaction (UI)",
+      "Report Confidence (RC)"
+    ],
+    "answer": ["Attack Vector (AV)", "Privileges Required (PR)", "User Interaction (UI)"],
+    "explanation": {
+      "answer": "Attack Vector, Privileges Required, and User Interaction are Base metrics.",
+      "why": "The CVSS v3.1 Base group captures the intrinsic, constant qualities of a vulnerability: Attack Vector, Attack Complexity, Privileges Required, User Interaction, Scope, and the Confidentiality/Integrity/Availability impact metrics. Exploit Code Maturity, Remediation Level, and Report Confidence belong to the Temporal group, which reflects characteristics that change over time, such as exploit code maturing or patches becoming available, and are used to adjust the Base score up or down as the threat landscape evolves.",
+      "trap": "Options 2, 4, and 6 are real CVSS metrics, just from the wrong group; this tests whether the candidate knows the group boundaries rather than just recognizing CVSS terminology in general.",
+      "memory_phrase": "Base is built-in and constant; Temporal tracks trends over time."
+    }
+  },
+  {
+    "id": "Q-CEHB-05-008",
+    "type": "scenario",
+    "module": 5,
+    "difficulty": "hard",
+    "tags": ["vulnerability-analysis", "risk-acceptance", "compensating-controls", "scan-cadence"],
+    "body": "A credentialed scan flags a critical remote-code-execution vulnerability on a legacy manufacturing control server. The vendor patch is unavailable because the system is end-of-life, and the business states the server cannot be replaced for 12 months due to production dependencies. As the vulnerability management lead, describe the risk treatment process you would follow, and explain how scan cadence factors into ongoing monitoring of this finding.",
+    "answer": "Document the finding and its risk rating, then pursue formal risk acceptance with compensating controls rather than silent dismissal: segment or isolate the host on the network (dedicated VLAN, strict ACLs limiting exposure to only required protocols and peers), apply available host-based mitigations (disable unneeded services, add IDS/IPS or virtual-patching signatures for the specific exploit, enhanced logging), and require a named business/asset risk owner, not the security analyst, to formally sign off on accepting the residual risk with an explicit review or expiration date tied to the 12-month replacement plan. The finding stays open in the risk register, is reported to management/GRC, and the compensating controls are validated. Because the vulnerability itself cannot be remediated, this asset should be re-scanned on a shortened cadence, or continuously monitored, rather than the standard cycle, to confirm the compensating controls remain in place and effective, and to catch any change in exploitability, such as public exploit code becoming available, that would require re-evaluating the risk acceptance before the 12-month window closes.",
+    "explanation": {
+      "answer": "Formal risk acceptance with documented compensating controls, a named business risk owner, and a shortened re-scan/monitoring cadence tied to the 12-month remediation deadline.",
+      "why": "An unpatchable critical finding cannot simply be ignored or closed; it must go through a structured risk treatment process, isolation and compensating controls to reduce exposure, formal sign-off by someone empowered to accept business risk (not the security team), and continued verification, because both the compensating controls and the underlying risk calculus can change before the replacement date arrives.",
+      "trap": "Treating 'we can't patch it' as a reason to simply close or ignore the finding, rather than formally accepting the residual risk with controls, an owner, and an expiration date, leaves the organization exposed with no accountability trail and no plan to revisit the decision.",
+      "memory_phrase": "Can't patch it, don't hide it: isolate it, own it, watch it, and put a date on the decision."
+    }
+  },
+  {
+    "id": "Q-CEHB-06-001",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "easy",
+    "tags": ["system-hacking", "privilege-escalation", "service-misconfiguration"],
+    "body": "Which of the following describes a common local privilege-escalation vector on a Windows host, in which a service configured to run as SYSTEM has a file or folder permission weakness that lets a standard user replace or modify the executable the service launches?",
+    "choices": [
+      "A weak or misconfigured service binary or folder ACL, allowing a lower-privileged user to replace the executable that a SYSTEM-level service will launch on its next start.",
+      "A properly configured service running under a dedicated least-privilege service account with read-only permissions for standard users.",
+      "A vertical escalation that can only occur through physical console access to the server.",
+      "A change to the user's own desktop wallpaper settings."
+    ],
+    "answer": "A weak or misconfigured service binary or folder ACL, allowing a lower-privileged user to replace the executable that a SYSTEM-level service will launch on its next start.",
+    "explanation": {
+      "answer": "A weak service binary or folder ACL that lets a standard user replace what a SYSTEM service executes is a classic local privilege-escalation vector.",
+      "why": "Windows services often run under highly privileged contexts such as LocalSystem. If the service's executable, or the folder containing it, has an access control list that grants write access to a low-privileged user or group, that user can replace the binary so that the next time the service starts, SYSTEM-level code the attacker controls executes; this needs no exploit code, only a misconfigured permission. It is one of several common local privilege-escalation vector categories tested conceptually on the exam, alongside DLL/search-order hijacking, unquoted service path exploitation, unpatched kernel-level flaws, sudo/SUID misconfigurations on Linux, and token impersonation, all sharing the common thread of a trust or permission gap between what a lower-privileged principal can influence and what a higher-privileged process consumes. Choice 2 describes correct, hardened configuration, the opposite of a vulnerability. Choices 3 and 4 are false or irrelevant: this vector doesn't require physical access, and wallpaper settings have no privilege implications.",
+      "trap": "Choice 3 tries to tie this technique to physical access, but weak service ACL abuse is exploitable entirely through remote or local logical access once a foothold exists.",
+      "memory_phrase": "If a standard user can overwrite what a SYSTEM service runs, SYSTEM just handed them the keys."
+    }
+  },
+  {
+    "id": "Q-CEHB-06-002",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "easy",
+    "tags": ["system-hacking", "lsass", "credential-protection"],
+    "body": "Why is the Local Security Authority Subsystem Service (LSASS) process a high-value target once an attacker has gained local access to a Windows host?",
+    "choices": [
+      "LSASS caches credential material in memory, such as hashes and Kerberos tickets used for authentication, so dumping its memory can expose credentials for reuse elsewhere.",
+      "LSASS stores the Windows Firewall rule set, so compromising it disables all network filtering.",
+      "LSASS is responsible only for BitLocker disk-encryption keys and has no role in authentication.",
+      "LSASS is a legacy print-spooler component with no security relevance on modern systems."
+    ],
+    "answer": "LSASS caches credential material in memory, such as hashes and Kerberos tickets used for authentication, so dumping its memory can expose credentials for reuse elsewhere.",
+    "explanation": {
+      "answer": "LSASS holds authentication credential material in memory.",
+      "why": "LSASS enforces security policy on Windows and holds credential material in memory, including NTLM hashes and Kerberos tickets that support single sign-on, which is why tools that dump LSASS memory are used to harvest credentials for follow-on attacks like pass-the-hash. This is also why Credential Guard, Protected Process Light for LSASS, and restricting debug privileges are recommended defenses. Choices 2, 3, and 4 misattribute unrelated Windows functions to LSASS.",
+      "trap": "The distractors assign LSASS other plausible-sounding Windows subsystems, such as the firewall, BitLocker, or the print spooler, to test whether the candidate knows LSASS's actual authentication role rather than just recognizing the name.",
+      "memory_phrase": "LSASS is the credential vault in memory, protect it like the crown jewels."
+    }
+  },
+  {
+    "id": "Q-CEHB-06-003",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "easy",
+    "tags": ["system-hacking", "pass-the-hash"],
+    "body": "At a conceptual level, what does a 'pass-the-hash' attack allow an attacker to do?",
+    "choices": [
+      "Authenticate to a system or service using a captured password hash directly, without needing to know or crack the plaintext password.",
+      "Bypass CVSS scoring by hashing the vulnerability report before submission.",
+      "Encrypt a payload so antivirus hash-based signatures cannot detect it.",
+      "Force a target account to reset its password by flooding the authentication service with hash collisions."
+    ],
+    "answer": "Authenticate to a system or service using a captured password hash directly, without needing to know or crack the plaintext password.",
+    "explanation": {
+      "answer": "The captured hash itself is used to authenticate, bypassing the need for the plaintext password.",
+      "why": "In NTLM authentication, the password hash is effectively what gets validated during the challenge-response exchange, not the plaintext password. If an attacker obtains a valid hash, for example from LSASS memory or a credential store, they can present it directly to authenticate to other systems that accept that credential, with no cracking required. Choices 3 and 4 misuse the word 'hash' to describe unrelated concepts, payload obfuscation and denial-of-service-style abuse, and choice 2 is nonsensical filler.",
+      "trap": "Choice 3 exploits the fact that 'hash' also appears in malware-obfuscation and signature-evasion contexts, which is an entirely different topic.",
+      "memory_phrase": "Pass-the-hash: you don't need the key, just a copy of the lock's fingerprint."
+    }
+  },
+  {
+    "id": "Q-CEHB-06-004",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "medium",
+    "tags": ["system-hacking", "pass-the-hash", "credential-guard", "defense"],
+    "body": "Which control is MOST effective at directly mitigating pass-the-hash style lateral movement across a Windows environment?",
+    "choices": [
+      "Enforcing unique, randomized local administrator passwords per host (e.g., via LAPS), restricting or disabling NTLM in favor of Kerberos, and enabling Credential Guard.",
+      "Increasing the minimum password length policy to 20 characters for all domain accounts.",
+      "Enabling BitLocker full-disk encryption on all endpoints.",
+      "Requiring users to change their passwords every 30 days."
+    ],
+    "answer": "Enforcing unique, randomized local administrator passwords per host (e.g., via LAPS), restricting or disabling NTLM in favor of Kerberos, and enabling Credential Guard.",
+    "explanation": {
+      "answer": "Unique local admin credentials, reduced NTLM reliance, and Credential Guard directly blunt hash reuse.",
+      "why": "Pass-the-hash is effective largely because the same local administrator password and hash are often reused across many machines, so one captured hash unlocks lateral movement everywhere; LAPS randomizes and rotates that credential per host, neutralizing the reuse. Restricting NTLM removes the specific mechanism pass-the-hash relies on, and Credential Guard uses virtualization-based security to isolate LSASS secrets so they can't be dumped in the first place. Password length and rotation policy (choices 2 and 4) don't help once a hash is already captured and replayed, and disk encryption (choice 3) protects data at rest, not in-memory credential material.",
+      "trap": "Choices 2 and 4 sound like solid password hardening but target the wrong layer, since pass-the-hash bypasses the need to know the password at all.",
+      "memory_phrase": "Stop the hash from being useful everywhere: unique local creds, less NTLM, isolate LSASS."
+    }
+  },
+  {
+    "id": "Q-CEHB-06-005",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "medium",
+    "tags": ["system-hacking", "kerberos", "kerberoasting"],
+    "body": "At a conceptual level, what makes 'Kerberoasting' possible against Active Directory service accounts?",
+    "choices": [
+      "Any authenticated domain user can request a Kerberos service ticket for an account with a registered Service Principal Name; that ticket is encrypted with the service account's password-derived key and can be taken offline for analysis without further authentication attempts against the domain controller.",
+      "Kerberos tickets are transmitted in cleartext by default, allowing trivial network interception.",
+      "Domain controllers store all user passwords in plaintext within the Kerberos ticket-granting service.",
+      "Kerberoasting requires domain administrator credentials before any ticket can be requested."
+    ],
+    "answer": "Any authenticated domain user can request a Kerberos service ticket for an account with a registered Service Principal Name; that ticket is encrypted with the service account's password-derived key and can be taken offline for analysis without further authentication attempts against the domain controller.",
+    "explanation": {
+      "answer": "SPN-associated service tickets are encrypted with the service account's hash and can be requested by any authenticated user, enabling offline analysis.",
+      "why": "Kerberos issues service tickets encrypted with the target service account's password-derived key so the service can validate them locally. Because any authenticated domain user can request a ticket for an account with a registered SPN, and doing so doesn't require knowing that account's password, an attacker can collect such tickets and analyze them offline, which is why SPN-associated accounts should use long, random, regularly rotated passwords or managed service accounts. Choices 2 and 3 misstate how Kerberos protects ticket contents, and choice 4 is false: the entire premise is that only a low-privileged authenticated account is required to request the ticket.",
+      "trap": "Choice 4 is the key trap: it's tempting to assume this technique requires elevated privileges, but the exam tests knowledge that a standard authenticated domain account is sufficient to request the ticket.",
+      "memory_phrase": "Kerberoasting: ask nicely for a ticket, take it home, study it at leisure, no admin rights required to ask."
+    }
+  },
+  {
+    "id": "Q-CEHB-06-006",
+    "type": "true_false",
+    "module": 6,
+    "difficulty": "medium",
+    "tags": ["system-hacking", "persistence", "detection"],
+    "body": "True or False: The presence of a newly created Windows service, scheduled task, or registry Run/RunOnce key that does not correspond to any approved change ticket is a common indicator that should be investigated as possible attacker persistence.",
+    "choices": ["True", "False"],
+    "answer": "True",
+    "explanation": {
+      "answer": "True.",
+      "why": "Persistence mechanisms need a durable hook to survive reboots or logoffs, and on Windows the most common hooks are services, scheduled tasks, WMI event subscriptions, and Run/RunOnce-style autostart registry keys. Because legitimate changes to these areas are normally tied to documented change management, unexplained new entries, especially pointing to unusual paths or encoded command lines, are a standard detection heuristic used by EDR tooling and baselining/allowlisting programs.",
+      "trap": "Candidates sometimes assume persistence is detectable only via signature-based antivirus; the actual detection pattern here is behavioral/baseline deviation, not signature matching.",
+      "memory_phrase": "New autostart entry, no change ticket, no trust, investigate it."
+    }
+  },
+  {
+    "id": "Q-CEHB-06-007",
+    "type": "multi",
+    "module": 6,
+    "difficulty": "hard",
+    "tags": ["system-hacking", "anti-forensics", "log-clearing", "detection"],
+    "body": "An investigator suspects an attacker attempted to cover their tracks on a compromised Windows host. Which THREE of the following are recognized anti-forensic 'track-clearing' indicators worth correlating during the investigation?",
+    "choices": [
+      "Windows PowerShell script block logging or module logging observed disabled via registry or Group Policy shortly before or during the incident window.",
+      "File timestamps (MACE/MFT entries) inconsistent with surrounding file activity, suggesting timestomping.",
+      "A sudden increase in successful, expected nightly backup job completions.",
+      "Evidence that the NTFS USN change journal or $LogFile was cleared or truncated, removing the record of recent file-system changes.",
+      "A user changing their desktop wallpaper through Control Panel.",
+      "A scheduled disk-defragmentation task running on its normal monthly schedule."
+    ],
+    "answer": [
+      "Windows PowerShell script block logging or module logging observed disabled via registry or Group Policy shortly before or during the incident window.",
+      "File timestamps (MACE/MFT entries) inconsistent with surrounding file activity, suggesting timestomping.",
+      "Evidence that the NTFS USN change journal or $LogFile was cleared or truncated, removing the record of recent file-system changes."
+    ],
+    "explanation": {
+      "answer": "Choices 1, 2, and 4 are recognized track-clearing/anti-forensic indicators.",
+      "why": "Sophisticated anti-forensic activity spans three phases: preventing evidence from being generated in the first place (disabling PowerShell script block or module logging removes visibility into an attacker's future command-line and scripting activity), altering evidence after creation to blend in with legitimate activity (timestomping manipulates MACE/MFT timestamps so malicious files don't stand out in a timeline), and destroying evidence that has already accumulated (clearing or truncating the NTFS USN change journal or $LogFile removes the record of recent file-system changes an investigator would otherwise use to reconstruct activity). Choices 3, 5, and 6 describe routine, expected system behavior with no inherent forensic significance and are included as noise to filter out.",
+      "trap": "Choice 3 is worded to sound suspicious ('sudden increase') but describes benign, expected behavior; the exam wants candidates distinguishing genuine anti-forensic artifacts from normal operational noise rather than pattern-matching on words like 'sudden.'",
+      "memory_phrase": "Anti-forensics works in three moves: stop new evidence, disguise existing evidence, erase the trail."
+    }
+  },
+  {
+    "id": "Q-CEHB-06-008",
+    "type": "scenario",
+    "module": 6,
+    "difficulty": "hard",
+    "tags": ["system-hacking", "pass-the-hash", "lsass", "incident-response", "anti-forensics"],
+    "body": "A SOC analyst reviewing EDR telemetry sees: (1) a process reading LSASS memory outside of normal security-tooling behavior, (2) an NTLM authentication event immediately afterward from the same host to several servers where that user has never logged on before, and (3) PowerShell script block logging observed being disabled via a registry change on the source host shortly after. Explain what attack chain this likely represents and outline the detection/response actions you would take.",
+    "answer": "This telemetry is consistent with a credential-dumping-to-lateral-movement chain: the LSASS memory read indicates credential harvesting, the subsequent NTLM authentications to servers with no prior logon history are consistent with pass-the-hash using the harvested credential material, and disabling PowerShell script block logging indicates the attacker is trying to blind future visibility into their own scripting-based follow-on activity on the source host, a form of anti-forensic track-clearing. Response actions: isolate the source host from the network immediately while preserving volatile evidence (avoid rebooting); treat the harvested account and any accounts used in the anomalous NTLM logons as compromised and force credential resets, rotating any shared or privileged secrets involved per incident response policy; correlate EDR/LSASS-access alerts with Windows Security logs (4624/4625 logon events, 4648 explicit credential use) and network authentication logs across the newly contacted servers to scope the full blast radius; check those destination servers for follow-on activity such as new accounts or further credential dumping; and since local logging visibility was reduced, rely on centralized/forwarded logging and EDR's own tamper-resistant telemetry, which does not depend on the host's local PowerShell logging configuration, to reconstruct what the attacker did after disabling it. Longer term, ensure Credential Guard/LSASS protection, NTLM restriction, Group-Policy-enforced (not locally reversible) PowerShell logging, and centralized, alerted logging on logging-configuration changes are in place to reduce recurrence and close the detection gap."
+  },
+  {
+    "id": "Q-CEHB-07-001",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "easy",
+    "tags": ["malware", "rootkit", "bootkit"],
+    "body": "Which type of rootkit modifies the system's boot process itself, such as the Master Boot Record (MBR) or UEFI firmware, to load its malicious code before the operating system and most security controls even initialize?",
+    "choices": [
+      "A bootkit (firmware-level rootkit)",
+      "A user-mode (application-level) rootkit",
+      "A library rootkit that only replaces shared DLL exports",
+      "A macro-based rootkit embedded in an Office document"
+    ],
+    "answer": "A bootkit (firmware-level rootkit)",
+    "explanation": {
+      "answer": "A bootkit, or firmware-level rootkit, hijacks the boot chain (MBR/UEFI) to execute before the OS and most security tooling load.",
+      "why": "A bootkit infects the boot process, such as the Master Boot Record, boot sector, or UEFI firmware itself, so its code runs at the earliest possible point, before the operating system kernel and most endpoint security software have even started, which is what makes it exceptionally hard to detect and remove using tools that only run once the OS is up. A user-mode rootkit (choice 2) operates at the same privilege level as ordinary applications, well after boot, and is comparatively easier to detect. Describing a 'library rootkit' (choice 3) narrows to one specific, lesser technique, API hooking via shared libraries, rather than boot-level persistence. Choice 4 describes a delivery mechanism used by many kinds of malware, not a rootkit persistence category.",
+      "trap": "Choice 3 sounds technical and plausible but describes a narrower implementation detail of a user-mode rootkit, not the boot-hijacking behavior the question asks about.",
+      "memory_phrase": "A bootkit boots before your OS does, and often before your antivirus can look."
+    }
+  },
+  {
+    "id": "Q-CEHB-07-002",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "easy",
+    "tags": ["malware", "fileless-malware", "lolbins"],
+    "body": "What makes native, digitally-signed Windows utilities, known as Living-Off-the-Land Binaries (LOLBins), especially attractive for attackers to abuse during fileless-style attacks?",
+    "choices": [
+      "They are already present and trusted on the system, and their legitimate, signed status means execution often blends in with normal administrative activity and may bypass application allowlisting policies that trust signed system binaries.",
+      "They are the only files capable of running inside a hypervisor.",
+      "They automatically disable endpoint detection and response agents upon execution.",
+      "They can only be used for encrypting ransomware payloads and serve no other function."
+    ],
+    "answer": "They are already present and trusted on the system, and their legitimate, signed status means execution often blends in with normal administrative activity and may bypass application allowlisting policies that trust signed system binaries.",
+    "explanation": {
+      "answer": "LOLBins are attractive because they're already trusted and signed and present, letting malicious use blend in with legitimate admin activity and potentially bypass allowlisting.",
+      "why": "Because Living-Off-the-Land Binaries are native to the OS and typically digitally signed by the OS vendor, security controls that rely on trusting signed binaries or well-known system paths, such as application allowlisting, may not flag their use, and their normal, legitimate administrative purpose means unusual invocations can hide within the noise of routine system activity. This is precisely why fileless techniques favor them over dropping a novel, unsigned executable that would stand out. Choice 2 is a fabricated claim about hypervisors. Choice 3 is false; using a LOLBin does not inherently disable EDR. Choice 4 incorrectly narrows LOLBins to a single malicious purpose when they are abused for many purposes, including downloading, execution, lateral movement, and exfiltration.",
+      "trap": "Choice 3 tempts candidates who conflate 'evades detection' with 'disables detection tooling'; LOLBin abuse is about blending in and exploiting trust, not disabling security agents outright.",
+      "memory_phrase": "LOLBins aren't malicious themselves, they're trusted tools an attacker borrows so the activity looks like business as usual."
+    }
+  },
+  {
+    "id": "Q-CEHB-07-003",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "medium",
+    "tags": ["malware", "packing", "obfuscation", "static-analysis"],
+    "body": "Malware authors frequently 'pack' or obfuscate a binary before distribution. As a static-analysis technique, which approach is MOST directly useful for flagging a likely-packed executable, even before any dynamic analysis is performed?",
+    "choices": [
+      "Calculating the file's Shannon entropy, since packed or encrypted sections typically show unusually high, near-random entropy compared to normal compiled code.",
+      "Checking whether the file's creation timestamp falls on a weekday.",
+      "Confirming the file extension is '.exe' rather than '.scr' or '.dll'.",
+      "Verifying the file is larger than 1 GB, since all packed malware is oversized."
+    ],
+    "answer": "Calculating the file's Shannon entropy, since packed or encrypted sections typically show unusually high, near-random entropy compared to normal compiled code.",
+    "explanation": {
+      "answer": "High entropy is a well-known static indicator of packing/encryption.",
+      "why": "Packing or encryption compresses or encrypts the original code, producing a byte distribution that looks statistically closer to random data than typical compiled code, measurable as Shannon entropy, and a staple static-analysis heuristic, alongside a small number of suspicious section names or a tiny import table with runtime-resolved APIs, used by analysts and by many AV/EDR engines to flag likely-packed samples for deeper analysis. Choices 2 and 3 are irrelevant, easily forged metadata; choice 4 is a fabricated false absolute, since packing typically reduces a file's apparent size, the opposite of the claim.",
+      "trap": "Choice 4 uses a plausible-sounding but false absolute; actual packing usually shrinks on-disk footprint rather than inflating it.",
+      "memory_phrase": "High entropy, low visibility: packed code looks like static on a static analyzer."
+    }
+  },
+  {
+    "id": "Q-CEHB-07-004",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "medium",
+    "tags": ["malware", "ransomware", "backups", "shadow-copies"],
+    "body": "Modern ransomware frequently deletes or disables Volume Shadow Copies early in its execution, before mass-encrypting files. Why is maintaining offline or immutable backups, rather than relying solely on shadow copies or online backups, the more effective defense against this stage?",
+    "choices": [
+      "Because ransomware that has already gained execution on the host can also reach and destroy locally accessible online backups and shadow copies, whereas offline, immutable, or air-gapped copies are not reachable or alterable from that same compromised session.",
+      "Because shadow copies are always encrypted by BitLocker and therefore cannot be deleted by any process.",
+      "Because offline backups automatically detect and remove ransomware from the original production files without any restore action.",
+      "Because most compliance frameworks prohibit using online backups for ransomware recovery."
+    ],
+    "answer": "Because ransomware that has already gained execution on the host can also reach and destroy locally accessible online backups and shadow copies, whereas offline, immutable, or air-gapped copies are not reachable or alterable from that same compromised session.",
+    "explanation": {
+      "answer": "Offline or immutable backups sit outside the blast radius of a compromised host and can't be tampered with by the same attacker session.",
+      "why": "A key stage in many ransomware kill chains is destroying the victim's easiest recovery options: deleting shadow copies and, where reachable, tampering with connected or online backups, to remove leverage-free recovery and pressure payment. Offline or immutable (write-once/object-lock) backups aren't writable or reachable from the compromised host, so that same destructive action can't touch them. Choices 2, 3, and 4 are false: shadow copies aren't inherently protected from deletion by BitLocker, backups don't 'auto-clean' production systems, and no such compliance prohibition exists.",
+      "trap": "Choice 2 conflates disk encryption, which protects data at rest from unauthorized reading, with protection against an authorized or elevated local process issuing a legitimate delete command; encryption doesn't stop deletion.",
+      "memory_phrase": "If the attacker who owns the host can reach the backup, so can the ransomware, keep a copy it can't touch."
+    }
+  },
+  {
+    "id": "Q-CEHB-07-005",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "medium",
+    "tags": ["malware", "c2", "beaconing", "threat-hunting"],
+    "body": "A threat hunter is analyzing outbound proxy logs for command-and-control (C2) beaconing from an implant. Which pattern is the strongest behavioral indicator of beaconing, as opposed to normal user browsing traffic?",
+    "choices": [
+      "Recurring outbound connections to the same external destination at a fairly consistent time interval, often with slight randomized jitter, regardless of user activity on the host.",
+      "A single large file download that occurs once, immediately after the browser is opened.",
+      "Traffic volume that spikes only during the organization's normal business hours.",
+      "DNS queries that resolve to the organization's own internal domain controllers."
+    ],
+    "answer": "Recurring outbound connections to the same external destination at a fairly consistent time interval, often with slight randomized jitter, regardless of user activity on the host.",
+    "explanation": {
+      "answer": "Periodic, low-and-slow check-ins at a near-fixed interval, often with jitter to evade simple pattern detection, are the classic beaconing signature.",
+      "why": "C2 implants typically call home on a timer to fetch tasking, independent of whether the user is actively using the machine, producing connections that repeat at a regular cadence, often with randomized jitter added specifically to defeat naive interval-based detection. Analysts detect this via beacon analysis, grouping connections by destination and measuring time-delta consistency, rather than by volume alone. Choice 2 describes a one-off event, not a recurring pattern; choice 3 describes traffic correlated with legitimate human usage, the opposite of beaconing's independence from user activity; choice 4 is normal internal infrastructure traffic.",
+      "trap": "Choice 3 is designed to look like a subtle indicator but actually describes traffic tied to legitimate human activity patterns, the opposite of what makes beaconing suspicious.",
+      "memory_phrase": "Beacons don't sleep when the user does, look for the metronome, not the moment."
+    }
+  },
+  {
+    "id": "Q-CEHB-07-006",
+    "type": "true_false",
+    "module": 7,
+    "difficulty": "medium",
+    "tags": ["malware", "yara", "ioc"],
+    "body": "True or False: YARA rules are primarily designed to inspect live network traffic on the wire, in the same way a Snort or Suricata signature would, rather than to match patterns within files or memory.",
+    "choices": ["True", "False"],
+    "answer": "False",
+    "explanation": {
+      "answer": "False, YARA matches patterns in files and memory, not network traffic.",
+      "why": "YARA lets analysts define rules combining textual or binary string patterns with boolean and structural conditions to identify and classify files or memory content associated with a malware family or threat. It operates on files at rest, on attachments passing through gateways, or in memory during dynamic analysis and EDR scans. Network traffic signature matching on the wire is the role of tools like Snort or Suricata, which use their own rule syntax built around packet and protocol fields. The two are complementary in a detection stack but are not interchangeable.",
+      "trap": "Because both are broadly 'signature-based detection,' candidates sometimes lump YARA and network IDS rules together; the exam expects the candidate to know YARA's scope is files and memory, not packets on the wire.",
+      "memory_phrase": "YARA reads files and memory; Snort and Suricata read the wire."
+    }
+  },
+  {
+    "id": "Q-CEHB-07-007",
+    "type": "multi",
+    "module": 7,
+    "difficulty": "hard",
+    "tags": ["malware", "sandbox-evasion", "dynamic-analysis"],
+    "body": "Malware sandboxes execute suspicious samples in an isolated, instrumented environment to observe behavior during dynamic analysis. Which THREE of the following are recognized sandbox-evasion techniques malware may use to detect it is being analyzed and suppress malicious behavior?",
+    "choices": [
+      "Checking for virtualization or analysis artifacts, such as specific registry keys, driver names, or hardware identifiers associated with common VM or sandbox platforms.",
+      "Inserting long sleep delays or execution-time checks, since many sandboxes only observe a sample for a limited window before analysis ends.",
+      "Requiring genuine user interaction, such as mouse movement or specific dialog clicks, before continuing execution, since automated sandboxes often lack realistic interactive input.",
+      "Increasing the file's digital signature validity period to prevent any future expiration.",
+      "Encrypting all outbound C2 traffic using TLS to reduce bandwidth usage.",
+      "Requesting elevated administrator privileges immediately upon first execution, before performing any other action."
+    ],
+    "answer": [
+      "Checking for virtualization or analysis artifacts, such as specific registry keys, driver names, or hardware identifiers associated with common VM or sandbox platforms.",
+      "Inserting long sleep delays or execution-time checks, since many sandboxes only observe a sample for a limited window before analysis ends.",
+      "Requiring genuine user interaction, such as mouse movement or specific dialog clicks, before continuing execution, since automated sandboxes often lack realistic interactive input."
+    ],
+    "explanation": {
+      "answer": "Choices 1, 2, and 3 are recognized sandbox-evasion technique categories.",
+      "why": "Malware seeking to evade automated analysis commonly uses three broad technique families: environment/artifact fingerprinting, probing for registry keys, driver names, or low CPU-core/RAM/disk counts characteristic of VMs and sandboxes; timing-based evasion, sleeping or looping past the sandbox's finite observation window or checking whether elapsed time is inconsistent with expected CPU cycles; and interactivity checks, waiting for genuine mouse movement or clicks that automated sandboxes typically don't simulate realistically. Choices 4, 5, and 6 describe unrelated or nonsensical behaviors: signature validity periods and TLS-for-bandwidth aren't evasion mechanisms, and requesting elevated privileges immediately would draw more scrutiny, such as a UAC prompt, not less.",
+      "trap": "Choice 5 is designed to sound plausible because encrypted C2 traffic is a real technique, but its purpose is to obscure network traffic content from network defenders, not to detect or evade a sandbox, a subtle but important distinction between evasion and obfuscation goals.",
+      "memory_phrase": "Sandbox evasion asks 'am I being watched?': check the room for VM artifacts, check the clock for timing, check for a human for interaction."
+    }
+  },
+  {
+    "id": "Q-CEHB-07-008",
+    "type": "scenario",
+    "module": 7,
+    "difficulty": "hard",
+    "tags": ["malware", "ransomware", "incident-response", "yara"],
+    "body": "A hospital's file server begins showing mass file renames with a new extension, and Volume Shadow Copy deletion commands appear in the endpoint's process history just prior. Backups are stored on a network share mapped using domain admin credentials cached on the same server. Explain the likely stage of the attack, why the backup architecture is a critical weakness here, and what detection content (referencing IOC/YARA concepts) and remediation steps you would recommend going forward.",
+    "answer": "The Volume Shadow Copy deletion followed immediately by mass file renames indicates the ransomware has reached the impact/encryption stage of its kill chain; shadow copy deletion is a deliberate pre-encryption step to remove the easiest local recovery path before locking files. The backup architecture is a critical weakness because the backup share is reachable and writable from the compromised server using highly privileged domain admin credentials cached on that same host, meaning the ransomware process, or the attacker operating from that session, can reach, encrypt, or delete the backups too, defeating their purpose as a recovery mechanism; backups must be treated as part of the attack surface, not assumed safe. Going forward, for detection content: build or deploy YARA rules and IOC signatures for the specific ransomware family's known strings, packer characteristics, and file markers, plus behavioral EDR rules for shadow-copy deletion commands and mass file-rename/write events in short time windows, and feed confirmed IOCs (hashes, C2 destinations, file-extension markers) into the SIEM/threat-intel platform for retroactive hunting across the environment. For remediation: isolate the affected server immediately; rotate all credentials exposed or usable on that host, especially the domain admin account mapped to backups, and eliminate the practice of using domain admin for routine backup mounts in favor of a dedicated, least-privilege backup service account; redesign backup architecture to be offline/air-gapped or immutable (object-lock/WORM) so no production-reachable session can alter or delete backup data; and validate restore capability regularly. The incident should also drive a review of why a single compromised host had a path to both mass file access and backup-destroying privileges."
+  }
+]
