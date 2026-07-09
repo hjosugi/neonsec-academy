@@ -19,23 +19,23 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] export targets: attempts, review schedule, mock summaries, lab summaries, reports
-- [ ] public-safe export と full backup export を分ける
-- [ ] sensitive field masking を行う
-- [ ] export 前に privacy checklist を表示する
+- [x] export targets: attempts, review schedule, mock summaries, lab summaries, reports
+- [x] public-safe export と full backup export を分ける
+- [x] sensitive field masking を行う
+- [x] export 前に privacy checklist を表示する
 
 ## Acceptance Criteria
 
-- [ ] full backup JSON を export できる
-- [ ] public-safe Markdown を export できる
-- [ ] privacy checklist が表示される
+- [x] full backup JSON を export できる
+- [x] public-safe Markdown を export できる
+- [x] privacy checklist が表示される
 
 ## Subtasks
 
-- [ ] export types を作る
-- [ ] masking rules を作る
-- [ ] settings UI を作る
-- [ ] preview を作る
+- [x] export types を作る
+- [x] masking rules を作る
+- [x] settings UI を作る
+- [x] preview を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ public-safe export を default にする。実情報、credential、private note
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import type { Settings as SettingsType } from '../types'
 import { useStore } from '../store/useStore'
+import { LABS } from '../data/labs'
 import { SEED_QUESTIONS } from '../data/questions'
 import {
   buildQuestionPack,
@@ -10,6 +11,11 @@ import {
   type QuestionPack,
   type QuestionPackPreview,
 } from '../lib/questionPacks'
+import {
+  buildPublicAnalyticsExport,
+  publicAnalyticsToMarkdown,
+  type LabProgressSummary,
+} from '../lib/privacyExport'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 
@@ -29,7 +35,15 @@ function Toggle({ label, hint, checked, onChange }: { label: string; hint?: stri
 }
 
 function downloadJson(filename: string, json: string) {
-  const blob = new Blob([json], { type: 'application/json' })
+  downloadBlob(filename, json, 'application/json')
+}
+
+function downloadText(filename: string, text: string) {
+  downloadBlob(filename, text, 'text/markdown;charset=utf-8')
+}
+
+function downloadBlob(filename: string, body: string, type: string) {
+  const blob = new Blob([body], { type })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
@@ -45,11 +59,80 @@ function countSummary(counts: Record<string, number>): string {
     .join('  ')
 }
 
+const LAB_PROGRESS_PREFIX = 'neonsec-academy:lab-progress:'
+
+function readLabProgressSummaries(): LabProgressSummary[] {
+  if (typeof window === 'undefined') return []
+
+  return LABS.map((lab) => {
+    try {
+      const raw = window.localStorage.getItem(`${LAB_PROGRESS_PREFIX}${lab.id}`)
+      if (!raw) {
+        return {
+          id: lab.id,
+          title: lab.title,
+          category: lab.category,
+          scopeAcknowledged: false,
+          objectivesDone: 0,
+          objectivesTotal: lab.objectives.length,
+          hintsRevealed: 0,
+        }
+      }
+
+      const parsed = JSON.parse(raw) as Partial<{ ack: boolean; done: boolean[]; revealedHints: number[] }>
+      return {
+        id: lab.id,
+        title: lab.title,
+        category: lab.category,
+        scopeAcknowledged: parsed.ack === true,
+        objectivesDone: lab.objectives.filter((_, i) => Boolean(parsed.done?.[i])).length,
+        objectivesTotal: lab.objectives.length,
+        hintsRevealed: (parsed.revealedHints ?? []).filter((i) => Number.isInteger(i) && i >= 0 && i < lab.guiding.length).length,
+      }
+    } catch {
+      return {
+        id: lab.id,
+        title: lab.title,
+        category: lab.category,
+        scopeAcknowledged: false,
+        objectivesDone: 0,
+        objectivesTotal: lab.objectives.length,
+        hintsRevealed: 0,
+      }
+    }
+  })
+}
+
+const PRIVACY_CHECKS = [
+  {
+    id: 'publicOnly',
+    label: 'Public export excludes raw answers, custom questions, mistake notes, and report evidence.',
+  },
+  {
+    id: 'maskedTitles',
+    label: 'I reviewed report titles; common emails, IPs, and secrets will be masked.',
+  },
+  {
+    id: 'syntheticOnly',
+    label: 'I will share only synthetic learning progress and no real target details.',
+  },
+  {
+    id: 'privateBackup',
+    label: 'I understand the full JSON backup may contain private notes and report data.',
+  },
+] as const
+
+type PrivacyCheckId = (typeof PRIVACY_CHECKS)[number]['id']
+
 export function Settings() {
   const settings = useStore((s) => s.settings)
   const updateSettings = useStore((s) => s.updateSettings)
   const profile = useStore((s) => s.profile)
   const updateProfile = useStore((s) => s.updateProfile)
+  const attempts = useStore((s) => s.attempts)
+  const reviews = useStore((s) => s.reviews)
+  const examResults = useStore((s) => s.examResults)
+  const reports = useStore((s) => s.reports)
   const userQuestions = useStore((s) => s.userQuestions)
   const upsertUserQuestion = useStore((s) => s.upsertUserQuestion)
   const exportData = useStore((s) => s.exportData)
@@ -59,6 +142,12 @@ export function Settings() {
   const packFileRef = useRef<HTMLInputElement>(null)
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<Set<string>>(() => new Set(userQuestions.map((q) => q.id)))
   const [packImport, setPackImport] = useState<{ pack: QuestionPack; preview: QuestionPackPreview } | null>(null)
+  const [privacyChecks, setPrivacyChecks] = useState<Record<PrivacyCheckId, boolean>>({
+    publicOnly: false,
+    maskedTitles: false,
+    syntheticOnly: false,
+    privateBackup: false,
+  })
   const [msg, setMsg] = useState('')
 
   const set = (patch: Partial<SettingsType>) => updateSettings(patch)
@@ -71,9 +160,38 @@ export function Settings() {
     () => userQuestions.filter((q) => selectedQuestionIds.has(q.id)),
     [userQuestions, selectedQuestionIds],
   )
+  const labProgress = useMemo(readLabProgressSummaries, [])
+  const publicExport = useMemo(
+    () =>
+      buildPublicAnalyticsExport({
+        attempts,
+        reviews,
+        examResults,
+        reports,
+        labProgress,
+      }),
+    [attempts, reviews, examResults, labProgress, reports],
+  )
+  const privacyReady = PRIVACY_CHECKS.every((check) => privacyChecks[check.id])
 
   const doExport = () => {
     downloadJson('neonsec-backup.json', exportData())
+  }
+
+  const doPublicExport = () => {
+    if (!privacyReady) {
+      setMsg('✕ Complete the privacy checklist before exporting a public summary.')
+      return
+    }
+    const data = buildPublicAnalyticsExport({
+      attempts,
+      reviews,
+      examResults,
+      reports,
+      labProgress: readLabProgressSummaries(),
+    })
+    downloadText('neonsec-public-progress.md', publicAnalyticsToMarkdown(data))
+    setMsg('✓ Public-safe Markdown exported.')
   }
 
   const exportQuestionPack = (mode: 'selected' | 'all') => {
@@ -196,16 +314,66 @@ export function Settings() {
         </div>
 
         <div className="stack">
+          <Panel
+            title="Privacy Export"
+            right={<span className="term t-xs dim">public-safe</span>}
+          >
+            <p className="term t-xs dim mb-2">
+              Share aggregate progress without raw answers, authored questions, mistake notes, or report evidence.
+            </p>
+            <div className="grid-2 mb-2" style={{ gap: '0.55rem' }}>
+              <div style={{ border: '1px solid var(--hairline)', borderRadius: 'var(--r-sm)', padding: '0.55rem' }}>
+                <div className="term t-xs dim upper">Attempts</div>
+                <strong>{publicExport.summary.attempts}</strong>
+                <div className="term t-xs muted">{publicExport.summary.accuracyPct}% accuracy</div>
+              </div>
+              <div style={{ border: '1px solid var(--hairline)', borderRadius: 'var(--r-sm)', padding: '0.55rem' }}>
+                <div className="term t-xs dim upper">Reviews</div>
+                <strong>{publicExport.summary.reviewItems}</strong>
+                <div className="term t-xs muted">{publicExport.summary.dueReviews} due now</div>
+              </div>
+              <div style={{ border: '1px solid var(--hairline)', borderRadius: 'var(--r-sm)', padding: '0.55rem' }}>
+                <div className="term t-xs dim upper">Mocks</div>
+                <strong>{publicExport.summary.mockExams}</strong>
+                <div className="term t-xs muted">{publicExport.mockSummaries[0]?.scorePct ?? 0}% latest</div>
+              </div>
+              <div style={{ border: '1px solid var(--hairline)', borderRadius: 'var(--r-sm)', padding: '0.55rem' }}>
+                <div className="term t-xs dim upper">Labs / Reports</div>
+                <strong>
+                  {publicExport.summary.labsStarted} / {publicExport.summary.reports}
+                </strong>
+                <div className="term t-xs muted">started / saved</div>
+              </div>
+            </div>
+
+            <div className="stack stack--sm">
+              {PRIVACY_CHECKS.map((check) => (
+                <label key={check.id} className="row" style={{ gap: '0.55rem', alignItems: 'flex-start' }}>
+                  <input
+                    type="checkbox"
+                    checked={privacyChecks[check.id]}
+                    onChange={(e) => setPrivacyChecks((prev) => ({ ...prev, [check.id]: e.target.checked }))}
+                  />
+                  <span className="term t-xs muted">{check.label}</span>
+                </label>
+              ))}
+              <button className="btn btn--primary btn--block" disabled={!privacyReady} onClick={doPublicExport}>
+                Export public-safe Markdown
+              </button>
+            </div>
+          </Panel>
+
           <Panel title="Data">
             <p className="term t-xs dim mb-2">
-              Everything is stored locally in your browser. Back it up or move it to another device.
+              Everything is stored locally in your browser. The full backup is private and may include notes, custom
+              questions, answers, and report details.
             </p>
             <div className="stack stack--sm">
               <button className="btn btn--ghost btn--block" onClick={doExport}>
-                ⤓ Export progress (JSON)
+                Export full backup JSON
               </button>
               <button className="btn btn--ghost btn--block" onClick={() => progressFileRef.current?.click()}>
-                ⤒ Import progress
+                Import full backup JSON
               </button>
               <input
                 ref={progressFileRef}

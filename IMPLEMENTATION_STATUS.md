@@ -47,15 +47,21 @@ remain as issues (P5‑001, P5‑008).
 
 ## Phase 6 — Cyberpunk Polish & Launch 🟡
 Visual theme, command palette (`/` or ⌘K), effect toggles (reduce‑motion / low‑glow /
-high‑contrast / scanlines), responsive layout, onboarding, city map, and this documentation are in.
-Shareable question packs are in Settings. ⬜ Theme presets remain tracked for follow-up.
+high‑contrast / scanlines), responsive layout, onboarding, city map, release documentation,
+public-safe analytics export, full backup import/export, security review artifacts, and acceptance
+test evidence are in. Shareable question packs are in Settings. ⬜ Theme presets and a dedicated
+demo/landing mode remain tracked for follow-up.
 
 ## New issues added — and mostly already implemented this pass
-- **P1‑011** ✅ Automated unit tests (Vitest) — 31 tests across srs / grade / exam / analytics / readiness / packs / final gate
+- **P1‑011** ✅ Automated unit tests (Vitest) — coverage across srs / grade / exam / analytics / readiness / packs / final gate / privacy export
 - **P1‑012** ✅ CI: typecheck + content validation + tests + build (`.github/workflows/ci.yml`)
 - **P6‑013** ✅ GitHub Pages deploy workflow (`.github/workflows/deploy.yml`) → live demo
 - **P6‑014** ✅ PWA / offline support (manifest + icon + runtime-caching service worker)
 - **P6‑015** ✅ Shareable question packs (import/export decks)
+- **P6‑008** ✅ Public-safe analytics export + privacy checklist
+- **P6‑009** ✅ Release documentation
+- **P6‑011** ✅ Security/legal/content safety review
+- **P6‑012** ✅ v1 acceptance test record
 
 ## Question bank size
 Seed bank expanded from 263 → **371** questions (batch-2 `Q-CEHB-*` items deepen the
