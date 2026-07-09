@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { labById } from '../data/labs'
+import type { Lab, LabRubric, LabRubricComponent } from '../data/labs'
+import { useStore } from '../store/useStore'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { EmptyState } from '../components/ui/EmptyState'
@@ -13,15 +15,164 @@ const SEV_CLASS: Record<string, string> = {
   info: 'badge--purple',
 }
 
+const LAB_PROGRESS_PREFIX = 'neonsec-academy:lab-progress:'
+
+type LabProgress = {
+  ack: boolean
+  done: boolean[]
+  revealedHints: Set<number>
+}
+
+type ScoreRow = LabRubricComponent & {
+  earned: number
+  reportEarned: number
+  blockers: string[]
+}
+
+function blankProgress(lab?: Lab): LabProgress {
+  return {
+    ack: false,
+    done: lab ? lab.objectives.map(() => false) : [],
+    revealedHints: new Set(),
+  }
+}
+
+function progressKey(lab: Lab) {
+  return `${LAB_PROGRESS_PREFIX}${lab.id}`
+}
+
+function readLabProgress(lab?: Lab): LabProgress {
+  if (!lab || typeof window === 'undefined') return blankProgress(lab)
+
+  try {
+    const raw = window.localStorage.getItem(progressKey(lab))
+    if (!raw) return blankProgress(lab)
+    const parsed = JSON.parse(raw) as Partial<{ ack: boolean; done: boolean[]; revealedHints: number[] }>
+    const done = lab.objectives.map((_, i) => Boolean(parsed.done?.[i]))
+    const revealedHints = new Set(
+      (parsed.revealedHints ?? []).filter((i) => Number.isInteger(i) && i >= 0 && i < lab.guiding.length),
+    )
+
+    return { ack: parsed.ack === true, done, revealedHints }
+  } catch {
+    return blankProgress(lab)
+  }
+}
+
+function writeLabProgress(lab: Lab, ack: boolean, done: boolean[], revealedHints: Set<number>) {
+  if (typeof window === 'undefined') return
+
+  try {
+    window.localStorage.setItem(
+      progressKey(lab),
+      JSON.stringify({
+        ack,
+        done: lab.objectives.map((_, i) => Boolean(done[i])),
+        revealedHints: [...revealedHints],
+      }),
+    )
+  } catch {
+    // Progress persistence is best-effort; scoring still works for the current session.
+  }
+}
+
+function reportTitle(lab: Lab) {
+  return `Report — ${lab.title}`
+}
+
+function reportScope(lab: Lab) {
+  return `Synthetic lab: ${lab.category}. Allowed: ${lab.scope.allowed.join('; ')}.`
+}
+
+function isReportForLab(report: { title: string; scope: string; summary: string }, lab: Lab) {
+  return report.title === reportTitle(lab) || (report.scope === reportScope(lab) && report.summary === lab.brief)
+}
+
+function objectivesReady(component: LabRubricComponent, done: boolean[]) {
+  const indexes = component.objectiveIndexes ?? []
+  return indexes.length === 0 || indexes.every((i) => Boolean(done[i]))
+}
+
+function scoreLab(rubric: LabRubric, done: boolean[], ack: boolean, hasReport: boolean, revealedHintCount: number) {
+  const rows: ScoreRow[] = rubric.components.map((component) => {
+    const reportPoints = component.reportPoints ?? 0
+    const basePoints = component.points - reportPoints
+    const ready = objectivesReady(component, done)
+    const earned = ready && ack ? basePoints + (hasReport ? reportPoints : 0) : 0
+    const missing = (component.objectiveIndexes ?? []).filter((i) => !done[i])
+    const blockers: string[] = []
+
+    if (!ack) blockers.push('acknowledge scope')
+    if (missing.length > 0) blockers.push(`objective ${missing.map((i) => `#${i + 1}`).join(', ')}`)
+    if (reportPoints > 0 && !hasReport) blockers.push('submit report')
+
+    return {
+      ...component,
+      earned,
+      reportEarned: ready && ack && hasReport ? reportPoints : 0,
+      blockers,
+    }
+  })
+
+  const max = rows.reduce((sum, row) => sum + row.points, 0)
+  const subtotal = rows.reduce((sum, row) => sum + row.earned, 0)
+  const hintPenalty = revealedHintCount * rubric.hintPenalty
+  const scopePenalty = ack ? 0 : rubric.scopeWarningPenalty
+  const score = Math.max(0, Math.min(max, subtotal - hintPenalty - scopePenalty))
+  const pct = max > 0 ? Math.round((score / max) * 100) : 0
+
+  return {
+    rows,
+    max,
+    subtotal,
+    hintPenalty,
+    scopePenalty,
+    score,
+    pct,
+    passed: pct >= rubric.passingScore,
+  }
+}
+
+function scoreBadgeClass(pct: number) {
+  if (pct >= 80) return 'badge--green'
+  if (pct >= 50) return 'badge--amber'
+  return 'badge--red'
+}
+
+function scoreColor(pct: number) {
+  if (pct >= 80) return 'var(--acid-green)'
+  if (pct >= 50) return 'var(--warning-amber)'
+  return 'var(--danger-red)'
+}
+
 export function LabDetail() {
   const { id = '' } = useParams()
   const navigate = useNavigate()
   const lab = labById(id)
+  const reports = useStore((s) => s.reports)
+  const settings = useStore((s) => s.settings)
 
-  const [ack, setAck] = useState(false)
-  const [done, setDone] = useState<boolean[]>(() => (lab ? lab.objectives.map(() => false) : []))
+  const [progressLabId, setProgressLabId] = useState(lab?.id ?? '')
+  const [ack, setAck] = useState(() => readLabProgress(lab).ack)
+  const [done, setDone] = useState<boolean[]>(() => readLabProgress(lab).done)
   const [openHints, setOpenHints] = useState<Set<number>>(new Set())
+  const [revealedHints, setRevealedHints] = useState<Set<number>>(() => readLabProgress(lab).revealedHints)
   const [showModel, setShowModel] = useState(false)
+
+  useEffect(() => {
+    const progress = readLabProgress(lab)
+    setAck(progress.ack)
+    setDone(progress.done)
+    setOpenHints(new Set())
+    setRevealedHints(progress.revealedHints)
+    setShowModel(false)
+    setProgressLabId(lab?.id ?? '')
+  }, [lab?.id])
+
+  useEffect(() => {
+    if (!lab || progressLabId !== lab.id) return
+    writeLabProgress(lab, ack, done, revealedHints)
+  }, [ack, done, lab, progressLabId, revealedHints])
 
   if (!lab) {
     return (
@@ -37,15 +188,38 @@ export function LabDetail() {
     )
   }
 
-  const toggleHint = (i: number) =>
+  const effectiveRubric: LabRubric = {
+    ...lab.rubric,
+    passingScore: settings.labPassingScore ?? lab.rubric.passingScore,
+    hintPenalty: settings.labHintPenalty ?? lab.rubric.hintPenalty,
+    scopeWarningPenalty: settings.labScopeWarningPenalty ?? lab.rubric.scopeWarningPenalty,
+  }
+  const hasReport = reports.some((report) => isReportForLab(report, lab))
+  const score = scoreLab(effectiveRubric, done, ack, hasReport, revealedHints.size)
+  const meterStyle = { '--v': `${score.pct}%`, '--c': scoreColor(score.pct) } as CSSProperties
+  const doneCount = done.filter(Boolean).length
+
+  const toggleHint = (i: number) => {
+    const willReveal = !openHints.has(i)
     setOpenHints((s) => {
       const n = new Set(s)
       if (n.has(i)) n.delete(i)
       else n.add(i)
       return n
     })
+    if (willReveal) {
+      setRevealedHints((s) => {
+        const n = new Set(s)
+        n.add(i)
+        return n
+      })
+    }
+  }
 
-  const doneCount = done.filter(Boolean).length
+  const openReport = () => {
+    if (hasReport) navigate('/reports')
+    else navigate('/reports', { state: { prefillLab: lab } })
+  }
 
   return (
     <div className="page">
@@ -89,6 +263,89 @@ export function LabDetail() {
             <span className="t-sm">I will stay within this synthetic, read-only scope.</span>
           </label>
         )}
+      </Panel>
+
+      <Panel
+        title="Lab Summary"
+        className="mb-3"
+        right={<span className={`badge ${scoreBadgeClass(score.pct)}`}>{score.passed ? 'passing' : 'incomplete'}</span>}
+      >
+        <div className="row row--between wrap" style={{ gap: '0.8rem' }}>
+          <div>
+            <div className="stat__value">{score.pct}%</div>
+            <div className="stat__label">
+              {score.score}/{score.max} points · pass {effectiveRubric.passingScore}%
+            </div>
+          </div>
+          <div className="row wrap" style={{ gap: '0.4rem', justifyContent: 'flex-end' }}>
+            <span className="badge badge--cyan">{effectiveRubric.challengeType}</span>
+            <span className={`badge ${hasReport ? 'badge--green' : 'badge--amber'}`}>
+              report {hasReport ? 'submitted' : 'missing'}
+            </span>
+            <span className={`badge ${ack ? 'badge--green' : 'badge--red'}`}>{ack ? 'scope acknowledged' : 'scope warning'}</span>
+          </div>
+        </div>
+
+        <div className="meter meter--tall mt-2" style={meterStyle}>
+          <div className="meter__fill" />
+        </div>
+
+        <div className="grid-3 mt-3">
+          <div className="stat">
+            <div className="stat__value" style={{ fontSize: '1.25rem' }}>
+              {doneCount}/{lab.objectives.length}
+            </div>
+            <div className="stat__label">Objectives</div>
+          </div>
+          <div className="stat">
+            <div className="stat__value" style={{ fontSize: '1.25rem' }}>
+              -{score.hintPenalty}
+            </div>
+            <div className="stat__label">Hint penalty</div>
+          </div>
+          <div className="stat">
+            <div className="stat__value" style={{ fontSize: '1.25rem' }}>
+              -{score.scopePenalty}
+            </div>
+            <div className="stat__label">Scope warning</div>
+          </div>
+        </div>
+
+        <div className="mt-3">
+          {score.rows.map((row) => (
+            <div key={row.key} style={{ borderTop: '1px dashed var(--hairline)', padding: '0.65rem 0' }}>
+              <div className="row row--between wrap" style={{ gap: '0.5rem' }}>
+                <span className="t-sm" style={{ color: 'var(--text-main)' }}>
+                  {row.label}
+                </span>
+                <span className={`badge ${row.earned === row.points ? 'badge--green' : 'badge--amber'}`}>
+                  {row.earned}/{row.points}
+                </span>
+              </div>
+              <p className="term t-xs dim mt-1" style={{ marginBottom: 0 }}>
+                {row.description}
+                {row.reportPoints ? ` Report: ${row.reportEarned}/${row.reportPoints} points.` : ''}
+              </p>
+              {row.blockers.length > 0 ? (
+                <p className="term t-xs muted mt-1" style={{ marginBottom: 0 }}>
+                  Needs: {row.blockers.join('; ')}
+                </p>
+              ) : (
+                <p className="term t-xs neon-green mt-1" style={{ marginBottom: 0 }}>
+                  Complete
+                </p>
+              )}
+            </div>
+          ))}
+          {(score.hintPenalty > 0 || score.scopePenalty > 0) && (
+            <div style={{ borderTop: '1px dashed var(--hairline)', paddingTop: '0.65rem' }}>
+              <p className="term t-xs muted" style={{ marginBottom: 0 }}>
+                Adjustments: {revealedHints.size} hint{revealedHints.size === 1 ? '' : 's'} revealed
+                {score.scopePenalty > 0 ? '; scope acknowledgement missing' : ''}.
+              </p>
+            </div>
+          )}
+        </div>
       </Panel>
 
       {ack && (
@@ -144,9 +401,11 @@ export function LabDetail() {
               </Panel>
 
               <Panel title="Deliverable">
-                <p className="term t-xs dim mb-2">Write up what you found. Draft a report seeded with this lab's context.</p>
-                <button className="btn btn--primary btn--block" onClick={() => navigate('/reports', { state: { prefillLab: lab } })}>
-                  ⎙ Draft report
+                <p className="term t-xs dim mb-2">
+                  Write up what you found. A persisted lab report contributes to the evidence and remediation score.
+                </p>
+                <button className="btn btn--primary btn--block" onClick={openReport}>
+                  {hasReport ? '⎙ View reports' : '⎙ Draft report'}
                 </button>
               </Panel>
 

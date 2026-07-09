@@ -19,23 +19,23 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] 3 回連続 mock score の条件を設定できる
-- [ ] 未復習 due backlog の上限を設定できる
-- [ ] weak modules が threshold 以下か確認する
-- [ ] 未作成/未回答 module を警告する
+- [x] 3 回連続 mock score の条件を設定できる
+- [x] 未復習 due backlog の上限を設定できる
+- [x] weak modules が threshold 以下か確認する
+- [x] 未作成/未回答 module を警告する
 
 ## Acceptance Criteria
 
-- [ ] Final Gate に pass/fail が出る
-- [ ] fail の場合 next action が出る
-- [ ] checklist を Markdown export できる
+- [x] Final Gate に pass/fail が出る
+- [x] fail の場合 next action が出る
+- [x] checklist を Markdown export できる
 
 ## Subtasks
 
-- [ ] gate criteria を作る
-- [ ] checklist UI を作る
-- [ ] export を作る
-- [ ] next action を作る
+- [x] gate criteria を作る
+- [x] checklist UI を作る
+- [x] export を作る
+- [x] next action を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ estimate: "2d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

@@ -168,6 +168,9 @@ export interface Settings {
   scanlines: boolean
   sound: boolean
   dailyGoal: number
+  labPassingScore: number
+  labHintPenalty: number
+  labScopeWarningPenalty: number
 }
 
 // ---- Derived analytics ----

@@ -1,15 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
+import type { LucideIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { NAV } from './nav'
+import { NAV, QUICK_ACTION_ICONS } from './nav'
 import { useActiveQuestions } from '../../store/selectors'
 
 interface Cmd {
   id: string
   label: string
-  icon: string
+  icon: LucideIcon
   hint: string
   run: () => void
+}
+
+function CommandIcon({ icon: Icon }: { icon: LucideIcon }) {
+  return <Icon className="k k--icon" aria-hidden="true" strokeWidth={1.9} />
 }
 
 export function CommandPalette({ onClose }: { onClose: () => void }) {
@@ -25,10 +30,10 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
 
   const commands: Cmd[] = useMemo(() => {
     const actions: Cmd[] = [
-      { id: 'a-review', label: 'Start daily review', icon: '↻', hint: 'action', run: () => navigate('/review') },
-      { id: 'a-exam', label: 'Start a mock exam', icon: '⏱', hint: 'action', run: () => navigate('/exam') },
-      { id: 'a-practice', label: 'Start practice session', icon: '✦', hint: 'action', run: () => navigate('/practice') },
-      { id: 'a-new', label: 'Create a question', icon: '＋', hint: 'action', run: () => navigate('/bank/new') },
+      { id: 'a-review', label: 'Start daily review', icon: QUICK_ACTION_ICONS.review, hint: 'action', run: () => navigate('/review') },
+      { id: 'a-exam', label: 'Start a mock exam', icon: QUICK_ACTION_ICONS.exam, hint: 'action', run: () => navigate('/exam') },
+      { id: 'a-practice', label: 'Start practice session', icon: QUICK_ACTION_ICONS.practice, hint: 'action', run: () => navigate('/practice') },
+      { id: 'a-new', label: 'Create a question', icon: QUICK_ACTION_ICONS.createQuestion, hint: 'action', run: () => navigate('/bank/new') },
     ]
     const navCmds: Cmd[] = NAV.flatMap((s) => s.items).map((it) => ({
       id: 'n' + it.to,
@@ -108,13 +113,13 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
             >
               {item.type === 'cmd' ? (
                 <>
-                  <span className="k">{item.cmd.icon}</span>
+                  <CommandIcon icon={item.cmd.icon} />
                   <span className="grow">{item.cmd.label}</span>
                   <span className="term t-xs dim">{item.cmd.hint}</span>
                 </>
               ) : (
                 <>
-                  <span className="k">▤</span>
+                  <CommandIcon icon={QUICK_ACTION_ICONS.question} />
                   <span className="grow" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {item.question.body}
                   </span>

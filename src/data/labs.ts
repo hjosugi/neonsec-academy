@@ -12,6 +12,26 @@ export interface LabFinding {
   remediation: string
 }
 
+export type LabScoreComponentKey = 'flag' | 'evidence' | 'explanation' | 'remediation' | 'safety'
+
+export interface LabRubricComponent {
+  key: LabScoreComponentKey
+  label: string
+  points: number
+  description: string
+  objectiveIndexes?: number[]
+  reportPoints?: number
+  requiresSafetyAck?: boolean
+}
+
+export interface LabRubric {
+  challengeType: string
+  passingScore: number
+  hintPenalty: number
+  scopeWarningPenalty: number
+  components: LabRubricComponent[]
+}
+
 export interface Lab {
   id: string
   title: string
@@ -24,8 +44,59 @@ export interface Lab {
   evidenceTitle: string
   evidence: string
   objectives: string[]
+  rubric: LabRubric
   guiding: { q: string; a: string }[]
   modelFindings: LabFinding[]
+}
+
+type RubricObjectiveMap = Partial<Record<Exclude<LabScoreComponentKey, 'safety'>, number[]>>
+
+function rubric(challengeType: string, objectives: RubricObjectiveMap): LabRubric {
+  return {
+    challengeType,
+    passingScore: 80,
+    hintPenalty: 2,
+    scopeWarningPenalty: 5,
+    components: [
+      {
+        key: 'flag',
+        label: 'Flag / diagnosis',
+        points: 20,
+        objectiveIndexes: objectives.flag ?? [],
+        description: 'Names the primary finding, attack pattern, or vulnerability class.',
+      },
+      {
+        key: 'evidence',
+        label: 'Evidence',
+        points: 25,
+        objectiveIndexes: objectives.evidence ?? [],
+        reportPoints: 5,
+        description: 'Ties the conclusion to the supplied synthetic artifacts and report evidence.',
+      },
+      {
+        key: 'explanation',
+        label: 'Explanation',
+        points: 20,
+        objectiveIndexes: objectives.explanation ?? [],
+        description: 'Explains why the evidence supports the finding and its impact.',
+      },
+      {
+        key: 'remediation',
+        label: 'Remediation',
+        points: 25,
+        objectiveIndexes: objectives.remediation ?? [],
+        reportPoints: 5,
+        description: 'Recommends practical containment, hardening, or prioritised fixes.',
+      },
+      {
+        key: 'safety',
+        label: 'Safety',
+        points: 10,
+        requiresSafetyAck: true,
+        description: 'Requires acknowledgement of the synthetic, read-only scope contract.',
+      },
+    ],
+  }
 }
 
 export const LABS: Lab[] = [
@@ -58,6 +129,12 @@ export const LABS: Lab[] = [
       'List two indicators you would alert on',
       'Recommend an immediate containment action',
     ],
+    rubric: rubric('soc-triage', {
+      flag: [0],
+      evidence: [1, 2],
+      explanation: [0, 1],
+      remediation: [3],
+    }),
     guiding: [
       {
         q: 'Is this brute force against one account or spraying across many?',
@@ -121,6 +198,12 @@ export const LABS: Lab[] = [
       'Rewrite the policy intent using least privilege (in words)',
       'Prioritise the fixes',
     ],
+    rubric: rubric('cloud-config-review', {
+      flag: [0],
+      evidence: [1],
+      explanation: [0, 3],
+      remediation: [2, 3],
+    }),
     guiding: [
       {
         q: 'Why is Action:"*" / Resource:"*" dangerous for a runtime role?',
@@ -176,6 +259,12 @@ Content-Type: application/json
       'Describe the correct server-side check',
       'State the impact in one sentence',
     ],
+    rubric: rubric('web-access-control-review', {
+      flag: [0],
+      evidence: [1],
+      explanation: [3],
+      remediation: [2],
+    }),
     guiding: [
       {
         q: 'What class of flaw is this?',
@@ -220,6 +309,12 @@ Content-Type: application/json
       'Explain the risk of the missing cookie Secure flag',
       'Recommend a secure replacement for each protocol',
     ],
+    rubric: rubric('network-traffic-review', {
+      flag: [0],
+      evidence: [0],
+      explanation: [1],
+      remediation: [2],
+    }),
     guiding: [
       {
         q: 'Which protocols are the problem?',
@@ -269,6 +364,12 @@ X-Sender-IP: 203.0.113.200`,
       'Spot the lookalike domain trick',
       'Recommend the correct user + org response',
     ],
+    rubric: rubric('phishing-header-analysis', {
+      flag: [2],
+      evidence: [0],
+      explanation: [1, 2],
+      remediation: [3],
+    }),
     guiding: [
       {
         q: 'What do the authentication results tell you?',
@@ -314,6 +415,12 @@ Trust boundaries: browser<->API (internet), API<->AI service (internet), API<->D
       'Identify the single most urgent issue',
       'Rank the top three mitigations',
     ],
+    rubric: rubric('stride-threat-model', {
+      flag: [2],
+      evidence: [0, 1],
+      explanation: [1, 2],
+      remediation: [3],
+    }),
     guiding: [
       {
         q: 'What is the most urgent issue?',

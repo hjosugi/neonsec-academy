@@ -37,3 +37,17 @@ Safe mode: fictional incident scenario only.
 Focus: assets, trust boundaries, threats, mitigations.
 
 Safe mode: fictional architecture diagrams only.
+
+## Lab Scoring Rubric
+
+Safe Labs score practical work with these components:
+
+- flag / diagnosis
+- evidence
+- explanation
+- remediation
+- safety acknowledgement
+
+Each lab defines a challenge type and maps rubric components to its objectives. Hints and missing
+scope acknowledgement apply penalties. Settings can tune the passing score, hint penalty, and scope
+warning penalty without changing the lab content.

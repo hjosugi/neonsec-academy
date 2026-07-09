@@ -47,6 +47,9 @@ const defaultSettings: Settings = {
   scanlines: true,
   sound: false,
   dailyGoal: 20,
+  labPassingScore: 80,
+  labHintPenalty: 2,
+  labScopeWarningPenalty: 5,
 }
 
 // ---- Active question list (seed + user overrides − archived) ----

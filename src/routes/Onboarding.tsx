@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore'
+import { SEED_QUESTIONS } from '../data/questions'
 
 export function Onboarding() {
   const complete = useStore((s) => s.completeOnboarding)
@@ -29,7 +30,7 @@ export function Onboarding() {
 
           <p className="muted mb-2">
             A cyberpunk trainer for the Certified Ethical Hacker exam. Drill a{' '}
-            <span className="neon-cyan">263-question</span> bank, let spaced repetition schedule your
+            <span className="neon-cyan">{SEED_QUESTIONS.length}-question</span> bank, let spaced repetition schedule your
             reviews, and sit domain-weighted mock exams until you are ready.
           </p>
 

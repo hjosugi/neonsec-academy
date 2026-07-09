@@ -71,8 +71,8 @@ export function CityMap() {
                       </span>
                     ))}
                   </div>
-                  <button className="btn btn--ghost btn--sm btn--block mt-2" onClick={() => navigate('/practice?module=0')}>
-                    Enter CEH+ track →
+                  <button className="btn btn--ghost btn--sm btn--block mt-2" onClick={() => navigate('/beyond')}>
+                    Enter Beyond District →
                   </button>
                 </>
               )}

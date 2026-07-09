@@ -15,18 +15,18 @@ Let users export a set of authored questions as a portable pack and import someo
 
 ## Requirements
 
-- [ ] Export selected/all user questions to a versioned JSON pack
-- [ ] Import a pack with schema validation and id-collision handling
-- [ ] Preview a pack (counts by module/difficulty) before importing
+- [x] Export selected/all user questions to a versioned JSON pack
+- [x] Import a pack with schema validation and id-collision handling
+- [x] Preview a pack (counts by module/difficulty) before importing
 
 ## Acceptance Criteria
 
-- [ ] A pack round-trips (export → import) without loss
-- [ ] Invalid packs are rejected with a clear message
+- [x] A pack round-trips (export → import) without loss
+- [x] Invalid packs are rejected with a clear message
 
 ## Safety / Abuse Prevention
 
-- [ ] Imported content is validated against the question schema; only synthetic, knowledge-style
+- [x] Imported content is validated against the question schema; only synthetic, knowledge-style
       content is expected. Reject anything that fails validation.
 
 ## Notes

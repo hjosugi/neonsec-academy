@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import type { Question } from '../types'
+import type { Question, TrackKey } from '../types'
 import { useStore } from '../store/useStore'
 import { useActiveQuestions, useModuleStats } from '../store/selectors'
 import { weakestModules } from '../lib/analytics'
-import { MODULES } from '../data/taxonomy'
+import { MODULES, TRACKS } from '../data/taxonomy'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { QuestionRunner } from '../components/question/QuestionRunner'
 
-type Source = 'all' | 'module' | 'bookmarked' | 'weak'
+type Source = 'all' | 'module' | 'track' | 'bookmarked' | 'weak'
 type Diff = 'any' | 'easy' | 'medium' | 'hard'
 
 function shuffle<T>(a: T[]): T[] {
@@ -30,6 +30,7 @@ export function Practice() {
 
   const [source, setSource] = useState<Source>('all')
   const [moduleSel, setModuleSel] = useState<number>(1)
+  const [trackSel, setTrackSel] = useState<TrackKey>('pentest')
   const [difficulty, setDifficulty] = useState<Diff>('any')
   const [count, setCount] = useState<number>(20)
 
@@ -41,9 +42,10 @@ export function Practice() {
 
   const qmap = useMemo(() => new Map(questions.map((q) => [q.id, q])), [questions])
 
-  const build = (src: Source, mod: number, diff: Diff, n: number): string[] => {
+  const build = (src: Source, mod: number, trk: TrackKey, diff: Diff, n: number): string[] => {
     let pool: Question[] = questions
     if (src === 'module') pool = pool.filter((q) => q.module === mod)
+    else if (src === 'track') pool = pool.filter((q) => q.module === 0 && q.track === trk)
     else if (src === 'bookmarked') pool = pool.filter((q) => bookmarks.includes(q.id))
     else if (src === 'weak') {
       const weakSet = new Set(weakestModules(mods, 6).map((m) => m.module))
@@ -55,8 +57,8 @@ export function Practice() {
       .map((q) => q.id)
   }
 
-  const start = (src: Source, mod: number, diff: Diff, n: number) => {
-    const ids = build(src, mod, diff, n)
+  const start = (src: Source, mod: number, trk: TrackKey, diff: Diff, n: number) => {
+    const ids = build(src, mod, trk, diff, n)
     if (ids.length === 0) return
     setQueue(ids)
     setIdx(0)
@@ -64,20 +66,25 @@ export function Practice() {
     setPhase('run')
   }
 
-  // deep-link autostart (from Dashboard: ?module=N or ?mode=weak)
+  // deep-link autostart (from Dashboard/City Map/Beyond: ?module=N, ?track=key, ?mode=weak)
   useEffect(() => {
     if (started.current) return
     started.current = true
     const m = params.get('module')
+    const trk = params.get('track') as TrackKey | null
     const mode = params.get('mode')
     if (mode === 'weak') {
       setSource('weak')
-      start('weak', 1, 'any', 20)
+      start('weak', 1, 'pentest', 'any', 20)
+    } else if (trk && TRACKS[trk]) {
+      setSource('track')
+      setTrackSel(trk)
+      start('track', 1, trk, 'any', 20)
     } else if (m) {
       const mn = Number(m)
       setSource('module')
       setModuleSel(mn)
-      start('module', mn, 'any', 20)
+      start('module', mn, 'pentest', 'any', 20)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -163,7 +170,7 @@ export function Practice() {
   }
 
   // ---- setup phase ----
-  const previewCount = build(source, moduleSel, difficulty, 9999).length
+  const previewCount = build(source, moduleSel, trackSel, difficulty, 9999).length
 
   return (
     <div className="page" style={{ maxWidth: 760 }}>
@@ -177,9 +184,9 @@ export function Practice() {
         <div className="field">
           <label className="label">Source</label>
           <div className="segmented">
-            {(['all', 'module', 'bookmarked', 'weak'] as Source[]).map((s) => (
+            {(['all', 'module', 'track', 'bookmarked', 'weak'] as Source[]).map((s) => (
               <button key={s} className={source === s ? 'is-active' : ''} onClick={() => setSource(s)}>
-                {s === 'all' ? 'All' : s === 'module' ? 'Module' : s === 'bookmarked' ? 'Pinned' : 'Weak'}
+                {s === 'all' ? 'All' : s === 'module' ? 'Module' : s === 'track' ? 'CEH+' : s === 'bookmarked' ? 'Pinned' : 'Weak'}
               </button>
             ))}
           </div>
@@ -192,6 +199,19 @@ export function Practice() {
               {MODULES.map((m) => (
                 <option key={m.module} value={m.module}>
                   M{String(m.module).padStart(2, '0')} · {m.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {source === 'track' && (
+          <div className="field">
+            <label className="label">CEH+ Track</label>
+            <select className="select" value={trackSel} onChange={(e) => setTrackSel(e.target.value as TrackKey)}>
+              {Object.values(TRACKS).map((t) => (
+                <option key={t.key} value={t.key}>
+                  {t.name}
                 </option>
               ))}
             </select>
@@ -222,7 +242,7 @@ export function Practice() {
 
         <div className="row row--between mt-2 wrap">
           <span className="term t-sm dim">{previewCount} questions match — session of {Math.min(previewCount, count)}</span>
-          <button className="btn btn--primary btn--lg" disabled={previewCount === 0} onClick={() => start(source, moduleSel, difficulty, count)}>
+          <button className="btn btn--primary btn--lg" disabled={previewCount === 0} onClick={() => start(source, moduleSel, trackSel, difficulty, count)}>
             Start practice →
           </button>
         </div>
