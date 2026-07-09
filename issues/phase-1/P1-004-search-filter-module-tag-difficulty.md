@@ -20,14 +20,14 @@ estimate: "2d"
 ## Requirements
 
 - [x] keyword search を提供する
-- [ ] module, tag, difficulty, status, last_attempt_result で filter できる
-- [ ] 複数 filter の組み合わせを保存できる設計にする
+- [x] module, tag, difficulty, status, last_attempt_result で filter できる
+- [x] 複数 filter の組み合わせを保存できる設計にする
 - [x] empty state で次の action を出す
 
 ## Acceptance Criteria
 
 - [x] module: Cryptography などで正しく絞り込める
-- [ ] 複数 tag の filter が動く
+- [x] 複数 tag の filter が動く
 - [x] 検索結果件数が表示される
 
 ## Subtasks
@@ -47,18 +47,18 @@ estimate: "2d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- Question Bank now supports multi-tag filters, active/archive status, last attempt result, and local saved filter sets.

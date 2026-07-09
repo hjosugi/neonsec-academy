@@ -2,7 +2,7 @@
 // only recompute when the underlying user data (or the calendar day) changes.
 import { useMemo } from 'react'
 import type { ModuleStat, Question, ReviewItem } from '../types'
-import { buildActiveQuestions, useStore } from './useStore'
+import { buildActiveQuestions, buildQuestionCatalog, useStore } from './useStore'
 import { moduleStats, domainStats, overview } from '../lib/analytics'
 import { computeReadiness } from '../lib/readiness'
 import { isDue } from '../lib/srs'
@@ -15,8 +15,18 @@ export function useActiveQuestions(): Question[] {
   return useMemo(() => buildActiveQuestions(userQuestions, archivedIds), [userQuestions, archivedIds])
 }
 
+export function useAllQuestions(): Question[] {
+  const userQuestions = useStore((s) => s.userQuestions)
+  return useMemo(() => buildQuestionCatalog(userQuestions), [userQuestions])
+}
+
 export function useQuestionMap(): Map<string, Question> {
   const qs = useActiveQuestions()
+  return useMemo(() => new Map(qs.map((q) => [q.id, q])), [qs])
+}
+
+export function useAllQuestionMap(): Map<string, Question> {
+  const qs = useAllQuestions()
   return useMemo(() => new Map(qs.map((q) => [q.id, q])), [qs])
 }
 

@@ -1,6 +1,6 @@
 # NeonSec Academy v1 Release Notes
 
-Current release: v1.0.2
+Current release: v1.0.3
 Release date: 2026-07-10
 
 ## Highlights
@@ -16,6 +16,9 @@ Release date: 2026-07-10
 - The command palette launches daily review, mock exam, weak-module drill, safe labs, report export, Final Gate, practice, and question creation flows.
 - The city map now exposes readable district status badges, routes due modules to review, and includes a compact hide-map mode.
 - Theme presets and accessibility QA evidence cover low glow, high contrast, reduced motion, status labels, command palette keyboard use, responsive exam history, and city-map fallback.
+- Product scope, taxonomy, data model, design-system wireframes, information architecture contracts, and content-authoring guidance now close out the Phase 0 foundation docs.
+- Question Bank supports titles, archive-aware detail/edit flows, multi-tag/status/result filters, saved filters, and self-graded short-answer/report-prompt questions.
+- Markdown rendering covers escaped HTML, fenced code blocks with copy buttons, pipe tables, and safe callouts.
 - Release documentation, safety review artifacts, and acceptance test evidence are included with the repository.
 
 ## Privacy And Safety
@@ -26,9 +29,9 @@ Release date: 2026-07-10
 
 ## Verification
 
-- `npm test`: 8 files passed, 33 tests passed.
+- `npm test`: 9 files passed, 37 tests passed.
 - `npm run typecheck`: passed.
-- `npm run validate:content`: 371 seed questions valid.
+- `npm run validate:content`: 373 seed questions valid.
 - `node scripts/safety_scan.mjs`: 0 blockers.
 - `npm run build`: passed with one non-blocking large chunk warning.
 - Headless Chrome smoke: onboarding, question authoring, practice, review, mock result, final gate export, safe lab report export, accessibility toggles, public-safe export, and backup restore passed.

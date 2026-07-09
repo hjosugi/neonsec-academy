@@ -27,7 +27,7 @@ estimate: "1d"
 ## Acceptance Criteria
 
 - [x] docs/INFORMATION_ARCHITECTURE.md が存在する
-- [ ] 主要画面の目的・入口・出口が書かれている
+- [x] 主要画面の目的・入口・出口が書かれている
 - [x] deep link 設計がある
 
 ## Subtasks
@@ -47,18 +47,18 @@ estimate: "1d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- Screen contracts, deep links, empty states, and shortcuts are documented in `docs/INFORMATION_ARCHITECTURE.md`.

@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../store/useStore'
-import { useQuestionMap } from '../store/selectors'
+import { useAllQuestionMap } from '../store/selectors'
 import { DISTRICTS, DOMAINS } from '../data/taxonomy'
 import { relativeDay } from '../lib/format'
 import { PageHeader } from '../components/ui/PageHeader'
@@ -11,7 +11,7 @@ import { QuestionRunner } from '../components/question/QuestionRunner'
 export function QuestionDetail() {
   const { id = '' } = useParams()
   const navigate = useNavigate()
-  const qmap = useQuestionMap()
+  const qmap = useAllQuestionMap()
   const question = qmap.get(id)
 
   const reviews = useStore((s) => s.reviews)
@@ -19,7 +19,6 @@ export function QuestionDetail() {
   const archivedIds = useStore((s) => s.archivedIds)
   const archiveQuestion = useStore((s) => s.archiveQuestion)
   const unarchiveQuestion = useStore((s) => s.unarchiveQuestion)
-  const deleteUserQuestion = useStore((s) => s.deleteUserQuestion)
 
   if (!question) {
     return (
@@ -46,7 +45,7 @@ export function QuestionDetail() {
     <div className="page">
       <PageHeader
         eyebrow={<>Bank // <span className="mono">{question.id}</span></>}
-        title="Question Detail"
+        title={question.title ?? 'Question Detail'}
         actions={
           <button className="btn btn--ghost btn--sm" onClick={() => navigate('/bank')}>
             ← Bank
@@ -151,19 +150,6 @@ export function QuestionDetail() {
               ) : (
                 <button className="btn btn--ghost btn--sm btn--block" onClick={() => archiveQuestion(question.id)}>
                   ⌦ Archive (hide)
-                </button>
-              )}
-              {isUser && (
-                <button
-                  className="btn btn--danger btn--sm btn--block"
-                  onClick={() => {
-                    if (confirm('Delete this question permanently?')) {
-                      deleteUserQuestion(question.id)
-                      navigate('/bank')
-                    }
-                  }}
-                >
-                  ✕ Delete
                 </button>
               )}
             </div>

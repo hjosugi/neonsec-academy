@@ -18,6 +18,13 @@ practice security reporting without touching real systems. The app is fully clie
 settings, custom questions, reports, and lab progress stay in browser storage unless you export
 them.
 
+The current product scope, MVP boundaries, personas, success metrics, and non-goals are documented
+in [docs/PRODUCT_SCOPE.md](docs/PRODUCT_SCOPE.md). In short, the MVP includes CEH question
+management, review scheduling, mock exams, analytics, safe synthetic labs, reports, and local
+import/export. It explicitly excludes hosted accounts, telemetry, official exam dumps, real target
+interaction, exploit execution, phishing delivery, malware, credential handling, and traffic
+generation.
+
 | Area | Current release behavior |
 |---|---|
 | Question Bank | 371 seed questions across all 20 CEH modules plus CEH+ practical tracks. Search by body/tags/module, filter by module/domain/difficulty/type, pin questions, clone/edit custom questions, and import/export user-authored packs. |
@@ -79,6 +86,8 @@ npm run validate:content
 
 ## Authoring And Data Exchange
 
+- Product scope and non-goals: [docs/PRODUCT_SCOPE.md](docs/PRODUCT_SCOPE.md)
+- CEH taxonomy and CEH+ track mapping: [docs/taxonomy.md](docs/taxonomy.md)
 - Question and lab authoring rules: [docs/CONTENT_GUIDE.md](docs/CONTENT_GUIDE.md)
 - Question schema details: [docs/QUESTION_SCHEMA.md](docs/QUESTION_SCHEMA.md)
 - Import/export formats and workflows: [docs/IMPORT_EXPORT.md](docs/IMPORT_EXPORT.md)

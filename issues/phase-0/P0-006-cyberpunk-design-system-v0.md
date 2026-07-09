@@ -27,7 +27,7 @@ neon terminal 風の見た目を残しつつ、問題管理・復習管理が読
 ## Acceptance Criteria
 
 - [x] docs/DESIGN_SYSTEM.md に token と component 方針がある
-- [ ] Question Console, Review Queue, Mock Exam, Lab Report の wireframe がある
+- [x] Question Console, Review Queue, Mock Exam, Lab Report の wireframe がある
 - [x] accessibility notes がある
 
 ## Subtasks
@@ -47,18 +47,18 @@ neon terminal 風の見た目を残しつつ、問題管理・復習管理が読
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- Wireframes added to `docs/DESIGN_SYSTEM.md`.

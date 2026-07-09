@@ -2,6 +2,36 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.3 - 2026-07-10
+
+Foundation and Question Bank closure patch for product scope, taxonomy, data model, authoring
+rules, richer question types, saved filters, and Markdown rendering.
+
+### Added
+
+- Product scope document covering personas, use cases, MVP boundaries, non-goals, success metrics,
+  and safety boundaries.
+- Taxonomy document mapping CEH domains, all 20 modules, CEH+ tracks, module-to-track alignment,
+  and unclassified-content validation rules.
+- Expanded data model documentation with entity relationships, stable IDs, timestamps, archive and
+  restore policy, search keys, import/export schema, and migration policy.
+- Design-system wireframes for the question console, review queue, mock exam, and lab report
+  surfaces.
+- Information architecture screen contracts, deep links, empty states, and shortcut design.
+- `short_answer` and `report_prompt` self-graded question types, with seed examples.
+- Question titles plus user-question `createdAt` and `updatedAt` metadata.
+- Question Bank filters for archived status, last attempt result, multiple tags, and saved local
+  filter sets.
+- Markdown tables, callouts, code-block copy buttons, and renderer tests.
+
+### Changed
+
+- Question detail and editor can open archived questions through all-question lookup while normal
+  study flows keep archived content hidden.
+- Question-pack and seed validators now enforce module range, CEH+ track rules, free-form question
+  answers, and optional title metadata.
+- Seed bank increased from 371 to 373 questions.
+
 ## v1.0.2 - 2026-07-10
 
 Release polish closure for onboarding, city-map navigation, command launch flows, responsive exam

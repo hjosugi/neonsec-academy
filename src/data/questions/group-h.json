@@ -414,7 +414,7 @@
     }
   },
   {
-    "id": "Q-CEHX-SOC-004",
+    "id": "Q-CEHX-SOC-006",
     "type": "mcq",
     "module": 0,
     "track": "soc",
@@ -593,6 +593,48 @@
       "why": "Mitigation prioritization in threat modeling should follow risk, impact multiplied by likelihood, rather than effort or visibility alone. A control protecting broad, highly sensitive data behind a privileged account addresses a far more severe potential outcome than a cosmetic, low-sensitivity internal disclosure limited to already-authenticated internal users. Effective threat modeling explicitly ranks mitigations this way so limited engineering time goes to the highest-risk gaps first.",
       "trap": "Treating all identified issues as equally worth fixing next, or letting a highly visible but low-impact cosmetic issue crowd out a less visible but far more severe access-control gap.",
       "memory_phrase": "Fix the highest risk first, not the most visible."
+    }
+  },
+  {
+    "id": "Q-CEHX-SOC-004",
+    "title": "MFA gap triage summary",
+    "type": "short_answer",
+    "module": 0,
+    "track": "soc",
+    "difficulty": "medium",
+    "tags": [
+      "soc",
+      "triage",
+      "mfa"
+    ],
+    "body": "A synthetic authentication log shows repeated failed logins against many users from one documentation IP address, followed by one successful login to an MFA-disabled account. In one or two sentences, summarize the likely pattern and the first defensive response.",
+    "answer": "This is consistent with password spraying that found an MFA gap. The first response is to contain or verify the affected account, enable or enforce MFA, and review related authentication activity for scope.",
+    "explanation": {
+      "answer": "Likely password spraying against an MFA-disabled account, followed by account containment and MFA enforcement.",
+      "why": "The many-users-from-one-source pattern points to spraying rather than a single-account brute force, and the successful login to an MFA-disabled account identifies the control gap that should be contained and remediated first.",
+      "trap": "Calling it only a normal failed-login spike misses the breadth of attempted usernames and the successful login that changed risk.",
+      "memory_phrase": "Many users, one source: spray signal."
+    }
+  },
+  {
+    "id": "Q-CEHX-PENTEST-006",
+    "title": "Synthetic finding write-up",
+    "type": "report_prompt",
+    "module": 0,
+    "track": "pentest",
+    "difficulty": "medium",
+    "tags": [
+      "reporting",
+      "evidence",
+      "remediation"
+    ],
+    "body": "Write a short finding for a fictional internal training app where the provided synthetic evidence shows an object-level authorization check missing from a read-only record endpoint. Include title, impact, evidence, and remediation.",
+    "answer": "Title: Missing object-level authorization on record access. Impact: In the synthetic training app, a user could view another user's record if they knew or changed the record identifier. Evidence: The provided request and response pair shows access to a record owned by a different fictional user without an authorization denial. Remediation: Enforce server-side object ownership or role checks on every record lookup, add negative authorization tests, and log denied access attempts.",
+    "explanation": {
+      "answer": "A complete finding names the authorization weakness, ties impact to the synthetic scope, cites the provided evidence, and recommends server-side object authorization plus tests.",
+      "why": "Report prompts should prove the learner can translate analysis into defensible, scoped remediation language without adding real targets or exploit steps.",
+      "trap": "Writing only the vulnerability name is not enough; a finding needs impact, evidence, and a specific fix.",
+      "memory_phrase": "Finding equals title, impact, evidence, fix."
     }
   }
 ]

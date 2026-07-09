@@ -20,22 +20,22 @@ estimate: "2d"
 ## Requirements
 
 - [x] Question, Choice, Explanation, Attempt, ReviewItem, LabChallenge, Evidence, Report の entity を定義する
-- [ ] すべての entity に stable id, created_at, updated_at を持たせる
+- [x] すべての entity に stable id, created_at, updated_at を持たせる
 - [x] CEH module と CEH+ track を外部キーまたは enum として扱う
-- [ ] 将来の import/export を前提に JSON schema を用意する
+- [x] 将来の import/export を前提に JSON schema を用意する
 
 ## Acceptance Criteria
 
 - [x] docs/DATA_MODEL.md に ERD 風の説明がある
 - [x] sample JSON が validation 可能な形で置かれている
-- [ ] 削除・アーカイブ・復元の方針が書かれている
+- [x] 削除・アーカイブ・復元の方針が書かれている
 
 ## Subtasks
 
 - [x] entity 一覧を書く
 - [x] field 定義を書く
-- [ ] index / search key を決める
-- [ ] migration 方針を書く
+- [x] index / search key を決める
+- [x] migration 方針を書く
 
 ## Dependencies
 
@@ -47,18 +47,18 @@ estimate: "2d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- Completed in `docs/DATA_MODEL.md`; user-authored questions now persist `createdAt` and `updatedAt`.

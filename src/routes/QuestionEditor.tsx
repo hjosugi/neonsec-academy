@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import type { Difficulty, QType, Question, RawQuestion, TrackKey } from '../types'
 import { useStore } from '../store/useStore'
-import { useQuestionMap } from '../store/selectors'
+import { useAllQuestionMap } from '../store/selectors'
 import { MODULES, TRACKS } from '../data/taxonomy'
 import { uid } from '../lib/id'
 import { PageHeader } from '../components/ui/PageHeader'
@@ -11,6 +11,7 @@ import { Markdown } from '../components/ui/Markdown'
 
 interface Draft {
   id: string
+  title: string
   type: QType
   module: number
   track: TrackKey | null
@@ -24,10 +25,15 @@ interface Draft {
   explanation: { answer: string; why: string; trap: string; memory_phrase: string }
 }
 
+function isFreeformType(type: QType): boolean {
+  return type === 'short_answer' || type === 'scenario' || type === 'report_prompt'
+}
+
 function fromQuestion(q: Question | RawQuestion, keepId: boolean): Draft {
   const arrAns = Array.isArray(q.answer) ? q.answer : []
   return {
     id: keepId ? q.id : `Q-USER-${uid()}`,
+    title: q.title ?? q.body.replace(/\s+/g, ' ').trim().slice(0, 80),
     type: q.type,
     module: q.module,
     track: q.track ?? null,
@@ -37,13 +43,14 @@ function fromQuestion(q: Question | RawQuestion, keepId: boolean): Draft {
     choices: q.choices ?? ['', '', '', ''],
     answerSingle: !Array.isArray(q.answer) ? q.answer : '',
     answerMulti: arrAns,
-    answerText: q.type === 'scenario' && !Array.isArray(q.answer) ? q.answer : '',
+    answerText: isFreeformType(q.type) && !Array.isArray(q.answer) ? q.answer : '',
     explanation: { ...q.explanation },
   }
 }
 
 const blank: Draft = {
   id: `Q-USER-${uid()}`,
+  title: '',
   type: 'mcq',
   module: 1,
   track: null,
@@ -61,7 +68,7 @@ export function QuestionEditor() {
   const { id } = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const qmap = useQuestionMap()
+  const qmap = useAllQuestionMap()
   const upsert = useStore((s) => s.upsertUserQuestion)
 
   const initial = useMemo<Draft>(() => {
@@ -79,6 +86,7 @@ export function QuestionEditor() {
   const choicesForType = d.type === 'true_false' ? ['True', 'False'] : d.choices
 
   const errors: string[] = []
+  if (!d.title.trim()) errors.push('Question title is required.')
   if (!d.body.trim()) errors.push('Question body is required.')
   if (!d.explanation.answer.trim()) errors.push('Explanation → answer is required.')
   if (d.type === 'mcq') {
@@ -90,13 +98,14 @@ export function QuestionEditor() {
     if (d.answerMulti.length < 2) errors.push('Mark at least 2 correct choices.')
   }
   if (d.type === 'true_false' && !d.answerSingle) errors.push('Choose True or False.')
-  if (d.type === 'scenario' && !d.answerText.trim()) errors.push('Provide a model answer.')
+  if (isFreeformType(d.type) && !d.answerText.trim()) errors.push('Provide a model answer.')
   if (d.module === 0 && !d.track) errors.push('Pick a CEH+ track.')
 
   const build = (): RawQuestion => {
     const tags = d.tags.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean)
     const base: RawQuestion = {
       id: d.id,
+      title: d.title.trim(),
       type: d.type,
       module: d.module,
       track: d.module === 0 ? d.track : null,
@@ -108,7 +117,7 @@ export function QuestionEditor() {
       source: 'user',
       status: 'active',
     }
-    if (d.type === 'scenario') {
+    if (isFreeformType(d.type)) {
       base.answer = d.answerText.trim()
     } else if (d.type === 'multi') {
       base.choices = d.choices.filter((c) => c.trim())
@@ -147,13 +156,19 @@ export function QuestionEditor() {
       <div className="grid-2" style={{ alignItems: 'start' }}>
         <Panel title="Editor">
           <div className="row wrap" style={{ gap: '0.6rem' }}>
+            <div className="field grow" style={{ minWidth: '100%' }}>
+              <label className="label">Title</label>
+              <input className="input" value={d.title} onChange={(e) => set({ title: e.target.value })} placeholder="Short study-card title" />
+            </div>
             <div className="field grow">
               <label className="label">Type</label>
               <select className="select" value={d.type} onChange={(e) => set({ type: e.target.value as QType })}>
                 <option value="mcq">Multiple choice</option>
                 <option value="multi">Multi-select</option>
                 <option value="true_false">True / False</option>
+                <option value="short_answer">Short answer (self-graded)</option>
                 <option value="scenario">Scenario (self-graded)</option>
+                <option value="report_prompt">Report prompt (self-graded)</option>
               </select>
             </div>
             <div className="field grow">
@@ -265,7 +280,7 @@ export function QuestionEditor() {
             </div>
           )}
 
-          {d.type === 'scenario' && (
+          {isFreeformType(d.type) && (
             <div className="field">
               <label className="label">Model answer</label>
               <textarea className="textarea" value={d.answerText} onChange={(e) => set({ answerText: e.target.value })} />
@@ -304,7 +319,7 @@ export function QuestionEditor() {
                 <span>{c || '…'}</span>
               </div>
             ))}
-            {d.type === 'scenario' && <p className="muted t-sm">{d.answerText || 'Model answer…'}</p>}
+            {isFreeformType(d.type) && <p className="muted t-sm">{d.answerText || 'Model answer…'}</p>}
           </Panel>
 
           {errors.length > 0 ? (

@@ -6,6 +6,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type {
   Attempt,
+  AttemptConfidence,
   AttemptMode,
   ExamSession,
   ExamResult,
@@ -57,18 +58,22 @@ const defaultSettings: Settings = {
 }
 
 // ---- Active question list (seed + user overrides − archived) ----
-export function buildActiveQuestions(
-  userQuestions: RawQuestion[],
-  archivedIds: string[],
-): Question[] {
-  const archived = new Set(archivedIds)
+export function buildQuestionCatalog(userQuestions: RawQuestion[]): Question[] {
   const map = new Map<string, Question>()
   for (const q of SEED_QUESTIONS) map.set(q.id, q)
   for (const raw of userQuestions) {
     const e = enrichQuestion({ ...raw, source: 'user' })
     if (e) map.set(e.id, e)
   }
-  return [...map.values()].filter((q) => !archived.has(q.id) && q.status !== 'archived')
+  return [...map.values()]
+}
+
+export function buildActiveQuestions(
+  userQuestions: RawQuestion[],
+  archivedIds: string[],
+): Question[] {
+  const archived = new Set(archivedIds)
+  return buildQuestionCatalog(userQuestions).filter((q) => !archived.has(q.id) && q.status !== 'archived')
 }
 
 function withActivity(
@@ -119,8 +124,16 @@ interface AppActions {
     correct: boolean,
     mode: AttemptMode,
     timeMs?: number,
+    confidence?: AttemptConfidence,
   ) => void
-  gradeReview: (questionId: string, grade: Grade, correct: boolean) => void
+  gradeReview: (
+    questionId: string,
+    grade: Grade,
+    correct: boolean,
+    chosen?: string | string[] | null,
+    timeMs?: number,
+    confidence?: AttemptConfidence,
+  ) => void
   // bookmarks + mistakes
   toggleBookmark: (questionId: string) => void
   upsertMistake: (questionId: string, patch: Partial<MistakeNote>) => void
@@ -175,10 +188,10 @@ export const useStore = create<Store>()(
     (set, get) => ({
       ...initialState,
 
-      recordAttempt: (questionId, chosen, correct, mode, timeMs) => {
+      recordAttempt: (questionId, chosen, correct, mode, timeMs, confidence) => {
         const now = Date.now()
         set((s) => {
-          const attempt: Attempt = { id: uid('a-'), questionId, at: now, correct, chosen, mode, timeMs }
+          const attempt: Attempt = { id: uid('a-'), questionId, at: now, correct, chosen, mode, timeMs, confidence }
           const attempts = [...s.attempts, attempt]
           const reviews = { ...s.reviews }
           const existing = reviews[questionId] ?? newReviewItem(questionId, now)
@@ -190,7 +203,7 @@ export const useStore = create<Store>()(
         get().refreshBadges()
       },
 
-      gradeReview: (questionId, grade, correct) => {
+      gradeReview: (questionId, grade, correct, chosen = null, timeMs, confidence) => {
         const now = Date.now()
         set((s) => {
           const attempt: Attempt = {
@@ -198,8 +211,10 @@ export const useStore = create<Store>()(
             questionId,
             at: now,
             correct,
-            chosen: null,
+            chosen,
             mode: 'review',
+            timeMs,
+            confidence,
           }
           const attempts = [...s.attempts, attempt]
           const reviews = { ...s.reviews }
@@ -258,10 +273,19 @@ export const useStore = create<Store>()(
 
       upsertUserQuestion: (q) =>
         set((s) => {
+          const now = Date.now()
           const idx = s.userQuestions.findIndex((x) => x.id === q.id)
           const userQuestions = [...s.userQuestions]
-          if (idx >= 0) userQuestions[idx] = q
-          else userQuestions.push(q)
+          const prev = idx >= 0 ? userQuestions[idx] : undefined
+          const next: RawQuestion = {
+            ...q,
+            source: 'user',
+            status: q.status ?? 'active',
+            createdAt: q.createdAt ?? prev?.createdAt ?? now,
+            updatedAt: now,
+          }
+          if (idx >= 0) userQuestions[idx] = next
+          else userQuestions.push(next)
           return { userQuestions }
         }),
 

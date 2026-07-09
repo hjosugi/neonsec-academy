@@ -5,12 +5,16 @@ export function correctChoices(q: RawQuestion): string[] {
   return Array.isArray(q.answer) ? q.answer : [q.answer]
 }
 
-/** Whether a question is auto-gradable (excludes free-form scenario answers). */
+/** Whether a question is auto-gradable (excludes free-form answers). */
 export function isGradable(q: RawQuestion): boolean {
   return q.type === 'mcq' || q.type === 'multi' || q.type === 'true_false'
 }
 
-/** Grade a submitted answer against the key. Scenario questions are self-graded elsewhere. */
+export function isFreeform(q: RawQuestion): boolean {
+  return q.type === 'short_answer' || q.type === 'scenario' || q.type === 'report_prompt'
+}
+
+/** Grade a submitted answer against the key. Free-form questions are self-graded elsewhere. */
 export function isCorrect(q: RawQuestion, chosen: string | string[] | null): boolean {
   if (chosen == null) return false
   const answer = correctChoices(q)

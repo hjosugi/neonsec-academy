@@ -42,6 +42,66 @@ Calm where users read.
 7. Report Builder
 8. City Map Overlay
 
+## Wireframes
+
+### Question Console
+
+```text
+Page Header: module, tags, difficulty, pin/archive actions
+┌──────────────────────────────┬──────────────────────┐
+│ Question body                │ Side Inspector        │
+│ Choices / free-form answer   │ module, attempts, due │
+│ Submit / next action         │ related drills        │
+├──────────────────────────────┴──────────────────────┤
+│ Explanation: answer, why, trap, memory phrase        │
+└──────────────────────────────────────────────────────┘
+```
+
+Priority: keep the prompt and choices readable first; metadata is secondary.
+
+### Review Queue
+
+```text
+Page Header: due count, backlog, daily goal
+┌──────────────────────────────────────────────────────┐
+│ Current review card                                  │
+│ Question -> answer -> explanation                    │
+│ Again / Hard / Good / Easy confidence controls       │
+├──────────────────────────────┬───────────────────────┤
+│ Session progress             │ Mistake note shortcut │
+└──────────────────────────────┴───────────────────────┘
+```
+
+Priority: fast recall grading, low motion, and no layout shift between cards.
+
+### Mock Exam
+
+```text
+Top Bar: timer, answered count, flag count, submit
+┌──────────────────────────────┬──────────────────────┐
+│ Timed question surface       │ Question navigator   │
+│ Answer controls              │ flags and status map │
+│ Previous / next              │                      │
+└──────────────────────────────┴──────────────────────┘
+```
+
+Priority: desktop-first timed flow with clear state for unanswered and flagged questions.
+
+### Lab Report
+
+```text
+Page Header: lab title, scope status, score
+┌──────────────────────────────┬──────────────────────┐
+│ Synthetic evidence           │ Scope contract        │
+│ Objectives and guiding Q&A   │ Allowed / forbidden   │
+├──────────────────────────────┴──────────────────────┤
+│ Findings editor: severity, impact, remediation       │
+│ Markdown copy/download                               │
+└──────────────────────────────────────────────────────┘
+```
+
+Priority: scope acknowledgement and synthetic evidence must stay visible before report export.
+
 ## Cyberpunk Rules
 
 - Neon glow は active state, focus, danger/safety state だけに使う。

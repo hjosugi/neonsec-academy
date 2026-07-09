@@ -12,7 +12,7 @@ implemented as living code + docs (`src/data/taxonomy.ts`, `src/types/`, `docs/`
 |---|---|---|
 | P1‑001 App foundation | ✅ | Vite + React + TS + Zustand |
 | P1‑002 Question CRUD | ✅ | `routes/QuestionEditor.tsx`, archive not hard‑delete |
-| P1‑003 Question types | ✅ | mcq / multi / true_false / scenario |
+| P1‑003 Question types | ✅ | mcq / multi / true_false / short_answer / scenario / report_prompt |
 | P1‑004 Search + filter | ✅ | `routes/QuestionBank.tsx` |
 | P1‑005 Markdown renderer | ✅ | `lib/markdown.ts` (XSS‑safe) |
 | P1‑006 Answer + explanation | ✅ | `components/question/QuestionRunner.tsx` |
@@ -64,5 +64,6 @@ Settings. ⬜ A dedicated demo/landing mode remains tracked for follow-up.
 - **P6‑012** ✅ v1 acceptance test record
 
 ## Question bank size
-Seed bank expanded from 263 → **371** questions (batch-2 `Q-CEHB-*` items deepen the
-high-weight domains: recon, system, network, web).
+Seed bank expanded from 263 → **373** questions (batch-2 `Q-CEHB-*` items deepen the
+high-weight domains: recon, system, network, web; CEH+ additions cover self-graded SOC triage and
+report-writing prompts).

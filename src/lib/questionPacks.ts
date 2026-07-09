@@ -3,7 +3,7 @@ import type { Difficulty, QType, RawQuestion, TrackKey } from '../types'
 export const QUESTION_PACK_FORMAT = 'neonsec-question-pack'
 export const QUESTION_PACK_VERSION = 1
 
-const TYPES = new Set<QType>(['mcq', 'multi', 'true_false', 'scenario'])
+const TYPES = new Set<QType>(['mcq', 'multi', 'true_false', 'short_answer', 'scenario', 'report_prompt'])
 const DIFFICULTIES = new Set<Difficulty>(['easy', 'medium', 'hard'])
 const TRACKS = new Set<TrackKey>(['pentest', 'appsec', 'cloud', 'soc', 'ir', 'threat-model'])
 
@@ -45,12 +45,17 @@ function compactStrings(value: unknown): string[] | null {
   return strings.length === value.length ? strings : null
 }
 
+function isFreeformType(type: unknown): boolean {
+  return type === 'short_answer' || type === 'scenario' || type === 'report_prompt'
+}
+
 export function validateRawQuestion(input: unknown, at = 'question'): { ok: true; question: RawQuestion } | { ok: false; errors: string[] } {
   const errors: string[] = []
   if (!isObject(input)) return { ok: false, errors: [`${at}: must be an object`] }
 
   const id = input.id
   const type = input.type
+  const title = input.title
   const module = input.module
   const difficulty = input.difficulty
   const tags = compactStrings(input.tags)
@@ -58,6 +63,7 @@ export function validateRawQuestion(input: unknown, at = 'question'): { ok: true
   const explanation = input.explanation
 
   if (!hasText(id)) errors.push(`${at}: missing id`)
+  if (title !== undefined && !hasText(title)) errors.push(`${at}: title must be text when present`)
   if (!TYPES.has(type as QType)) errors.push(`${at}: bad type`)
   if (!Number.isInteger(module) || (module as number) < 0 || (module as number) > 20) errors.push(`${at}: module must be 0-20`)
   if (!DIFFICULTIES.has(difficulty as Difficulty)) errors.push(`${at}: bad difficulty`)
@@ -88,8 +94,8 @@ export function validateRawQuestion(input: unknown, at = 'question'): { ok: true
   } else if (type === 'true_false') {
     if (JSON.stringify(choices) !== '["True","False"]') errors.push(`${at}: true_false choices must be ["True","False"]`)
     if (answer !== 'True' && answer !== 'False') errors.push(`${at}: true_false answer must be True/False`)
-  } else if (type === 'scenario') {
-    if (!hasText(answer)) errors.push(`${at}: scenario needs a model answer string`)
+  } else if (isFreeformType(type)) {
+    if (!hasText(answer)) errors.push(`${at}: ${String(type)} needs a model answer string`)
   }
 
   if (input.status !== undefined && input.status !== 'active' && input.status !== 'archived') errors.push(`${at}: bad status`)
@@ -104,7 +110,7 @@ export function validateRawQuestion(input: unknown, at = 'question'): { ok: true
     difficulty: difficulty as Difficulty,
     tags: tags!,
     body: String(body).trim(),
-    choices: type === 'scenario' ? undefined : choices!,
+    choices: isFreeformType(type) ? undefined : choices!,
     answer: Array.isArray(answer) ? answer.map(String) : String(answer),
     explanation: {
       answer: String((explanation as Record<string, unknown>).answer).trim(),
@@ -115,6 +121,9 @@ export function validateRawQuestion(input: unknown, at = 'question'): { ok: true
     status: input.status === 'archived' ? 'archived' : 'active',
     source: 'user',
   }
+  if (hasText(title)) raw.title = String(title).trim()
+  if (typeof input.createdAt === 'number') raw.createdAt = input.createdAt
+  if (typeof input.updatedAt === 'number') raw.updatedAt = input.updatedAt
   return { ok: true, question: raw }
 }
 
@@ -173,7 +182,7 @@ export function previewQuestionPack(pack: QuestionPack, existingIds: Set<string>
     total: pack.questions.length,
     byModule: {},
     byDifficulty: { easy: 0, medium: 0, hard: 0 },
-    byType: { mcq: 0, multi: 0, true_false: 0, scenario: 0 },
+    byType: { mcq: 0, multi: 0, true_false: 0, short_answer: 0, scenario: 0, report_prompt: 0 },
     collisions: [],
   }
   for (const q of pack.questions) {

@@ -8,7 +8,7 @@ import { dirname, join } from 'node:path'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const DIR = join(__dirname, '..', 'src', 'data', 'questions')
 
-const TYPES = new Set(['mcq', 'multi', 'true_false', 'scenario'])
+const TYPES = new Set(['mcq', 'multi', 'true_false', 'short_answer', 'scenario', 'report_prompt'])
 const DIFF = new Set(['easy', 'medium', 'hard'])
 const TRACKS = new Set(['pentest', 'appsec', 'cloud', 'soc', 'ir', 'threat-model'])
 
@@ -16,6 +16,10 @@ const errors = []
 const ids = new Set()
 const perModule = new Map()
 let total = 0
+
+function isFreeformType(type) {
+  return type === 'short_answer' || type === 'scenario' || type === 'report_prompt'
+}
 
 const files = readdirSync(DIR)
   .filter((f) => f.endsWith('.json'))
@@ -40,7 +44,8 @@ for (const file of files) {
     if (ids.has(q.id)) errors.push(`${at}: duplicate id`)
     ids.add(q.id)
     if (!TYPES.has(q.type)) errors.push(`${at}: bad type "${q.type}"`)
-    if (typeof q.module !== 'number') errors.push(`${at}: module must be a number`)
+    if (!Number.isInteger(q.module) || q.module < 0 || q.module > 20)
+      errors.push(`${at}: module must be an integer from 0 through 20`)
     if (!DIFF.has(q.difficulty)) errors.push(`${at}: bad difficulty "${q.difficulty}"`)
     if (!Array.isArray(q.tags) || q.tags.length === 0) errors.push(`${at}: tags[] required`)
     if (typeof q.body !== 'string' || !q.body.trim()) errors.push(`${at}: body required`)
@@ -49,6 +54,7 @@ for (const file of files) {
       errors.push(`${at}: explanation needs answer/why/trap/memory_phrase`)
 
     if (q.module === 0 && !TRACKS.has(q.track)) errors.push(`${at}: CEH+ item needs a valid track`)
+    if (q.module > 0 && q.track != null) errors.push(`${at}: CEH module items must not set track`)
 
     perModule.set(q.module, (perModule.get(q.module) ?? 0) + 1)
 
@@ -69,9 +75,9 @@ for (const file of files) {
       if (c !== '["True","False"]') errors.push(`${at}: true_false choices must be ["True","False"]`)
       if (q.answer !== 'True' && q.answer !== 'False')
         errors.push(`${at}: true_false answer must be True/False`)
-    } else if (q.type === 'scenario') {
+    } else if (isFreeformType(q.type)) {
       if (typeof q.answer !== 'string' || !q.answer.trim())
-        errors.push(`${at}: scenario needs a model answer string`)
+        errors.push(`${at}: ${q.type} needs a model answer string`)
     }
   })
 }

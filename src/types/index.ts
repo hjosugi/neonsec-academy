@@ -3,7 +3,7 @@
 // Aligned with docs/DATA_MODEL.md and docs/QUESTION_SCHEMA.md
 // ============================================================
 
-export type QType = 'mcq' | 'multi' | 'true_false' | 'scenario'
+export type QType = 'mcq' | 'multi' | 'true_false' | 'short_answer' | 'scenario' | 'report_prompt'
 export type Difficulty = 'easy' | 'medium' | 'hard'
 
 export type TrackKey = 'pentest' | 'appsec' | 'cloud' | 'soc' | 'ir' | 'threat-model'
@@ -40,6 +40,7 @@ export interface Explanation {
 /** Raw question as authored in the JSON seed files / by the user. */
 export interface RawQuestion {
   id: string
+  title?: string
   type: QType
   module: number // 1-20 for CEH modules, 0 for CEH+ tracks
   track?: TrackKey | null
@@ -51,6 +52,8 @@ export interface RawQuestion {
   explanation: Explanation
   status?: 'active' | 'archived'
   source?: 'seed' | 'user'
+  createdAt?: number
+  updatedAt?: number
 }
 
 /** Question enriched with derived display fields at load time. */
@@ -78,6 +81,7 @@ export interface ReviewItem {
 
 // ---- Attempts ----
 export type AttemptMode = 'practice' | 'review' | 'exam' | 'drill'
+export type AttemptConfidence = 1 | 2 | 3 | 4 | 5
 
 export interface Attempt {
   id: string
@@ -87,6 +91,7 @@ export interface Attempt {
   chosen: string | string[] | null
   mode: AttemptMode
   timeMs?: number
+  confidence?: AttemptConfidence
 }
 
 // ---- Mistake notebook ----

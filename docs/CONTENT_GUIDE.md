@@ -23,14 +23,15 @@ Required fields for every question:
 | Field | Notes |
 |---|---|
 | `id` | Stable unique ID. Seed IDs should not be reused. User pack ID collisions are renamed during import. |
-| `type` | `mcq`, `multi`, `true_false`, or `scenario`. |
+| `title` | Short study-card title. Required in the in-app authoring form for user questions; optional for older seed/import rows. |
+| `type` | `mcq`, `multi`, `true_false`, `short_answer`, `scenario`, or `report_prompt`. |
 | `module` | CEH module `1`-`20`, or `0` for CEH+ practical tracks. |
 | `track` | Required only when `module` is `0`: `pentest`, `appsec`, `cloud`, `soc`, `ir`, or `threat-model`. |
 | `difficulty` | `easy`, `medium`, or `hard`. |
 | `tags` | Non-empty list of short search terms. |
 | `body` | Question prompt. Keep it scoped and self-contained. |
-| `choices` | Required for `mcq`, `multi`, and `true_false`; omitted for `scenario`. |
-| `answer` | A matching choice string, an array of choice strings for `multi`, `True`/`False`, or a model answer string for `scenario`. |
+| `choices` | Required for `mcq`, `multi`, and `true_false`; omitted for free-form types. |
+| `answer` | A matching choice string, an array of choice strings for `multi`, `True`/`False`, or a model answer string for free-form types. |
 | `explanation` | Must include `answer`, `why`, `trap`, and `memory_phrase`. |
 | `status` | Optional. Use `active` or `archived`. Missing status is treated as active. |
 
@@ -41,6 +42,8 @@ Good questions:
 - Keep choices plausible but clearly distinguishable after reading the explanation.
 - Prefer "what should the analyst do next?" over "how do you compromise this?"
 - Include defensive context for offensive CEH concepts.
+- Use the supported Markdown subset for readable logs and tables: fenced code blocks, inline code,
+  pipe tables, and `> [!NOTE]`/`> [!WARNING]` callouts.
 
 Do not include:
 
@@ -58,6 +61,7 @@ Use for single-best-answer concepts.
 ```json
 {
   "id": "Q-CEH-001-999",
+  "title": "Valid assessment scope",
   "type": "mcq",
   "module": 1,
   "track": null,
@@ -91,10 +95,20 @@ Use exactly these choices:
 
 The `answer` value must be `"True"` or `"False"`.
 
+### `short_answer`
+
+Use for concise self-graded recall. The `answer` value is the model answer string.
+
 ### `scenario`
 
 Use for short model-answer prompts. Scenario questions are not auto-graded as choice questions; they
 are useful for reasoning, report language, and safe practical tracks.
+
+### `report_prompt`
+
+Use for synthetic finding or report-writing practice. The prompt should ask for title, impact,
+evidence, remediation, or scope language, and the model answer should stay within the provided
+fictional or synthetic evidence.
 
 ## Explanation Pattern
 

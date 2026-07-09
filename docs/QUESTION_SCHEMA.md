@@ -9,13 +9,14 @@ for mandatory safety rules.
 | Field | Type | Required | Notes |
 |---|---|---:|---|
 | `id` | string | yes | Stable unique ID. |
-| `type` | string | yes | `mcq`, `multi`, `true_false`, or `scenario`. |
+| `title` | string | no | Short user-facing title. Required by the in-app authoring form for user questions; optional for legacy seed rows and imports. |
+| `type` | string | yes | `mcq`, `multi`, `true_false`, `short_answer`, `scenario`, or `report_prompt`. |
 | `module` | number | yes | `1`-`20` for CEH modules, `0` for CEH+ tracks. |
 | `track` | string or null | conditional | Required when `module` is `0`; otherwise use `null`. |
 | `difficulty` | string | yes | `easy`, `medium`, or `hard`. |
 | `tags` | string[] | yes | Must be non-empty. |
 | `body` | string | yes | Prompt text. |
-| `choices` | string[] | by type | Required for `mcq`, `multi`, and `true_false`; omitted for `scenario`. |
+| `choices` | string[] | by type | Required for `mcq`, `multi`, and `true_false`; omitted for free-form types. |
 | `answer` | string or string[] | yes | Must match the type-specific rule below. |
 | `explanation.answer` | string | yes | Plain answer summary. |
 | `explanation.why` | string | yes | Reasoning and defensive principle. |
@@ -23,6 +24,18 @@ for mandatory safety rules.
 | `explanation.memory_phrase` | string | yes | Short review phrase. |
 | `status` | string | no | `active` or `archived`; missing means active. |
 | `source` | string | no | `seed` or `user`; imports normalize to `user`. |
+
+## Supported Markdown
+
+Question bodies, choices, explanations, and model answers render a restricted Markdown subset:
+
+- Paragraphs, unordered lists, ordered lists, `inline code`, `**bold**`, and `*emphasis*`
+- Fenced code blocks with a copy button
+- Pipe tables with a header separator row
+- Callouts using blockquote syntax such as `> [!NOTE] Synthetic evidence`
+
+Raw HTML is escaped before rendering. Do not rely on script tags, images, iframes, remote assets, or
+inline HTML attributes.
 
 ## Supported Question Types
 
@@ -42,10 +55,22 @@ for mandatory safety rules.
 - `choices` must be exactly `["True", "False"]`.
 - `answer` must be `"True"` or `"False"`.
 
+### `short_answer`
+
+- `choices` is omitted.
+- `answer` is a concise model answer string.
+- The learner self-grades after comparing their text to the model answer.
+
 ### `scenario`
 
 - `choices` is omitted.
 - `answer` is a model answer string.
+
+### `report_prompt`
+
+- `choices` is omitted.
+- `answer` is a model report or finding answer string.
+- Use for synthetic report-writing, evidence, impact, and remediation practice.
 
 ## CEH+ Tracks
 
@@ -63,6 +88,7 @@ When `module` is `0`, `track` must be one of:
 ```json
 {
   "id": "Q-CEH-001-999",
+  "title": "Valid assessment scope",
   "type": "mcq",
   "module": 1,
   "track": null,
@@ -84,6 +110,7 @@ When `module` is `0`, `track` must be one of:
 ```json
 {
   "id": "Q-CEHPLUS-SOC-999",
+  "title": "Synthetic password spraying triage",
   "type": "scenario",
   "module": 0,
   "track": "soc",
