@@ -67,6 +67,15 @@ export function Exam() {
         sub="CEH knowledge-exam simulation: 125 questions, 4 hours, domain-weighted to the official blueprint."
       />
 
+      <Panel className="mb-3 mobile-only" style={{ borderColor: 'rgba(255,204,0,0.42)' }}>
+        <div className="panel__title" style={{ color: 'var(--warning-amber)' }}>
+          <span style={{ background: 'var(--warning-amber)', boxShadow: 'var(--glow-amber)' }} /> Desktop recommended
+        </div>
+        <p className="term t-xs dim mt-1">
+          Review and Quick Sim work on mobile. Full-length timed mocks are easier to manage on a desktop-sized screen.
+        </p>
+      </Panel>
+
       {activeExam && (
         <Panel className="mb-3" brackets>
           <div className="row row--between wrap" style={{ gap: '0.6rem' }}>
@@ -117,8 +126,9 @@ export function Exam() {
           {history.length === 0 ? (
             <p className="muted t-sm">No mock exams yet. Your first one sets your baseline readiness.</p>
           ) : (
-            <div className="scroll-x">
-              <table className="table">
+            <>
+              <div className="desktop-only scroll-x">
+                <table className="table">
                 <thead>
                   <tr>
                     <th>Date</th>
@@ -147,8 +157,24 @@ export function Exam() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+                </table>
+              </div>
+              <div className="mobile-card-list">
+                {history.map((r) => (
+                  <button key={r.sessionId} className="neon-card" onClick={() => navigate(`/exam/result/${r.sessionId}`)}>
+                    <div className="row row--between wrap" style={{ gap: '0.35rem' }}>
+                      <span className="display t-sm" style={{ color: 'var(--text-main)' }}>{r.presetLabel}</span>
+                      <span className={`badge ${r.passed ? 'badge--green' : 'badge--red'}`}>{r.passed ? 'PASS' : 'FAIL'}</span>
+                    </div>
+                    <div className="row wrap mt-1" style={{ gap: '0.45rem' }}>
+                      <span className="term t-xs dim">{formatDate(r.submittedAt)}</span>
+                      <span className="mono tabnum">{Math.round(r.scorePct)}%</span>
+                      <span className="term t-xs dim">{formatDuration(r.timeUsedSec)}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </>
           )}
         </Panel>
 

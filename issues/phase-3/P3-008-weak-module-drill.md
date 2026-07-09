@@ -21,21 +21,21 @@ estimate: "2d"
 
 - [ ] module / tag / question type / difficulty を選んで drill を作る
 - [ ] 10, 20, 30 問の quick presets を用意する
-- [ ] drill 結果を review と analytics に反映する
-- [ ] 同じ問題の連続出題を避ける
+- [x] drill 結果を review と analytics に反映する
+- [x] 同じ問題の連続出題を避ける
 
 ## Acceptance Criteria
 
-- [ ] Cryptography 10 問 drill を開始できる
+- [x] Cryptography 10 問 drill を開始できる
 - [ ] drill result が保存される
-- [ ] weakness dashboard が更新される
+- [x] weakness dashboard が更新される
 
 ## Subtasks
 
-- [ ] drill generator を作る
-- [ ] session UI を作る
+- [x] drill generator を作る
+- [x] session UI を作る
 - [ ] result save を作る
-- [ ] dashboard 連携を作る
+- [x] dashboard 連携を作る
 
 ## Dependencies
 

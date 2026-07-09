@@ -19,23 +19,23 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] answer submit 後に correct/incorrect を表示する
-- [ ] explanation, why wrong, memory phrase を表示する
-- [ ] 間違えた問題は review queue 候補にする
-- [ ] submit 前後で選択肢の変更を制御する
+- [x] answer submit 後に correct/incorrect を表示する
+- [x] explanation, why wrong, memory phrase を表示する
+- [x] 間違えた問題は review queue 候補にする
+- [x] submit 前後で選択肢の変更を制御する
 
 ## Acceptance Criteria
 
-- [ ] 正解時と不正解時の UI が分かる
-- [ ] attempt が保存される
-- [ ] 不正解問題が review 候補になる
+- [x] 正解時と不正解時の UI が分かる
+- [x] attempt が保存される
+- [x] 不正解問題が review 候補になる
 
 ## Subtasks
 
-- [ ] submit handler を作る
-- [ ] result panel を作る
-- [ ] attempt save を作る
-- [ ] review enqueue hook を作る
+- [x] submit handler を作る
+- [x] result panel を作る
+- [x] attempt save を作る
+- [x] review enqueue hook を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ estimate: "2d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

@@ -32,9 +32,9 @@ module 別出題比率を設定し、弱点重視・均等・本番想定の moc
 
 ## Subtasks
 
-- [ ] preset schema を作る
+- [x] preset schema を作る
 - [ ] editor UI を作る
-- [ ] exam generator と接続する
+- [x] exam generator と接続する
 - [ ] warning を作る
 
 ## Dependencies

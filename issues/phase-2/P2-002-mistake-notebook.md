@@ -19,22 +19,22 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] attempt から mistake note を作成できる
-- [ ] fields: why_wrong, correct_reasoning, memory_phrase, next_action
+- [x] attempt から mistake note を作成できる
+- [x] fields: why_wrong, correct_reasoning, memory_phrase, next_action
 - [ ] module / tag / date で notebook を filter できる
 - [ ] review session 後に notebook update を促す
 
 ## Acceptance Criteria
 
-- [ ] 不正解 attempt から note を作れる
+- [x] 不正解 attempt から note を作れる
 - [ ] note が question detail と dashboard から見える
 - [ ] 未記入の mistake note を検出できる
 
 ## Subtasks
 
-- [ ] note schema を作る
-- [ ] create flow を作る
-- [ ] notebook list を作る
+- [x] note schema を作る
+- [x] create flow を作る
+- [x] notebook list を作る
 - [ ] filter を作る
 
 ## Dependencies

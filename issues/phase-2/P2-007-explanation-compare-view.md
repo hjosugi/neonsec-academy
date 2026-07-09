@@ -22,7 +22,7 @@ estimate: "2d"
 - [ ] short_answer / scenario で user reasoning を入力できる
 - [ ] model answer と side-by-side で比較する
 - [ ] 差分メモを mistake notebook に送れる
-- [ ] 採点は自動化しすぎず self-check を基本にする
+- [x] 採点は自動化しすぎず self-check を基本にする
 
 ## Acceptance Criteria
 

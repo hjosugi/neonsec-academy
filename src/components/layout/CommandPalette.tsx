@@ -8,6 +8,7 @@ import { useActiveQuestions } from '../../store/selectors'
 interface Cmd {
   id: string
   label: string
+  aliases: string[]
   icon: LucideIcon
   hint: string
   run: () => void
@@ -30,14 +31,19 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
 
   const commands: Cmd[] = useMemo(() => {
     const actions: Cmd[] = [
-      { id: 'a-review', label: 'Start daily review', icon: QUICK_ACTION_ICONS.review, hint: 'action', run: () => navigate('/review') },
-      { id: 'a-exam', label: 'Start a mock exam', icon: QUICK_ACTION_ICONS.exam, hint: 'action', run: () => navigate('/exam') },
-      { id: 'a-practice', label: 'Start practice session', icon: QUICK_ACTION_ICONS.practice, hint: 'action', run: () => navigate('/practice') },
-      { id: 'a-new', label: 'Create a question', icon: QUICK_ACTION_ICONS.createQuestion, hint: 'action', run: () => navigate('/bank/new') },
+      { id: 'a-review', label: 'Start daily review', aliases: ['review', 'srs', 'due'], icon: QUICK_ACTION_ICONS.review, hint: 'action', run: () => navigate('/review') },
+      { id: 'a-exam', label: 'Start a mock exam', aliases: ['mock', 'exam', 'test'], icon: QUICK_ACTION_ICONS.exam, hint: 'action', run: () => navigate('/exam') },
+      { id: 'a-weak', label: 'Start weak-module drill', aliases: ['weak', 'drill', 'weakness'], icon: QUICK_ACTION_ICONS.practice, hint: 'action', run: () => navigate('/practice?mode=weak') },
+      { id: 'a-practice', label: 'Start practice session', aliases: ['practice', 'train'], icon: QUICK_ACTION_ICONS.practice, hint: 'action', run: () => navigate('/practice') },
+      { id: 'a-lab', label: 'Open safe labs', aliases: ['lab', 'challenge', 'practical'], icon: QUICK_ACTION_ICONS.lab, hint: 'action', run: () => navigate('/labs') },
+      { id: 'a-report', label: 'Open report exporter', aliases: ['report', 'export', 'markdown'], icon: QUICK_ACTION_ICONS.report, hint: 'action', run: () => navigate('/reports') },
+      { id: 'a-final', label: 'Open final gate', aliases: ['final', 'gate', 'booking'], icon: QUICK_ACTION_ICONS.exam, hint: 'action', run: () => navigate('/final-gate') },
+      { id: 'a-new', label: 'Create a question', aliases: ['new', 'author', 'question'], icon: QUICK_ACTION_ICONS.createQuestion, hint: 'action', run: () => navigate('/bank/new') },
     ]
     const navCmds: Cmd[] = NAV.flatMap((s) => s.items).map((it) => ({
       id: 'n' + it.to,
       label: it.label,
+      aliases: [it.label.toLowerCase(), it.to.replace('/', '')],
       icon: it.icon,
       hint: 'go to',
       run: () => navigate(it.to),
@@ -47,7 +53,9 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
 
   const flat = useMemo(() => {
     const term = q.trim().toLowerCase()
-    const cmds = term ? commands.filter((c) => c.label.toLowerCase().includes(term)).slice(0, 6) : commands.slice(0, 8)
+    const cmds = term
+      ? commands.filter((c) => c.label.toLowerCase().includes(term) || c.aliases.some((alias) => alias.includes(term))).slice(0, 8)
+      : commands.slice(0, 9)
     const qs = term
       ? questions
           .filter(

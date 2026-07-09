@@ -19,23 +19,23 @@ estimate: "1d"
 
 ## Requirements
 
-- [ ] Global nav: Dashboard, Question Bank, Review, Exam, Labs, Reports, Analytics, Settings
-- [ ] Cyberpunk map は補助ナビにし、主要操作は productivity nav で行う
-- [ ] Command palette から主要操作に移動できる設計にする
-- [ ] mobile / desktop の priority を決める
+- [x] Global nav: Dashboard, Question Bank, Review, Exam, Labs, Reports, Analytics, Settings
+- [x] Cyberpunk map は補助ナビにし、主要操作は productivity nav で行う
+- [x] Command palette から主要操作に移動できる設計にする
+- [x] mobile / desktop の priority を決める
 
 ## Acceptance Criteria
 
-- [ ] docs/INFORMATION_ARCHITECTURE.md が存在する
+- [x] docs/INFORMATION_ARCHITECTURE.md が存在する
 - [ ] 主要画面の目的・入口・出口が書かれている
-- [ ] deep link 設計がある
+- [x] deep link 設計がある
 
 ## Subtasks
 
-- [ ] site map を作る
-- [ ] primary flows を書く
-- [ ] empty state を決める
-- [ ] shortcut の候補を決める
+- [x] site map を作る
+- [x] primary flows を書く
+- [x] empty state を決める
+- [x] shortcut の候補を決める
 
 ## Dependencies
 

@@ -20,22 +20,22 @@ module, tag, question type, difficulty ごとの弱点を見える化する。
 ## Requirements
 
 - [ ] accuracy, attempts, due count, average confidence, recent trend を計算する
-- [ ] CEH 20 module coverage を一覧表示する
-- [ ] weakest 3 modules と next action を出す
+- [x] CEH 20 module coverage を一覧表示する
+- [x] weakest 3 modules と next action を出す
 - [ ] データが少ない場合は insufficient data と表示する
 
 ## Acceptance Criteria
 
-- [ ] module ごとの正答率が表示される
-- [ ] weakest modules が dashboard に出る
-- [ ] クリックすると該当問題に遷移できる
+- [x] module ごとの正答率が表示される
+- [x] weakest modules が dashboard に出る
+- [x] クリックすると該当問題に遷移できる
 
 ## Subtasks
 
-- [ ] metrics 定義を作る
-- [ ] aggregation を作る
-- [ ] dashboard UI を作る
-- [ ] drilldown link を作る
+- [x] metrics 定義を作る
+- [x] aggregation を作る
+- [x] dashboard UI を作る
+- [x] drilldown link を作る
 
 ## Dependencies
 

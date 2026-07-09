@@ -21,7 +21,7 @@ estimate: "3d"
 
 - [ ] timeline event: time, source, observation, confidence, related evidence を持つ
 - [ ] incident summary, impact, containment, eradication, recovery, lessons learned を書く
-- [ ] SOC log track と連携する
+- [x] SOC log track と連携する
 - [ ] report quality checklist を入れる
 
 ## Acceptance Criteria

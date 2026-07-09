@@ -38,6 +38,10 @@ const defaultProfile: Profile = {
   createdAt: Date.now(),
   examTargetPct: 85,
   onboarded: false,
+  studyGoal: 'all',
+  targetDate: null,
+  safetyAcknowledged: false,
+  useSeedBank: true,
 }
 
 const defaultSettings: Settings = {

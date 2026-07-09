@@ -19,23 +19,23 @@ Cloud security の基礎を、模擬設定ファイルのレビューで学ぶ t
 
 ## Requirements
 
-- [ ] IAM over-permission, public exposure, weak logging, missing encryption, secret handling を扱う
-- [ ] vendor 固有操作ではなく、概念と設定レビューを中心にする
-- [ ] synthetic config files のみ使う
+- [x] IAM over-permission, public exposure, weak logging, missing encryption, secret handling を扱う
+- [x] vendor 固有操作ではなく、概念と設定レビューを中心にする
+- [x] synthetic config files のみ使う
 - [ ] 各課題に least privilege の説明を入れる
 
 ## Acceptance Criteria
 
 - [ ] 最低 8 個の cloud config review challenge がある
-- [ ] 各 challenge に risk と remediation がある
-- [ ] cloud track の weakness stats が出る
+- [x] 各 challenge に risk と remediation がある
+- [x] cloud track の weakness stats が出る
 
 ## Subtasks
 
-- [ ] cloud scenario を作る
-- [ ] config sample を作る
+- [x] cloud scenario を作る
+- [x] config sample を作る
 - [ ] review form を作る
-- [ ] analytics tag を追加する
+- [x] analytics tag を追加する
 
 ## Dependencies
 

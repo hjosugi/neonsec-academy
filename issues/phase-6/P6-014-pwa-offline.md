@@ -15,14 +15,14 @@ Make the trainer installable and usable offline — it is already fully client-s
 
 ## Requirements
 
-- [ ] Web app manifest (name, icons, theme color `#050816`)
-- [ ] Service worker to cache the app shell + assets
-- [ ] "Add to home screen" works on mobile
+- [x] Web app manifest (name, icons, theme color `#050816`)
+- [x] Service worker to cache the app shell + assets
+- [x] "Add to home screen" works on mobile
 
 ## Acceptance Criteria
 
-- [ ] App loads and functions with no network after first visit
-- [ ] Lighthouse PWA checks pass
+- [x] App loads and functions with no network after first visit
+- [x] Lighthouse PWA checks pass
 
 ## Notes
 

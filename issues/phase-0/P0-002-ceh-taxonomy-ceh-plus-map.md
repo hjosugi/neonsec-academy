@@ -19,7 +19,7 @@ CEH 公式 module、問題 domain、実践 skill、CEH 後の skill track を同
 
 ## Requirements
 
-- [ ] CEH 20 module を固定 master data として持つ
+- [x] CEH 20 module を固定 master data として持つ
 - [ ] 各問題に module, subtopic, skill_type, difficulty, source_type を付けられる
 - [ ] CEH+ track として pentest, AppSec, cloud, SOC, IR, reporting を追加する
 - [ ] module と CEH+ track の対応表を作る
@@ -27,14 +27,14 @@ CEH 公式 module、問題 domain、実践 skill、CEH 後の skill track を同
 ## Acceptance Criteria
 
 - [ ] 20 module すべてが docs/taxonomy.md に記載されている
-- [ ] question schema から module と CEH+ track を参照できる
+- [x] question schema から module と CEH+ track を参照できる
 - [ ] 未分類問題を検出できるルールがある
 
 ## Subtasks
 
-- [ ] CEH module list を master data 化する
-- [ ] CEH+ skill track を定義する
-- [ ] difficulty と question_type を定義する
+- [x] CEH module list を master data 化する
+- [x] CEH+ skill track を定義する
+- [x] difficulty と question_type を定義する
 - [ ] coverage matrix の初版を作る
 
 ## Dependencies

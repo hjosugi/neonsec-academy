@@ -26,15 +26,15 @@ estimate: "3d"
 
 ## Acceptance Criteria
 
-- [ ] 不正解問題が due queue に入る
-- [ ] 正解が続くと間隔が伸びる
-- [ ] due count が dashboard に表示される
+- [x] 不正解問題が due queue に入る
+- [x] 正解が続くと間隔が伸びる
+- [x] due count が dashboard に表示される
 
 ## Subtasks
 
-- [ ] scheduler model を作る
-- [ ] enqueue logic を作る
-- [ ] due query を作る
+- [x] scheduler model を作る
+- [x] enqueue logic を作る
+- [x] due query を作る
 - [ ] settings を作る
 
 ## Dependencies

@@ -20,20 +20,20 @@ estimate: "4d"
 ## Requirements
 
 - [ ] authz, input validation, secrets handling, error handling, dependency risk の課題を作る
-- [ ] 小さな toy code snippet を使う
+- [x] 小さな toy code snippet を使う
 - [ ] 各課題で vulnerable line, impact, fix を提出する
 - [ ] 安全な修正例と unit-test idea を解説に含める
 
 ## Acceptance Criteria
 
 - [ ] 最低 10 個の code review challenge 仕様がある
-- [ ] 各 challenge に fix explanation がある
+- [x] 各 challenge に fix explanation がある
 - [ ] finding と report に連携できる
 
 ## Subtasks
 
 - [ ] snippet template を作る
-- [ ] challenge samples を作る
+- [x] challenge samples を作る
 - [ ] review form を作る
 - [ ] report 連携を作る
 

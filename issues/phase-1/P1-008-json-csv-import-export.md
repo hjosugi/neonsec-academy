@@ -21,21 +21,21 @@ estimate: "2d"
 
 - [ ] JSONL export を標準形式にする
 - [ ] CSV import は MCQ の basic fields に限定する
-- [ ] import preview と validation error を表示する
-- [ ] 既存 ID の conflict policy を定義する
+- [x] import preview と validation error を表示する
+- [x] 既存 ID の conflict policy を定義する
 
 ## Acceptance Criteria
 
 - [ ] sample JSONL を export/import できる
 - [ ] invalid row の error が行番号付きで出る
-- [ ] duplicate ID の扱いが明確である
+- [x] duplicate ID の扱いが明確である
 
 ## Subtasks
 
 - [ ] export format を決める
-- [ ] import parser を作る
-- [ ] preview UI を作る
-- [ ] validation を作る
+- [x] import parser を作る
+- [x] preview UI を作る
+- [x] validation を作る
 
 ## Dependencies
 

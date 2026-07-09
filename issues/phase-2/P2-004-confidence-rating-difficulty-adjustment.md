@@ -21,7 +21,7 @@ estimate: "2d"
 
 - [ ] answer submit 時に confidence 1〜5 を入力できる
 - [ ] 低 confidence の正解は review interval を短くする
-- [ ] 問題作成者が perceived difficulty を見られる
+- [x] 問題作成者が perceived difficulty を見られる
 - [ ] confidence 未入力時の default policy を決める
 
 ## Acceptance Criteria

@@ -19,23 +19,23 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] keyword search を提供する
+- [x] keyword search を提供する
 - [ ] module, tag, difficulty, status, last_attempt_result で filter できる
 - [ ] 複数 filter の組み合わせを保存できる設計にする
-- [ ] empty state で次の action を出す
+- [x] empty state で次の action を出す
 
 ## Acceptance Criteria
 
-- [ ] module: Cryptography などで正しく絞り込める
+- [x] module: Cryptography などで正しく絞り込める
 - [ ] 複数 tag の filter が動く
-- [ ] 検索結果件数が表示される
+- [x] 検索結果件数が表示される
 
 ## Subtasks
 
-- [ ] filter state を設計する
-- [ ] search input を作る
-- [ ] filter chips を作る
-- [ ] empty state を作る
+- [x] filter state を設計する
+- [x] search input を作る
+- [x] filter chips を作る
+- [x] empty state を作る
 
 ## Dependencies
 

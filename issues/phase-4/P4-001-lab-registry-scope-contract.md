@@ -19,23 +19,23 @@ estimate: "3d"
 
 ## Requirements
 
-- [ ] lab ごとに scope contract を表示する
-- [ ] 開始前に user acknowledgement を必須にする
-- [ ] external target, public IP, real email, real credentials を禁止フィールドとして検出する
+- [x] lab ごとに scope contract を表示する
+- [x] 開始前に user acknowledgement を必須にする
+- [x] external target, public IP, real email, real credentials を禁止フィールドとして検出する
 - [ ] lab は local / dataset / simulated / writeup の種類に分ける
 
 ## Acceptance Criteria
 
-- [ ] scope 未確認では lab を開始できない
-- [ ] lab detail に allowed/forbidden が表示される
+- [x] scope 未確認では lab を開始できない
+- [x] lab detail に allowed/forbidden が表示される
 - [ ] unsafe metadata を含む lab は publish できない
 
 ## Subtasks
 
-- [ ] lab schema を作る
-- [ ] scope UI を作る
-- [ ] acknowledgement を保存する
-- [ ] safety validation を作る
+- [x] lab schema を作る
+- [x] scope UI を作る
+- [x] acknowledgement を保存する
+- [x] safety validation を作る
 
 ## Dependencies
 

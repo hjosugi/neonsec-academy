@@ -20,23 +20,23 @@ Finding, impact, evidence, remediation をまとめた実務寄り report を作
 ## Requirements
 
 - [ ] Executive summary, scope, methodology, findings, remediation, appendix を持つ
-- [ ] finding から report section を生成できる
-- [ ] Markdown export を提供する
+- [x] finding から report section を生成できる
+- [x] Markdown export を提供する
 - [ ] report quality checklist を表示する
 
 ## Acceptance Criteria
 
-- [ ] lab result から report を作成できる
-- [ ] finding が report に反映される
-- [ ] Markdown export ができる
+- [x] lab result から report を作成できる
+- [x] finding が report に反映される
+- [x] Markdown export ができる
 - [ ] quality checklist がすべて確認できる
 
 ## Subtasks
 
-- [ ] report schema を作る
-- [ ] editor UI を作る
-- [ ] finding import を作る
-- [ ] Markdown export を作る
+- [x] report schema を作る
+- [x] editor UI を作る
+- [x] finding import を作る
+- [x] Markdown export を作る
 
 ## Dependencies
 

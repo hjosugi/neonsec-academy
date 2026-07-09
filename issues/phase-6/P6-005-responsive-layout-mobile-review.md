@@ -19,23 +19,23 @@ estimate: "3d"
 
 ## Requirements
 
-- [ ] mobile では Review Queue と Mistake Notebook を優先する
-- [ ] Mock exam は desktop 推奨として warning を出す
-- [ ] long table は card layout に変える
-- [ ] touch target を十分に大きくする
+- [x] mobile では Review Queue と Mistake Notebook を優先する
+- [x] Mock exam は desktop 推奨として warning を出す
+- [x] long table は card layout に変える
+- [x] touch target を十分に大きくする
 
 ## Acceptance Criteria
 
-- [ ] mobile width で review session が完了できる
-- [ ] dashboard が横スクロールなしで見える
-- [ ] mock exam desktop warning が出る
+- [x] mobile width で review session が完了できる
+- [x] dashboard が横スクロールなしで見える
+- [x] mock exam desktop warning が出る
 
 ## Subtasks
 
-- [ ] responsive breakpoints を確認する
-- [ ] mobile review UI を作る
-- [ ] table fallback を作る
-- [ ] manual QA を行う
+- [x] responsive breakpoints を確認する
+- [x] mobile review UI を作る
+- [x] table fallback を作る
+- [x] manual QA を行う
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ estimate: "3d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

@@ -20,22 +20,22 @@ estimate: "2d"
 ## Requirements
 
 - [ ] Review で 1/2/3/4, Enter, Next, Bookmark を keyboard で操作できる
-- [ ] Command palette を呼び出せる shortcut を定義する
-- [ ] reduced motion setting で animation を無効化する
-- [ ] focus ring は neon だが視認性を優先する
+- [x] Command palette を呼び出せる shortcut を定義する
+- [x] reduced motion setting で animation を無効化する
+- [x] focus ring は neon だが視認性を優先する
 
 ## Acceptance Criteria
 
 - [ ] 主要操作が keyboard だけで完了できる
-- [ ] reduced motion on で animation が止まる
-- [ ] focus state が見える
+- [x] reduced motion on で animation が止まる
+- [x] focus state が見える
 
 ## Subtasks
 
 - [ ] shortcut map を作る
-- [ ] review runner に追加する
-- [ ] settings を作る
-- [ ] accessibility QA を行う
+- [x] review runner に追加する
+- [x] settings を作る
+- [x] accessibility QA を行う
 
 ## Dependencies
 

@@ -22,20 +22,20 @@ estimate: "4d"
 - [ ] auth log, web access log, DNS log, endpoint alert, firewall log の synthetic dataset を使う
 - [ ] 課題は timeline, indicator, affected asset, next action を提出させる
 - [ ] CEH module と SOC skill tag を両方付ける
-- [ ] 解説は detection logic と containment idea を含める
+- [x] 解説は detection logic と containment idea を含める
 
 ## Acceptance Criteria
 
 - [ ] 最低 10 個の log investigation challenge 仕様がある
 - [ ] timeline builder と連携できる
-- [ ] wrong answers が review queue に入る
+- [x] wrong answers が review queue に入る
 
 ## Subtasks
 
 - [ ] log dataset format を作る
-- [ ] scenario を作る
+- [x] scenario を作る
 - [ ] timeline form を作る
-- [ ] review 連携を作る
+- [x] review 連携を作る
 
 ## Dependencies
 

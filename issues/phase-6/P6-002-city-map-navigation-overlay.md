@@ -19,23 +19,23 @@ CEH module と CEH+ track を cyberpunk city map として見せる補助 UI を
 
 ## Requirements
 
-- [ ] district は CEH module group と CEH+ track に対応する
-- [ ] map は progress visualization であり、主要ナビの代替にしない
-- [ ] district status: locked, weak, due, ready, mastered を表示する
-- [ ] クリックで module drill / review queue に移動する
+- [x] district は CEH module group と CEH+ track に対応する
+- [x] map は progress visualization であり、主要ナビの代替にしない
+- [x] district status: locked, weak, due, ready, mastered を表示する
+- [x] クリックで module drill / review queue に移動する
 
 ## Acceptance Criteria
 
-- [ ] map から弱点 module に移動できる
-- [ ] due review が district glow で分かる
-- [ ] map を非表示にできる
+- [x] map から弱点 module に移動できる
+- [x] due review が district glow で分かる
+- [x] map を非表示にできる
 
 ## Subtasks
 
-- [ ] district mapping を作る
-- [ ] map layout を作る
-- [ ] status visualization を作る
-- [ ] drill link を作る
+- [x] district mapping を作る
+- [x] map layout を作る
+- [x] status visualization を作る
+- [x] drill link を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ CEH module と CEH+ track を cyberpunk city map として見せる補助 UI を
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

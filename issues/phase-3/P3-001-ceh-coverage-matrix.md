@@ -19,23 +19,23 @@ CEH 受験者として、20 module のどこが足りないかを一目で知り
 
 ## Requirements
 
-- [ ] 20 module ごとに total questions, attempted, accuracy, due count, readiness を表示する
-- [ ] module をクリックすると drill に移動する
+- [x] 20 module ごとに total questions, attempted, accuracy, due count, readiness を表示する
+- [x] module をクリックすると drill に移動する
 - [ ] coverage threshold を設定できる
 - [ ] 問題数が少ない module を警告する
 
 ## Acceptance Criteria
 
-- [ ] 20 module すべてが matrix に出る
+- [x] 20 module すべてが matrix に出る
 - [ ] 未作成/未回答/弱点が区別できる
-- [ ] module drill に遷移できる
+- [x] module drill に遷移できる
 
 ## Subtasks
 
-- [ ] matrix aggregation を作る
-- [ ] readiness formula を作る
-- [ ] UI を作る
-- [ ] drill link を作る
+- [x] matrix aggregation を作る
+- [x] readiness formula を作る
+- [x] UI を作る
+- [x] drill link を作る
 
 ## Dependencies
 

@@ -151,6 +151,8 @@ export interface ExamResult {
 }
 
 // ---- Player / settings ----
+export type StudyGoal = 'ceh-exam' | 'ceh-practical' | 'ceh-plus' | 'all'
+
 export interface Profile {
   xp: number
   streakDays: number
@@ -159,6 +161,10 @@ export interface Profile {
   createdAt: number
   examTargetPct: number
   onboarded: boolean
+  studyGoal: StudyGoal
+  targetDate: string | null // YYYY-MM-DD
+  safetyAcknowledged: boolean
+  useSeedBank: boolean
 }
 
 export interface Settings {

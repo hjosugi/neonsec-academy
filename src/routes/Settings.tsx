@@ -124,6 +124,29 @@ const PRIVACY_CHECKS = [
 
 type PrivacyCheckId = (typeof PRIVACY_CHECKS)[number]['id']
 
+const THEME_PRESETS: Array<{ label: string; hint: string; patch: Partial<SettingsType> }> = [
+  {
+    label: 'Neon Night',
+    hint: 'Full cyber ambience',
+    patch: { reduceMotion: false, lowGlow: false, highContrast: false, scanlines: true, sound: false },
+  },
+  {
+    label: 'Low Glow',
+    hint: 'Less bloom for long sessions',
+    patch: { reduceMotion: false, lowGlow: true, highContrast: false, scanlines: true, sound: false },
+  },
+  {
+    label: 'High Contrast',
+    hint: 'Brighter copy and borders',
+    patch: { reduceMotion: false, lowGlow: true, highContrast: true, scanlines: false, sound: false },
+  },
+  {
+    label: 'Focus Mode',
+    hint: 'All effects reduced',
+    patch: { reduceMotion: true, lowGlow: true, highContrast: true, scanlines: false, sound: false },
+  },
+]
+
 export function Settings() {
   const settings = useStore((s) => s.settings)
   const updateSettings = useStore((s) => s.updateSettings)
@@ -260,6 +283,18 @@ export function Settings() {
             <Toggle label="Low glow" hint="Remove neon bloom (easier on the eyes / OLED)" checked={settings.lowGlow} onChange={(v) => set({ lowGlow: v })} />
             <Toggle label="High contrast" hint="Brighten text and borders" checked={settings.highContrast} onChange={(v) => set({ highContrast: v })} />
             <Toggle label="Scanlines" hint="Retro CRT scanline overlay" checked={settings.scanlines} onChange={(v) => set({ scanlines: v })} />
+            <Toggle label="Sound cues" hint="Default off; reserved for local UI sounds only" checked={settings.sound} onChange={(v) => set({ sound: v })} />
+          </Panel>
+
+          <Panel title="Theme Presets">
+            <div className="grid-2" style={{ gap: '0.6rem' }}>
+              {THEME_PRESETS.map((preset) => (
+                <button key={preset.label} className="btn btn--ghost btn--block" onClick={() => set(preset.patch)}>
+                  <span>{preset.label}</span>
+                  <span className="term t-xs dim" style={{ display: 'block' }}>{preset.hint}</span>
+                </button>
+              ))}
+            </div>
           </Panel>
 
           <Panel title="Study">

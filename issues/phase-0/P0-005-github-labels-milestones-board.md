@@ -19,23 +19,23 @@ Phase 0〜6 を GitHub Issues でそのまま管理できるようにする。
 
 ## Requirements
 
-- [ ] phase, type, area, priority の label セットを定義する
-- [ ] Phase 0〜6 の milestones を定義する
-- [ ] Project board の columns を定義する
-- [ ] Issue import 用の metadata frontmatter を用意する
+- [x] phase, type, area, priority の label セットを定義する
+- [x] Phase 0〜6 の milestones を定義する
+- [x] Project board の columns を定義する
+- [x] Issue import 用の metadata frontmatter を用意する
 
 ## Acceptance Criteria
 
-- [ ] docs/LABELS.md と docs/MILESTONES.md が存在する
-- [ ] 全 Issue に phase label と milestone がある
-- [ ] Import script が dry-run で全 Issue を表示できる
+- [x] docs/LABELS.md と docs/MILESTONES.md が存在する
+- [x] 全 Issue に phase label と milestone がある
+- [x] Import script が dry-run で全 Issue を表示できる
 
 ## Subtasks
 
-- [ ] label 定義を書く
-- [ ] milestone 定義を書く
-- [ ] board columns を書く
-- [ ] Issue import guide を書く
+- [x] label 定義を書く
+- [x] milestone 定義を書く
+- [x] board columns を書く
+- [x] Issue import guide を書く
 
 ## Dependencies
 

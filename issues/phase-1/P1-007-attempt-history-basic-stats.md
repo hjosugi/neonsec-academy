@@ -21,21 +21,21 @@ estimate: "2d"
 
 - [ ] attempt ごとに selected_answer, result, time_spent, confidence を保存する
 - [ ] question detail に attempt history を表示する
-- [ ] basic stats: total attempts, accuracy, last attempted を計算する
-- [ ] privacy のため external tracking は入れない
+- [x] basic stats: total attempts, accuracy, last attempted を計算する
+- [x] privacy のため external tracking は入れない
 
 ## Acceptance Criteria
 
 - [ ] 同じ問題の複数 attempt が時系列で見える
-- [ ] dashboard に basic stats が表示される
-- [ ] データ再読み込み後も履歴が残る
+- [x] dashboard に basic stats が表示される
+- [x] データ再読み込み後も履歴が残る
 
 ## Subtasks
 
 - [ ] attempt schema を作る
-- [ ] save flow を作る
+- [x] save flow を作る
 - [ ] history UI を作る
-- [ ] stats calculation を作る
+- [x] stats calculation を作る
 
 ## Dependencies
 

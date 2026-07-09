@@ -20,20 +20,20 @@ estimate: "2d"
 ## Requirements
 
 - [ ] wrong, flagged, low confidence, slow questions で filter できる
-- [ ] explanation と自分の回答を並べる
+- [x] explanation と自分の回答を並べる
 - [ ] mistake notebook に送れる
 - [ ] review queue への一括追加ができる
 
 ## Acceptance Criteria
 
-- [ ] wrong questions だけ表示できる
+- [x] wrong questions だけ表示できる
 - [ ] flagged questions だけ表示できる
 - [ ] 一括 review enqueue ができる
 
 ## Subtasks
 
 - [ ] review filters を作る
-- [ ] compare view を接続する
+- [x] compare view を接続する
 - [ ] bulk enqueue を作る
 - [ ] notebook 連携を作る
 

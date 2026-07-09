@@ -21,20 +21,20 @@ Mock exam 後に合格可能性、弱点、復習 plan を出す。
 
 - [ ] overall score, module score, time spent, flagged accuracy を表示する
 - [ ] typical target score と safety margin を出す
-- [ ] wrong answers を review queue に送る
+- [x] wrong answers を review queue に送る
 - [ ] PDF ではなく Markdown/HTML export を優先する
 
 ## Acceptance Criteria
 
 - [ ] score と module breakdown が見える
-- [ ] wrong answers が review queue に入る
+- [x] wrong answers が review queue に入る
 - [ ] next 7 days plan が生成される
 
 ## Subtasks
 
-- [ ] result aggregation を作る
-- [ ] report UI を作る
-- [ ] review queue 連携を作る
+- [x] result aggregation を作る
+- [x] report UI を作る
+- [x] review queue 連携を作る
 - [ ] plan generator を作る
 
 ## Dependencies

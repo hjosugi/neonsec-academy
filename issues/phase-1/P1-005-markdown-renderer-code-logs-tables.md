@@ -20,20 +20,20 @@ estimate: "2d"
 ## Requirements
 
 - [ ] code block, inline code, table, callout を表示する
-- [ ] 危険な HTML は無効化する
-- [ ] Cyberpunk theme でも長文が読みやすい line height にする
+- [x] 危険な HTML は無効化する
+- [x] Cyberpunk theme でも長文が読みやすい line height にする
 - [ ] copy button は code block のみに置く
 
 ## Acceptance Criteria
 
 - [ ] sample log problem が崩れず表示される
-- [ ] script tag などの危険な HTML が実行されない
-- [ ] dark theme で contrast が十分にある
+- [x] script tag などの危険な HTML が実行されない
+- [x] dark theme で contrast が十分にある
 
 ## Subtasks
 
-- [ ] renderer 方針を決める
-- [ ] sanitization を入れる
+- [x] renderer 方針を決める
+- [x] sanitization を入れる
 - [ ] code block style を作る
 - [ ] sample を追加する
 

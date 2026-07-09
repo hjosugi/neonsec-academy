@@ -19,21 +19,21 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] Question, Choice, Explanation, Attempt, ReviewItem, LabChallenge, Evidence, Report の entity を定義する
+- [x] Question, Choice, Explanation, Attempt, ReviewItem, LabChallenge, Evidence, Report の entity を定義する
 - [ ] すべての entity に stable id, created_at, updated_at を持たせる
-- [ ] CEH module と CEH+ track を外部キーまたは enum として扱う
+- [x] CEH module と CEH+ track を外部キーまたは enum として扱う
 - [ ] 将来の import/export を前提に JSON schema を用意する
 
 ## Acceptance Criteria
 
-- [ ] docs/DATA_MODEL.md に ERD 風の説明がある
-- [ ] sample JSON が validation 可能な形で置かれている
+- [x] docs/DATA_MODEL.md に ERD 風の説明がある
+- [x] sample JSON が validation 可能な形で置かれている
 - [ ] 削除・アーカイブ・復元の方針が書かれている
 
 ## Subtasks
 
-- [ ] entity 一覧を書く
-- [ ] field 定義を書く
+- [x] entity 一覧を書く
+- [x] field 定義を書く
 - [ ] index / search key を決める
 - [ ] migration 方針を書く
 

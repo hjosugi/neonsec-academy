@@ -19,22 +19,22 @@ estimate: "1d"
 
 ## Requirements
 
-- [ ] daily completion streak を表示する
-- [ ] achievement は復習・正答率・レポート提出など学習行動に限定する
-- [ ] leaderboard は MVP では作らない
+- [x] daily completion streak を表示する
+- [x] achievement は復習・正答率・レポート提出など学習行動に限定する
+- [x] leaderboard は MVP では作らない
 - [ ] streak loss で過度に不安を煽らない copy にする
 
 ## Acceptance Criteria
 
-- [ ] 今日の復習完了で streak が増える
+- [x] 今日の復習完了で streak が増える
 - [ ] miss しても motivational copy が表示される
 - [ ] achievement は disable できる
 
 ## Subtasks
 
-- [ ] streak model を作る
-- [ ] achievement list を作る
-- [ ] dashboard badge を作る
+- [x] streak model を作る
+- [x] achievement list を作る
+- [x] dashboard badge を作る
 - [ ] settings を作る
 
 ## Dependencies

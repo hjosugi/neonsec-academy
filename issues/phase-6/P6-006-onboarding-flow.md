@@ -19,23 +19,23 @@ estimate: "3d"
 
 ## Requirements
 
-- [ ] goal selection: CEH exam, CEH Practical, CEH+, all を選べる
-- [ ] daily review size と target date を設定できる
-- [ ] seed questions を入れるか選べる
-- [ ] safety policy を確認する step を入れる
+- [x] goal selection: CEH exam, CEH Practical, CEH+, all を選べる
+- [x] daily review size と target date を設定できる
+- [x] seed questions を入れるか選べる
+- [x] safety policy を確認する step を入れる
 
 ## Acceptance Criteria
 
-- [ ] 初回起動時に onboarding が出る
-- [ ] 完了後に dashboard が personalized される
-- [ ] safety acknowledgement が保存される
+- [x] 初回起動時に onboarding が出る
+- [x] 完了後に dashboard が personalized される
+- [x] safety acknowledgement が保存される
 
 ## Subtasks
 
-- [ ] onboarding steps を作る
-- [ ] settings save を作る
-- [ ] seed import option を作る
-- [ ] dashboard 反映を作る
+- [x] onboarding steps を作る
+- [x] settings save を作る
+- [x] seed import option を作る
+- [x] dashboard 反映を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ estimate: "3d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

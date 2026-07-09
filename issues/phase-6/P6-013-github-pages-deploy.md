@@ -15,14 +15,14 @@ Publish the static build automatically so anyone can try the trainer.
 
 ## Requirements
 
-- [ ] Actions workflow: build on push to `main`, upload `dist/`, deploy to Pages
-- [ ] Confirm relative `base` + `HashRouter` work on a project-pages subpath
-- [ ] Link the live URL from the README
+- [x] Actions workflow: build on push to `main`, upload `dist/`, deploy to Pages
+- [x] Confirm relative `base` + `HashRouter` work on a project-pages subpath
+- [x] Link the live URL from the README
 
 ## Acceptance Criteria
 
-- [ ] Pushing to `main` publishes the latest build
-- [ ] Deep links (e.g. `/#/exam`) load correctly on refresh
+- [x] Pushing to `main` publishes the latest build
+- [x] Deep links (e.g. `/#/exam`) load correctly on refresh
 
 ## Notes
 

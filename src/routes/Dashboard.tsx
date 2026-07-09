@@ -23,6 +23,13 @@ const BAND = {
   red: { c: 'var(--danger-red)', label: 'Keep Training' },
 }
 
+const GOAL_LABEL = {
+  'ceh-exam': 'CEH Exam',
+  'ceh-practical': 'CEH Practical',
+  'ceh-plus': 'CEH+',
+  all: 'All Paths',
+} as const
+
 function StatTile({ value, label, accent }: { value: string; label: string; accent?: string }) {
   return (
     <div className="panel" style={{ padding: '0.9rem 1rem' }}>
@@ -44,8 +51,10 @@ export function Dashboard() {
   const due = useDueQueue()
   const { rank } = useRank()
   const results = useStore((s) => s.examResults)
-  const streak = useStore((s) => s.profile.streakDays)
-  const badges = useStore((s) => s.profile.badges)
+  const profile = useStore((s) => s.profile)
+  const settings = useStore((s) => s.settings)
+  const streak = profile.streakDays
+  const badges = profile.badges
 
   const weak = useMemo(() => weakestModules(mods, 5), [mods])
   const mockScores = useMemo(
@@ -63,7 +72,9 @@ export function Dashboard() {
             Dashboard <span className="badge badge--cyan">{rank.title}</span>
           </>
         }
-        sub="Your mission: pass the CEH. Drill the bank, clear your reviews, and push readiness into the green."
+        sub={`Plan: ${GOAL_LABEL[profile.studyGoal ?? 'all']} · ${settings.dailyGoal} reviews/day${
+          profile.targetDate ? ` · target ${profile.targetDate}` : ''
+        }. Drill the bank, clear your reviews, and push readiness into the green.`}
       />
 
       <div className="grid-4 mb-3 rise-list">

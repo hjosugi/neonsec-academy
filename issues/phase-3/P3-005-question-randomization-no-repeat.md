@@ -20,19 +20,19 @@ Mock exam で同じ問題が偏りすぎないようにする。
 ## Requirements
 
 - [ ] recently used questions を避ける
-- [ ] module coverage を守りながら randomize する
+- [x] module coverage を守りながら randomize する
 - [ ] 選択肢 order を question ごとに randomize できる
 - [ ] seed を保存して exam 再現性を持たせる
 
 ## Acceptance Criteria
 
-- [ ] 同じ preset でも session ごとに問題が変わる
+- [x] 同じ preset でも session ごとに問題が変わる
 - [ ] 過去直近 session の重複率が threshold 以下になる
 - [ ] result review では元の順序を再現できる
 
 ## Subtasks
 
-- [ ] selection algorithm を作る
+- [x] selection algorithm を作る
 - [ ] seed 保存を作る
 - [ ] choice shuffle を作る
 - [ ] duplicate test を作る

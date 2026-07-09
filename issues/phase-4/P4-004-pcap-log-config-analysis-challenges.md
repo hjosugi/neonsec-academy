@@ -20,22 +20,22 @@ estimate: "3d"
 ## Requirements
 
 - [ ] PCAP, web log, auth log, cloud config, firewall rule の challenge type を用意する
-- [ ] 各 challenge は answer, evidence, remediation を要求する
-- [ ] dataset は synthetic または intentionally prepared のみ使う
-- [ ] 解説は detection と prevention を含める
+- [x] 各 challenge は answer, evidence, remediation を要求する
+- [x] dataset は synthetic または intentionally prepared のみ使う
+- [x] 解説は detection と prevention を含める
 
 ## Acceptance Criteria
 
-- [ ] 最低 5 種類の analysis challenge sample がある
+- [x] 最低 5 種類の analysis challenge sample がある
 - [ ] 各 sample に flag と explanation がある
 - [ ] report builder へ evidence を送れる
 
 ## Subtasks
 
-- [ ] challenge type を定義する
-- [ ] sample dataset を作る
-- [ ] viewer UI を作る
-- [ ] scoring を作る
+- [x] challenge type を定義する
+- [x] sample dataset を作る
+- [x] viewer UI を作る
+- [x] scoring を作る
 
 ## Dependencies
 

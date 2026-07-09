@@ -15,13 +15,13 @@ Run quality gates on every pull request.
 
 ## Requirements
 
-- [ ] GitHub Actions workflow on push / PR
+- [x] GitHub Actions workflow on push / PR
 - [ ] `npm ci` → `npm run typecheck` → `npm run validate:content` → `npm run build`
-- [ ] Fail the check on any error
+- [x] Fail the check on any error
 
 ## Acceptance Criteria
 
-- [ ] A red X appears on PRs that break types, the build, or the question schema
+- [x] A red X appears on PRs that break types, the build, or the question schema
 - [ ] Badge in README (optional)
 
 ## Notes

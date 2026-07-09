@@ -2,6 +2,31 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.2 - 2026-07-10
+
+Release polish closure for onboarding, city-map navigation, command launch flows, responsive exam
+history, accessibility presets, and local issue audit alignment.
+
+### Added
+
+- Goal-aware onboarding with CEH Exam, CEH Practical, CEH+, and all-path study plans.
+- Onboarding controls for daily review size, target date, optional seed-bank loading, and safety
+  acknowledgement.
+- Command palette launch shortcuts for review, mock exams, weak drills, safe labs, report export,
+  final gate, practice, and question creation.
+- City map district status badges, due-review routing, weak/ready/mastered states, and a hide-map
+  mode for compact study.
+- Responsive mock-exam history cards plus a mobile desktop-recommended notice.
+- Theme presets for Neon Night, Low Glow, High Contrast, and Focus Mode.
+- Accessibility QA checklist documenting motion, glow, contrast, status labels, command palette,
+  mobile layout, and city-map fallback checks.
+
+### Changed
+
+- Dashboard header now reflects the selected study goal, review target, and optional exam date.
+- Phase 0/1/3/6 issue checklists were audited against the current implementation so GitHub issue
+  closure matches repository evidence.
+
 ## v1.0.1 - 2026-07-09
 
 Release-readiness patch for public sharing, documentation, safety review, and acceptance evidence.

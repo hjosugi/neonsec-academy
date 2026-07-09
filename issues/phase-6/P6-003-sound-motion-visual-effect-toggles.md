@@ -19,23 +19,23 @@ Cyberpunk 演出を好みに応じて調整できるようにする。
 
 ## Requirements
 
-- [ ] sound は default off にする
-- [ ] motion は reduced motion setting を尊重する
-- [ ] glitch effect は短く、問題文には使わない
-- [ ] settings から all effects off ができる
+- [x] sound は default off にする
+- [x] motion は reduced motion setting を尊重する
+- [x] glitch effect は短く、問題文には使わない
+- [x] settings から all effects off ができる
 
 ## Acceptance Criteria
 
-- [ ] effect settings が保存される
-- [ ] 問題文に animation がかからない
-- [ ] reduced motion on で演出が止まる
+- [x] effect settings が保存される
+- [x] 問題文に animation がかからない
+- [x] reduced motion on で演出が止まる
 
 ## Subtasks
 
-- [ ] settings fields を作る
-- [ ] effect gates を作る
-- [ ] sound policy を作る
-- [ ] QA を行う
+- [x] settings fields を作る
+- [x] effect gates を作る
+- [x] sound policy を作る
+- [x] QA を行う
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ Cyberpunk 演出を好みに応じて調整できるようにする。
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

@@ -19,23 +19,23 @@ neon terminal 風の見た目を残しつつ、問題管理・復習管理が読
 
 ## Requirements
 
-- [ ] color token, typography, spacing, elevation, border, glow のルールを定義する
-- [ ] neon effect は CTA, focus, status, rank に限定する
-- [ ] 問題文・解説・コード・ログは高コントラストで読みやすくする
-- [ ] reduced motion と low glow mode を必須にする
+- [x] color token, typography, spacing, elevation, border, glow のルールを定義する
+- [x] neon effect は CTA, focus, status, rank に限定する
+- [x] 問題文・解説・コード・ログは高コントラストで読みやすくする
+- [x] reduced motion と low glow mode を必須にする
 
 ## Acceptance Criteria
 
-- [ ] docs/DESIGN_SYSTEM.md に token と component 方針がある
+- [x] docs/DESIGN_SYSTEM.md に token と component 方針がある
 - [ ] Question Console, Review Queue, Mock Exam, Lab Report の wireframe がある
-- [ ] accessibility notes がある
+- [x] accessibility notes がある
 
 ## Subtasks
 
-- [ ] color tokens を決める
-- [ ] component vocabulary を決める
-- [ ] screen priority を決める
-- [ ] motion / glow policy を書く
+- [x] color tokens を決める
+- [x] component vocabulary を決める
+- [x] screen priority を決める
+- [x] motion / glow policy を書く
 
 ## Dependencies
 

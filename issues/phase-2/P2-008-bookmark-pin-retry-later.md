@@ -19,22 +19,22 @@ estimate: "1d"
 
 ## Requirements
 
-- [ ] question を bookmark できる
+- [x] question を bookmark できる
 - [ ] pin note を付けられる
 - [ ] retry later を押すと review queue に入る
-- [ ] bookmarked view を作る
+- [x] bookmarked view を作る
 
 ## Acceptance Criteria
 
-- [ ] bookmark した問題だけ一覧できる
+- [x] bookmark した問題だけ一覧できる
 - [ ] retry later が due queue に反映される
 - [ ] pin note が question detail に表示される
 
 ## Subtasks
 
-- [ ] bookmark schema を作る
-- [ ] button を追加する
-- [ ] list view を作る
+- [x] bookmark schema を作る
+- [x] button を追加する
+- [x] list view を作る
 - [ ] queue 連携を作る
 
 ## Dependencies

@@ -26,14 +26,14 @@ estimate: "2d"
 
 ## Acceptance Criteria
 
-- [ ] review 完了後に summary が出る
+- [x] review 完了後に summary が出る
 - [ ] next action が 1〜3 個表示される
 - [ ] 過去 session summary を一覧できる
 
 ## Subtasks
 
-- [ ] summary data を作る
-- [ ] summary UI を作る
+- [x] summary data を作る
+- [x] summary UI を作る
 - [ ] history を作る
 - [ ] next action logic を作る
 

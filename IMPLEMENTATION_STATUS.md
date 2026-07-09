@@ -47,10 +47,10 @@ remain as issues (P5‑001, P5‑008).
 
 ## Phase 6 — Cyberpunk Polish & Launch 🟡
 Visual theme, command palette (`/` or ⌘K), effect toggles (reduce‑motion / low‑glow /
-high‑contrast / scanlines), responsive layout, onboarding, city map, release documentation,
-public-safe analytics export, full backup import/export, security review artifacts, and acceptance
-test evidence are in. Shareable question packs are in Settings. ⬜ Theme presets and a dedicated
-demo/landing mode remain tracked for follow-up.
+high‑contrast / scanlines), theme presets, responsive layout, onboarding, city map, release
+documentation, public-safe analytics export, full backup import/export, security review artifacts,
+accessibility QA evidence, and acceptance test evidence are in. Shareable question packs are in
+Settings. ⬜ A dedicated demo/landing mode remains tracked for follow-up.
 
 ## New issues added — and mostly already implemented this pass
 - **P1‑011** ✅ Automated unit tests (Vitest) — coverage across srs / grade / exam / analytics / readiness / packs / final gate / privacy export

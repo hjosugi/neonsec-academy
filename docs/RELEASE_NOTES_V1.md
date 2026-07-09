@@ -1,7 +1,7 @@
 # NeonSec Academy v1 Release Notes
 
-Current release: v1.0.1
-Release date: 2026-07-09
+Current release: v1.0.2
+Release date: 2026-07-10
 
 ## Highlights
 
@@ -12,6 +12,10 @@ Release date: 2026-07-09
 - Final Gate summarizes mock streak, due backlog, weak modules, inventory coverage, answer coverage, and exports Markdown.
 - Reports can be drafted from labs and exported as Markdown.
 - Settings include reduce motion, low glow, high contrast, scanlines, lab scoring controls, public-safe Markdown export, full backup JSON import/export, and question pack import/export.
+- Onboarding captures study goal, daily review target, optional target date, seed-bank preference, and safety acknowledgement before entering the app.
+- The command palette launches daily review, mock exam, weak-module drill, safe labs, report export, Final Gate, practice, and question creation flows.
+- The city map now exposes readable district status badges, routes due modules to review, and includes a compact hide-map mode.
+- Theme presets and accessibility QA evidence cover low glow, high contrast, reduced motion, status labels, command palette keyboard use, responsive exam history, and city-map fallback.
 - Release documentation, safety review artifacts, and acceptance test evidence are included with the repository.
 
 ## Privacy And Safety
@@ -25,6 +29,7 @@ Release date: 2026-07-09
 - `npm test`: 8 files passed, 33 tests passed.
 - `npm run typecheck`: passed.
 - `npm run validate:content`: 371 seed questions valid.
+- `node scripts/safety_scan.mjs`: 0 blockers.
 - `npm run build`: passed with one non-blocking large chunk warning.
 - Headless Chrome smoke: onboarding, question authoring, practice, review, mock result, final gate export, safe lab report export, accessibility toggles, public-safe export, and backup restore passed.
 
@@ -33,3 +38,4 @@ Release date: 2026-07-09
 - The production bundle currently emits a Vite large-chunk warning; code splitting is a post-v1 optimization.
 - Acceptance smoke used Quick Sim as the representative mock flow rather than a full timed 125-question run.
 - Full backups are suitable for personal migration/recovery only; public sharing should use the public-safe export.
+- Demo content and a dedicated landing mode remain tracked in P6-010.

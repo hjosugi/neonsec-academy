@@ -19,23 +19,23 @@ estimate: "1d"
 
 ## Requirements
 
-- [ ] 禁止事項: 外部 scan、実 phishing、credential theft、live malware、DDoS traffic、実 Wi-Fi 攻撃
-- [ ] 許可事項: 模擬ログ、PCAP、ローカル vulnerable app、toy hash、設定レビュー、レポート演習
-- [ ] 全 lab に scope contract を必須にする
-- [ ] ユーザーが scope を確認しないと lab を開始できない UX にする
+- [x] 禁止事項: 外部 scan、実 phishing、credential theft、live malware、DDoS traffic、実 Wi-Fi 攻撃
+- [x] 許可事項: 模擬ログ、PCAP、ローカル vulnerable app、toy hash、設定レビュー、レポート演習
+- [x] 全 lab に scope contract を必須にする
+- [x] ユーザーが scope を確認しないと lab を開始できない UX にする
 
 ## Acceptance Criteria
 
-- [ ] docs/SAFETY_BOUNDARIES.md が存在する
-- [ ] すべての practical issue が safety section を持つ
-- [ ] unsafe content review checklist がある
+- [x] docs/SAFETY_BOUNDARIES.md が存在する
+- [x] すべての practical issue が safety section を持つ
+- [x] unsafe content review checklist がある
 
 ## Subtasks
 
-- [ ] allowed / forbidden の一覧を作る
-- [ ] lab scope contract のテンプレートを作る
-- [ ] dangerous category の safe replacement を定義する
-- [ ] review gate を Issue template に入れる
+- [x] allowed / forbidden の一覧を作る
+- [x] lab scope contract のテンプレートを作る
+- [x] dangerous category の safe replacement を定義する
+- [x] review gate を Issue template に入れる
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ estimate: "1d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

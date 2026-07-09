@@ -19,23 +19,23 @@ estimate: "3d"
 
 ## Requirements
 
-- [ ] simple architecture diagram / data flow を教材として使う
-- [ ] assets, trust boundaries, threats, mitigations を整理する
-- [ ] CEH concepts と secure design を接続する
+- [x] simple architecture diagram / data flow を教材として使う
+- [x] assets, trust boundaries, threats, mitigations を整理する
+- [x] CEH concepts と secure design を接続する
 - [ ] output は remediation backlog とする
 
 ## Acceptance Criteria
 
 - [ ] 最低 5 個の threat modeling scenario がある
 - [ ] mitigation backlog を作成できる
-- [ ] report builder と連携できる
+- [x] report builder と連携できる
 
 ## Subtasks
 
 - [ ] scenario template を作る
 - [ ] threat form を作る
 - [ ] mitigation backlog を作る
-- [ ] report 連携を作る
+- [x] report 連携を作る
 
 ## Dependencies
 

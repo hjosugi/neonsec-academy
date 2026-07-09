@@ -19,23 +19,23 @@ Dashboard / Question Bank / Review / Exam / Labs へ行ける基本 UI を作る
 
 ## Requirements
 
-- [ ] left nav, top status bar, main console panel の 3 領域を作る
-- [ ] neon glow は active state と progress indicator に限定する
-- [ ] Dashboard に Today Review, Weak Areas, Mock Exam CTA を置く
-- [ ] キーボード操作で主要画面へ移動できる設計にする
+- [x] left nav, top status bar, main console panel の 3 領域を作る
+- [x] neon glow は active state と progress indicator に限定する
+- [x] Dashboard に Today Review, Weak Areas, Mock Exam CTA を置く
+- [x] キーボード操作で主要画面へ移動できる設計にする
 
 ## Acceptance Criteria
 
-- [ ] 5 つの主要画面へ遷移できる
-- [ ] 空データ時の dashboard が表示される
-- [ ] design tokens が使われている
+- [x] 5 つの主要画面へ遷移できる
+- [x] 空データ時の dashboard が表示される
+- [x] design tokens が使われている
 
 ## Subtasks
 
-- [ ] layout shell を作る
-- [ ] nav を作る
-- [ ] status bar を作る
-- [ ] dashboard placeholder を作る
+- [x] layout shell を作る
+- [x] nav を作る
+- [x] status bar を作る
+- [x] dashboard placeholder を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ Dashboard / Question Bank / Review / Exam / Labs へ行ける基本 UI を作る
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

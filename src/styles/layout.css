@@ -524,6 +524,16 @@
   transform: translateY(-3px);
   border-color: var(--district-c, var(--border-cyan));
 }
+.district--due {
+  border-color: rgba(255, 204, 0, 0.48);
+}
+.district--weak {
+  border-color: rgba(255, 51, 102, 0.38);
+}
+.district--ready,
+.district--mastered {
+  border-color: rgba(57, 255, 20, 0.34);
+}
 .district__name {
   font-family: var(--font-display);
   font-weight: 700;
@@ -534,6 +544,13 @@
 /* ---------- Responsive ---------- */
 .menu-btn {
   display: none;
+}
+.mobile-only,
+.mobile-card-list {
+  display: none;
+}
+.desktop-only {
+  display: block;
 }
 @media (max-width: 900px) {
   .shell {
@@ -564,6 +581,9 @@
   .inspector {
     position: static;
   }
+  .mobile-only {
+    display: block;
+  }
   .grid-2,
   .grid-3,
   .grid-4 {
@@ -578,5 +598,12 @@
   }
   .page {
     padding: 1.1rem 0.9rem 3rem;
+  }
+  .desktop-only {
+    display: none;
+  }
+  .mobile-card-list {
+    display: grid;
+    gap: 0.65rem;
   }
 }

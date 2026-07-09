@@ -21,20 +21,20 @@ estimate: "2d"
 
 - [ ] score, consistency, coverage, due backlog, weak modules から readiness を計算する
 - [ ] Green は複数回 mock exam の安定性を条件にする
-- [ ] 数値の根拠を説明する
-- [ ] 過度な断定は避け、decision support として表示する
+- [x] 数値の根拠を説明する
+- [x] 過度な断定は避け、decision support として表示する
 
 ## Acceptance Criteria
 
-- [ ] readiness が dashboard に表示される
-- [ ] 根拠の breakdown が見える
+- [x] readiness が dashboard に表示される
+- [x] 根拠の breakdown が見える
 - [ ] Green 条件を満たすまで next action が出る
 
 ## Subtasks
 
-- [ ] formula を設計する
-- [ ] status UI を作る
-- [ ] breakdown を作る
+- [x] formula を設計する
+- [x] status UI を作る
+- [x] breakdown を作る
 - [ ] threshold settings を作る
 
 ## Dependencies

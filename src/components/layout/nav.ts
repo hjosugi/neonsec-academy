@@ -63,4 +63,6 @@ export const QUICK_ACTION_ICONS = {
   practice: Crosshair,
   createQuestion: ClipboardList,
   question: BookOpenCheck,
+  lab: FlaskConical,
+  report: FileText,
 } satisfies Record<string, LucideIcon>

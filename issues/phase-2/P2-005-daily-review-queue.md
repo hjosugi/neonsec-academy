@@ -19,23 +19,23 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] due items を priority 順に並べる
+- [x] due items を priority 順に並べる
 - [ ] session size を選べる
-- [ ] review progress bar を表示する
+- [x] review progress bar を表示する
 - [ ] 途中終了しても session state を保存する
 
 ## Acceptance Criteria
 
-- [ ] Start Review から due 問題が始まる
-- [ ] session 終了時に summary が出る
+- [x] Start Review から due 問題が始まる
+- [x] session 終了時に summary が出る
 - [ ] 途中終了後に再開できる
 
 ## Subtasks
 
-- [ ] queue query を作る
+- [x] queue query を作る
 - [ ] session state を作る
-- [ ] review runner UI を作る
-- [ ] summary に接続する
+- [x] review runner UI を作る
+- [x] summary に接続する
 
 ## Dependencies
 
