@@ -134,6 +134,28 @@ export function Analytics() {
                 <div className="term t-xs dim">weight {f.weightPct}%</div>
               </div>
             ))}
+            <div className="divider" />
+            {readiness.gates.map((gate) => (
+              <div key={gate.id}>
+                <div className="row row--between t-sm">
+                  <span className="muted">{gate.label}</span>
+                  <span className={`badge ${gate.passed ? 'badge--green' : 'badge--amber'}`}>
+                    {gate.passed ? 'pass' : 'next'}
+                  </span>
+                </div>
+                <div className="term t-xs dim">{gate.detail}</div>
+              </div>
+            ))}
+            {readiness.nextActions.length > 0 && (
+              <div className="mt-1">
+                <div className="term t-xs dim">Next actions</div>
+                <ul className="term t-xs" style={{ margin: '0.35rem 0 0 1rem', color: 'var(--warning-amber)' }}>
+                  {readiness.nextActions.slice(0, 3).map((action) => (
+                    <li key={action}>{action}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </Panel>
       </div>

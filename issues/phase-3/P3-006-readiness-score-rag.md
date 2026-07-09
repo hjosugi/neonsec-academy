@@ -19,8 +19,8 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] score, consistency, coverage, due backlog, weak modules から readiness を計算する
-- [ ] Green は複数回 mock exam の安定性を条件にする
+- [x] score, consistency, coverage, due backlog, weak modules から readiness を計算する
+- [x] Green は複数回 mock exam の安定性を条件にする
 - [x] 数値の根拠を説明する
 - [x] 過度な断定は避け、decision support として表示する
 
@@ -28,14 +28,14 @@ estimate: "2d"
 
 - [x] readiness が dashboard に表示される
 - [x] 根拠の breakdown が見える
-- [ ] Green 条件を満たすまで next action が出る
+- [x] Green 条件を満たすまで next action が出る
 
 ## Subtasks
 
 - [x] formula を設計する
 - [x] status UI を作る
 - [x] breakdown を作る
-- [ ] threshold settings を作る
+- [x] threshold settings を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ estimate: "2d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

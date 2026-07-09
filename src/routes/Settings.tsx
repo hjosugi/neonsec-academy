@@ -369,9 +369,57 @@ export function Settings() {
               checked={settings.achievementsEnabled ?? true}
               onChange={(v) => set({ achievementsEnabled: v })}
             />
-            <div className="field" style={{ margin: 0 }}>
+            <div className="field">
               <label className="label">Mock exam target · {profile.examTargetPct}%</label>
               <input type="range" min={65} max={95} step={5} value={profile.examTargetPct} onChange={(e) => updateProfile({ examTargetPct: Number(e.target.value) })} style={{ width: '100%' }} />
+            </div>
+            <div className="field">
+              <label className="label">Green mock streak · {settings.readinessRequiredMocks ?? 3} mocks</label>
+              <input
+                type="range"
+                min={1}
+                max={5}
+                step={1}
+                value={settings.readinessRequiredMocks ?? 3}
+                onChange={(e) => set({ readinessRequiredMocks: Number(e.target.value) })}
+                style={{ width: '100%' }}
+              />
+            </div>
+            <div className="field">
+              <label className="label">Green max due backlog · {settings.readinessMaxDueBacklog ?? 0}</label>
+              <input
+                type="range"
+                min={0}
+                max={50}
+                step={1}
+                value={settings.readinessMaxDueBacklog ?? 0}
+                onChange={(e) => set({ readinessMaxDueBacklog: Number(e.target.value) })}
+                style={{ width: '100%' }}
+              />
+            </div>
+            <div className="field">
+              <label className="label">Weak module threshold · {settings.readinessWeakModuleMasteryPct ?? 70}% mastery</label>
+              <input
+                type="range"
+                min={40}
+                max={95}
+                step={5}
+                value={settings.readinessWeakModuleMasteryPct ?? 70}
+                onChange={(e) => set({ readinessWeakModuleMasteryPct: Number(e.target.value) })}
+                style={{ width: '100%' }}
+              />
+            </div>
+            <div className="field" style={{ margin: 0 }}>
+              <label className="label">Allowed weak modules · {settings.readinessMaxWeakModules ?? 0}</label>
+              <input
+                type="range"
+                min={0}
+                max={20}
+                step={1}
+                value={settings.readinessMaxWeakModules ?? 0}
+                onChange={(e) => set({ readinessMaxWeakModules: Number(e.target.value) })}
+                style={{ width: '100%' }}
+              />
             </div>
           </Panel>
 

@@ -53,9 +53,22 @@ export function useOverview() {
 
 export function useReadiness() {
   const results = useStore((s) => s.examResults)
+  const profileTarget = useStore((s) => s.profile.examTargetPct)
+  const settings = useStore((s) => s.settings)
   const ov = useOverview()
   const mods = useModuleStats()
-  return useMemo(() => computeReadiness(results, ov, mods), [results, ov, mods])
+  return useMemo(
+    () =>
+      computeReadiness(results, ov, mods, {
+        requiredMockCount: settings.readinessRequiredMocks,
+        mockScorePct: profileTarget,
+        coveragePct: settings.coverageThresholdPct,
+        maxDueBacklog: settings.readinessMaxDueBacklog,
+        weakModuleMasteryPct: settings.readinessWeakModuleMasteryPct,
+        maxWeakModules: settings.readinessMaxWeakModules,
+      }),
+    [mods, ov, profileTarget, results, settings],
+  )
 }
 
 export interface DueEntry {

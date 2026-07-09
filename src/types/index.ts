@@ -218,6 +218,10 @@ export interface Settings {
   reviewDailyLimit: number
   coverageThresholdPct: number
   minModuleQuestionCount: number
+  readinessRequiredMocks: number
+  readinessMaxDueBacklog: number
+  readinessWeakModuleMasteryPct: number
+  readinessMaxWeakModules: number
   askConfidence: boolean
   achievementsEnabled: boolean
   labPassingScore: number

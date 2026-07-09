@@ -103,11 +103,17 @@ Review completion summarizes how many reasoning-gap notes were captured.
 ## Readiness Factors
 
 - Latest mock score
-- 3-mock consistency
+- Configured mock streak consistency
 - CEH module coverage
 - Due review backlog
 - Weak module count
 - Practical challenge score
+
+Readiness is decision support, not a guarantee. Green requires both a high blended score and all
+configured gates to pass: recent mock streak at the target score, coverage target, due backlog limit,
+and weak-module limit. Dashboard shows the top next action until Green is reached; Analytics shows
+all gate details. Settings controls the mock streak length, mock target, coverage target, due backlog
+limit, weak-module mastery threshold, and allowed weak-module count.
 
 ## CEH Coverage Matrix
 

@@ -221,6 +221,22 @@ the Exam Report module breakdown, flagged accuracy, safety margin, and Markdown 
 results without these fields are recomputed from `questionIds`, `answers`, and the local question
 catalog when displayed.
 
+## Settings
+
+Readiness thresholds are persisted with other local settings:
+
+```json
+{
+  "coverageThresholdPct": 80,
+  "readinessRequiredMocks": 3,
+  "readinessMaxDueBacklog": 0,
+  "readinessWeakModuleMasteryPct": 70,
+  "readinessMaxWeakModules": 0
+}
+```
+
+`examTargetPct` remains part of the profile because it is the learner's personal mock-score target.
+
 ## Report
 
 ```json

@@ -129,6 +129,14 @@ export function Dashboard() {
                     </div>
                   ))}
                 </div>
+                {readiness.nextActions.length > 0 && (
+                  <div className="mt-2">
+                    <div className="term t-xs dim">Next action</div>
+                    <p className="term t-xs mt-1" style={{ color: 'var(--warning-amber)' }}>
+                      {readiness.nextActions[0]}
+                    </p>
+                  </div>
+                )}
                 <div className="row row--between mt-2 wrap" style={{ gap: '0.5rem' }}>
                   {mockScores.length > 0 ? (
                     <div className="row" style={{ gap: '0.6rem' }}>
