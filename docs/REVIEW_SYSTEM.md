@@ -124,6 +124,13 @@ final-ready 125-question presets. Learners can edit per-module counts, save or d
 local storage, and start a weighted exam. If a module or domain lacks enough gradable questions, the
 generator shows fallback warnings and fills remaining slots from the available pool.
 
+## Exam Result Report
+
+Mock Exam results show the overall score, configured target score, safety margin, time spent,
+flagged-question accuracy, domain breakdown, module breakdown, and answer review. A seven-day repair
+plan is generated from incorrect answers, flagged questions, and the weakest scored modules. The
+report can be copied or downloaded as Markdown from the result screen.
+
 ## Final Gate Checklist
 
 試験予約前の最終判定として、`/final-gate` は次の条件をまとめて評価する。

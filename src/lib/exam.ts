@@ -7,10 +7,11 @@ import type {
   DomainScore,
   ExamResult,
   ExamSession,
+  ModuleScore,
   Question,
 } from '../types'
 import type { ExamPreset } from '../data/taxonomy'
-import { DOMAINS } from '../data/taxonomy'
+import { DOMAINS, moduleMeta } from '../data/taxonomy'
 import { isCorrect, isGradable } from './grade'
 
 const OFFICIAL_DOMAINS: DomainId[] = [
@@ -216,22 +217,37 @@ export function gradeExam(
   let correct = 0
   let answered = 0
   const perDomain = new Map<DomainId, { total: number; correct: number }>()
+  const perModule = new Map<number, { total: number; correct: number }>()
   const answers: Record<string, string | string[] | null> = {}
+  const flagged: Record<string, boolean> = {}
+  let flaggedTotal = 0
+  let flaggedCorrect = 0
 
   for (const qid of session.questionIds) {
     const q = qById.get(qid)
     if (!q) continue
-    const chosen = session.answers[qid]?.chosen ?? null
+    const entry = session.answers[qid]
+    const chosen = entry?.chosen ?? null
+    const isFlagged = entry?.flagged ?? false
     answers[qid] = chosen
+    if (isFlagged) flagged[qid] = true
     const hasAnswer =
       chosen != null && !(Array.isArray(chosen) && chosen.length === 0)
     if (hasAnswer) answered++
     const ok = isCorrect(q, chosen)
     if (ok) correct++
+    if (isFlagged) {
+      flaggedTotal++
+      if (ok) flaggedCorrect++
+    }
     const d = perDomain.get(q.domain) ?? { total: 0, correct: 0 }
     d.total++
     if (ok) d.correct++
     perDomain.set(q.domain, d)
+    const m = perModule.get(q.module) ?? { total: 0, correct: 0 }
+    m.total++
+    if (ok) m.correct++
+    perModule.set(q.module, m)
   }
 
   const total = session.questionIds.length
@@ -248,6 +264,15 @@ export function gradeExam(
       pct: d.total > 0 ? (d.correct / d.total) * 100 : 0,
     }
   })
+  const perModuleScores: ModuleScore[] = Array.from(perModule.entries())
+    .sort(([a], [b]) => a - b)
+    .map(([module, d]) => ({
+      module,
+      moduleName: moduleMeta(module)?.name ?? `Module ${module}`,
+      total: d.total,
+      correct: d.correct,
+      pct: d.total > 0 ? (d.correct / d.total) * 100 : 0,
+    }))
 
   const timeUsedSec = session.endedAt
     ? Math.round((session.endedAt - session.startedAt) / 1000)
@@ -265,6 +290,10 @@ export function gradeExam(
     passMark,
     passed: scorePct >= passMark,
     perDomain: perDomainScores,
+    perModule: perModuleScores,
+    flagged,
+    flaggedTotal,
+    flaggedCorrect,
     timeUsedSec,
     durationSec: session.durationSec,
     questionIds: session.questionIds,

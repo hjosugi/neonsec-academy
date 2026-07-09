@@ -157,6 +157,14 @@ export interface DomainScore {
   pct: number
 }
 
+export interface ModuleScore {
+  module: number
+  moduleName: string
+  total: number
+  correct: number
+  pct: number
+}
+
 export interface ExamResult {
   sessionId: string
   preset: string
@@ -169,6 +177,10 @@ export interface ExamResult {
   passMark: number
   passed: boolean
   perDomain: DomainScore[]
+  perModule?: ModuleScore[]
+  flagged?: Record<string, boolean>
+  flaggedTotal?: number
+  flaggedCorrect?: number
   timeUsedSec: number
   durationSec: number
   questionIds: string[]

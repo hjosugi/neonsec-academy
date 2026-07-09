@@ -137,8 +137,8 @@ describe('exam / gradeExam', () => {
       questionIds: ['q1', 'q2', 'q3', 'q4'],
       answers: {
         q1: { chosen: 'A', flagged: false }, // correct
-        q2: { chosen: 'A', flagged: false }, // wrong
-        q3: { chosen: 'C', flagged: false }, // correct
+        q2: { chosen: 'A', flagged: true }, // wrong
+        q3: { chosen: 'C', flagged: true }, // correct
         q4: { chosen: null, flagged: false }, // unanswered → wrong
       },
       durationSec: 100, startedAt: 0, endedAt: 50000, currentIndex: 0, status: 'submitted',
@@ -157,5 +157,14 @@ describe('exam / gradeExam', () => {
       ['recon', 2, 1],
       ['system', 1, 0],
     ])
+    expect(result.perModule?.map((m) => [m.module, m.total, m.correct])).toEqual([
+      [1, 1, 1],
+      [2, 1, 0],
+      [3, 1, 1],
+      [6, 1, 0],
+    ])
+    expect(result.flagged).toEqual({ q2: true, q3: true })
+    expect(result.flaggedTotal).toBe(2)
+    expect(result.flaggedCorrect).toBe(1)
   })
 })

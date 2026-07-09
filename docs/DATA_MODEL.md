@@ -181,6 +181,36 @@ result model. Weighted presets store editable `moduleCounts` in local browser st
 `neonsec:exam-weight-presets:v1`; generated exams keep only the selected question IDs and preset
 label in the persisted session/result.
 
+## ExamResult
+
+```json
+{
+  "sessionId": "ex-8e91",
+  "preset": "full",
+  "presetLabel": "Full Exam",
+  "submittedAt": 1783634400000,
+  "total": 125,
+  "answered": 123,
+  "correct": 95,
+  "scorePct": 76,
+  "passMark": 85,
+  "passed": false,
+  "perDomain": [{ "domainId": "recon", "domainName": "Recon", "total": 20, "correct": 16, "pct": 80 }],
+  "perModule": [{ "module": 2, "moduleName": "Footprinting and Reconnaissance", "total": 8, "correct": 7, "pct": 87.5 }],
+  "flagged": { "Q-CEH-002-001": true },
+  "flaggedTotal": 6,
+  "flaggedCorrect": 3,
+  "timeUsedSec": 13200,
+  "durationSec": 14400,
+  "questionIds": ["Q-CEH-002-001"],
+  "answers": { "Q-CEH-002-001": "Reading public DNS records" }
+}
+```
+
+`perModule`, `flagged`, `flaggedTotal`, and `flaggedCorrect` power the Exam Report module
+breakdown, flagged accuracy, safety margin, and Markdown export. Older stored results without these
+fields are recomputed from `questionIds`, `answers`, and the local question catalog when displayed.
+
 ## Report
 
 ```json

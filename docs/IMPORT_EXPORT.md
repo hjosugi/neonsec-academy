@@ -178,6 +178,9 @@ Reports export Markdown from the Reports screen. A report can be blank, created 
 from a Safe Lab. Exported reports include title, synthetic scope, summary, findings, impact,
 remediation, evidence, and a generated-by footer.
 
+Mock Exam Result exports Markdown from the Exam Report screen. The snapshot includes score, target,
+safety margin, time spent, flagged accuracy, module breakdown, and the next seven-day repair plan.
+
 Final Gate exports Markdown from the Final Gate screen. The checklist includes pass/fail status,
 configured criteria, recent mock results, weak module warnings, and next actions.
 
