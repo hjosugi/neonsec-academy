@@ -21,6 +21,8 @@ import { StatBars } from '../components/charts/Bars'
 import { Markdown } from '../components/ui/Markdown'
 import { Explanation } from '../components/question/Explanation'
 
+type ReviewFilter = 'wrong' | 'flagged' | 'low-confidence' | 'slow' | 'all'
+
 function downloadMarkdown(markdown: string, sessionId: string) {
   const blob = new Blob([markdown], { type: 'text/markdown' })
   const url = URL.createObjectURL(blob)
@@ -39,9 +41,12 @@ export function ExamResult() {
   const { id = '' } = useParams()
   const navigate = useNavigate()
   const results = useStore((s) => s.examResults)
+  const rescheduleReview = useStore((s) => s.rescheduleReview)
+  const upsertMistake = useStore((s) => s.upsertMistake)
   const qmap = useQuestionMap()
-  const [filter, setFilter] = useState<'wrong' | 'all'>('wrong')
+  const [filter, setFilter] = useState<ReviewFilter>('wrong')
   const [copied, setCopied] = useState(false)
+  const [actionMsg, setActionMsg] = useState('')
 
   const result = useMemo(
     () => results.find((r) => r.sessionId === id) ?? results[results.length - 1],
@@ -49,13 +54,35 @@ export function ExamResult() {
   )
 
   const reviewItems = useMemo(() => {
-    const out: { q: Question; chosen: string | string[] | null; correct: boolean; flagged: boolean }[] = []
+    const out: {
+      q: Question
+      chosen: string | string[] | null
+      correct: boolean
+      flagged: boolean
+      confidence: number | null
+      timeMs: number
+      slow: boolean
+      lowConfidence: boolean
+    }[] = []
     if (!result) return out
+    const slowCutoffMs = Math.max(90_000, result.total > 0 ? (result.timeUsedSec * 1000 * 1.5) / result.total : 0)
     for (const qid of result.questionIds) {
       const q = qmap.get(qid)
       if (!q) continue
       const chosen = result.answers[qid] ?? null
-      out.push({ q, chosen, correct: isCorrect(q, chosen), flagged: result.flagged?.[qid] === true })
+      const meta = result.reviewMeta?.[qid]
+      const confidence = meta?.confidence ?? null
+      const timeMs = meta?.timeMs ?? 0
+      out.push({
+        q,
+        chosen,
+        correct: isCorrect(q, chosen),
+        flagged: result.flagged?.[qid] === true || meta?.flagged === true,
+        confidence,
+        timeMs,
+        slow: timeMs > 0 && timeMs >= slowCutoffMs,
+        lowConfidence: typeof confidence === 'number' && confidence <= 2,
+      })
     }
     return out
   }, [result, qmap])
@@ -87,7 +114,36 @@ export function ExamResult() {
 
   const color = result.passed ? 'var(--acid-green)' : 'var(--danger-red)'
   const wrong = reviewItems.filter((r) => !r.correct)
-  const list = filter === 'wrong' ? wrong : reviewItems
+  const flaggedItems = reviewItems.filter((r) => r.flagged)
+  const lowConfidence = reviewItems.filter((r) => r.lowConfidence)
+  const slow = reviewItems.filter((r) => r.slow)
+  const list =
+    filter === 'wrong'
+      ? wrong
+      : filter === 'flagged'
+        ? flaggedItems
+        : filter === 'low-confidence'
+          ? lowConfidence
+          : filter === 'slow'
+            ? slow
+            : reviewItems
+
+  const enqueueShown = () => {
+    const now = Date.now()
+    list.forEach(({ q }) => rescheduleReview(q.id, now))
+    setActionMsg(`Added ${list.length} shown item${list.length === 1 ? '' : 's'} to the review queue.`)
+  }
+
+  const sendToMistakes = (q: Question, correct: boolean) => {
+    upsertMistake(q.id, {
+      whyWrong: correct ? 'Flagged during mock exam review.' : 'Missed during mock exam review.',
+      correctReasoning: q.explanation.why,
+      trapPattern: q.explanation.trap,
+      memoryPhrase: q.explanation.memory_phrase,
+      nextAction: `Review M${String(q.module).padStart(2, '0')} ${q.moduleName} and retry this question.`,
+    })
+    setActionMsg('Sent to Mistake Notebook.')
+  }
 
   return (
     <div className="page">
@@ -211,21 +267,36 @@ export function ExamResult() {
       <Panel
         title="Answer Review"
         right={
-          <div className="segmented">
-            <button className={filter === 'wrong' ? 'is-active' : ''} onClick={() => setFilter('wrong')}>
-              Wrong ({wrong.length})
-            </button>
-            <button className={filter === 'all' ? 'is-active' : ''} onClick={() => setFilter('all')}>
-              All ({reviewItems.length})
+          <div className="row wrap" style={{ gap: '0.5rem' }}>
+            <div className="segmented">
+              <button className={filter === 'wrong' ? 'is-active' : ''} onClick={() => setFilter('wrong')}>
+                Wrong ({wrong.length})
+              </button>
+              <button className={filter === 'flagged' ? 'is-active' : ''} onClick={() => setFilter('flagged')}>
+                Flagged ({flaggedItems.length})
+              </button>
+              <button className={filter === 'low-confidence' ? 'is-active' : ''} onClick={() => setFilter('low-confidence')}>
+                Low confidence ({lowConfidence.length})
+              </button>
+              <button className={filter === 'slow' ? 'is-active' : ''} onClick={() => setFilter('slow')}>
+                Slow ({slow.length})
+              </button>
+              <button className={filter === 'all' ? 'is-active' : ''} onClick={() => setFilter('all')}>
+                All ({reviewItems.length})
+              </button>
+            </div>
+            <button className="btn btn--ghost btn--sm" onClick={enqueueShown} disabled={list.length === 0}>
+              Add shown to Review
             </button>
           </div>
         }
       >
+        {actionMsg && <p className="term t-xs neon-green mb-2">{actionMsg}</p>}
         {list.length === 0 ? (
           <EmptyState glyph="✓" title="Nothing to review here" hint="No incorrect answers in this exam. Clean run." />
         ) : (
           <div className="stack">
-            {list.map(({ q, chosen, correct, flagged }, i) => {
+            {list.map(({ q, chosen, correct, flagged, confidence, timeMs, slow, lowConfidence }, i) => {
               const key = correctChoices(q)
               const choices = result.choiceOrder?.[q.id] ?? q.choices ?? []
               return (
@@ -234,6 +305,9 @@ export function ExamResult() {
                     <span className="term t-xs dim">#{i + 1}</span>
                     <span className="badge badge--cyan">{DOMAINS[q.domain].short}</span>
                     {flagged && <span className="badge badge--amber">flagged</span>}
+                    {lowConfidence && <span className="badge badge--amber">low confidence</span>}
+                    {slow && <span className="badge badge--purple">{formatDuration(Math.round(timeMs / 1000))}</span>}
+                    {confidence && <span className="badge badge--cyan">conf {confidence}/5</span>}
                     <span className={`badge ${correct ? 'badge--green' : 'badge--red'}`}>{correct ? 'correct' : 'incorrect'}</span>
                   </div>
                   <div className="qbody mb-2">
@@ -255,6 +329,11 @@ export function ExamResult() {
                     )
                   })}
                   <Explanation q={q} />
+                  <div className="row row--end mt-2">
+                    <button className="btn btn--ghost btn--sm" onClick={() => sendToMistakes(q, correct)}>
+                      Send to Mistakes
+                    </button>
+                  </div>
                 </div>
               )
             })}

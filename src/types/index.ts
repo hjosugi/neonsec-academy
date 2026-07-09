@@ -133,6 +133,8 @@ export type ExamPresetId = 'full' | 'half' | 'quick' | 'weak'
 export interface ExamAnswer {
   chosen: string | string[] | null
   flagged: boolean
+  confidence?: AttemptConfidence | null
+  timeMs?: number
 }
 
 export interface ExamSession {
@@ -167,6 +169,12 @@ export interface ModuleScore {
   pct: number
 }
 
+export interface ExamQuestionReviewMeta {
+  flagged: boolean
+  confidence: AttemptConfidence | null
+  timeMs: number
+}
+
 export interface ExamResult {
   sessionId: string
   preset: string
@@ -182,6 +190,7 @@ export interface ExamResult {
   perModule?: ModuleScore[]
   seed?: number
   choiceOrder?: Record<string, string[]>
+  reviewMeta?: Record<string, ExamQuestionReviewMeta>
   flagged?: Record<string, boolean>
   flaggedTotal?: number
   flaggedCorrect?: number

@@ -19,23 +19,23 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] wrong, flagged, low confidence, slow questions で filter できる
+- [x] wrong, flagged, low confidence, slow questions で filter できる
 - [x] explanation と自分の回答を並べる
-- [ ] mistake notebook に送れる
-- [ ] review queue への一括追加ができる
+- [x] mistake notebook に送れる
+- [x] review queue への一括追加ができる
 
 ## Acceptance Criteria
 
 - [x] wrong questions だけ表示できる
-- [ ] flagged questions だけ表示できる
-- [ ] 一括 review enqueue ができる
+- [x] flagged questions だけ表示できる
+- [x] 一括 review enqueue ができる
 
 ## Subtasks
 
-- [ ] review filters を作る
+- [x] review filters を作る
 - [x] compare view を接続する
-- [ ] bulk enqueue を作る
-- [ ] notebook 連携を作る
+- [x] bulk enqueue を作る
+- [x] notebook 連携を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ estimate: "2d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

@@ -170,7 +170,7 @@ Review summaries are append-only snapshots for the recent session history. The a
     "Q-CEH-001-001": ["Only approved targets", "Any internet host"]
   },
   "answers": {
-    "Q-CEH-001-001": { "chosen": "Only approved targets", "flagged": false }
+    "Q-CEH-001-001": { "chosen": "Only approved targets", "flagged": false, "confidence": 4, "timeMs": 65000 }
   },
   "durationSec": 14400,
   "startedAt": 1783630800000,
@@ -208,6 +208,9 @@ choice order, and preset label in the persisted session/result.
   "choiceOrder": {
     "Q-CEH-002-001": ["Sending packets to the target", "Reading public DNS records"]
   },
+  "reviewMeta": {
+    "Q-CEH-002-001": { "flagged": true, "confidence": 2, "timeMs": 120000 }
+  },
   "timeUsedSec": 13200,
   "durationSec": 14400,
   "questionIds": ["Q-CEH-002-001"],
@@ -216,10 +219,11 @@ choice order, and preset label in the persisted session/result.
 ```
 
 `seed` makes question selection reproducible, and `choiceOrder` preserves the randomized answer
-display order for result review. `perModule`, `flagged`, `flaggedTotal`, and `flaggedCorrect` power
-the Exam Report module breakdown, flagged accuracy, safety margin, and Markdown export. Older stored
-results without these fields are recomputed from `questionIds`, `answers`, and the local question
-catalog when displayed.
+display order for result review. Exam answers can include optional `confidence` and `timeMs`; these
+are copied into `reviewMeta` on submit so Exam Review can filter low-confidence and slow questions.
+`perModule`, `flagged`, `flaggedTotal`, and `flaggedCorrect` power the Exam Report module breakdown,
+flagged accuracy, safety margin, and Markdown export. Older stored results without these fields are
+recomputed from `questionIds`, `answers`, and the local question catalog when displayed.
 
 ## Settings
 

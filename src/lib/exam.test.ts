@@ -174,8 +174,8 @@ describe('exam / gradeExam', () => {
       questionIds: ['q1', 'q2', 'q3', 'q4'],
       answers: {
         q1: { chosen: 'A', flagged: false }, // correct
-        q2: { chosen: 'A', flagged: true }, // wrong
-        q3: { chosen: 'C', flagged: true }, // correct
+        q2: { chosen: 'A', flagged: true, confidence: 2, timeMs: 120000 }, // wrong
+        q3: { chosen: 'C', flagged: true, confidence: 4, timeMs: 30000 }, // correct
         q4: { chosen: null, flagged: false }, // unanswered → wrong
       },
       durationSec: 100, startedAt: 0, endedAt: 50000, currentIndex: 0, status: 'submitted',
@@ -205,5 +205,6 @@ describe('exam / gradeExam', () => {
     expect(result.flaggedCorrect).toBe(1)
     expect(result.seed).toBe(123)
     expect(result.choiceOrder).toEqual({ q1: ['D', 'C', 'B', 'A'] })
+    expect(result.reviewMeta?.q2).toEqual({ flagged: true, confidence: 2, timeMs: 120000 })
   })
 })

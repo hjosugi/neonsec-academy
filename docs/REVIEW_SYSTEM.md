@@ -145,6 +145,13 @@ flagged-question accuracy, domain breakdown, module breakdown, and answer review
 plan is generated from incorrect answers, flagged questions, and the weakest scored modules. The
 report can be copied or downloaded as Markdown from the result screen.
 
+## Mock Exam Review Mode
+
+Exam Report review can filter questions by wrong answer, flagged, low confidence, slow response, or
+all questions. The filtered set can be bulk-added to today's Review Queue. Individual questions can
+be sent to the Mistake Notebook with the explanation trap, correct reasoning, memory phrase, and a
+module-specific next action prefilled.
+
 ## Final Gate Checklist
 
 試験予約前の最終判定として、`/final-gate` は次の条件をまとめて評価する。

@@ -3,8 +3,10 @@
 // Uses the CEH blueprint weighting from taxonomy DOMAINS.
 // ============================================================
 import type {
+  AttemptConfidence,
   DomainId,
   DomainScore,
+  ExamQuestionReviewMeta,
   ExamResult,
   ExamSession,
   ModuleScore,
@@ -276,6 +278,7 @@ export function gradeExam(
   const perDomain = new Map<DomainId, { total: number; correct: number }>()
   const perModule = new Map<number, { total: number; correct: number }>()
   const answers: Record<string, string | string[] | null> = {}
+  const reviewMeta: Record<string, ExamQuestionReviewMeta> = {}
   const flagged: Record<string, boolean> = {}
   let flaggedTotal = 0
   let flaggedCorrect = 0
@@ -286,7 +289,10 @@ export function gradeExam(
     const entry = session.answers[qid]
     const chosen = entry?.chosen ?? null
     const isFlagged = entry?.flagged ?? false
+    const confidence: AttemptConfidence | null = entry?.confidence ?? null
+    const timeMs = Math.max(0, Math.round(entry?.timeMs ?? 0))
     answers[qid] = chosen
+    reviewMeta[qid] = { flagged: isFlagged, confidence, timeMs }
     if (isFlagged) flagged[qid] = true
     const hasAnswer =
       chosen != null && !(Array.isArray(chosen) && chosen.length === 0)
@@ -350,6 +356,7 @@ export function gradeExam(
     perModule: perModuleScores,
     seed: session.seed,
     choiceOrder: session.choiceOrder,
+    reviewMeta,
     flagged,
     flaggedTotal,
     flaggedCorrect,

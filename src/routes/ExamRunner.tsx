@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import type { AttemptConfidence } from '../types'
 import { useStore } from '../store/useStore'
 import { useQuestionMap } from '../store/selectors'
 import { DOMAINS } from '../data/taxonomy'
@@ -13,6 +14,8 @@ export function ExamRunner() {
   const activeExam = useStore((s) => s.activeExam)
   const examAnswer = useStore((s) => s.examAnswer)
   const examToggleFlag = useStore((s) => s.examToggleFlag)
+  const examSetConfidence = useStore((s) => s.examSetConfidence)
+  const examAddTime = useStore((s) => s.examAddTime)
   const examGoto = useStore((s) => s.examGoto)
   const submitExam = useStore((s) => s.submitExam)
   const qmap = useQuestionMap()
@@ -20,15 +23,23 @@ export function ExamRunner() {
   const [now, setNow] = useState(Date.now())
   const [confirmOpen, setConfirmOpen] = useState(false)
   const doneRef = useRef(false)
+  const questionClock = useRef<{ qid: string | null; at: number }>({ qid: null, at: Date.now() })
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000)
     return () => clearInterval(t)
   }, [])
 
+  const flushQuestionTime = (clear = false) => {
+    const current = questionClock.current
+    if (current.qid) examAddTime(current.qid, Date.now() - current.at)
+    questionClock.current = { qid: clear ? null : current.qid, at: Date.now() }
+  }
+
   const doSubmit = () => {
     if (doneRef.current) return
     doneRef.current = true
+    flushQuestionTime(true)
     const r = submitExam()
     navigate(r ? `/exam/result/${r.sessionId}` : '/exam')
   }
@@ -44,13 +55,31 @@ export function ExamRunner() {
     if (!activeExam && !doneRef.current) navigate('/exam')
   }, [activeExam, navigate])
 
-  if (!activeExam) return null
+  const idx = activeExam?.currentIndex ?? 0
+  const qid = activeExam?.questionIds[idx] ?? null
 
-  const idx = activeExam.currentIndex
-  const qid = activeExam.questionIds[idx]
+  useEffect(() => {
+    if (!qid) return
+    const current = questionClock.current
+    const changed = current.qid && current.qid !== qid
+    if (changed) examAddTime(current.qid!, Date.now() - current.at)
+    questionClock.current = { qid, at: Date.now() }
+  }, [examAddTime, qid])
+
+  useEffect(
+    () => () => {
+      const current = questionClock.current
+      if (current.qid) examAddTime(current.qid, Date.now() - current.at)
+    },
+    [examAddTime],
+  )
+
+  if (!activeExam || !qid) return null
+
   const question = qmap.get(qid)
   const chosen = activeExam.answers[qid]?.chosen ?? null
   const flagged = activeExam.answers[qid]?.flagged ?? false
+  const confidence = activeExam.answers[qid]?.confidence ?? null
   const choices = activeExam.choiceOrder?.[qid] ?? question?.choices ?? []
   const answeredCount = activeExam.questionIds.filter((id) => {
     const c = activeExam.answers[id]?.chosen
@@ -101,6 +130,20 @@ export function ExamRunner() {
                 <button className={`btn btn--sm ${flagged ? 'btn--magenta' : 'btn--ghost'}`} onClick={() => examToggleFlag(qid)}>
                   {flagged ? '⚑ flagged' : '⚐ flag'}
                 </button>
+              </div>
+              <div className="row wrap mb-2" style={{ gap: '0.45rem' }}>
+                <span className="term t-xs dim">Confidence</span>
+                <div className="segmented">
+                  {([1, 2, 3, 4, 5] as AttemptConfidence[]).map((value) => (
+                    <button
+                      key={value}
+                      className={confidence === value ? 'is-active' : ''}
+                      onClick={() => examSetConfidence(qid, confidence === value ? null : value)}
+                    >
+                      {value}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="qbody mb-3">

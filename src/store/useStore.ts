@@ -165,6 +165,8 @@ interface AppActions {
   startExam: (session: ExamSession) => void
   examAnswer: (questionId: string, chosen: string | string[] | null) => void
   examToggleFlag: (questionId: string) => void
+  examSetConfidence: (questionId: string, confidence: AttemptConfidence | null) => void
+  examAddTime: (questionId: string, timeMs: number) => void
   examGoto: (index: number) => void
   cancelExam: () => void
   submitExam: () => ExamResult | null
@@ -398,6 +400,36 @@ export const useStore = create<Store>()(
           }
         }),
 
+      examSetConfidence: (questionId, confidence) =>
+        set((s) => {
+          if (!s.activeExam) return {}
+          const prev = s.activeExam.answers[questionId] ?? { chosen: null, flagged: false }
+          return {
+            activeExam: {
+              ...s.activeExam,
+              answers: {
+                ...s.activeExam.answers,
+                [questionId]: { ...prev, confidence },
+              },
+            },
+          }
+        }),
+
+      examAddTime: (questionId, timeMs) =>
+        set((s) => {
+          if (!s.activeExam || timeMs <= 0) return {}
+          const prev = s.activeExam.answers[questionId] ?? { chosen: null, flagged: false }
+          return {
+            activeExam: {
+              ...s.activeExam,
+              answers: {
+                ...s.activeExam.answers,
+                [questionId]: { ...prev, timeMs: (prev.timeMs ?? 0) + timeMs },
+              },
+            },
+          }
+        }),
+
       examGoto: (index) =>
         set((s) => {
           if (!s.activeExam) return {}
@@ -423,13 +455,23 @@ export const useStore = create<Store>()(
           for (const qid of session.questionIds) {
             const q = qById.get(qid)
             if (!q) continue
-            const chosen = session.answers[qid]?.chosen ?? null
+            const answer = session.answers[qid]
+            const chosen = answer?.chosen ?? null
             const hasAnswer = chosen != null && !(Array.isArray(chosen) && chosen.length === 0)
             if (!hasAnswer) continue
             const correct = isCorrect(q, chosen)
-            attempts.push({ id: uid('a-'), questionId: qid, at: now, correct, chosen, mode: 'exam' })
+            attempts.push({
+              id: uid('a-'),
+              questionId: qid,
+              at: now,
+              correct,
+              chosen,
+              mode: 'exam',
+              timeMs: answer?.timeMs,
+              confidence: answer?.confidence ?? undefined,
+            })
             const existing = reviews[qid] ?? newReviewItem(qid, now)
-            reviews[qid] = scheduleNext(existing, autoGrade(correct), now)
+            reviews[qid] = scheduleNext(existing, autoGrade(correct, answer?.confidence ?? undefined), now, answer?.confidence ?? undefined)
           }
           const baseXp = XP.mockComplete + (result.passed ? XP.mockPass : 0)
           const profile = withActivity(st.profile, attempts, now, baseXp, st.settings.dailyGoal)
