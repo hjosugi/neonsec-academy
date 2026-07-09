@@ -124,6 +124,14 @@ final-ready 125-question presets. Learners can edit per-module counts, save or d
 local storage, and start a weighted exam. If a module or domain lacks enough gradable questions, the
 generator shows fallback warnings and fills remaining slots from the available pool.
 
+## Exam Randomization
+
+Mock Exam selection uses a saved numeric seed so the same session can be reviewed reproducibly.
+Question selection prefers items that were not used in the latest three mock results while preserving
+domain or module-count coverage; recently used questions are only reused when the available pool is
+too small. Multiple-choice display order is shuffled per question from the same seed and saved in
+the session/result so the result review shows the original exam order.
+
 ## Exam Result Report
 
 Mock Exam results show the overall score, configured target score, safety margin, time spent,

@@ -19,23 +19,23 @@ Mock exam で同じ問題が偏りすぎないようにする。
 
 ## Requirements
 
-- [ ] recently used questions を避ける
+- [x] recently used questions を避ける
 - [x] module coverage を守りながら randomize する
-- [ ] 選択肢 order を question ごとに randomize できる
-- [ ] seed を保存して exam 再現性を持たせる
+- [x] 選択肢 order を question ごとに randomize できる
+- [x] seed を保存して exam 再現性を持たせる
 
 ## Acceptance Criteria
 
 - [x] 同じ preset でも session ごとに問題が変わる
-- [ ] 過去直近 session の重複率が threshold 以下になる
-- [ ] result review では元の順序を再現できる
+- [x] 過去直近 session の重複率が threshold 以下になる
+- [x] result review では元の順序を再現できる
 
 ## Subtasks
 
 - [x] selection algorithm を作る
-- [ ] seed 保存を作る
-- [ ] choice shuffle を作る
-- [ ] duplicate test を作る
+- [x] seed 保存を作る
+- [x] choice shuffle を作る
+- [x] duplicate test を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ Mock exam で同じ問題が偏りすぎないようにする。
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

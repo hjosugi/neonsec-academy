@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { DomainId, ExamSession, Question } from '../types'
-import { buildExamQuestionIds, buildExamQuestionPlan, gradeExam } from './exam'
+import { buildExamChoiceOrder, buildExamQuestionIds, buildExamQuestionPlan, gradeExam } from './exam'
 import { DOMAINS, EXAM } from '../data/taxonomy'
 import { mkQ } from './testfixtures'
 
@@ -122,6 +122,41 @@ describe('exam / buildExamQuestionIds', () => {
     expect(modules.filter((module) => module === 2).length).toBeGreaterThanOrEqual(1)
     expect(plan.warnings.some((warning) => warning.label === 'M01')).toBe(true)
   })
+
+  it('is reproducible when a seed is saved', () => {
+    const pool = bigPool()
+    const preset = { id: 'quick', label: 'Seeded', count: 25, minutes: 1, desc: '' }
+    const first = buildExamQuestionIds(preset, pool, undefined, undefined, { seed: 12345 })
+    const second = buildExamQuestionIds(preset, pool, undefined, undefined, { seed: 12345 })
+
+    expect(first).toEqual(second)
+  })
+
+  it('prefers fresh questions over recently used questions when inventory allows', () => {
+    const pool = Array.from({ length: 10 }, (_, i) => mkQ(`fresh-${i}`, 1))
+    const recent = new Set(pool.slice(0, 5).map((q) => q.id))
+    const plan = buildExamQuestionPlan(
+      { id: 'weighted', label: 'No repeat', count: 5, minutes: 1, desc: '' },
+      pool,
+      undefined,
+      { 1: 5 },
+      { seed: 99, recentQuestionIds: recent },
+    )
+
+    expect(plan.ids).toHaveLength(5)
+    expect(plan.ids.every((id) => !recent.has(id))).toBe(true)
+  })
+
+  it('builds stable per-question shuffled choice order from the seed', () => {
+    const q = mkQ('choice-order', 1)
+    const first = buildExamChoiceOrder([q.id], [q], 7331)
+    const second = buildExamChoiceOrder([q.id], [q], 7331)
+
+    expect(first).toEqual(second)
+    expect(first[q.id]).toHaveLength(4)
+    expect(new Set(first[q.id]).size).toBe(4)
+    expect(first[q.id]).not.toEqual(q.choices)
+  })
 })
 
 describe('exam / gradeExam', () => {
@@ -134,6 +169,8 @@ describe('exam / gradeExam', () => {
 
     const session: ExamSession = {
       id: 's', createdAt: 0, preset: 'quick', presetLabel: 'Quick',
+      seed: 123,
+      choiceOrder: { q1: ['D', 'C', 'B', 'A'] },
       questionIds: ['q1', 'q2', 'q3', 'q4'],
       answers: {
         q1: { chosen: 'A', flagged: false }, // correct
@@ -166,5 +203,7 @@ describe('exam / gradeExam', () => {
     expect(result.flagged).toEqual({ q2: true, q3: true })
     expect(result.flaggedTotal).toBe(2)
     expect(result.flaggedCorrect).toBe(1)
+    expect(result.seed).toBe(123)
+    expect(result.choiceOrder).toEqual({ q1: ['D', 'C', 'B', 'A'] })
   })
 })

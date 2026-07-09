@@ -5,7 +5,7 @@ import { useStore } from '../store/useStore'
 import { useActiveQuestions, useDomainStats, useModuleStats } from '../store/selectors'
 import { EXAM, MODULES } from '../data/taxonomy'
 import type { ExamPreset } from '../data/taxonomy'
-import { buildExamQuestionPlan } from '../lib/exam'
+import { buildExamChoiceOrder, buildExamQuestionPlan, createExamSeed } from '../lib/exam'
 import {
   asExamPreset,
   buildBalancedExamPreset,
@@ -51,12 +51,20 @@ export function Exam() {
     [mods],
   )
 
-  const draftPlan = useMemo(
-    () => buildExamQuestionPlan(asExamPreset(draftPreset), questions, undefined, draftPreset.moduleCounts),
-    [draftPreset, questions],
+  const recentExamQuestionIds = useMemo(
+    () => new Set(results.slice(-3).flatMap((result) => result.questionIds)),
+    [results],
   )
 
-  const startSession = (preset: { id: string; label: string; minutes: number }, ids: string[]) => {
+  const draftPlan = useMemo(
+    () =>
+      buildExamQuestionPlan(asExamPreset(draftPreset), questions, undefined, draftPreset.moduleCounts, {
+        recentQuestionIds: recentExamQuestionIds,
+      }),
+    [draftPreset, questions, recentExamQuestionIds],
+  )
+
+  const startSession = (preset: { id: string; label: string; minutes: number }, ids: string[], seed: number) => {
     if (ids.length === 0) return
     const now = Date.now()
     const session: ExamSession = {
@@ -64,7 +72,9 @@ export function Exam() {
       createdAt: now,
       preset: preset.id,
       presetLabel: preset.label,
+      seed,
       questionIds: ids,
+      choiceOrder: buildExamChoiceOrder(ids, questions, seed),
       answers: {},
       durationSec: preset.minutes * 60,
       startedAt: now,
@@ -77,14 +87,22 @@ export function Exam() {
   }
 
   const begin = (preset: ExamPreset) => {
+    const seed = createExamSeed()
     const weights = preset.id === 'weak' ? weakWeights : undefined
-    const plan = buildExamQuestionPlan(preset, questions, weights)
-    startSession(preset, plan.ids)
+    const plan = buildExamQuestionPlan(preset, questions, weights, undefined, {
+      seed,
+      recentQuestionIds: recentExamQuestionIds,
+    })
+    startSession(preset, plan.ids, seed)
   }
 
   const beginWeighted = (preset: WeightedExamPreset = draftPreset) => {
-    const plan = buildExamQuestionPlan(asExamPreset(preset), questions, undefined, preset.moduleCounts)
-    startSession(preset, plan.ids)
+    const seed = createExamSeed()
+    const plan = buildExamQuestionPlan(asExamPreset(preset), questions, undefined, preset.moduleCounts, {
+      seed,
+      recentQuestionIds: recentExamQuestionIds,
+    })
+    startSession(preset, plan.ids, seed)
   }
 
   const patchDraft = (patch: Partial<WeightedExamPreset>) => {

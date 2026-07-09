@@ -51,6 +51,7 @@ export function ExamRunner() {
   const question = qmap.get(qid)
   const chosen = activeExam.answers[qid]?.chosen ?? null
   const flagged = activeExam.answers[qid]?.flagged ?? false
+  const choices = activeExam.choiceOrder?.[qid] ?? question?.choices ?? []
   const answeredCount = activeExam.questionIds.filter((id) => {
     const c = activeExam.answers[id]?.chosen
     return c != null && !(Array.isArray(c) && c.length === 0)
@@ -107,7 +108,7 @@ export function ExamRunner() {
               </div>
 
               <div>
-                {(question.choices ?? []).map((choice, i) => (
+                {choices.map((choice, i) => (
                   <button key={i} className={`choice ${selected(choice) ? 'is-selected' : ''}`} onClick={() => pick(choice)}>
                     <span className="choice__key">{String.fromCharCode(65 + i)}</span>
                     <span className="grow">

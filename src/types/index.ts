@@ -140,7 +140,9 @@ export interface ExamSession {
   createdAt: number
   preset: string
   presetLabel: string
+  seed?: number
   questionIds: string[]
+  choiceOrder?: Record<string, string[]>
   answers: Record<string, ExamAnswer>
   durationSec: number
   startedAt: number
@@ -178,6 +180,8 @@ export interface ExamResult {
   passed: boolean
   perDomain: DomainScore[]
   perModule?: ModuleScore[]
+  seed?: number
+  choiceOrder?: Record<string, string[]>
   flagged?: Record<string, boolean>
   flaggedTotal?: number
   flaggedCorrect?: number

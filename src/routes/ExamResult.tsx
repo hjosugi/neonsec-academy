@@ -227,6 +227,7 @@ export function ExamResult() {
           <div className="stack">
             {list.map(({ q, chosen, correct, flagged }, i) => {
               const key = correctChoices(q)
+              const choices = result.choiceOrder?.[q.id] ?? q.choices ?? []
               return (
                 <div key={q.id} className="panel" style={{ background: 'var(--panel-inset)' }}>
                   <div className="row wrap mb-1" style={{ gap: '0.4rem' }}>
@@ -238,7 +239,7 @@ export function ExamResult() {
                   <div className="qbody mb-2">
                     <Markdown source={q.body} />
                   </div>
-                  {(q.choices ?? []).map((c, ci) => {
+                  {choices.map((c, ci) => {
                     const isKey = key.includes(c)
                     const isPicked = Array.isArray(chosen) ? chosen.includes(c) : chosen === c
                     const cls = ['choice']

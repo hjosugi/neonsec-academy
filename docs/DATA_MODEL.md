@@ -164,7 +164,11 @@ Review summaries are append-only snapshots for the recent session history. The a
   "createdAt": 1783630800000,
   "preset": "full",
   "presetLabel": "Full Exam",
+  "seed": 123456789,
   "questionIds": ["Q-CEH-001-001"],
+  "choiceOrder": {
+    "Q-CEH-001-001": ["Only approved targets", "Any internet host"]
+  },
   "answers": {
     "Q-CEH-001-001": { "chosen": "Only approved targets", "flagged": false }
   },
@@ -178,8 +182,8 @@ Review summaries are append-only snapshots for the recent session history. The a
 
 Exam preset IDs are strings so built-in and user-saved weighted presets can share the same runner and
 result model. Weighted presets store editable `moduleCounts` in local browser storage under
-`neonsec:exam-weight-presets:v1`; generated exams keep only the selected question IDs and preset
-label in the persisted session/result.
+`neonsec:exam-weight-presets:v1`; generated exams keep the selected question IDs, seed, shuffled
+choice order, and preset label in the persisted session/result.
 
 ## ExamResult
 
@@ -189,6 +193,7 @@ label in the persisted session/result.
   "preset": "full",
   "presetLabel": "Full Exam",
   "submittedAt": 1783634400000,
+  "seed": 123456789,
   "total": 125,
   "answered": 123,
   "correct": 95,
@@ -200,6 +205,9 @@ label in the persisted session/result.
   "flagged": { "Q-CEH-002-001": true },
   "flaggedTotal": 6,
   "flaggedCorrect": 3,
+  "choiceOrder": {
+    "Q-CEH-002-001": ["Sending packets to the target", "Reading public DNS records"]
+  },
   "timeUsedSec": 13200,
   "durationSec": 14400,
   "questionIds": ["Q-CEH-002-001"],
@@ -207,9 +215,11 @@ label in the persisted session/result.
 }
 ```
 
-`perModule`, `flagged`, `flaggedTotal`, and `flaggedCorrect` power the Exam Report module
-breakdown, flagged accuracy, safety margin, and Markdown export. Older stored results without these
-fields are recomputed from `questionIds`, `answers`, and the local question catalog when displayed.
+`seed` makes question selection reproducible, and `choiceOrder` preserves the randomized answer
+display order for result review. `perModule`, `flagged`, `flaggedTotal`, and `flaggedCorrect` power
+the Exam Report module breakdown, flagged accuracy, safety margin, and Markdown export. Older stored
+results without these fields are recomputed from `questionIds`, `answers`, and the local question
+catalog when displayed.
 
 ## Report
 
