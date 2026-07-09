@@ -2,11 +2,22 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { useAllQuestionMap } from '../store/selectors'
 import { DISTRICTS, DOMAINS } from '../data/taxonomy'
-import { relativeDay } from '../lib/format'
+import { formatDateTime, formatDuration, pct, relativeDay } from '../lib/format'
+import type { Attempt } from '../types'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { EmptyState } from '../components/ui/EmptyState'
 import { QuestionRunner } from '../components/question/QuestionRunner'
+
+function attemptAnswer(attempt: Attempt): string {
+  if (attempt.chosen == null) return '-'
+  const raw = Array.isArray(attempt.chosen) ? attempt.chosen.join(', ') : attempt.chosen
+  return raw.length > 96 ? `${raw.slice(0, 93)}...` : raw
+}
+
+function attemptTime(attempt: Attempt): string {
+  return typeof attempt.timeMs === 'number' ? formatDuration(Math.round(attempt.timeMs / 1000)) : '-'
+}
 
 export function QuestionDetail() {
   const { id = '' } = useParams()
@@ -35,8 +46,10 @@ export function QuestionDetail() {
   }
 
   const review = reviews[question.id]
-  const myAttempts = attempts.filter((a) => a.questionId === question.id)
+  const myAttempts = attempts.filter((a) => a.questionId === question.id).sort((a, b) => a.at - b.at)
   const lastAttempt = myAttempts[myAttempts.length - 1]
+  const correctAttempts = myAttempts.filter((a) => a.correct).length
+  const accuracy = myAttempts.length > 0 ? correctAttempts / myAttempts.length : -1
   const isUser = question.source === 'user'
   const isArchived = archivedIds.includes(question.id)
   const district = DISTRICTS.find((d) => d.id === question.district)
@@ -120,13 +133,25 @@ export function QuestionDetail() {
               <span className="k">Attempts</span>
               <span className="right">{myAttempts.length}</span>
             </div>
-            {lastAttempt && (
+            {myAttempts.length > 0 && (
               <div className="inspector__row">
-                <span className="k">Last result</span>
-                <span className={`right ${lastAttempt.correct ? 'neon-green' : 'neon-red'}`}>
-                  {lastAttempt.correct ? 'correct' : 'incorrect'}
-                </span>
+                <span className="k">Accuracy</span>
+                <span className="right">{pct(accuracy)}</span>
               </div>
+            )}
+            {lastAttempt && (
+              <>
+                <div className="inspector__row">
+                  <span className="k">Last attempted</span>
+                  <span className="right">{formatDateTime(lastAttempt.at)}</span>
+                </div>
+                <div className="inspector__row">
+                  <span className="k">Last result</span>
+                  <span className={`right ${lastAttempt.correct ? 'neon-green' : 'neon-red'}`}>
+                    {lastAttempt.correct ? 'correct' : 'incorrect'}
+                  </span>
+                </div>
+              </>
             )}
           </Panel>
 
@@ -155,6 +180,47 @@ export function QuestionDetail() {
             </div>
           </Panel>
         </div>
+      </div>
+
+      <div className="mt-3">
+        <Panel title="Attempt History">
+          {myAttempts.length === 0 ? (
+            <p className="term t-xs dim">No attempts yet. Submit an answer to start the timeline.</p>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>When</th>
+                    <th>Mode</th>
+                    <th>Result</th>
+                    <th>Selected answer</th>
+                    <th>Time</th>
+                    <th>Confidence</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {myAttempts.map((attempt, index) => (
+                    <tr key={attempt.id}>
+                      <td className="term t-sm tabnum">{index + 1}</td>
+                      <td className="term t-sm nowrap">{formatDateTime(attempt.at)}</td>
+                      <td className="term t-sm">{attempt.mode}</td>
+                      <td className={attempt.correct ? 'neon-green' : 'neon-red'}>
+                        {attempt.correct ? 'correct' : 'incorrect'}
+                      </td>
+                      <td title={attempt.chosen == null ? undefined : Array.isArray(attempt.chosen) ? attempt.chosen.join(', ') : attempt.chosen}>
+                        {attemptAnswer(attempt)}
+                      </td>
+                      <td className="term t-sm tabnum">{attemptTime(attempt)}</td>
+                      <td className="term t-sm tabnum">{attempt.confidence ? `${attempt.confidence}/5` : '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Panel>
       </div>
     </div>
   )

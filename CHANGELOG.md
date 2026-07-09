@@ -2,6 +2,21 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.4 - 2026-07-10
+
+Attempt-history closure patch for per-question statistics and timeline visibility.
+
+### Added
+
+- Question detail attempt-history table with timestamp, mode, result, selected answer, time spent,
+  and optional confidence.
+- Per-question basic statistics for total attempts, accuracy, last attempted time, and last result.
+
+### Changed
+
+- Attempt data-model docs now spell out chosen answer payloads, correctness, time spent, and
+  confidence.
+
 ## v1.0.3 - 2026-07-10
 
 Foundation and Question Bank closure patch for product scope, taxonomy, data model, authoring

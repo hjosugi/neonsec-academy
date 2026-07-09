@@ -19,22 +19,22 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] attempt ごとに selected_answer, result, time_spent, confidence を保存する
-- [ ] question detail に attempt history を表示する
+- [x] attempt ごとに selected_answer, result, time_spent, confidence を保存する
+- [x] question detail に attempt history を表示する
 - [x] basic stats: total attempts, accuracy, last attempted を計算する
 - [x] privacy のため external tracking は入れない
 
 ## Acceptance Criteria
 
-- [ ] 同じ問題の複数 attempt が時系列で見える
+- [x] 同じ問題の複数 attempt が時系列で見える
 - [x] dashboard に basic stats が表示される
 - [x] データ再読み込み後も履歴が残る
 
 ## Subtasks
 
-- [ ] attempt schema を作る
+- [x] attempt schema を作る
 - [x] save flow を作る
-- [ ] history UI を作る
+- [x] history UI を作る
 - [x] stats calculation を作る
 
 ## Dependencies
@@ -47,17 +47,17 @@ estimate: "2d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

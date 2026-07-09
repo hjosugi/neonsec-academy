@@ -82,11 +82,14 @@ Rules:
   "correct": false,
   "chosen": "Sending packets to the target",
   "mode": "practice",
-  "timeMs": 42000
+  "timeMs": 42000,
+  "confidence": 3
 }
 ```
 
 Attempts are append-only. Corrections happen by creating a later attempt, not by editing history.
+`chosen` is the selected answer payload, `correct` is the result, `timeMs` is the measured time spent,
+and `confidence` is an optional 1-5 self-rating.
 
 ## ReviewItem
 
@@ -188,7 +191,7 @@ Reports are the portable record for safe practical work. They must cite syntheti
 | Full-text search | Lowercased `title`, `body`, `tags`, and `moduleName`. |
 | Question Bank filters | `module`, `domain`, `difficulty`, `type`, active/archive status, selected tags, bookmark state, and last attempt result. |
 | Review queue | `reviews[questionId]`, `dueAt`, and `suspended`. |
-| Attempt history | `questionId`, `at`, and `mode`. |
+| Attempt history | `questionId`, `at`, `mode`, `chosen`, `correct`, `timeMs`, and `confidence`. |
 | Reports | `report.id`, `updatedAt`, and finding severity. |
 
 ## Import And Export Schema
