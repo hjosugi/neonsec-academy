@@ -17,6 +17,7 @@ import type {
   RawQuestion,
   Report,
   ReviewItem,
+  ReviewSessionSummary,
   Settings,
 } from '../types'
 import { SEED_QUESTIONS, enrichQuestion } from '../data/questions'
@@ -113,6 +114,7 @@ interface AppState {
   mistakes: Record<string, MistakeNote>
   bookmarks: string[]
   pinNotes: Record<string, string>
+  reviewSummaries: ReviewSessionSummary[]
   archivedIds: string[]
   userQuestions: RawQuestion[]
   examResults: ExamResult[]
@@ -144,6 +146,7 @@ interface AppActions {
   // bookmarks + mistakes
   toggleBookmark: (questionId: string) => void
   updatePinNote: (questionId: string, note: string) => void
+  saveReviewSummary: (summary: ReviewSessionSummary) => void
   upsertMistake: (questionId: string, patch: Partial<MistakeNote>) => void
   deleteMistake: (questionId: string) => void
   toggleMistakeResolved: (questionId: string) => void
@@ -185,6 +188,7 @@ const initialState: AppState = {
   mistakes: {},
   bookmarks: [],
   pinNotes: {},
+  reviewSummaries: [],
   archivedIds: [],
   userQuestions: [],
   examResults: [],
@@ -280,6 +284,14 @@ export const useStore = create<Store>()(
             bookmarks: clean && !s.bookmarks.includes(questionId) ? [...s.bookmarks, questionId] : s.bookmarks,
           }
         }),
+
+      saveReviewSummary: (summary) =>
+        set((s) => ({
+          reviewSummaries: [
+            summary,
+            ...s.reviewSummaries.filter((item) => item.id !== summary.id),
+          ].slice(0, 30),
+        })),
 
       upsertMistake: (questionId, patch) =>
         set((s) => {
@@ -476,6 +488,7 @@ export const useStore = create<Store>()(
           mistakes: {},
           bookmarks: [],
           pinNotes: {},
+          reviewSummaries: [],
           examResults: [],
           activeExam: null,
           profile: {
@@ -498,6 +511,7 @@ export const useStore = create<Store>()(
           mistakes: s.mistakes,
           bookmarks: s.bookmarks,
           pinNotes: s.pinNotes,
+          reviewSummaries: s.reviewSummaries,
           archivedIds: s.archivedIds,
           userQuestions: s.userQuestions,
           examResults: s.examResults,
@@ -518,6 +532,7 @@ export const useStore = create<Store>()(
             mistakes: d.mistakes ?? s.mistakes,
             bookmarks: Array.isArray(d.bookmarks) ? d.bookmarks : s.bookmarks,
             pinNotes: d.pinNotes && typeof d.pinNotes === 'object' ? d.pinNotes : s.pinNotes,
+            reviewSummaries: Array.isArray(d.reviewSummaries) ? d.reviewSummaries : s.reviewSummaries,
             archivedIds: Array.isArray(d.archivedIds) ? d.archivedIds : s.archivedIds,
             userQuestions: Array.isArray(d.userQuestions) ? d.userQuestions : s.userQuestions,
             examResults: Array.isArray(d.examResults) ? d.examResults : s.examResults,
@@ -541,6 +556,7 @@ export const useStore = create<Store>()(
         mistakes: s.mistakes,
         bookmarks: s.bookmarks,
         pinNotes: s.pinNotes,
+        reviewSummaries: s.reviewSummaries,
         archivedIds: s.archivedIds,
         userQuestions: s.userQuestions,
         examResults: s.examResults,

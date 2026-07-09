@@ -80,6 +80,23 @@ export interface ReviewItem {
   suspended: boolean
 }
 
+export interface ReviewSessionSummary {
+  id: string
+  createdAt: number
+  completedAt: number
+  questionIds: string[]
+  total: number
+  correct: number
+  accuracyPct: number
+  timeMs: number
+  newMistakes: number
+  masteredItems: number
+  reasoningGaps: number
+  weakModules: Array<{ module: number; moduleName: string; missed: number }>
+  incompleteMistakeNotes: number
+  nextActions: string[]
+}
+
 // ---- Attempts ----
 export type AttemptMode = 'practice' | 'review' | 'exam' | 'drill'
 export type AttemptConfidence = 1 | 2 | 3 | 4 | 5

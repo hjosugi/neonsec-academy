@@ -30,6 +30,7 @@ Report 1 ── * Finding
 | `Explanation` | Embedded in `Question`. | Inherits question timestamps. |
 | `Attempt` | Stable generated `id`. | Immutable `at` timestamp; no `updatedAt` because attempts are append-only. |
 | `ReviewItem` | `questionId`; one active schedule per question. | `lastReviewed` and `dueAt` track state changes. |
+| `ReviewSessionSummary` | Stable generated `id`. | `createdAt` and `completedAt`. |
 | `MistakeNote` | `questionId`; one note per question. | `createdAt` and `updatedAt`. |
 | `PinNote` | `questionId` key in `pinNotes`. | Updated when the note text changes. |
 | `ExamSession` | Stable generated `id`. | `createdAt`, `startedAt`, and optional `endedAt`. |
@@ -114,6 +115,30 @@ The store keeps review items in a map keyed by `questionId`, which prevents dupl
 schedules for one question. `confidence` records the latest 1-5 self-rating used by the scheduler;
 low confidence shortens the next interval and high confidence can lengthen it.
 
+## ReviewSessionSummary
+
+```json
+{
+  "id": "rs-abc123",
+  "createdAt": 1783630800000,
+  "completedAt": 1783631400000,
+  "questionIds": ["Q-CEH-002-001"],
+  "total": 10,
+  "correct": 8,
+  "accuracyPct": 80,
+  "timeMs": 600000,
+  "newMistakes": 2,
+  "masteredItems": 8,
+  "reasoningGaps": 1,
+  "weakModules": [{ "module": 2, "moduleName": "Footprinting and Reconnaissance", "missed": 2 }],
+  "incompleteMistakeNotes": 2,
+  "nextActions": ["Complete 2 Mistake Notebook notes."]
+}
+```
+
+Review summaries are append-only snapshots for the recent session history. The app keeps the newest
+30 summaries in local storage.
+
 ## MistakeNote
 
 ```json
@@ -183,6 +208,7 @@ Reports are the portable record for safe practical work. They must cite syntheti
 | Seed question | Never hard-deleted in user storage; archived by adding its ID to `archivedIds`. | Remove the ID from `archivedIds`. |
 | User question | Can be archived like seed content, or removed from `userQuestions` when explicitly deleted. | Archived user questions can be restored; hard-deleted user questions require re-import or re-authoring. |
 | Attempts and reviews | `resetProgress` clears them as study progress. | Restore from full backup import. |
+| Review summaries | `resetProgress` clears saved summaries. | Restore from full backup import. |
 | Mistake notes | Can be resolved or deleted. | Restore from full backup import. |
 | Bookmarks and pin notes | Bookmarks toggle per question; blanking a pin note removes that note. | Restore from full backup import. |
 | Reports | Can be deleted. | Restore from full backup import or Markdown copy if exported. |
@@ -197,6 +223,7 @@ Reports are the portable record for safe practical work. They must cite syntheti
 | Full-text search | Lowercased `title`, `body`, `tags`, and `moduleName`. |
 | Question Bank filters | `module`, `domain`, `difficulty`, `type`, active/archive status, selected tags, bookmark state, pin notes, and last attempt result. |
 | Review queue | `reviews[questionId]`, `dueAt`, `confidence`, and `suspended`. |
+| Review summaries | `reviewSummaries`, `completedAt`, accuracy, weak modules, and next actions. |
 | Attempt history | `questionId`, `at`, `mode`, `chosen`, `correct`, `timeMs`, `confidence`, and `reasoningGap`. |
 | Mistake notebook | `mistakes[questionId]`, resolved state, `updatedAt`, question module, and question tags. |
 | Pin notes | `pinNotes[questionId]`, with the matching bookmark used for pinned views. |
@@ -205,7 +232,8 @@ Reports are the portable record for safe practical work. They must cite syntheti
 ## Import And Export Schema
 
 - Full backup export includes `version`, `exportedAt`, profile, settings, attempts, reviews,
-  mistakes, bookmarks, pin notes, archived IDs, user questions, exam results, and reports.
+  review summaries, mistakes, bookmarks, pin notes, archived IDs, user questions, exam results, and
+  reports.
 - Question-pack export uses `format: "neonsec-question-pack"` and `version: 1`.
 - Seed validation runs with `npm run validate:content`.
 - Question-pack import reuses the same core validation rules in `src/lib/questionPacks.ts`.

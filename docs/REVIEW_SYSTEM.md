@@ -27,9 +27,16 @@ Each reviewed question keeps one `ReviewItem` with `intervalDays`, `dueAt`, `eas
 ## Daily Review Session State
 
 Daily Review freezes the due queue when a session starts. The current queue, index, correct count,
-and creation time are saved in localStorage under `neonsec:review-session:v1`, so leaving the review
-screen and coming back resumes the in-progress session. Finishing or starting a fresh review clears
-that saved session.
+missed/mastered IDs, reasoning-gap count, and creation time are saved in localStorage under
+`neonsec:review-session:v1`, so leaving the review screen and coming back resumes the in-progress
+session. Finishing or starting a fresh review clears that saved session.
+
+## Review Session Summary
+
+When a review finishes, the app saves a recent session summary with accuracy, time spent, new
+mistakes, mastered items, reasoning-gap count, weak modules, incomplete mistake-note count, and one
+to three next actions. The Review screen lists recent summaries so completed sessions can be checked
+later.
 
 ## Streaks And Achievements
 
