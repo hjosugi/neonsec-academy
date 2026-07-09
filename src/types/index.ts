@@ -138,7 +138,7 @@ export interface ExamAnswer {
 export interface ExamSession {
   id: string
   createdAt: number
-  preset: ExamPresetId
+  preset: string
   presetLabel: string
   questionIds: string[]
   answers: Record<string, ExamAnswer>
@@ -159,7 +159,7 @@ export interface DomainScore {
 
 export interface ExamResult {
   sessionId: string
-  preset: ExamPresetId
+  preset: string
   presetLabel: string
   submittedAt: number
   total: number

@@ -1,11 +1,20 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { DomainId, ExamSession } from '../types'
 import { useStore } from '../store/useStore'
-import { useActiveQuestions, useDomainStats } from '../store/selectors'
-import { EXAM } from '../data/taxonomy'
+import { useActiveQuestions, useDomainStats, useModuleStats } from '../store/selectors'
+import { EXAM, MODULES } from '../data/taxonomy'
 import type { ExamPreset } from '../data/taxonomy'
-import { buildExamQuestionIds } from '../lib/exam'
+import { buildExamQuestionPlan } from '../lib/exam'
+import {
+  asExamPreset,
+  buildBalancedExamPreset,
+  buildFinalReadyExamPreset,
+  buildWeakFocusedExamPreset,
+  readWeightedPresets,
+  writeWeightedPresets,
+} from '../lib/examPresets'
+import type { WeightedExamPreset } from '../lib/examPresets'
 import { isGradable } from '../lib/grade'
 import { uid } from '../lib/id'
 import { formatDate, formatDuration } from '../lib/format'
@@ -17,11 +26,14 @@ export function Exam() {
   const navigate = useNavigate()
   const questions = useActiveQuestions()
   const domains = useDomainStats()
+  const mods = useModuleStats()
   const activeExam = useStore((s) => s.activeExam)
   const startExam = useStore((s) => s.startExam)
   const results = useStore((s) => s.examResults)
   const target = useStore((s) => s.profile.examTargetPct)
   const updateProfile = useStore((s) => s.updateProfile)
+  const [savedWeightedPresets, setSavedWeightedPresets] = useState(readWeightedPresets)
+  const [draftPreset, setDraftPreset] = useState<WeightedExamPreset>(() => buildBalancedExamPreset())
 
   const gradableCount = useMemo(
     () => questions.filter((q) => q.module >= 1 && q.module <= 20 && isGradable(q)).length,
@@ -34,9 +46,17 @@ export function Exam() {
     return w
   }, [domains])
 
-  const begin = (preset: ExamPreset) => {
-    const weights = preset.id === 'weak' ? weakWeights : undefined
-    const ids = buildExamQuestionIds(preset, questions, weights)
+  const builtInWeightedPresets = useMemo(
+    () => [buildBalancedExamPreset(), buildWeakFocusedExamPreset(mods), buildFinalReadyExamPreset()],
+    [mods],
+  )
+
+  const draftPlan = useMemo(
+    () => buildExamQuestionPlan(asExamPreset(draftPreset), questions, undefined, draftPreset.moduleCounts),
+    [draftPreset, questions],
+  )
+
+  const startSession = (preset: { id: string; label: string; minutes: number }, ids: string[]) => {
     if (ids.length === 0) return
     const now = Date.now()
     const session: ExamSession = {
@@ -54,6 +74,51 @@ export function Exam() {
     }
     startExam(session)
     navigate('/exam/run')
+  }
+
+  const begin = (preset: ExamPreset) => {
+    const weights = preset.id === 'weak' ? weakWeights : undefined
+    const plan = buildExamQuestionPlan(preset, questions, weights)
+    startSession(preset, plan.ids)
+  }
+
+  const beginWeighted = (preset: WeightedExamPreset = draftPreset) => {
+    const plan = buildExamQuestionPlan(asExamPreset(preset), questions, undefined, preset.moduleCounts)
+    startSession(preset, plan.ids)
+  }
+
+  const patchDraft = (patch: Partial<WeightedExamPreset>) => {
+    setDraftPreset((current) => ({ ...current, ...patch, updatedAt: Date.now() }))
+  }
+
+  const patchModuleCount = (module: number, value: number) => {
+    setDraftPreset((current) => ({
+      ...current,
+      moduleCounts: { ...current.moduleCounts, [String(module)]: Math.max(0, Math.floor(value || 0)) },
+      updatedAt: Date.now(),
+    }))
+  }
+
+  const persistWeightedPreset = (preset: WeightedExamPreset) => {
+    const next = [
+      { ...preset, updatedAt: Date.now() },
+      ...savedWeightedPresets.filter((item) => item.id !== preset.id),
+    ].slice(0, 12)
+    setSavedWeightedPresets(next)
+    writeWeightedPresets(next)
+  }
+
+  const saveDraft = () => persistWeightedPreset(draftPreset)
+
+  const duplicateDraft = () => {
+    const copy = {
+      ...draftPreset,
+      id: `weighted-${Date.now()}`,
+      label: `${draftPreset.label} Copy`,
+      updatedAt: Date.now(),
+    }
+    setDraftPreset(copy)
+    persistWeightedPreset(copy)
   }
 
   const history = useMemo(() => results.slice().sort((a, b) => b.submittedAt - a.submittedAt), [results])
@@ -120,6 +185,127 @@ export function Exam() {
           </Panel>
         ))}
       </div>
+
+      <Panel
+        title="Weighting Config"
+        className="mb-3"
+        right={<span className="term t-xs dim">{draftPlan.ids.length}/{draftPreset.count} generated</span>}
+      >
+        <div className="row wrap mb-2" style={{ gap: '0.5rem' }}>
+          {builtInWeightedPresets.map((preset) => (
+            <button
+              key={preset.id}
+              className="btn btn--ghost btn--sm"
+              onClick={() => setDraftPreset({ ...preset, updatedAt: Date.now() })}
+            >
+              {preset.label}
+            </button>
+          ))}
+          {savedWeightedPresets.map((preset) => (
+            <button
+              key={preset.id}
+              className="btn btn--ghost btn--sm"
+              onClick={() => setDraftPreset({ ...preset, updatedAt: Date.now() })}
+              title="Saved preset"
+            >
+              {preset.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid-2 mb-2">
+          <div className="field" style={{ margin: 0 }}>
+            <label className="label">Preset name</label>
+            <input className="input" value={draftPreset.label} onChange={(e) => patchDraft({ label: e.currentTarget.value || 'Weighted Exam' })} />
+          </div>
+          <div className="grid-2" style={{ gap: '0.5rem' }}>
+            <div className="field" style={{ margin: 0 }}>
+              <label className="label">Questions</label>
+              <input
+                className="input"
+                type="number"
+                min={1}
+                max={125}
+                value={draftPreset.count}
+                onChange={(e) => patchDraft({ count: Number(e.currentTarget.value) })}
+              />
+            </div>
+            <div className="field" style={{ margin: 0 }}>
+              <label className="label">Minutes</label>
+              <input
+                className="input"
+                type="number"
+                min={5}
+                max={240}
+                value={draftPreset.minutes}
+                onChange={(e) => patchDraft({ minutes: Number(e.currentTarget.value) })}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="scroll-x">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Module</th>
+                <th>Inventory</th>
+                <th>Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {MODULES.map((module) => {
+                const inventory = questions.filter((q) => q.module === module.module && isGradable(q)).length
+                return (
+                  <tr key={module.module}>
+                    <td>
+                      <span className="badge badge--cyan" style={{ marginRight: '0.4rem' }}>
+                        M{String(module.module).padStart(2, '0')}
+                      </span>
+                      <span className="t-sm">{module.name}</span>
+                    </td>
+                    <td className={inventory < (draftPreset.moduleCounts[String(module.module)] ?? 0) ? 'neon-amber' : 'term t-sm dim'}>
+                      {inventory}
+                    </td>
+                    <td style={{ width: 110 }}>
+                      <input
+                        className="input"
+                        type="number"
+                        min={0}
+                        max={125}
+                        value={draftPreset.moduleCounts[String(module.module)] ?? 0}
+                        onChange={(e) => patchModuleCount(module.module, Number(e.currentTarget.value))}
+                      />
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {draftPlan.warnings.length > 0 && (
+          <div className="mt-2 stack stack--sm">
+            {draftPlan.warnings.map((warning) => (
+              <div key={`${warning.label}-${warning.requested}-${warning.available}`} className="term t-xs" style={{ color: 'var(--warning-amber)' }}>
+                {warning.label}: {warning.message}
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="row row--end wrap mt-3" style={{ gap: '0.5rem' }}>
+          <button className="btn btn--ghost btn--sm" onClick={saveDraft}>
+            Save preset
+          </button>
+          <button className="btn btn--ghost btn--sm" onClick={duplicateDraft}>
+            Duplicate
+          </button>
+          <button className="btn btn--primary btn--sm" onClick={() => beginWeighted()} disabled={!!activeExam || draftPlan.ids.length === 0}>
+            Start weighted exam →
+          </button>
+        </div>
+      </Panel>
 
       <div className="grid-dash">
         <Panel title="Exam History">

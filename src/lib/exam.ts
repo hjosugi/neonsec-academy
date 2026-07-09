@@ -25,6 +25,18 @@ const OFFICIAL_DOMAINS: DomainId[] = [
   'crypto',
 ]
 
+export interface ExamBuildWarning {
+  label: string
+  requested: number
+  available: number
+  message: string
+}
+
+export interface ExamBuildPlan {
+  ids: string[]
+  warnings: ExamBuildWarning[]
+}
+
 function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice()
   for (let i = a.length - 1; i > 0; i--) {
@@ -34,13 +46,99 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
-/** Build a domain-weighted list of question ids for a mock exam. */
-export function buildExamQuestionIds(
+function positiveCount(value: unknown): number {
+  return Math.max(0, Math.floor(Number(value) || 0))
+}
+
+function buildModuleCountPlan(
+  preset: { count: number },
+  gradable: Question[],
+  moduleCounts: Record<string, number>,
+): ExamBuildPlan {
+  const target = Math.min(preset.count, gradable.length)
+  const byModule = new Map<number, Question[]>()
+  for (const q of gradable) {
+    const list = byModule.get(q.module) ?? []
+    list.push(q)
+    byModule.set(q.module, list)
+  }
+
+  const picked: string[] = []
+  const openFallbacks: Question[] = []
+  const cappedFallbacks: Question[] = []
+  const warnings: ExamBuildWarning[] = []
+  const requestedModules = new Set<number>()
+  let requestedTotal = 0
+
+  for (const [moduleKey, rawCount] of Object.entries(moduleCounts)) {
+    const module = Number(moduleKey)
+    const requested = positiveCount(rawCount)
+    if (!Number.isInteger(module) || module < 1 || module > 20 || requested === 0) continue
+    requestedModules.add(module)
+    requestedTotal += requested
+    const available = shuffle(byModule.get(module) ?? [])
+    const take = Math.min(requested, available.length)
+    for (let i = 0; i < take; i++) picked.push(available[i].id)
+    for (let i = take; i < available.length; i++) cappedFallbacks.push(available[i])
+    if (take < requested) {
+      warnings.push({
+        label: `M${String(module).padStart(2, '0')}`,
+        requested,
+        available: available.length,
+        message: `Requested ${requested}, but only ${available.length} gradable questions are available. Fallback fills from other modules.`,
+      })
+    }
+  }
+
+  for (const [module, questions] of byModule) {
+    if (!requestedModules.has(module)) openFallbacks.push(...questions)
+  }
+
+  if (requestedTotal < target) {
+    warnings.push({
+      label: 'Fallback',
+      requested: target,
+      available: requestedTotal,
+      message: `Preset requested ${target} total questions, but module counts sum to ${requestedTotal}. Remaining slots are filled from available modules.`,
+    })
+  } else if (requestedTotal > target) {
+    warnings.push({
+      label: 'Module counts',
+      requested: requestedTotal,
+      available: target,
+      message: `Module counts sum to ${requestedTotal}, so the generated exam is capped at ${target} questions.`,
+    })
+  }
+  if (preset.count > gradable.length) {
+    warnings.push({
+      label: 'Question pool',
+      requested: preset.count,
+      available: gradable.length,
+      message: `Requested ${preset.count}, but only ${gradable.length} gradable CEH questions exist.`,
+    })
+  }
+
+  let extraNeeded = Math.max(0, target - picked.length)
+  const openExtras = shuffle(openFallbacks).slice(0, extraNeeded)
+  for (const q of openExtras) picked.push(q.id)
+  extraNeeded -= openExtras.length
+  if (extraNeeded > 0) {
+    for (const q of shuffle(cappedFallbacks).slice(0, extraNeeded)) picked.push(q.id)
+  }
+  return { ids: shuffle(picked).slice(0, target), warnings }
+}
+
+/** Build a weighted list of question ids for a mock exam, with fallback warnings. */
+export function buildExamQuestionPlan(
   preset: ExamPreset,
   pool: Question[],
   domainWeights?: Partial<Record<DomainId, number>>,
-): string[] {
+  moduleCounts?: Record<string, number>,
+): ExamBuildPlan {
   const gradable = pool.filter((q) => q.module >= 1 && q.module <= 20 && isGradable(q))
+  if (moduleCounts && Object.values(moduleCounts).some((count) => positiveCount(count) > 0)) {
+    return buildModuleCountPlan(preset, gradable, moduleCounts)
+  }
   const byDomain = new Map<DomainId, Question[]>()
   for (const q of gradable) {
     const list = byDomain.get(q.domain) ?? []
@@ -53,6 +151,15 @@ export function buildExamQuestionIds(
   )
   const totalW = weights.reduce((s, w) => s + w, 0) || 1
   const target = Math.min(preset.count, gradable.length)
+  const warnings: ExamBuildWarning[] = []
+  if (preset.count > gradable.length) {
+    warnings.push({
+      label: 'Question pool',
+      requested: preset.count,
+      available: gradable.length,
+      message: `Requested ${preset.count}, but only ${gradable.length} gradable CEH questions exist.`,
+    })
+  }
 
   // largest-remainder apportionment
   const raw = weights.map((w) => (w / totalW) * target)
@@ -71,14 +178,33 @@ export function buildExamQuestionIds(
     const take = Math.min(counts[i], avail.length)
     for (let k = 0; k < take; k++) picked.push(avail[k].id)
     for (let k = take; k < avail.length; k++) leftovers.push(avail[k])
-    shortfall += counts[i] - take
+    const missing = counts[i] - take
+    shortfall += missing
+    if (missing > 0) {
+      warnings.push({
+        label: DOMAINS[id].short,
+        requested: counts[i],
+        available: avail.length,
+        message: `Requested ${counts[i]} ${DOMAINS[id].short} questions, but only ${avail.length} are available. Fallback fills from other domains.`,
+      })
+    }
   })
   if (shortfall > 0) {
     const extra = shuffle(leftovers).slice(0, shortfall)
     for (const q of extra) picked.push(q.id)
   }
 
-  return shuffle(picked).slice(0, target)
+  return { ids: shuffle(picked).slice(0, target), warnings }
+}
+
+/** Build a domain-weighted list of question ids for a mock exam. */
+export function buildExamQuestionIds(
+  preset: ExamPreset,
+  pool: Question[],
+  domainWeights?: Partial<Record<DomainId, number>>,
+  moduleCounts?: Record<string, number>,
+): string[] {
+  return buildExamQuestionPlan(preset, pool, domainWeights, moduleCounts).ids
 }
 
 export function gradeExam(

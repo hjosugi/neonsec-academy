@@ -3,7 +3,7 @@
 // Domain weights follow the EC-Council CEH exam blueprint.
 // See docs/CEH_OFFICIAL_NOTES.md
 // ============================================================
-import type { DomainId, DistrictId, TrackKey, ExamPresetId } from '../types'
+import type { DomainId, DistrictId, TrackKey } from '../types'
 
 export interface DomainMeta {
   id: DomainId
@@ -152,7 +152,7 @@ export const BADGES: BadgeMeta[] = [
 
 // ---- Mock exam presets ----
 export interface ExamPreset {
-  id: ExamPresetId
+  id: string
   label: string
   count: number
   minutes: number

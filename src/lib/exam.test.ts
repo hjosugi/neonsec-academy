@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import type { DomainId, ExamSession, Question } from '../types'
-import { buildExamQuestionIds, gradeExam } from './exam'
+import { buildExamQuestionIds, buildExamQuestionPlan, gradeExam } from './exam'
 import { DOMAINS, EXAM } from '../data/taxonomy'
 import { mkQ } from './testfixtures'
 
@@ -96,6 +96,31 @@ describe('exam / buildExamQuestionIds', () => {
     expect(new Set(ids).size).toBe(10)
     expect(counts.overview).toBe(1)
     expect(counts.recon).toBe(9)
+  })
+
+  it('uses editable module counts and reports fallback warnings', () => {
+    const pool = [
+      mkQ('m1-0', 1),
+      mkQ('m2-0', 2),
+      mkQ('m2-1', 2),
+      mkQ('m3-0', 3),
+      mkQ('m3-1', 3),
+      mkQ('m3-2', 3),
+    ]
+    const plan = buildExamQuestionPlan(
+      { id: 'weighted', label: 'Weighted', count: 5, minutes: 1, desc: '' },
+      pool,
+      undefined,
+      { 1: 3, 2: 1 },
+    )
+    const byId = new Map(pool.map((q) => [q.id, q]))
+    const modules = plan.ids.map((id) => byId.get(id)!.module)
+
+    expect(plan.ids).toHaveLength(5)
+    expect(new Set(plan.ids).size).toBe(5)
+    expect(modules.filter((module) => module === 1)).toHaveLength(1)
+    expect(modules.filter((module) => module === 2).length).toBeGreaterThanOrEqual(1)
+    expect(plan.warnings.some((warning) => warning.label === 'M01')).toBe(true)
   })
 })
 

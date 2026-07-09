@@ -176,6 +176,11 @@ Review summaries are append-only snapshots for the recent session history. The a
 }
 ```
 
+Exam preset IDs are strings so built-in and user-saved weighted presets can share the same runner and
+result model. Weighted presets store editable `moduleCounts` in local browser storage under
+`neonsec:exam-weight-presets:v1`; generated exams keep only the selected question IDs and preset
+label in the persisted session/result.
+
 ## Report
 
 ```json

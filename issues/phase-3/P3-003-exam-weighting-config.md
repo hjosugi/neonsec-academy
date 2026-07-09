@@ -19,23 +19,23 @@ module 別出題比率を設定し、弱点重視・均等・本番想定の moc
 
 ## Requirements
 
-- [ ] exam preset: balanced, weak-focused, final-ready を用意する
-- [ ] module ごとの出題数を編集できる
-- [ ] 問題数不足時の fallback を明示する
-- [ ] preset は保存・複製できる
+- [x] exam preset: balanced, weak-focused, final-ready を用意する
+- [x] module ごとの出題数を編集できる
+- [x] 問題数不足時の fallback を明示する
+- [x] preset は保存・複製できる
 
 ## Acceptance Criteria
 
-- [ ] balanced preset で 125 問を生成できる
-- [ ] weak-focused preset が弱点 module を増やす
-- [ ] 問題不足時に warning が出る
+- [x] balanced preset で 125 問を生成できる
+- [x] weak-focused preset が弱点 module を増やす
+- [x] 問題不足時に warning が出る
 
 ## Subtasks
 
 - [x] preset schema を作る
-- [ ] editor UI を作る
+- [x] editor UI を作る
 - [x] exam generator と接続する
-- [ ] warning を作る
+- [x] warning を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ module 別出題比率を設定し、弱点重視・均等・本番想定の moc
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

@@ -116,6 +116,14 @@ confidence, trend, and readiness/mastery. The coverage target and minimum questi
 user settings. Module rows distinguish missing inventory, low inventory, unanswered modules, low
 coverage, weak mastery, and ready modules, and clicking a row starts a module drill.
 
+## Exam Weighting Config
+
+Mock Exam keeps the standard full, half, quick, and weakness-focused starters, plus an editable
+module-count weighting editor. Built-in weighted drafts include balanced, weak-focused, and
+final-ready 125-question presets. Learners can edit per-module counts, save or duplicate presets in
+local storage, and start a weighted exam. If a module or domain lacks enough gradable questions, the
+generator shows fallback warnings and fills remaining slots from the available pool.
+
 ## Final Gate Checklist
 
 試験予約前の最終判定として、`/final-gate` は次の条件をまとめて評価する。
