@@ -1,6 +1,6 @@
 # NeonSec Academy v1 Release Notes
 
-Current release: v1.0.4
+Current release: v1.0.5
 Release date: 2026-07-10
 
 ## Highlights
@@ -19,6 +19,7 @@ Release date: 2026-07-10
 - Product scope, taxonomy, data model, design-system wireframes, information architecture contracts, and content-authoring guidance now close out the Phase 0 foundation docs.
 - Question Bank supports titles, archive-aware detail/edit flows, multi-tag/status/result filters, saved filters, and self-graded short-answer/report-prompt questions.
 - Question detail shows per-question attempt history with timestamp, mode, result, selected answer, time spent, confidence, total attempts, accuracy, and last attempted time.
+- Settings can export authored questions as JSON packs or JSONL rows, and import JSON packs, JSONL, or basic MCQ CSV with line-numbered validation errors.
 - Markdown rendering covers escaped HTML, fenced code blocks with copy buttons, pipe tables, and safe callouts.
 - Release documentation, safety review artifacts, and acceptance test evidence are included with the repository.
 

@@ -19,20 +19,20 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] JSONL export を標準形式にする
-- [ ] CSV import は MCQ の basic fields に限定する
+- [x] JSONL export を標準形式にする
+- [x] CSV import は MCQ の basic fields に限定する
 - [x] import preview と validation error を表示する
 - [x] 既存 ID の conflict policy を定義する
 
 ## Acceptance Criteria
 
-- [ ] sample JSONL を export/import できる
-- [ ] invalid row の error が行番号付きで出る
+- [x] sample JSONL を export/import できる
+- [x] invalid row の error が行番号付きで出る
 - [x] duplicate ID の扱いが明確である
 
 ## Subtasks
 
-- [ ] export format を決める
+- [x] export format を決める
 - [x] import parser を作る
 - [x] preview UI を作る
 - [x] validation を作る
@@ -47,18 +47,18 @@ estimate: "2d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- Settings now exports authored questions as JSON packs or JSONL rows and imports JSON, JSONL, and basic MCQ CSV with line-numbered validation errors.

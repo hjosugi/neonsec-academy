@@ -4,7 +4,10 @@ import { useStore } from '../store/useStore'
 import { LABS } from '../data/labs'
 import { SEED_QUESTIONS } from '../data/questions'
 import {
+  buildQuestionJsonl,
   buildQuestionPack,
+  parseQuestionCsv,
+  parseQuestionJsonl,
   parseQuestionPack,
   preparePackImport,
   previewQuestionPack,
@@ -228,6 +231,16 @@ export function Settings() {
     setMsg(`✓ Exported ${questions.length} question pack.`)
   }
 
+  const exportQuestionJsonl = (mode: 'selected' | 'all') => {
+    const questions = mode === 'all' ? userQuestions : selectedQuestions
+    if (questions.length === 0) {
+      setMsg('✕ No user-authored questions to export.')
+      return
+    }
+    downloadBlob('neonsec-question-pack.jsonl', buildQuestionJsonl(questions), 'application/x-ndjson;charset=utf-8')
+    setMsg(`✓ Exported ${questions.length} JSONL question rows.`)
+  }
+
   const onFile = (file: File) => {
     const reader = new FileReader()
     reader.onload = () => {
@@ -240,7 +253,13 @@ export function Settings() {
   const onPackFile = (file: File) => {
     const reader = new FileReader()
     reader.onload = () => {
-      const parsed = parseQuestionPack(String(reader.result))
+      const text = String(reader.result)
+      const lowerName = file.name.toLowerCase()
+      const parsed = lowerName.endsWith('.jsonl')
+        ? parseQuestionJsonl(text, `Imported JSONL (${file.name})`)
+        : lowerName.endsWith('.csv')
+          ? parseQuestionCsv(text, `Imported CSV (${file.name})`)
+          : parseQuestionPack(text)
       if (!parsed.ok) {
         setPackImport(null)
         setMsg(`✕ Pack import failed — ${parsed.error}`)
@@ -471,13 +490,19 @@ export function Settings() {
               <button className="btn btn--ghost btn--block" disabled={userQuestions.length === 0} onClick={() => exportQuestionPack('all')}>
                 ⤓ Export all authored questions
               </button>
+              <button className="btn btn--ghost btn--block" disabled={selectedQuestions.length === 0} onClick={() => exportQuestionJsonl('selected')}>
+                ⤓ Export selected JSONL
+              </button>
+              <button className="btn btn--ghost btn--block" disabled={userQuestions.length === 0} onClick={() => exportQuestionJsonl('all')}>
+                ⤓ Export all JSONL
+              </button>
               <button className="btn btn--ghost btn--block" onClick={() => packFileRef.current?.click()}>
-                ⤒ Import question pack
+                ⤒ Import JSON / JSONL / CSV
               </button>
               <input
                 ref={packFileRef}
                 type="file"
-                accept="application/json,.json"
+                accept="application/json,.json,.jsonl,.csv,text/csv"
                 style={{ display: 'none' }}
                 onChange={(e) => e.target.files?.[0] && onPackFile(e.target.files[0])}
               />

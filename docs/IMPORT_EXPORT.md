@@ -14,6 +14,8 @@ or other unsafe material.
 | Full progress backup | `neonsec-backup.json` | App state JSON, `version: 1` | You want to back up or move your own study state. |
 | Public-safe progress summary | `neonsec-public-progress.md` | Markdown | You want to share aggregate progress without private notes, raw answers, custom question text, or report evidence. |
 | Question pack | `neonsec-question-pack.json` | `neonsec-question-pack`, `version: 1` | You want to share user-authored questions without sharing personal progress. |
+| Question JSONL | `neonsec-question-pack.jsonl` | One `RawQuestion` JSON object per line | You want line-oriented editing, diffing, or batch import/export. |
+| Question CSV | Custom `.csv` | Header row plus MCQ rows only | You want spreadsheet import for basic multiple-choice questions. |
 | Report Markdown | Custom report title as `.md` | Markdown | You want a findings report handoff from Reports. |
 | Final Gate Markdown | `ceh-final-gate-checklist.md` | Markdown | You want a pre-booking checklist snapshot. |
 
@@ -96,8 +98,13 @@ simple `password`, `passwd`, `pwd`, `token`, `secret`, or `api_key` assignments.
 
 ## Question Packs
 
-Question packs are the shareable format for user-authored questions. They do not include attempts,
-reviews, mistake notes, exam results, reports, settings, or profile data.
+Question packs are the shareable formats for user-authored questions. They do not include attempts,
+reviews, mistake notes, exam results, reports, settings, or profile data. Settings supports three
+question import formats:
+
+- JSON pack object: structured deck metadata plus `questions[]`.
+- JSONL: one valid question JSON object per non-empty line.
+- CSV: MCQ-only spreadsheet import with the basic columns below.
 
 Pack shape:
 
@@ -114,14 +121,30 @@ Pack shape:
 Each item in `questions` must satisfy [QUESTION_SCHEMA.md](QUESTION_SCHEMA.md). Imported questions are
 normalized to `source: "user"` and `status: "active"`.
 
+JSONL shape:
+
+```jsonl
+{"id":"Q-USER-1","type":"mcq","module":1,"track":null,"difficulty":"easy","tags":["scope"],"body":"Which target is in scope?","choices":["Approved host","Any host"],"answer":"Approved host","explanation":{"answer":"Approved host","why":"Written scope controls authorization.","trap":"Public reachability is not permission.","memory_phrase":"Scope first."}}
+```
+
+CSV import is limited to `mcq`. Required columns:
+
+```csv
+id,title,module,track,difficulty,tags,body,choice_a,choice_b,choice_c,choice_d,answer,explanation_answer,explanation_why,explanation_trap,memory_phrase
+```
+
+`tags` uses `;` or `|` separators. `answer` may be the exact choice text or a letter from `A` to `F`.
+CSV rows that fail validation report the source line number.
+
 ## Export Question Packs
 
 In the app:
 
 1. Open Settings.
 2. In **Question Packs**, select authored questions or use **Select all**.
-3. Use **Export selected pack** or **Export all authored questions**.
-4. Share the resulting `neonsec-question-pack.json` only if it follows the safe-use policy.
+3. Use **Export selected pack** / **Export all authored questions** for JSON, or the JSONL buttons for
+   line-oriented export.
+4. Share the resulting `.json` or `.jsonl` only if it follows the safe-use policy.
 
 Only user-authored questions are exportable as packs. Seed questions remain part of the app build and
 are not exported through this workflow.
@@ -131,8 +154,8 @@ are not exported through this workflow.
 In the app:
 
 1. Open Settings.
-2. Use **Import question pack**.
-3. Select a JSON pack.
+2. Use **Import JSON / JSONL / CSV**.
+3. Select a JSON pack, JSONL file, or MCQ CSV.
 4. Review the preview: total questions, modules, difficulty counts, and ID collisions.
 5. Choose **Import pack** only if the content is safe and expected.
 
@@ -144,6 +167,7 @@ The importer rejects:
 - Invalid question fields.
 - Duplicate IDs inside the pack.
 - Answers that do not match their choices.
+- Invalid JSONL/CSV rows, reported with line numbers.
 
 If a pack question ID already exists locally, the importer remaps it with an `-import-N` suffix before
 saving. The preview warns how many collisions will be renamed.

@@ -31,6 +31,11 @@ export type ParsedQuestionPack = {
   error: string
 }
 
+interface CsvRow {
+  line: number
+  values: string[]
+}
+
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
@@ -137,6 +142,11 @@ export function buildQuestionPack(questions: RawQuestion[], title = 'NeonSec que
   }
 }
 
+export function buildQuestionJsonl(questions: RawQuestion[]): string {
+  if (questions.length === 0) return ''
+  return `${questions.map((q) => JSON.stringify({ ...q, source: 'user' })).join('\n')}\n`
+}
+
 export function parseQuestionPack(json: string): ParsedQuestionPack {
   let data: unknown
   try {
@@ -172,6 +182,182 @@ export function parseQuestionPack(json: string): ParsedQuestionPack {
       version: QUESTION_PACK_VERSION,
       title: hasText(data.title) ? String(data.title).trim() : 'Imported question pack',
       exportedAt: typeof data.exportedAt === 'number' ? data.exportedAt : Date.now(),
+      questions,
+    },
+  }
+}
+
+export function parseQuestionJsonl(jsonl: string, title = 'Imported JSONL questions'): ParsedQuestionPack {
+  const questions: RawQuestion[] = []
+  const seen = new Set<string>()
+  const errors: string[] = []
+
+  jsonl.split(/\r?\n/).forEach((line, index) => {
+    const lineNo = index + 1
+    if (line.trim() === '') return
+    let data: unknown
+    try {
+      data = JSON.parse(line)
+    } catch {
+      errors.push(`line ${lineNo}: invalid JSON`)
+      return
+    }
+    const validated = validateRawQuestion(data, `line ${lineNo}`)
+    if (!validated.ok) {
+      errors.push(...validated.errors)
+      return
+    }
+    if (seen.has(validated.question.id)) errors.push(`line ${lineNo}: duplicate id "${validated.question.id}"`)
+    seen.add(validated.question.id)
+    questions.push(validated.question)
+  })
+
+  if (errors.length) return { ok: false, error: errors.slice(0, 5).join(' · ') }
+  if (questions.length === 0) return { ok: false, error: 'JSONL contains no questions.' }
+
+  return {
+    ok: true,
+    pack: {
+      format: QUESTION_PACK_FORMAT,
+      version: QUESTION_PACK_VERSION,
+      title,
+      exportedAt: Date.now(),
+      questions,
+    },
+  }
+}
+
+function parseCsvRows(csv: string): { ok: true; rows: CsvRow[] } | { ok: false; error: string } {
+  const rows: CsvRow[] = []
+  let row: string[] = []
+  let cell = ''
+  let inQuotes = false
+  let line = 1
+  let rowLine = 1
+
+  const finishCell = () => {
+    row.push(cell)
+    cell = ''
+  }
+  const finishRow = () => {
+    finishCell()
+    if (row.some((value) => value.trim() !== '')) rows.push({ line: rowLine, values: row })
+    row = []
+    rowLine = line + 1
+  }
+
+  for (let i = 0; i < csv.length; i++) {
+    const ch = csv[i]
+    if (ch === '"') {
+      if (inQuotes && csv[i + 1] === '"') {
+        cell += '"'
+        i++
+      } else {
+        inQuotes = !inQuotes
+      }
+    } else if (ch === ',' && !inQuotes) {
+      finishCell()
+    } else if (ch === '\n' && !inQuotes) {
+      finishRow()
+      line++
+    } else if (ch !== '\r') {
+      cell += ch
+    }
+  }
+
+  if (inQuotes) return { ok: false, error: `line ${rowLine}: unterminated quoted field` }
+  finishRow()
+
+  return { ok: true, rows }
+}
+
+function csvCell(row: Record<string, string>, key: string): string {
+  return row[key]?.trim() ?? ''
+}
+
+export function parseQuestionCsv(csv: string, title = 'Imported CSV questions'): ParsedQuestionPack {
+  const parsed = parseCsvRows(csv)
+  if (!parsed.ok) return parsed
+  const [headerRow, ...dataRows] = parsed.rows
+  if (!headerRow) return { ok: false, error: 'CSV contains no header row.' }
+
+  const headers = headerRow.values.map((value) => value.trim().toLowerCase())
+  const required = [
+    'id',
+    'module',
+    'difficulty',
+    'tags',
+    'body',
+    'choice_a',
+    'choice_b',
+    'answer',
+    'explanation_answer',
+    'explanation_why',
+    'explanation_trap',
+    'memory_phrase',
+  ]
+  const missing = required.filter((key) => !headers.includes(key))
+  if (missing.length) return { ok: false, error: `line ${headerRow.line}: missing CSV columns ${missing.join(', ')}` }
+
+  const questions: RawQuestion[] = []
+  const seen = new Set<string>()
+  const errors: string[] = []
+
+  for (const dataRow of dataRows) {
+    const row = Object.fromEntries(headers.map((header, index) => [header, dataRow.values[index] ?? '']))
+    const choices = ['choice_a', 'choice_b', 'choice_c', 'choice_d', 'choice_e', 'choice_f']
+      .map((key) => csvCell(row, key))
+      .filter(Boolean)
+    const answerRaw = csvCell(row, 'answer')
+    const letterIndex = /^[a-f]$/i.test(answerRaw) ? answerRaw.toUpperCase().charCodeAt(0) - 65 : -1
+    const answer = letterIndex >= 0 && letterIndex < choices.length ? choices[letterIndex] : answerRaw
+    const moduleValue = Number(csvCell(row, 'module'))
+    const tags = csvCell(row, 'tags')
+      .split(/[;|]/)
+      .map((tag) => tag.trim())
+      .filter(Boolean)
+
+    const question: RawQuestion = {
+      id: csvCell(row, 'id'),
+      title: csvCell(row, 'title') || undefined,
+      type: 'mcq',
+      module: Number.isFinite(moduleValue) ? moduleValue : -1,
+      track: csvCell(row, 'track') ? (csvCell(row, 'track') as TrackKey) : null,
+      difficulty: csvCell(row, 'difficulty') as Difficulty,
+      tags,
+      body: csvCell(row, 'body'),
+      choices,
+      answer,
+      explanation: {
+        answer: csvCell(row, 'explanation_answer'),
+        why: csvCell(row, 'explanation_why'),
+        trap: csvCell(row, 'explanation_trap'),
+        memory_phrase: csvCell(row, 'memory_phrase'),
+      },
+      status: 'active',
+      source: 'user',
+    }
+
+    const validated = validateRawQuestion(question, `line ${dataRow.line}`)
+    if (!validated.ok) {
+      errors.push(...validated.errors)
+      continue
+    }
+    if (seen.has(validated.question.id)) errors.push(`line ${dataRow.line}: duplicate id "${validated.question.id}"`)
+    seen.add(validated.question.id)
+    questions.push(validated.question)
+  }
+
+  if (errors.length) return { ok: false, error: errors.slice(0, 5).join(' · ') }
+  if (questions.length === 0) return { ok: false, error: 'CSV contains no questions.' }
+
+  return {
+    ok: true,
+    pack: {
+      format: QUESTION_PACK_FORMAT,
+      version: QUESTION_PACK_VERSION,
+      title,
+      exportedAt: Date.now(),
       questions,
     },
   }

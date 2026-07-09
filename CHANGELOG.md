@@ -2,6 +2,22 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.5 - 2026-07-10
+
+Question import/export closure patch for JSONL and CSV workflows.
+
+### Added
+
+- JSONL export for selected or all user-authored questions.
+- JSONL import that validates each row and reports line-numbered errors.
+- Basic MCQ CSV import with field validation, answer-letter mapping, duplicate-ID detection, and
+  line-numbered errors.
+- Tests covering JSONL export/import, CSV import, and invalid row reporting.
+
+### Changed
+
+- Settings import copy now explicitly accepts JSON packs, JSONL, and CSV.
+
 ## v1.0.4 - 2026-07-10
 
 Attempt-history closure patch for per-question statistics and timeline visibility.
