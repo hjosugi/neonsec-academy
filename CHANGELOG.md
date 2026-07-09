@@ -13,10 +13,12 @@ Question import/export closure patch for JSONL and CSV workflows.
 - Basic MCQ CSV import with field validation, answer-letter mapping, duplicate-ID detection, and
   line-numbered errors.
 - Tests covering JSONL export/import, CSV import, and invalid row reporting.
+- Additional exam-weighting invariant tests for blueprint distribution and shortfall redistribution.
 
 ### Changed
 
 - Settings import copy now explicitly accepts JSON packs, JSONL, and CSV.
+- CI now runs the full production build script and the README exposes the workflow badge.
 
 ## v1.0.4 - 2026-07-10
 

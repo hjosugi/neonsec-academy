@@ -31,7 +31,7 @@ Release date: 2026-07-10
 
 ## Verification
 
-- `npm test`: 9 files passed, 37 tests passed.
+- `npm test`: 9 files passed, 42 tests passed.
 - `npm run typecheck`: passed.
 - `npm run validate:content`: 373 seed questions valid.
 - `node scripts/safety_scan.mjs`: 0 blockers.

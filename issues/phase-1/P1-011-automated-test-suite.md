@@ -17,14 +17,14 @@ Add a Vitest suite covering the pure logic that the whole app depends on.
 
 - [x] Test `lib/srs.ts` scheduling (grade → interval/ease/lapse transitions, due calc)
 - [x] Test `lib/grade.ts` (mcq/multi/true_false correctness, edge cases)
-- [ ] Test `lib/exam.ts` weighting (counts match blueprint, shortfall redistribution, grading)
+- [x] Test `lib/exam.ts` weighting (counts match blueprint, shortfall redistribution, grading)
 - [x] Test `lib/analytics.ts` (module/domain mastery, weakest selection)
 - [x] Test `lib/readiness.ts` banding
 
 ## Acceptance Criteria
 
 - [x] `npm test` runs green
-- [ ] Core scheduling and exam-weighting invariants are covered
+- [x] Core scheduling and exam-weighting invariants are covered
 
 ## Notes
 

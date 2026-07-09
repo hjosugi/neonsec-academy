@@ -1,5 +1,7 @@
 # NeonSec Academy
 
+[![CI](https://github.com/hjosugi/neonsec-academy/actions/workflows/ci.yml/badge.svg)](https://github.com/hjosugi/neonsec-academy/actions/workflows/ci.yml)
+
 NeonSec Academy is a client-side CEH study and safe-practical training app. It combines a
 CEH-mapped question bank, spaced repetition, mock exams, readiness analytics, mistake review,
 synthetic labs, and report practice in a cyberpunk study interface.

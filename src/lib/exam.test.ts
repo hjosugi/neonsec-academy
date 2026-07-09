@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import type { ExamSession, Question } from '../types'
+import type { DomainId, ExamSession, Question } from '../types'
 import { buildExamQuestionIds, gradeExam } from './exam'
-import { EXAM } from '../data/taxonomy'
+import { DOMAINS, EXAM } from '../data/taxonomy'
 import { mkQ } from './testfixtures'
 
 // pool spanning several modules/domains, plus a CEH+ (module 0) item that must be excluded
@@ -12,6 +12,27 @@ function bigPool(): Question[] {
   pool.push({ ...mkQ('Q-CEHX-1', 1), id: 'Q-CEHX-1', module: 0, domain: 'beyond' })
   pool.push({ ...mkQ('Q-SCEN', 1), id: 'Q-SCEN', type: 'scenario', choices: undefined, answer: 'x' })
   return pool
+}
+
+const domainModule: Record<Exclude<DomainId, 'beyond'>, number> = {
+  overview: 1,
+  recon: 2,
+  system: 6,
+  network: 8,
+  web: 13,
+  wireless: 16,
+  'mobile-iot': 17,
+  cloud: 19,
+  crypto: 20,
+}
+
+function countByDomain(ids: string[], pool: Question[]): Partial<Record<DomainId, number>> {
+  const byId = new Map(pool.map((q) => [q.id, q]))
+  return ids.reduce<Partial<Record<DomainId, number>>>((counts, id) => {
+    const domain = byId.get(id)!.domain
+    counts[domain] = (counts[domain] ?? 0) + 1
+    return counts
+  }, {})
 }
 
 describe('exam / buildExamQuestionIds', () => {
@@ -39,6 +60,42 @@ describe('exam / buildExamQuestionIds', () => {
     const small = [mkQ('a', 1), mkQ('b', 2), mkQ('c', 3)]
     const ids = buildExamQuestionIds(EXAM.presets[0], small)
     expect(ids.length).toBe(3)
+  })
+
+  it('matches the official CEH domain blueprint when enough questions exist', () => {
+    const pool: Question[] = []
+    for (const [domain, module] of Object.entries(domainModule)) {
+      for (let i = 0; i < 30; i++) pool.push(mkQ(`${domain}-${i}`, module))
+    }
+
+    const ids = buildExamQuestionIds(
+      { id: 'quick', label: 'Blueprint', count: 100, minutes: 1, desc: '' },
+      pool,
+    )
+    const counts = countByDomain(ids, pool)
+
+    expect(ids).toHaveLength(100)
+    for (const domain of Object.keys(domainModule) as Exclude<DomainId, 'beyond'>[]) {
+      expect(counts[domain]).toBe(DOMAINS[domain].weightPct)
+    }
+  })
+
+  it('redistributes domain shortfall to available leftover questions', () => {
+    const pool = [
+      mkQ('overview-0', 1),
+      ...Array.from({ length: 20 }, (_, i) => mkQ(`recon-${i}`, 2)),
+    ]
+    const ids = buildExamQuestionIds(
+      { id: 'quick', label: 'Shortfall', count: 10, minutes: 1, desc: '' },
+      pool,
+      { overview: 50, recon: 50 },
+    )
+    const counts = countByDomain(ids, pool)
+
+    expect(ids).toHaveLength(10)
+    expect(new Set(ids).size).toBe(10)
+    expect(counts.overview).toBe(1)
+    expect(counts.recon).toBe(9)
   })
 })
 
@@ -70,5 +127,10 @@ describe('exam / gradeExam', () => {
     expect(result.passed).toBe(true) // 50 >= 50
     expect(gradeExam(session, questions, 75).passed).toBe(false)
     expect(result.timeUsedSec).toBe(50)
+    expect(result.perDomain.map((d) => [d.domainId, d.total, d.correct])).toEqual([
+      ['overview', 1, 1],
+      ['recon', 2, 1],
+      ['system', 1, 0],
+    ])
   })
 })
