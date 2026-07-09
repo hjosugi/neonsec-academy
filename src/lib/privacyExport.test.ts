@@ -20,6 +20,7 @@ const review: ReviewItem = {
   dueAt: 50,
   lastResult: 'correct',
   lastReviewed: 0,
+  confidence: 3,
   suspended: false,
 }
 

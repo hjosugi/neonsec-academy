@@ -2,9 +2,9 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { MistakeNote, Question } from '../types'
 import { useStore } from '../store/useStore'
-import { useQuestionMap } from '../store/selectors'
+import { useAllQuestionMap } from '../store/selectors'
 import { DOMAINS } from '../data/taxonomy'
-import { formatDate } from '../lib/format'
+import { DAY, formatDate, startOfDay } from '../lib/format'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { EmptyState } from '../components/ui/EmptyState'
@@ -16,6 +16,10 @@ const FIELDS: { key: keyof MistakeNote; label: string }[] = [
   { key: 'memoryPhrase', label: 'Memory phrase' },
   { key: 'nextAction', label: 'Next action' },
 ]
+
+function needsNotes(note: MistakeNote): boolean {
+  return [note.whyWrong, note.correctReasoning, note.memoryPhrase, note.nextAction].some((value) => value.trim() === '')
+}
 
 function MistakeCard({ note, question }: { note: MistakeNote; question?: Question }) {
   const upsert = useStore((s) => s.upsertMistake)
@@ -29,6 +33,7 @@ function MistakeCard({ note, question }: { note: MistakeNote; question?: Questio
           {question && <span className="badge badge--cyan">{question.module === 0 ? 'CEH+' : `M${question.module}`}</span>}
           {question && <span className="badge">{DOMAINS[question.domain].short}</span>}
           {note.resolved && <span className="badge badge--green">resolved</span>}
+          {needsNotes(note) && <span className="badge badge--amber">needs notes</span>}
           <span className="term t-xs dim">{formatDate(note.updatedAt)}</span>
         </div>
         <div className="row" style={{ gap: '0.35rem' }}>
@@ -68,24 +73,65 @@ function MistakeCard({ note, question }: { note: MistakeNote; question?: Questio
 
 export function Mistakes() {
   const mistakes = useStore((s) => s.mistakes)
-  const qmap = useQuestionMap()
+  const qmap = useAllQuestionMap()
   const [filter, setFilter] = useState<'open' | 'resolved' | 'all'>('open')
+  const [moduleFilter, setModuleFilter] = useState('all')
+  const [tagFilter, setTagFilter] = useState('all')
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | '7d' | '30d'>('all')
+  const [needsNotesOnly, setNeedsNotesOnly] = useState(false)
 
   const list = useMemo(() => {
     const arr = Object.values(mistakes).sort((a, b) => b.updatedAt - a.updatedAt)
-    if (filter === 'open') return arr.filter((m) => !m.resolved)
-    if (filter === 'resolved') return arr.filter((m) => m.resolved)
-    return arr
-  }, [mistakes, filter])
+    const now = Date.now()
+    const since =
+      dateFilter === 'today'
+        ? startOfDay(now)
+        : dateFilter === '7d'
+          ? now - 7 * DAY
+          : dateFilter === '30d'
+            ? now - 30 * DAY
+            : 0
+
+    return arr.filter((note) => {
+      const question = qmap.get(note.questionId)
+      if (filter === 'open' && note.resolved) return false
+      if (filter === 'resolved' && !note.resolved) return false
+      if (needsNotesOnly && !needsNotes(note)) return false
+      if (since > 0 && note.updatedAt < since) return false
+      if (moduleFilter !== 'all') {
+        if (!question) return false
+        const moduleKey = question.module === 0 ? 'ceh-plus' : String(question.module)
+        if (moduleKey !== moduleFilter) return false
+      }
+      if (tagFilter !== 'all' && !question?.tags.includes(tagFilter)) return false
+      return true
+    })
+  }, [mistakes, filter, moduleFilter, tagFilter, dateFilter, needsNotesOnly, qmap])
+
+  const moduleOptions = useMemo(() => {
+    const mods = new Set<string>()
+    Object.values(mistakes).forEach((note) => {
+      const question = qmap.get(note.questionId)
+      if (question) mods.add(question.module === 0 ? 'ceh-plus' : String(question.module))
+    })
+    return [...mods].sort((a, b) => (a === 'ceh-plus' ? 1 : b === 'ceh-plus' ? -1 : Number(a) - Number(b)))
+  }, [mistakes, qmap])
+
+  const tagOptions = useMemo(() => {
+    const tags = new Set<string>()
+    Object.values(mistakes).forEach((note) => qmap.get(note.questionId)?.tags.forEach((tag) => tags.add(tag)))
+    return [...tags].sort()
+  }, [mistakes, qmap])
 
   const openCount = Object.values(mistakes).filter((m) => !m.resolved).length
+  const incompleteCount = Object.values(mistakes).filter(needsNotes).length
 
   return (
     <div className="page">
       <PageHeader
         eyebrow="Retention // Mistake Notebook"
         title="Mistakes"
-        sub="Turn every miss into a lesson. Note the trap, the fix, and what to do next time."
+        sub={`Turn every miss into a lesson. ${incompleteCount} note${incompleteCount === 1 ? '' : 's'} still need detail.`}
         actions={
           <div className="segmented">
             <button className={filter === 'open' ? 'is-active' : ''} onClick={() => setFilter('open')}>
@@ -100,6 +146,46 @@ export function Mistakes() {
           </div>
         }
       />
+
+      <Panel title="Filters">
+        <div className="grid-4" style={{ gap: '0.7rem' }}>
+          <div className="field" style={{ margin: 0 }}>
+            <label className="label">Module</label>
+            <select className="select" value={moduleFilter} onChange={(e) => setModuleFilter(e.target.value)}>
+              <option value="all">All modules</option>
+              {moduleOptions.map((module) => (
+                <option key={module} value={module}>
+                  {module === 'ceh-plus' ? 'CEH+' : `M${module}`}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="field" style={{ margin: 0 }}>
+            <label className="label">Tag</label>
+            <select className="select" value={tagFilter} onChange={(e) => setTagFilter(e.target.value)}>
+              <option value="all">All tags</option>
+              {tagOptions.map((tag) => (
+                <option key={tag} value={tag}>
+                  #{tag}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="field" style={{ margin: 0 }}>
+            <label className="label">Updated</label>
+            <select className="select" value={dateFilter} onChange={(e) => setDateFilter(e.target.value as typeof dateFilter)}>
+              <option value="all">Any time</option>
+              <option value="today">Today</option>
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+            </select>
+          </div>
+          <label className="row" style={{ alignItems: 'center', gap: '0.5rem' }}>
+            <input type="checkbox" checked={needsNotesOnly} onChange={(e) => setNeedsNotesOnly(e.target.checked)} />
+            <span className="term t-xs muted">Needs notes only</span>
+          </label>
+        </div>
+      </Panel>
 
       {list.length === 0 ? (
         <Panel>

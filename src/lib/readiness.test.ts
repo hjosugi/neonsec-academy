@@ -16,6 +16,8 @@ const ov = (coverage: number, dueToday = 0): Overview => ({
 const strongMod: ModuleStat = {
   module: 1, moduleName: 'M1', domain: 'overview', district: 'gate',
   total: 4, seen: 4, correct: 4, attempts: 4, accuracy: 1, dueCount: 0, mastery: 0.9,
+  avgConfidence: 4,
+  recentTrend: 'flat',
 }
 
 const mockResult = (scorePct: number): ExamResult => ({

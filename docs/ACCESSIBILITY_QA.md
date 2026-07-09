@@ -27,6 +27,7 @@ Sound is default off.
 - [x] High-contrast mode brightens muted copy and hairlines.
 - [x] Status indicators pair color with text, symbols, labels, or badges.
 - [x] Command Palette opens from `/` or `Ctrl/Cmd+K`, supports arrow/enter/escape, and does not execute OS commands.
+- [x] Review shortcuts are documented in `docs/KEYBOARD_SHORTCUTS.md` and cover answer select, grade, next, and bookmark.
 - [x] Mobile layout collapses sidebars/grids, keeps review usable, and warns that full mocks are desktop-recommended.
 - [x] City Map remains a secondary progress overlay and can be hidden.
 

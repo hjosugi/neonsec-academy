@@ -318,9 +318,33 @@ export function Settings() {
 
           <Panel title="Study">
             <div className="field">
-              <label className="label">Daily review goal · {settings.dailyGoal} questions</label>
+              <label className="label">Daily activity goal · {settings.dailyGoal} attempts</label>
               <input type="range" min={5} max={60} step={5} value={settings.dailyGoal} onChange={(e) => set({ dailyGoal: Number(e.target.value) })} style={{ width: '100%' }} />
             </div>
+            <div className="field">
+              <label className="label">Daily review cap · {settings.reviewDailyLimit ?? 20} due cards</label>
+              <input
+                type="range"
+                min={5}
+                max={60}
+                step={5}
+                value={settings.reviewDailyLimit ?? 20}
+                onChange={(e) => set({ reviewDailyLimit: Number(e.target.value) })}
+                style={{ width: '100%' }}
+              />
+            </div>
+            <Toggle
+              label="Ask confidence"
+              hint="Use a 1-5 self-rating to tune review spacing; hidden input defaults to 3."
+              checked={settings.askConfidence ?? true}
+              onChange={(v) => set({ askConfidence: v })}
+            />
+            <Toggle
+              label="Achievements"
+              hint="Show lightweight local badges for study actions. No leaderboard."
+              checked={settings.achievementsEnabled ?? true}
+              onChange={(v) => set({ achievementsEnabled: v })}
+            />
             <div className="field" style={{ margin: 0 }}>
               <label className="label">Mock exam target · {profile.examTargetPct}%</label>
               <input type="range" min={65} max={95} step={5} value={profile.examTargetPct} onChange={(e) => updateProfile({ examTargetPct: Number(e.target.value) })} style={{ width: '100%' }} />

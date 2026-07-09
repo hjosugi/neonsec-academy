@@ -19,10 +19,10 @@ estimate: "3d"
 
 ## Requirements
 
-- [ ] review interval, due_at, ease, lapses, confidence を持つ
-- [ ] 回答結果と confidence から次回復習日を決める
-- [ ] 同じ日に出す問題数の上限を設定できる
-- [ ] manual reschedule を可能にする
+- [x] review interval, due_at, ease, lapses, confidence を持つ
+- [x] 回答結果と confidence から次回復習日を決める
+- [x] 同じ日に出す問題数の上限を設定できる
+- [x] manual reschedule を可能にする
 
 ## Acceptance Criteria
 
@@ -35,7 +35,7 @@ estimate: "3d"
 - [x] scheduler model を作る
 - [x] enqueue logic を作る
 - [x] due query を作る
-- [ ] settings を作る
+- [x] settings を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ estimate: "3d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

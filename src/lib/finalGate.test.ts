@@ -32,6 +32,8 @@ const mod = (module: number, patch: Partial<ModuleStat> = {}): ModuleStat => ({
   accuracy: 1,
   dueCount: 0,
   mastery: 0.8,
+  avgConfidence: 4,
+  recentTrend: 'flat',
   ...patch,
 })
 

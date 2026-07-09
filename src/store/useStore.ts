@@ -21,7 +21,7 @@ import type {
 } from '../types'
 import { SEED_QUESTIONS, enrichQuestion } from '../data/questions'
 import { XP } from '../data/taxonomy'
-import { DAY, dayKey } from '../lib/format'
+import { DAY, dayKey, startOfDay } from '../lib/format'
 import { uid } from '../lib/id'
 import { autoGrade, newReviewItem, scheduleNext } from '../lib/srs'
 import { isCorrect } from '../lib/grade'
@@ -52,6 +52,9 @@ const defaultSettings: Settings = {
   scanlines: true,
   sound: false,
   dailyGoal: 20,
+  reviewDailyLimit: 20,
+  askConfidence: true,
+  achievementsEnabled: true,
   labPassingScore: 80,
   labHintPenalty: 2,
   labScopeWarningPenalty: 5,
@@ -134,6 +137,7 @@ interface AppActions {
     timeMs?: number,
     confidence?: AttemptConfidence,
   ) => void
+  rescheduleReview: (questionId: string, dueAt: number) => void
   // bookmarks + mistakes
   toggleBookmark: (questionId: string) => void
   upsertMistake: (questionId: string, patch: Partial<MistakeNote>) => void
@@ -195,7 +199,7 @@ export const useStore = create<Store>()(
           const attempts = [...s.attempts, attempt]
           const reviews = { ...s.reviews }
           const existing = reviews[questionId] ?? newReviewItem(questionId, now)
-          reviews[questionId] = scheduleNext(existing, autoGrade(correct), now)
+          reviews[questionId] = scheduleNext(existing, autoGrade(correct, confidence), now, confidence)
           const baseXp = correct ? XP.answerCorrect : XP.answerWrong
           const profile = withActivity(s.profile, attempts, now, baseXp, s.settings.dailyGoal)
           return { attempts, reviews, profile }
@@ -219,12 +223,28 @@ export const useStore = create<Store>()(
           const attempts = [...s.attempts, attempt]
           const reviews = { ...s.reviews }
           const existing = reviews[questionId] ?? newReviewItem(questionId, now)
-          reviews[questionId] = scheduleNext(existing, grade, now)
+          reviews[questionId] = scheduleNext(existing, grade, now, confidence)
           const profile = withActivity(s.profile, attempts, now, XP.reviewDone, s.settings.dailyGoal)
           return { attempts, reviews, profile }
         })
         get().refreshBadges()
       },
+
+      rescheduleReview: (questionId, dueAt) =>
+        set((s) => {
+          const now = Date.now()
+          const existing = s.reviews[questionId] ?? newReviewItem(questionId, now)
+          return {
+            reviews: {
+              ...s.reviews,
+              [questionId]: {
+                ...existing,
+                dueAt: startOfDay(dueAt),
+                suspended: false,
+              },
+            },
+          }
+        }),
 
       toggleBookmark: (questionId) =>
         set((s) => ({
@@ -398,13 +418,14 @@ export const useStore = create<Store>()(
 
       awardBadge: (id) =>
         set((s) =>
-          s.profile.badges.includes(id)
+          s.settings.achievementsEnabled === false || s.profile.badges.includes(id)
             ? {}
             : { profile: { ...s.profile, badges: [...s.profile.badges, id] } },
         ),
 
       refreshBadges: () =>
         set((s) => {
+          if (s.settings.achievementsEnabled === false) return {}
           const questions = buildActiveQuestions(s.userQuestions, s.archivedIds)
           const mods = moduleStats(questions, s.attempts, s.reviews, Date.now())
           const domains = domainStats(mods)

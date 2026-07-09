@@ -12,6 +12,32 @@
 4. Weak CEH module
 5. Bookmarked / pinned
 
+## Scheduling Inputs
+
+Each reviewed question keeps one `ReviewItem` with `intervalDays`, `dueAt`, `ease`, `lapses`,
+`lastReviewed`, and the latest self-rated `confidence` when available.
+
+- Incorrect answers schedule as `again` and return tomorrow.
+- Correct answers use the 4-button grade plus confidence.
+- Confidence `1` or `2` shortens the next interval; confidence `5` slightly extends it.
+- If confidence input is hidden in Settings, the app records the neutral default `3`.
+- Question Detail can manually reschedule a card for now, tomorrow, or seven days out.
+- Settings exposes a daily review cap so one day does not flood the queue.
+
+## Daily Review Session State
+
+Daily Review freezes the due queue when a session starts. The current queue, index, correct count,
+and creation time are saved in localStorage under `neonsec:review-session:v1`, so leaving the review
+screen and coming back resumes the in-progress session. Finishing or starting a fresh review clears
+that saved session.
+
+## Streaks And Achievements
+
+The dashboard shows the current study streak with copy that treats a missed day as a restart point,
+not a failure. Lightweight achievements are limited to local learning behavior such as reviews,
+module coverage, mock exams, reports, and answer accuracy; there is no leaderboard. Settings can
+hide achievements and pause new badge awards while keeping progress, reviews, and readiness active.
+
 ## Session Types
 
 | Session | Size | Purpose |
@@ -21,6 +47,25 @@
 | Final Sprint | 50 | Exam prep |
 | Mistake Review | variable | Wrong answers only |
 
+## Keyboard Review Flow
+
+See `docs/KEYBOARD_SHORTCUTS.md` for the full map. In Review, answer choices use number keys before
+submit; after reveal, `1`/`2`/`3`/`4` apply `Again`/`Hard`/`Good`/`Easy`. `Enter`, `N`, and
+right-arrow advance with `Good` when correct and `Again` when incorrect. `B` toggles bookmark.
+
+## Scheduling Model
+
+Review items store `intervalDays`, `dueAt`, `ease`, `lapses`, latest result, and latest confidence.
+The app uses an SM-2 style scheduler:
+
+- Incorrect answers schedule an `again` review for tomorrow and increment lapses.
+- Correct answers with low confidence (`1`-`2`) are treated as harder recalls and get shorter intervals.
+- Correct answers with high confidence (`5`) can move further out.
+- Settings has a separate daily review cap so a large backlog does not overload one session.
+- Question Detail can manually reschedule a review item to now, tomorrow, or seven days out.
+- Daily Review lets the learner choose a session size from currently due cards. The active queue,
+  current index, and correct count are saved in local storage so "Save & exit" can resume later.
+
 ## Mistake Notebook Fields
 
 - Why I was wrong
@@ -28,6 +73,10 @@
 - Trap pattern
 - Memory phrase
 - Next action
+
+The notebook supports open/resolved status, module filters, tag filters, updated-date filters, and
+a "needs notes" view for entries missing the core reflection fields. Dashboard and Question Detail
+link back to the notebook so missed questions are visible outside the list view.
 
 ## Readiness Factors
 

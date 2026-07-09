@@ -10,6 +10,23 @@ import { StatBars } from '../components/charts/Bars'
 
 const BAND = { green: 'var(--acid-green)', amber: 'var(--warning-amber)', red: 'var(--danger-red)' }
 
+function confidenceLabel(value: number): string {
+  return value < 0 ? '-' : `${value.toFixed(1)}/5`
+}
+
+function trendLabel(trend: string): string {
+  switch (trend) {
+    case 'up':
+      return 'improving'
+    case 'down':
+      return 'slipping'
+    case 'flat':
+      return 'flat'
+    default:
+      return 'insufficient data'
+  }
+}
+
 export function Analytics() {
   const navigate = useNavigate()
   const mods = useModuleStats()
@@ -105,6 +122,8 @@ export function Analytics() {
                 <th>Domain</th>
                 <th style={{ width: 180 }}>Mastery</th>
                 <th>Accuracy</th>
+                <th>Confidence</th>
+                <th>Trend</th>
                 <th>Seen</th>
                 <th>Due</th>
               </tr>
@@ -128,6 +147,8 @@ export function Analytics() {
                     </div>
                   </td>
                   <td className="mono tabnum t-sm">{m.accuracy < 0 ? '—' : `${Math.round(m.accuracy * 100)}%`}</td>
+                  <td className="mono tabnum t-sm">{confidenceLabel(m.avgConfidence)}</td>
+                  <td className="term t-xs dim">{trendLabel(m.recentTrend)}</td>
                   <td className="term t-sm dim">
                     {m.seen}/{m.total}
                   </td>

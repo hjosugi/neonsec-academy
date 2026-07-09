@@ -103,12 +103,14 @@ and `confidence` is an optional 1-5 self-rating.
   "dueAt": 1783717200000,
   "lastResult": "incorrect",
   "lastReviewed": 1783630800000,
+  "confidence": 2,
   "suspended": false
 }
 ```
 
 The store keeps review items in a map keyed by `questionId`, which prevents duplicate active review
-schedules for one question.
+schedules for one question. `confidence` records the latest 1-5 self-rating used by the scheduler;
+low confidence shortens the next interval and high confidence can lengthen it.
 
 ## MistakeNote
 
@@ -190,8 +192,9 @@ Reports are the portable record for safe practical work. They must cite syntheti
 | CEH+ filtering | `question.track` where `module` is `0`. |
 | Full-text search | Lowercased `title`, `body`, `tags`, and `moduleName`. |
 | Question Bank filters | `module`, `domain`, `difficulty`, `type`, active/archive status, selected tags, bookmark state, and last attempt result. |
-| Review queue | `reviews[questionId]`, `dueAt`, and `suspended`. |
+| Review queue | `reviews[questionId]`, `dueAt`, `confidence`, and `suspended`. |
 | Attempt history | `questionId`, `at`, `mode`, `chosen`, `correct`, `timeMs`, and `confidence`. |
+| Mistake notebook | `mistakes[questionId]`, resolved state, `updatedAt`, question module, and question tags. |
 | Reports | `report.id`, `updatedAt`, and finding severity. |
 
 ## Import And Export Schema

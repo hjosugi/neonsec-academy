@@ -9,7 +9,7 @@ import {
   useReadiness,
 } from '../store/selectors'
 import { weakestModules } from '../lib/analytics'
-import { pct } from '../lib/format'
+import { DAY, dayKey, pct } from '../lib/format'
 import { BADGES, DOMAINS } from '../data/taxonomy'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
@@ -43,6 +43,15 @@ function StatTile({ value, label, accent }: { value: string; label: string; acce
   )
 }
 
+function streakMessage(lastActiveDay: string | null, streakDays: number) {
+  const today = dayKey()
+  const yesterday = dayKey(Date.now() - DAY)
+  if (lastActiveDay === today) return `Today is logged. Current streak: ${streakDays} day${streakDays === 1 ? '' : 's'}.`
+  if (lastActiveDay === yesterday) return 'A short review today keeps the streak moving.'
+  if (lastActiveDay) return 'No penalty here. Restart with one review or practice question today.'
+  return 'Start with one review or practice question today.'
+}
+
 export function Dashboard() {
   const navigate = useNavigate()
   const ov = useOverview()
@@ -53,8 +62,14 @@ export function Dashboard() {
   const results = useStore((s) => s.examResults)
   const profile = useStore((s) => s.profile)
   const settings = useStore((s) => s.settings)
+  const mistakes = useStore((s) => s.mistakes)
   const streak = profile.streakDays
   const badges = profile.badges
+  const mistakeList = Object.values(mistakes)
+  const openMistakes = mistakeList.filter((note) => !note.resolved).length
+  const incompleteMistakes = mistakeList.filter((note) =>
+    [note.whyWrong, note.correctReasoning, note.memoryPhrase, note.nextAction].some((value) => value.trim() === ''),
+  ).length
 
   const weak = useMemo(() => weakestModules(mods, 5), [mods])
   const mockScores = useMemo(
@@ -72,7 +87,7 @@ export function Dashboard() {
             Dashboard <span className="badge badge--cyan">{rank.title}</span>
           </>
         }
-        sub={`Plan: ${GOAL_LABEL[profile.studyGoal ?? 'all']} · ${settings.dailyGoal} reviews/day${
+        sub={`Plan: ${GOAL_LABEL[profile.studyGoal ?? 'all']} · ${settings.reviewDailyLimit ?? 20} due reviews/day${
           profile.targetDate ? ` · target ${profile.targetDate}` : ''
         }. Drill the bank, clear your reviews, and push readiness into the green.`}
       />
@@ -195,6 +210,12 @@ export function Dashboard() {
               <Link to="/bank" className="btn btn--ghost btn--block">
                 ▤ Browse question bank
               </Link>
+              <Link to="/mistakes" className="btn btn--ghost btn--block">
+                ⚑ Mistake notebook
+                <span className="term t-xs dim" style={{ display: 'block' }}>
+                  {openMistakes} open · {incompleteMistakes} need notes
+                </span>
+              </Link>
               <Link to="/map" className="btn btn--ghost btn--block">
                 ⬡ Explore the city
               </Link>
@@ -203,21 +224,28 @@ export function Dashboard() {
 
           {/* Achievements */}
           <Panel title="Achievements" right={<span className="term t-xs dim">{badges.length}/{BADGES.length}</span>}>
-            <div className="row wrap" style={{ gap: '0.4rem' }}>
-              {BADGES.map((b) => {
-                const earned = badges.includes(b.id)
-                return (
-                  <span
-                    key={b.id}
-                    className={`badge ${earned ? 'badge--cyan' : ''}`}
-                    title={`${b.name} — ${b.desc}`}
-                    style={{ opacity: earned ? 1 : 0.35 }}
-                  >
-                    {b.glyph} <span className="hide-sm">{earned ? b.name : '???'}</span>
-                  </span>
-                )
-              })}
-            </div>
+            <p className="term t-xs dim mb-2">{streakMessage(profile.lastActiveDay, streak)}</p>
+            {settings.achievementsEnabled === false ? (
+              <p className="muted t-sm">
+                Achievements are hidden in Settings. Progress, reviews, and readiness still update normally.
+              </p>
+            ) : (
+              <div className="row wrap" style={{ gap: '0.4rem' }}>
+                {BADGES.map((b) => {
+                  const earned = badges.includes(b.id)
+                  return (
+                    <span
+                      key={b.id}
+                      className={`badge ${earned ? 'badge--cyan' : ''}`}
+                      title={`${b.name} — ${b.desc}`}
+                      style={{ opacity: earned ? 1 : 0.35 }}
+                    >
+                      {b.glyph} <span className="hide-sm">{earned ? b.name : '???'}</span>
+                    </span>
+                  )
+                })}
+              </div>
+            )}
           </Panel>
         </div>
       </div>

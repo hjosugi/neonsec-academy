@@ -66,13 +66,15 @@ export interface DueEntry {
 export function useDueQueue(limit?: number): DueEntry[] {
   const qmap = useQuestionMap()
   const reviews = useStore((s) => s.reviews)
+  const reviewDailyLimit = useStore((s) => s.settings.reviewDailyLimit ?? 20)
   const day = startOfDay(Date.now())
   return useMemo(() => {
     const due = Object.values(reviews).filter((r) => isDue(r, day) && qmap.has(r.questionId))
     due.sort((a, b) => a.dueAt - b.dueAt || a.ease - b.ease)
     const arr = due.map((r) => ({ question: qmap.get(r.questionId)!, item: r }))
-    return typeof limit === 'number' ? arr.slice(0, limit) : arr
-  }, [reviews, qmap, day, limit])
+    const cap = typeof limit === 'number' ? limit : reviewDailyLimit
+    return cap > 0 ? arr.slice(0, cap) : arr
+  }, [reviews, qmap, day, limit, reviewDailyLimit])
 }
 
 export function useRank() {

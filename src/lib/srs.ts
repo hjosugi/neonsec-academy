@@ -2,7 +2,7 @@
 // Spaced repetition — SM-2 variant with a 4-button grade UI.
 // See docs/REVIEW_SYSTEM.md
 // ============================================================
-import type { Grade, ReviewItem } from '../types'
+import type { AttemptConfidence, Grade, ReviewItem } from '../types'
 import { DAY, startOfDay } from './format'
 
 const MIN_EASE = 1.3
@@ -31,12 +31,25 @@ export function newReviewItem(questionId: string, now: number): ReviewItem {
     dueAt: startOfDay(now),
     lastResult: null,
     lastReviewed: null,
+    confidence: null,
     suspended: false,
   }
 }
 
+function intervalForConfidence(intervalDays: number, confidence?: AttemptConfidence): number {
+  if (!confidence) return intervalDays
+  if (confidence <= 2) return Math.max(1, Math.round(intervalDays * 0.7))
+  if (confidence === 5) return Math.max(1, Math.round(intervalDays * 1.15))
+  return intervalDays
+}
+
 /** Apply a grade and return the next scheduling state. */
-export function scheduleNext(item: ReviewItem, grade: Grade, now: number): ReviewItem {
+export function scheduleNext(
+  item: ReviewItem,
+  grade: Grade,
+  now: number,
+  confidence?: AttemptConfidence,
+): ReviewItem {
   const q = gradeToQuality(grade)
   let ease = item.ease + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02))
   ease = Math.max(MIN_EASE, ease)
@@ -55,6 +68,7 @@ export function scheduleNext(item: ReviewItem, grade: Grade, now: number): Revie
     else if (reps === 1) intervalDays = 6
     else intervalDays = Math.round(item.intervalDays * ease)
     if (grade === 'hard') intervalDays = Math.max(1, Math.round(intervalDays * 0.8))
+    intervalDays = intervalForConfidence(intervalDays, confidence)
     reps += 1
   }
 
@@ -69,13 +83,17 @@ export function scheduleNext(item: ReviewItem, grade: Grade, now: number): Revie
     dueAt: startOfDay(now) + intervalDays * DAY,
     lastReviewed: now,
     lastResult: q < 3 ? 'incorrect' : 'correct',
+    confidence: confidence ?? item.confidence ?? null,
     suspended: false,
   }
 }
 
 /** Auto-grade mapping used when a question is answered outside review mode. */
-export function autoGrade(correct: boolean): Grade {
-  return correct ? 'good' : 'again'
+export function autoGrade(correct: boolean, confidence?: AttemptConfidence): Grade {
+  if (!correct) return 'again'
+  if (confidence && confidence <= 2) return 'hard'
+  if (confidence === 5) return 'easy'
+  return 'good'
 }
 
 export function isDue(item: ReviewItem, now: number): boolean {

@@ -19,20 +19,20 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] Review で 1/2/3/4, Enter, Next, Bookmark を keyboard で操作できる
+- [x] Review で 1/2/3/4, Enter, Next, Bookmark を keyboard で操作できる
 - [x] Command palette を呼び出せる shortcut を定義する
 - [x] reduced motion setting で animation を無効化する
 - [x] focus ring は neon だが視認性を優先する
 
 ## Acceptance Criteria
 
-- [ ] 主要操作が keyboard だけで完了できる
+- [x] 主要操作が keyboard だけで完了できる
 - [x] reduced motion on で animation が止まる
 - [x] focus state が見える
 
 ## Subtasks
 
-- [ ] shortcut map を作る
+- [x] shortcut map を作る
 - [x] review runner に追加する
 - [x] settings を作る
 - [x] accessibility QA を行う
@@ -47,17 +47,17 @@ estimate: "2d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

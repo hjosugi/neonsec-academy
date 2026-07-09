@@ -76,6 +76,7 @@ export interface ReviewItem {
   dueAt: number // epoch ms
   lastResult: 'correct' | 'incorrect' | null
   lastReviewed: number | null
+  confidence?: AttemptConfidence | null
   suspended: boolean
 }
 
@@ -179,12 +180,17 @@ export interface Settings {
   scanlines: boolean
   sound: boolean
   dailyGoal: number
+  reviewDailyLimit: number
+  askConfidence: boolean
+  achievementsEnabled: boolean
   labPassingScore: number
   labHintPenalty: number
   labScopeWarningPenalty: number
 }
 
 // ---- Derived analytics ----
+export type RecentTrend = 'up' | 'down' | 'flat' | 'insufficient'
+
 export interface ModuleStat {
   module: number
   moduleName: string
@@ -197,6 +203,8 @@ export interface ModuleStat {
   accuracy: number // 0..1 over attempts, -1 if none
   dueCount: number
   mastery: number // 0..1 blended score
+  avgConfidence: number // 1..5, -1 if none
+  recentTrend: RecentTrend
 }
 
 export interface DomainStat {

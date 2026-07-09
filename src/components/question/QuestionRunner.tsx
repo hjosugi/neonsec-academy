@@ -16,6 +16,7 @@ interface Props {
 }
 
 const CONFIDENCE_OPTIONS: AttemptConfidence[] = [1, 2, 3, 4, 5]
+const REVIEW_GRADE_KEYS: Grade[] = ['again', 'hard', 'good', 'easy']
 
 export function QuestionRunner({ question, mode, index, total, onNext }: Props) {
   const recordAttempt = useStore((s) => s.recordAttempt)
@@ -24,6 +25,7 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
   const toggleBookmark = useStore((s) => s.toggleBookmark)
   const upsertMistake = useStore((s) => s.upsertMistake)
   const hasMistake = useStore((s) => !!s.mistakes[question.id])
+  const askConfidence = useStore((s) => s.settings.askConfidence ?? true)
 
   const [selected, setSelected] = useState<string[]>([])
   const [freeformAnswer, setFreeformAnswer] = useState('')
@@ -39,6 +41,7 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
   const chosenValue = isMulti ? selected : isFreeformQuestion ? freeformAnswer.trim() || null : selected[0] ?? null
   const correct = isFreeformQuestion ? selfCorrect === true : isCorrect(question, chosenValue)
   const bookmarked = bookmarks.includes(question.id)
+  const effectiveConfidence: AttemptConfidence = askConfidence ? confidence : 3
   const elapsedMs = () => Math.max(0, Date.now() - startedAt)
 
   const pick = (choice: string) => {
@@ -55,14 +58,14 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
     setGraded(true)
     // practice + choice -> record immediately (correctness known)
     if (mode === 'practice' && !isFreeformQuestion) {
-      recordAttempt(question.id, chosenValue, isCorrect(question, chosenValue), 'practice', elapsedMs(), confidence)
+      recordAttempt(question.id, chosenValue, isCorrect(question, chosenValue), 'practice', elapsedMs(), effectiveConfidence)
     }
   }
 
   const finishFreeform = (ok: boolean) => {
     setSelfCorrect(ok)
     if (mode === 'practice') {
-      recordAttempt(question.id, chosenValue, ok, 'practice', elapsedMs(), confidence)
+      recordAttempt(question.id, chosenValue, ok, 'practice', elapsedMs(), effectiveConfidence)
       onNext(ok)
     }
     // review free-form -> grade buttons handle it (see below)
@@ -70,7 +73,7 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
 
   const applyGrade = (g: Grade) => {
     const c = isFreeformQuestion ? g !== 'again' : correct
-    gradeReview(question.id, g, c, chosenValue, elapsedMs(), confidence)
+    gradeReview(question.id, g, c, chosenValue, elapsedMs(), effectiveConfidence)
     onNext(c)
   }
 
@@ -83,18 +86,40 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
     setMistakeAdded(true)
   }
 
-  // keyboard: 1-6 to pick, Enter to submit / advance in practice
+  // keyboard: numbers pick answers; review also supports 1/2/3/4 grades, Enter/N next, and B bookmark.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement
-      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return
+      const tag = t?.tagName
+      if (e.repeat || (t && (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'BUTTON' || t.isContentEditable))) return
+      const key = e.key.toLowerCase()
+
+      if (key === 'b') {
+        e.preventDefault()
+        toggleBookmark(question.id)
+        return
+      }
+
+      if (graded && mode === 'review' && (!isFreeformQuestion || selfCorrect !== null)) {
+        if (/^[1-4]$/.test(e.key)) {
+          e.preventDefault()
+          applyGrade(REVIEW_GRADE_KEYS[Number(e.key) - 1])
+          return
+        }
+        if (key === 'enter' || key === 'n' || key === 'arrowright') {
+          e.preventDefault()
+          applyGrade(correct ? 'good' : 'again')
+          return
+        }
+      }
+
       if (!graded && !isFreeformQuestion && /^[1-9]$/.test(e.key)) {
         const i = Number(e.key) - 1
         if (question.choices && i < question.choices.length) {
           e.preventDefault()
           pick(question.choices[i])
         }
-      } else if (e.key === 'Enter') {
+      } else if (key === 'enter') {
         if (!graded && (isFreeformQuestion || selected.length > 0)) {
           e.preventDefault()
           reveal()
@@ -102,12 +127,15 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
           e.preventDefault()
           onNext(correct)
         }
+      } else if ((key === 'n' || key === 'arrowright') && graded && mode === 'practice' && !isFreeformQuestion) {
+        e.preventDefault()
+        onNext(correct)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [graded, selected, isFreeformQuestion])
+  }, [graded, selected, isFreeformQuestion, selfCorrect, confidence, askConfidence])
 
   const choiceClass = (choice: string): string => {
     const cls = ['choice']
@@ -194,7 +222,7 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
         </div>
       )}
 
-      {(!graded || mode === 'review' || (isFreeformQuestion && selfCorrect === null)) && confidenceControl}
+      {askConfidence && (!graded || mode === 'review' || (isFreeformQuestion && selfCorrect === null)) && confidenceControl}
 
       {/* action bar */}
       {!graded && (

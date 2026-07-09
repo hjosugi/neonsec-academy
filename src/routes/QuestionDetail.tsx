@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { useAllQuestionMap } from '../store/selectors'
 import { DISTRICTS, DOMAINS } from '../data/taxonomy'
-import { formatDateTime, formatDuration, pct, relativeDay } from '../lib/format'
+import { DAY, formatDateTime, formatDuration, pct, relativeDay, startOfDay } from '../lib/format'
 import type { Attempt } from '../types'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
@@ -19,6 +19,29 @@ function attemptTime(attempt: Attempt): string {
   return typeof attempt.timeMs === 'number' ? formatDuration(Math.round(attempt.timeMs / 1000)) : '-'
 }
 
+function averageConfidence(attempts: Attempt[]): number {
+  const values = attempts
+    .map((attempt) => attempt.confidence)
+    .filter((value): value is NonNullable<Attempt['confidence']> => typeof value === 'number')
+  if (values.length === 0) return -1
+  return values.reduce((sum, value) => sum + value, 0) / values.length
+}
+
+function confidenceTrend(attempts: Attempt[]): string {
+  const values = attempts
+    .map((attempt) => attempt.confidence)
+    .filter((value): value is NonNullable<Attempt['confidence']> => typeof value === 'number')
+  if (values.length < 2) return 'insufficient data'
+  const previous = values.slice(0, -1).reduce((sum, value) => sum + value, 0) / (values.length - 1)
+  const diff = values[values.length - 1] - previous
+  if (Math.abs(diff) < 0.25) return 'flat'
+  return diff > 0 ? 'improving' : 'slipping'
+}
+
+function mistakeNeedsNotes(note: { whyWrong: string; correctReasoning: string; memoryPhrase: string; nextAction: string }): boolean {
+  return [note.whyWrong, note.correctReasoning, note.memoryPhrase, note.nextAction].some((value) => value.trim() === '')
+}
+
 export function QuestionDetail() {
   const { id = '' } = useParams()
   const navigate = useNavigate()
@@ -27,9 +50,11 @@ export function QuestionDetail() {
 
   const reviews = useStore((s) => s.reviews)
   const attempts = useStore((s) => s.attempts)
+  const mistakes = useStore((s) => s.mistakes)
   const archivedIds = useStore((s) => s.archivedIds)
   const archiveQuestion = useStore((s) => s.archiveQuestion)
   const unarchiveQuestion = useStore((s) => s.unarchiveQuestion)
+  const rescheduleReview = useStore((s) => s.rescheduleReview)
 
   if (!question) {
     return (
@@ -46,13 +71,17 @@ export function QuestionDetail() {
   }
 
   const review = reviews[question.id]
+  const mistake = mistakes[question.id]
   const myAttempts = attempts.filter((a) => a.questionId === question.id).sort((a, b) => a.at - b.at)
   const lastAttempt = myAttempts[myAttempts.length - 1]
   const correctAttempts = myAttempts.filter((a) => a.correct).length
   const accuracy = myAttempts.length > 0 ? correctAttempts / myAttempts.length : -1
+  const avgConfidence = averageConfidence(myAttempts)
+  const confidenceDirection = confidenceTrend(myAttempts)
   const isUser = question.source === 'user'
   const isArchived = archivedIds.includes(question.id)
   const district = DISTRICTS.find((d) => d.id === question.district)
+  const setReviewDueIn = (days: number) => rescheduleReview(question.id, startOfDay(Date.now()) + days * DAY)
 
   return (
     <div className="page">
@@ -125,9 +154,37 @@ export function QuestionDetail() {
                     {review.reps} / {review.lapses}
                   </span>
                 </div>
+                <div className="inspector__row">
+                  <span className="k">Confidence</span>
+                  <span className="right">{review.confidence ? `${review.confidence}/5` : '-'}</span>
+                </div>
+                <div className="row wrap mt-2" style={{ gap: '0.45rem' }}>
+                  <button className="btn btn--ghost btn--sm" onClick={() => setReviewDueIn(0)}>
+                    Due now
+                  </button>
+                  <button className="btn btn--ghost btn--sm" onClick={() => setReviewDueIn(1)}>
+                    Tomorrow
+                  </button>
+                  <button className="btn btn--ghost btn--sm" onClick={() => setReviewDueIn(7)}>
+                    +7d
+                  </button>
+                </div>
               </>
             ) : (
-              <p className="term t-xs dim">Not in your review queue yet. Answer it to schedule it.</p>
+              <>
+                <p className="term t-xs dim">Not in your review queue yet. Add it manually or answer it to schedule it.</p>
+                <div className="row wrap mt-2" style={{ gap: '0.45rem' }}>
+                  <button className="btn btn--ghost btn--sm" onClick={() => setReviewDueIn(0)}>
+                    Due now
+                  </button>
+                  <button className="btn btn--ghost btn--sm" onClick={() => setReviewDueIn(1)}>
+                    Tomorrow
+                  </button>
+                  <button className="btn btn--ghost btn--sm" onClick={() => setReviewDueIn(7)}>
+                    +7d
+                  </button>
+                </div>
+              </>
             )}
             <div className="inspector__row">
               <span className="k">Attempts</span>
@@ -138,6 +195,18 @@ export function QuestionDetail() {
                 <span className="k">Accuracy</span>
                 <span className="right">{pct(accuracy)}</span>
               </div>
+            )}
+            {avgConfidence >= 0 && (
+              <>
+                <div className="inspector__row">
+                  <span className="k">Avg confidence</span>
+                  <span className="right">{avgConfidence.toFixed(1)}/5</span>
+                </div>
+                <div className="inspector__row">
+                  <span className="k">Confidence trend</span>
+                  <span className="right">{confidenceDirection}</span>
+                </div>
+              </>
             )}
             {lastAttempt && (
               <>
@@ -154,6 +223,38 @@ export function QuestionDetail() {
               </>
             )}
           </Panel>
+
+          {mistake && (
+            <Panel title="Mistake Note">
+              <div className="stack stack--sm">
+                <div className="row wrap" style={{ gap: '0.4rem' }}>
+                  <span className={`badge ${mistake.resolved ? 'badge--green' : 'badge--amber'}`}>
+                    {mistake.resolved ? 'resolved' : 'open'}
+                  </span>
+                  {mistakeNeedsNotes(mistake) && <span className="badge badge--amber">needs notes</span>}
+                  <span className="term t-xs dim">Updated {formatDateTime(mistake.updatedAt)}</span>
+                </div>
+                <p className="term t-xs muted">
+                  {mistake.memoryPhrase || mistake.trapPattern || 'Capture why this missed answer happened and what to do next.'}
+                </p>
+                <div className="inspector__row">
+                  <span className="k">Why wrong</span>
+                  <span className="right">{mistake.whyWrong || '-'}</span>
+                </div>
+                <div className="inspector__row">
+                  <span className="k">Correct reasoning</span>
+                  <span className="right">{mistake.correctReasoning || '-'}</span>
+                </div>
+                <div className="inspector__row">
+                  <span className="k">Next action</span>
+                  <span className="right">{mistake.nextAction || '-'}</span>
+                </div>
+                <button className="btn btn--ghost btn--sm btn--block" onClick={() => navigate('/mistakes')}>
+                  Open notebook
+                </button>
+              </div>
+            </Panel>
+          )}
 
           <Panel title="Actions">
             <div className="stack stack--sm">

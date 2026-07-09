@@ -11,6 +11,7 @@ describe('srs / SM-2', () => {
     expect(item.ease).toBe(2.5)
     expect(item.lapses).toBe(0)
     expect(item.dueAt).toBe(startOfDay(T0))
+    expect(item.confidence).toBeNull()
   })
 
   it('grows intervals 1 → 6 → 15 on repeated "good"', () => {
@@ -59,6 +60,27 @@ describe('srs / SM-2', () => {
     h = scheduleNext(h, 'good', T0)
     h = scheduleNext(h, 'hard', T0)
     expect(h.intervalDays).toBeLessThan(g.intervalDays)
+  })
+
+  it('uses confidence to tune automatic grade and interval', () => {
+    expect(autoGrade(true, 1)).toBe('hard')
+    expect(autoGrade(true, 3)).toBe('good')
+    expect(autoGrade(true, 5)).toBe('easy')
+    expect(autoGrade(false, 5)).toBe('again')
+
+    let low = newReviewItem('q1', T0)
+    let high = newReviewItem('q1', T0)
+    for (let i = 0; i < 3; i++) {
+      low = scheduleNext(low, 'good', T0)
+      high = scheduleNext(high, 'good', T0)
+    }
+
+    low = scheduleNext(low, 'good', T0, 1)
+    high = scheduleNext(high, 'good', T0, 5)
+
+    expect(low.confidence).toBe(1)
+    expect(high.confidence).toBe(5)
+    expect(low.intervalDays).toBeLessThan(high.intervalDays)
   })
 
   it('isDue respects the due date and suspension', () => {

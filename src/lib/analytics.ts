@@ -7,6 +7,7 @@ import type {
   DomainStat,
   ModuleStat,
   Question,
+  RecentTrend,
   ReviewItem,
 } from '../types'
 import { DOMAINS, MODULES } from '../data/taxonomy'
@@ -27,6 +28,28 @@ function blendMastery(coverage: number, accuracy: number, attempts: number): num
   return 0.35 * coverage + 0.65 * accuracy
 }
 
+function average(values: number[]): number {
+  if (values.length === 0) return -1
+  return values.reduce((sum, value) => sum + value, 0) / values.length
+}
+
+function accuracyOf(attempts: Attempt[]): number {
+  if (attempts.length === 0) return -1
+  return attempts.filter((a) => a.correct).length / attempts.length
+}
+
+export function recentAccuracyTrend(attempts: Attempt[]): RecentTrend {
+  if (attempts.length < 4) return 'insufficient'
+  const ordered = [...attempts].sort((a, b) => a.at - b.at)
+  const windowSize = Math.min(6, Math.floor(ordered.length / 2))
+  if (windowSize < 2) return 'insufficient'
+  const previous = ordered.slice(-windowSize * 2, -windowSize)
+  const recent = ordered.slice(-windowSize)
+  const diff = accuracyOf(recent) - accuracyOf(previous)
+  if (Math.abs(diff) < 0.1) return 'flat'
+  return diff > 0 ? 'up' : 'down'
+}
+
 export function moduleStats(
   questions: Question[],
   attempts: Attempt[],
@@ -38,19 +61,27 @@ export function moduleStats(
   // group attempts by module
   const perModule = new Map<
     number,
-    { attempts: number; correct: number; seen: Set<string> }
+    {
+      attempts: number
+      correct: number
+      seen: Set<string>
+      confidence: number[]
+      timeline: Attempt[]
+    }
   >()
   for (const a of attempts) {
     const q = qById.get(a.questionId)
     if (!q) continue
     let rec = perModule.get(q.module)
     if (!rec) {
-      rec = { attempts: 0, correct: 0, seen: new Set() }
+      rec = { attempts: 0, correct: 0, seen: new Set(), confidence: [], timeline: [] }
       perModule.set(q.module, rec)
     }
     rec.attempts++
     if (a.correct) rec.correct++
     rec.seen.add(a.questionId)
+    rec.timeline.push(a)
+    if (typeof a.confidence === 'number') rec.confidence.push(a.confidence)
   }
 
   // due counts by module
@@ -85,6 +116,8 @@ export function moduleStats(
       accuracy,
       dueCount: dueByModule.get(m.module) ?? 0,
       mastery,
+      avgConfidence: average(rec?.confidence ?? []),
+      recentTrend: recentAccuracyTrend(rec?.timeline ?? []),
     }
   })
 }

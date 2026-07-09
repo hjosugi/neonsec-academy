@@ -19,10 +19,10 @@ module, tag, question type, difficulty ごとの弱点を見える化する。
 
 ## Requirements
 
-- [ ] accuracy, attempts, due count, average confidence, recent trend を計算する
+- [x] accuracy, attempts, due count, average confidence, recent trend を計算する
 - [x] CEH 20 module coverage を一覧表示する
 - [x] weakest 3 modules と next action を出す
-- [ ] データが少ない場合は insufficient data と表示する
+- [x] データが少ない場合は insufficient data と表示する
 
 ## Acceptance Criteria
 
@@ -47,17 +47,17 @@ module, tag, question type, difficulty ごとの弱点を見える化する。
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

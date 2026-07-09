@@ -1,7 +1,7 @@
 {
   "name": "neonsec-academy",
   "private": true,
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "description": "NeonSec Academy — a cyberpunk CEH exam-prep platform: question bank, spaced-repetition review, mock exams, weakness analytics, and safe practical labs.",
   "scripts": {
