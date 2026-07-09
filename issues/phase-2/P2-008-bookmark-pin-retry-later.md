@@ -20,22 +20,22 @@ estimate: "1d"
 ## Requirements
 
 - [x] question を bookmark できる
-- [ ] pin note を付けられる
-- [ ] retry later を押すと review queue に入る
+- [x] pin note を付けられる
+- [x] retry later を押すと review queue に入る
 - [x] bookmarked view を作る
 
 ## Acceptance Criteria
 
 - [x] bookmark した問題だけ一覧できる
-- [ ] retry later が due queue に反映される
-- [ ] pin note が question detail に表示される
+- [x] retry later が due queue に反映される
+- [x] pin note が question detail に表示される
 
 ## Subtasks
 
 - [x] bookmark schema を作る
 - [x] button を追加する
 - [x] list view を作る
-- [ ] queue 連携を作る
+- [x] queue 連携を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ estimate: "1d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

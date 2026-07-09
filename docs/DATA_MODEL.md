@@ -31,6 +31,7 @@ Report 1 ── * Finding
 | `Attempt` | Stable generated `id`. | Immutable `at` timestamp; no `updatedAt` because attempts are append-only. |
 | `ReviewItem` | `questionId`; one active schedule per question. | `lastReviewed` and `dueAt` track state changes. |
 | `MistakeNote` | `questionId`; one note per question. | `createdAt` and `updatedAt`. |
+| `PinNote` | `questionId` key in `pinNotes`. | Updated when the note text changes. |
 | `ExamSession` | Stable generated `id`. | `createdAt`, `startedAt`, and optional `endedAt`. |
 | `ExamResult` | `sessionId` from the submitted session. | `submittedAt`. |
 | `LabChallenge` | Static lab `id`. | Versioned in source; lab progress is local state. |
@@ -183,6 +184,7 @@ Reports are the portable record for safe practical work. They must cite syntheti
 | User question | Can be archived like seed content, or removed from `userQuestions` when explicitly deleted. | Archived user questions can be restored; hard-deleted user questions require re-import or re-authoring. |
 | Attempts and reviews | `resetProgress` clears them as study progress. | Restore from full backup import. |
 | Mistake notes | Can be resolved or deleted. | Restore from full backup import. |
+| Bookmarks and pin notes | Bookmarks toggle per question; blanking a pin note removes that note. | Restore from full backup import. |
 | Reports | Can be deleted. | Restore from full backup import or Markdown copy if exported. |
 
 ## Index And Search Keys
@@ -193,16 +195,17 @@ Reports are the portable record for safe practical work. They must cite syntheti
 | Module and domain analytics | `question.module`, derived `domain`, and `district`. |
 | CEH+ filtering | `question.track` where `module` is `0`. |
 | Full-text search | Lowercased `title`, `body`, `tags`, and `moduleName`. |
-| Question Bank filters | `module`, `domain`, `difficulty`, `type`, active/archive status, selected tags, bookmark state, and last attempt result. |
+| Question Bank filters | `module`, `domain`, `difficulty`, `type`, active/archive status, selected tags, bookmark state, pin notes, and last attempt result. |
 | Review queue | `reviews[questionId]`, `dueAt`, `confidence`, and `suspended`. |
-| Attempt history | `questionId`, `at`, `mode`, `chosen`, `correct`, `timeMs`, and `confidence`. |
+| Attempt history | `questionId`, `at`, `mode`, `chosen`, `correct`, `timeMs`, `confidence`, and `reasoningGap`. |
 | Mistake notebook | `mistakes[questionId]`, resolved state, `updatedAt`, question module, and question tags. |
+| Pin notes | `pinNotes[questionId]`, with the matching bookmark used for pinned views. |
 | Reports | `report.id`, `updatedAt`, and finding severity. |
 
 ## Import And Export Schema
 
 - Full backup export includes `version`, `exportedAt`, profile, settings, attempts, reviews,
-  mistakes, bookmarks, archived IDs, user questions, exam results, and reports.
+  mistakes, bookmarks, pin notes, archived IDs, user questions, exam results, and reports.
 - Question-pack export uses `format: "neonsec-question-pack"` and `version: 1`.
 - Seed validation runs with `npm run validate:content`.
 - Question-pack import reuses the same core validation rules in `src/lib/questionPacks.ts`.

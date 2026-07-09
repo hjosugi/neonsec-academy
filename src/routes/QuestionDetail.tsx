@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { useAllQuestionMap } from '../store/selectors'
@@ -56,10 +57,15 @@ export function QuestionDetail() {
   const reviews = useStore((s) => s.reviews)
   const attempts = useStore((s) => s.attempts)
   const mistakes = useStore((s) => s.mistakes)
+  const bookmarks = useStore((s) => s.bookmarks)
+  const pinNote = useStore((s) => s.pinNotes[id] ?? '')
   const archivedIds = useStore((s) => s.archivedIds)
   const archiveQuestion = useStore((s) => s.archiveQuestion)
   const unarchiveQuestion = useStore((s) => s.unarchiveQuestion)
   const rescheduleReview = useStore((s) => s.rescheduleReview)
+  const toggleBookmark = useStore((s) => s.toggleBookmark)
+  const updatePinNote = useStore((s) => s.updatePinNote)
+  const [retryMsg, setRetryMsg] = useState('')
 
   if (!question) {
     return (
@@ -85,8 +91,13 @@ export function QuestionDetail() {
   const confidenceDirection = confidenceTrend(myAttempts)
   const isUser = question.source === 'user'
   const isArchived = archivedIds.includes(question.id)
+  const bookmarked = bookmarks.includes(question.id)
   const district = DISTRICTS.find((d) => d.id === question.district)
   const setReviewDueIn = (days: number) => rescheduleReview(question.id, startOfDay(Date.now()) + days * DAY)
+  const retryLater = () => {
+    setReviewDueIn(0)
+    setRetryMsg('Added to today\'s review queue.')
+  }
 
   return (
     <div className="page">
@@ -227,6 +238,32 @@ export function QuestionDetail() {
                 </div>
               </>
             )}
+          </Panel>
+
+          <Panel title="Pin & Retry">
+            <div className="stack stack--sm">
+              <button
+                className={`btn btn--ghost btn--sm btn--block ${bookmarked ? 'btn--magenta' : ''}`}
+                onClick={() => toggleBookmark(question.id)}
+              >
+                {bookmarked ? '★ Pinned' : '☆ Pin for later'}
+              </button>
+              <div className="field" style={{ margin: 0 }}>
+                <label className="label">Pin note</label>
+                <textarea
+                  className="textarea"
+                  value={pinNote}
+                  onChange={(e) => updatePinNote(question.id, e.target.value)}
+                  placeholder="Why should this be revisited before the exam?"
+                  style={{ minHeight: 86 }}
+                />
+                <div className="term t-xs dim mt-1">Saving a note also pins the question.</div>
+              </div>
+              <button className="btn btn--ghost btn--sm btn--block" onClick={retryLater}>
+                ↻ Retry later
+              </button>
+              {retryMsg && <p className="term t-xs neon-cyan">{retryMsg}</p>}
+            </div>
           </Panel>
 
           {mistake && (

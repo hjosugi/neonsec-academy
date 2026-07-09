@@ -63,8 +63,15 @@ The app uses an SM-2 style scheduler:
 - Correct answers with high confidence (`5`) can move further out.
 - Settings has a separate daily review cap so a large backlog does not overload one session.
 - Question Detail can manually reschedule a review item to now, tomorrow, or seven days out.
+- Question Detail also has a Retry Later action that inserts the card into today's due review queue.
 - Daily Review lets the learner choose a session size from currently due cards. The active queue,
   current index, and correct count are saved in local storage so "Save & exit" can resume later.
+
+## Bookmarks And Pin Notes
+
+Bookmarks keep a question in the pinned view for later drilling. Question Detail stores optional
+pin notes in `pinNotes[questionId]`; saving a non-empty note also pins the question. Question Bank
+shows a note marker for pinned questions with notes.
 
 ## Mistake Notebook Fields
 

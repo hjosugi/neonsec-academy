@@ -33,6 +33,7 @@ export function QuestionBank() {
   const questions = useAllQuestions()
   const attempts = useStore((s) => s.attempts)
   const bookmarks = useStore((s) => s.bookmarks)
+  const pinNotes = useStore((s) => s.pinNotes)
   const archivedIds = useStore((s) => s.archivedIds)
 
   const [q, setQ] = useState('')
@@ -292,6 +293,7 @@ export function QuestionBank() {
                   </div>
                   <div className="row" style={{ gap: '0.35rem' }}>
                     {bookmarks.includes(question.id) && <span className="neon-magenta">★</span>}
+                    {pinNotes[question.id] && <span className="neon-cyan" title={pinNotes[question.id]}>✎</span>}
                     {seen ? (
                       <span className={wasCorrect ? 'neon-green' : 'neon-red'}>{wasCorrect ? '✔' : '✘'}</span>
                     ) : (
