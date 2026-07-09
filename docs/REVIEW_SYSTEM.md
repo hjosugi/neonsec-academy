@@ -71,12 +71,20 @@ The app uses an SM-2 style scheduler:
 - Why I was wrong
 - Correct reasoning
 - Trap pattern
+- Reasoning gap from free-form explanation compare
 - Memory phrase
 - Next action
 
 The notebook supports open/resolved status, module filters, tag filters, updated-date filters, and
 a "needs notes" view for entries missing the core reflection fields. Dashboard and Question Detail
 link back to the notebook so missed questions are visible outside the list view.
+
+## Explanation Compare
+
+Short-answer, scenario, and report-prompt questions ask the learner to write their reasoning before
+revealing the model answer. After reveal, the app displays the learner's reasoning beside the model
+answer and explanation, then lets the learner save a reasoning-gap note to the Mistake Notebook.
+Review completion summarizes how many reasoning-gap notes were captured.
 
 ## Readiness Factors
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { AttemptConfidence, Grade, Question } from '../../types'
+import type { AttemptConfidence, Grade, MistakeNote, Question } from '../../types'
 import { useStore } from '../../store/useStore'
 import { correctChoices, isCorrect, isFreeform } from '../../lib/grade'
 import { GRADE_META } from '../../lib/srs'
@@ -12,7 +12,7 @@ interface Props {
   mode: 'practice' | 'review'
   index?: number
   total?: number
-  onNext: (correct: boolean) => void
+  onNext: (correct: boolean, reasoningGap?: string) => void
 }
 
 const CONFIDENCE_OPTIONS: AttemptConfidence[] = [1, 2, 3, 4, 5]
@@ -24,7 +24,8 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
   const bookmarks = useStore((s) => s.bookmarks)
   const toggleBookmark = useStore((s) => s.toggleBookmark)
   const upsertMistake = useStore((s) => s.upsertMistake)
-  const hasMistake = useStore((s) => !!s.mistakes[question.id])
+  const existingMistake = useStore((s) => s.mistakes[question.id])
+  const hasMistake = !!existingMistake
   const askConfidence = useStore((s) => s.settings.askConfidence ?? true)
 
   const [selected, setSelected] = useState<string[]>([])
@@ -32,6 +33,8 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
   const [graded, setGraded] = useState(false)
   const [selfCorrect, setSelfCorrect] = useState<boolean | null>(null)
   const [mistakeAdded, setMistakeAdded] = useState(false)
+  const [compareSaved, setCompareSaved] = useState(false)
+  const [compareNote, setCompareNote] = useState('')
   const [confidence, setConfidence] = useState<AttemptConfidence>(3)
   const [startedAt] = useState(() => Date.now())
 
@@ -63,18 +66,20 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
   }
 
   const finishFreeform = (ok: boolean) => {
+    const gap = compareNote.trim()
     setSelfCorrect(ok)
     if (mode === 'practice') {
-      recordAttempt(question.id, chosenValue, ok, 'practice', elapsedMs(), effectiveConfidence)
-      onNext(ok)
+      recordAttempt(question.id, chosenValue, ok, 'practice', elapsedMs(), effectiveConfidence, gap)
+      onNext(ok, gap)
     }
     // review free-form -> grade buttons handle it (see below)
   }
 
   const applyGrade = (g: Grade) => {
+    const gap = compareNote.trim()
     const c = isFreeformQuestion ? g !== 'again' : correct
-    gradeReview(question.id, g, c, chosenValue, elapsedMs(), effectiveConfidence)
-    onNext(c)
+    gradeReview(question.id, g, c, chosenValue, elapsedMs(), effectiveConfidence, gap)
+    onNext(c, gap)
   }
 
   const addToMistakes = () => {
@@ -83,6 +88,19 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
       trapPattern: question.explanation.trap,
       memoryPhrase: question.explanation.memory_phrase,
     })
+    setMistakeAdded(true)
+  }
+
+  const saveCompareToMistakes = () => {
+    const note = compareNote.trim()
+    if (!note) return
+    const patch: Partial<MistakeNote> = { reasoningGap: note }
+    if (!existingMistake?.whyWrong) patch.whyWrong = note
+    if (!existingMistake?.correctReasoning) patch.correctReasoning = question.explanation.why
+    if (!existingMistake?.trapPattern) patch.trapPattern = question.explanation.trap
+    if (!existingMistake?.memoryPhrase) patch.memoryPhrase = question.explanation.memory_phrase
+    upsertMistake(question.id, patch)
+    setCompareSaved(true)
     setMistakeAdded(true)
   }
 
@@ -238,7 +256,44 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
               {correct ? '✓ Correct' : '✕ Incorrect'}
             </div>
           )}
-          <Explanation q={question} />
+          {isFreeformQuestion ? (
+            <div className="stack">
+              <div className="grid-2" style={{ alignItems: 'stretch', gap: '0.75rem' }}>
+                <div className="panel" style={{ padding: '0.75rem' }}>
+                  <div className="term t-xs dim mb-1">Your reasoning</div>
+                  <p className="t-sm" style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
+                    {freeformAnswer.trim() || 'No answer written before reveal.'}
+                  </p>
+                </div>
+                <div className="panel" style={{ padding: '0.75rem' }}>
+                  <div className="term t-xs dim mb-1">Model answer</div>
+                  <Markdown source={question.explanation.answer} />
+                  <div className="term t-xs dim mt-2 mb-1">Why</div>
+                  <Markdown source={question.explanation.why} />
+                </div>
+              </div>
+              <div className="field" style={{ margin: 0 }}>
+                <label className="label">Reasoning gap note</label>
+                <textarea
+                  className="textarea"
+                  value={compareNote}
+                  onChange={(e) => {
+                    setCompareNote(e.target.value)
+                    setCompareSaved(false)
+                  }}
+                  placeholder="What did your reasoning miss, over-assume, or phrase differently?"
+                  style={{ minHeight: 88 }}
+                />
+              </div>
+              <div className="row wrap" style={{ gap: '0.5rem' }}>
+                <button className="btn btn--ghost btn--sm" onClick={saveCompareToMistakes} disabled={!compareNote.trim()}>
+                  {compareSaved ? '✓ compare note saved' : 'Send compare note to notebook'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Explanation q={question} />
+          )}
 
           {/* mistake logging when wrong */}
           {!isFreeformQuestion && !correct && (

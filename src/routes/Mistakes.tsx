@@ -13,6 +13,7 @@ const FIELDS: { key: keyof MistakeNote; label: string }[] = [
   { key: 'whyWrong', label: 'Why I was wrong' },
   { key: 'correctReasoning', label: 'Correct reasoning' },
   { key: 'trapPattern', label: 'Trap pattern' },
+  { key: 'reasoningGap', label: 'Reasoning gap' },
   { key: 'memoryPhrase', label: 'Memory phrase' },
   { key: 'nextAction', label: 'Next action' },
 ]

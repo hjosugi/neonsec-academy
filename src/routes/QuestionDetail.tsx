@@ -15,6 +15,11 @@ function attemptAnswer(attempt: Attempt): string {
   return raw.length > 96 ? `${raw.slice(0, 93)}...` : raw
 }
 
+function shortText(value?: string): string {
+  if (!value?.trim()) return '-'
+  return value.length > 96 ? `${value.slice(0, 93)}...` : value
+}
+
 function attemptTime(attempt: Attempt): string {
   return typeof attempt.timeMs === 'number' ? formatDuration(Math.round(attempt.timeMs / 1000)) : '-'
 }
@@ -245,6 +250,12 @@ export function QuestionDetail() {
                   <span className="k">Correct reasoning</span>
                   <span className="right">{mistake.correctReasoning || '-'}</span>
                 </div>
+                {mistake.reasoningGap && (
+                  <div className="inspector__row">
+                    <span className="k">Reasoning gap</span>
+                    <span className="right">{mistake.reasoningGap}</span>
+                  </div>
+                )}
                 <div className="inspector__row">
                   <span className="k">Next action</span>
                   <span className="right">{mistake.nextAction || '-'}</span>
@@ -297,6 +308,7 @@ export function QuestionDetail() {
                     <th>Mode</th>
                     <th>Result</th>
                     <th>Selected answer</th>
+                    <th>Reasoning gap</th>
                     <th>Time</th>
                     <th>Confidence</th>
                   </tr>
@@ -313,6 +325,7 @@ export function QuestionDetail() {
                       <td title={attempt.chosen == null ? undefined : Array.isArray(attempt.chosen) ? attempt.chosen.join(', ') : attempt.chosen}>
                         {attemptAnswer(attempt)}
                       </td>
+                      <td title={attempt.reasoningGap}>{shortText(attempt.reasoningGap)}</td>
                       <td className="term t-sm tabnum">{attemptTime(attempt)}</td>
                       <td className="term t-sm tabnum">{attempt.confidence ? `${attempt.confidence}/5` : '-'}</td>
                     </tr>

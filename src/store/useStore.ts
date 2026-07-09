@@ -112,6 +112,7 @@ interface AppState {
   reviews: Record<string, ReviewItem>
   mistakes: Record<string, MistakeNote>
   bookmarks: string[]
+  pinNotes: Record<string, string>
   archivedIds: string[]
   userQuestions: RawQuestion[]
   examResults: ExamResult[]
@@ -128,6 +129,7 @@ interface AppActions {
     mode: AttemptMode,
     timeMs?: number,
     confidence?: AttemptConfidence,
+    reasoningGap?: string,
   ) => void
   gradeReview: (
     questionId: string,
@@ -136,10 +138,12 @@ interface AppActions {
     chosen?: string | string[] | null,
     timeMs?: number,
     confidence?: AttemptConfidence,
+    reasoningGap?: string,
   ) => void
   rescheduleReview: (questionId: string, dueAt: number) => void
   // bookmarks + mistakes
   toggleBookmark: (questionId: string) => void
+  updatePinNote: (questionId: string, note: string) => void
   upsertMistake: (questionId: string, patch: Partial<MistakeNote>) => void
   deleteMistake: (questionId: string) => void
   toggleMistakeResolved: (questionId: string) => void
@@ -180,6 +184,7 @@ const initialState: AppState = {
   reviews: {},
   mistakes: {},
   bookmarks: [],
+  pinNotes: {},
   archivedIds: [],
   userQuestions: [],
   examResults: [],
@@ -192,10 +197,20 @@ export const useStore = create<Store>()(
     (set, get) => ({
       ...initialState,
 
-      recordAttempt: (questionId, chosen, correct, mode, timeMs, confidence) => {
+      recordAttempt: (questionId, chosen, correct, mode, timeMs, confidence, reasoningGap) => {
         const now = Date.now()
         set((s) => {
-          const attempt: Attempt = { id: uid('a-'), questionId, at: now, correct, chosen, mode, timeMs, confidence }
+          const attempt: Attempt = {
+            id: uid('a-'),
+            questionId,
+            at: now,
+            correct,
+            chosen,
+            mode,
+            timeMs,
+            confidence,
+            reasoningGap: reasoningGap?.trim() || undefined,
+          }
           const attempts = [...s.attempts, attempt]
           const reviews = { ...s.reviews }
           const existing = reviews[questionId] ?? newReviewItem(questionId, now)
@@ -207,7 +222,7 @@ export const useStore = create<Store>()(
         get().refreshBadges()
       },
 
-      gradeReview: (questionId, grade, correct, chosen = null, timeMs, confidence) => {
+      gradeReview: (questionId, grade, correct, chosen = null, timeMs, confidence, reasoningGap) => {
         const now = Date.now()
         set((s) => {
           const attempt: Attempt = {
@@ -219,6 +234,7 @@ export const useStore = create<Store>()(
             mode: 'review',
             timeMs,
             confidence,
+            reasoningGap: reasoningGap?.trim() || undefined,
           }
           const attempts = [...s.attempts, attempt]
           const reviews = { ...s.reviews }
@@ -252,6 +268,18 @@ export const useStore = create<Store>()(
             ? s.bookmarks.filter((id) => id !== questionId)
             : [...s.bookmarks, questionId],
         })),
+
+      updatePinNote: (questionId, note) =>
+        set((s) => {
+          const clean = note.trim()
+          const pinNotes = { ...s.pinNotes }
+          if (clean) pinNotes[questionId] = clean
+          else delete pinNotes[questionId]
+          return {
+            pinNotes,
+            bookmarks: clean && !s.bookmarks.includes(questionId) ? [...s.bookmarks, questionId] : s.bookmarks,
+          }
+        }),
 
       upsertMistake: (questionId, patch) =>
         set((s) => {
@@ -447,6 +475,7 @@ export const useStore = create<Store>()(
           reviews: {},
           mistakes: {},
           bookmarks: [],
+          pinNotes: {},
           examResults: [],
           activeExam: null,
           profile: {
@@ -468,6 +497,7 @@ export const useStore = create<Store>()(
           reviews: s.reviews,
           mistakes: s.mistakes,
           bookmarks: s.bookmarks,
+          pinNotes: s.pinNotes,
           archivedIds: s.archivedIds,
           userQuestions: s.userQuestions,
           examResults: s.examResults,
@@ -487,6 +517,7 @@ export const useStore = create<Store>()(
             reviews: d.reviews ?? s.reviews,
             mistakes: d.mistakes ?? s.mistakes,
             bookmarks: Array.isArray(d.bookmarks) ? d.bookmarks : s.bookmarks,
+            pinNotes: d.pinNotes && typeof d.pinNotes === 'object' ? d.pinNotes : s.pinNotes,
             archivedIds: Array.isArray(d.archivedIds) ? d.archivedIds : s.archivedIds,
             userQuestions: Array.isArray(d.userQuestions) ? d.userQuestions : s.userQuestions,
             examResults: Array.isArray(d.examResults) ? d.examResults : s.examResults,
@@ -509,6 +540,7 @@ export const useStore = create<Store>()(
         reviews: s.reviews,
         mistakes: s.mistakes,
         bookmarks: s.bookmarks,
+        pinNotes: s.pinNotes,
         archivedIds: s.archivedIds,
         userQuestions: s.userQuestions,
         examResults: s.examResults,

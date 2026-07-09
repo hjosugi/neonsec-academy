@@ -13,6 +13,7 @@ interface SavedReviewSession {
   queue: string[]
   idx: number
   correct: number
+  reasoningGaps: number
   createdAt: number
 }
 
@@ -27,6 +28,7 @@ function readSavedReviewSession(): SavedReviewSession | null {
       queue: data.queue.filter((id): id is string => typeof id === 'string'),
       idx: Math.max(0, data.idx),
       correct: Math.max(0, data.correct),
+      reasoningGaps: typeof data.reasoningGaps === 'number' ? Math.max(0, data.reasoningGaps) : 0,
       createdAt: typeof data.createdAt === 'number' ? data.createdAt : Date.now(),
     }
   } catch {
@@ -56,13 +58,14 @@ export function Review() {
   const [queue, setQueue] = useState<string[]>(() => saved?.queue ?? [])
   const [idx, setIdx] = useState(() => saved?.idx ?? 0)
   const [correct, setCorrect] = useState(() => saved?.correct ?? 0)
+  const [reasoningGaps, setReasoningGaps] = useState(() => saved?.reasoningGaps ?? 0)
 
   const total = queue.length
 
   useEffect(() => {
     if (!started || total === 0 || idx >= total) return
-    saveReviewSession({ queue, idx, correct, createdAt: saved?.createdAt ?? Date.now() })
-  }, [started, queue, idx, correct, total, saved?.createdAt])
+    saveReviewSession({ queue, idx, correct, reasoningGaps, createdAt: saved?.createdAt ?? Date.now() })
+  }, [started, queue, idx, correct, reasoningGaps, total, saved?.createdAt])
 
   useEffect(() => {
     if (started && total > 0 && idx >= total) clearReviewSession()
@@ -73,8 +76,9 @@ export function Review() {
     setQueue(nextQueue)
     setIdx(0)
     setCorrect(0)
+    setReasoningGaps(0)
     setStarted(true)
-    saveReviewSession({ queue: nextQueue, idx: 0, correct: 0, createdAt: Date.now() })
+    saveReviewSession({ queue: nextQueue, idx: 0, correct: 0, reasoningGaps: 0, createdAt: Date.now() })
   }
 
   const resetSavedSession = () => {
@@ -82,11 +86,13 @@ export function Review() {
     setQueue([])
     setIdx(0)
     setCorrect(0)
+    setReasoningGaps(0)
     setStarted(false)
   }
 
-  const onNext = (ok: boolean) => {
+  const onNext = (ok: boolean, reasoningGap?: string) => {
     if (ok) setCorrect((c) => c + 1)
+    if (reasoningGap?.trim()) setReasoningGaps((count) => count + 1)
     setIdx((i) => i + 1)
   }
 
@@ -172,6 +178,11 @@ export function Review() {
             </div>
             <p className="muted">{acc}% recall · cards rescheduled</p>
             <p className="term t-xs dim mt-1">Missed cards return tomorrow. Strong recalls move further out.</p>
+            {reasoningGaps > 0 && (
+              <p className="term t-xs mt-1 neon-cyan">
+                {reasoningGaps} reasoning gap note{reasoningGaps === 1 ? '' : 's'} captured for follow-up.
+              </p>
+            )}
             {correct < total && (
               <p className="term t-xs mt-1" style={{ color: 'var(--warning-amber)' }}>
                 Update the Mistake Notebook for missed cards before the context fades.

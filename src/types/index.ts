@@ -93,6 +93,7 @@ export interface Attempt {
   mode: AttemptMode
   timeMs?: number
   confidence?: AttemptConfidence
+  reasoningGap?: string
 }
 
 // ---- Mistake notebook ----
@@ -101,6 +102,7 @@ export interface MistakeNote {
   whyWrong: string
   correctReasoning: string
   trapPattern: string
+  reasoningGap?: string
   memoryPhrase: string
   nextAction: string
   createdAt: number

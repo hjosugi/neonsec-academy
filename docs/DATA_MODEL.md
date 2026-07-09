@@ -88,8 +88,9 @@ Rules:
 ```
 
 Attempts are append-only. Corrections happen by creating a later attempt, not by editing history.
-`chosen` is the selected answer payload, `correct` is the result, `timeMs` is the measured time spent,
-and `confidence` is an optional 1-5 self-rating.
+`chosen` is the selected answer payload or free-form reasoning, `correct` is the result, `timeMs` is
+the measured time spent, `confidence` is an optional 1-5 self-rating, and `reasoningGap` is an
+optional compare note captured after checking a free-form answer against the model explanation.
 
 ## ReviewItem
 
@@ -120,6 +121,7 @@ low confidence shortens the next interval and high confidence can lengthen it.
   "whyWrong": "I treated public information as authorization.",
   "correctReasoning": "Passive collection avoids target interaction.",
   "trapPattern": "scope confusion",
+  "reasoningGap": "I identified the source but did not state the authorization boundary.",
   "memoryPhrase": "Scope before action.",
   "nextAction": "Drill Module 2 passive vs active questions.",
   "resolved": false,
