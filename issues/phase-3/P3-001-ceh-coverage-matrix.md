@@ -21,13 +21,13 @@ CEH 受験者として、20 module のどこが足りないかを一目で知り
 
 - [x] 20 module ごとに total questions, attempted, accuracy, due count, readiness を表示する
 - [x] module をクリックすると drill に移動する
-- [ ] coverage threshold を設定できる
-- [ ] 問題数が少ない module を警告する
+- [x] coverage threshold を設定できる
+- [x] 問題数が少ない module を警告する
 
 ## Acceptance Criteria
 
 - [x] 20 module すべてが matrix に出る
-- [ ] 未作成/未回答/弱点が区別できる
+- [x] 未作成/未回答/弱点が区別できる
 - [x] module drill に遷移できる
 
 ## Subtasks
@@ -47,17 +47,17 @@ CEH 受験者として、20 module のどこが足りないかを一目で知り
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

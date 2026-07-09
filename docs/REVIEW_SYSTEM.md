@@ -109,6 +109,13 @@ Review completion summarizes how many reasoning-gap notes were captured.
 - Weak module count
 - Practical challenge score
 
+## CEH Coverage Matrix
+
+Analytics lists all 20 CEH modules with inventory, attempted coverage, accuracy, due reviews,
+confidence, trend, and readiness/mastery. The coverage target and minimum question inventory are
+user settings. Module rows distinguish missing inventory, low inventory, unanswered modules, low
+coverage, weak mastery, and ready modules, and clicking a row starts a module drill.
+
 ## Final Gate Checklist
 
 試験予約前の最終判定として、`/final-gate` は次の条件をまとめて評価する。

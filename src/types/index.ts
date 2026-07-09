@@ -200,6 +200,8 @@ export interface Settings {
   sound: boolean
   dailyGoal: number
   reviewDailyLimit: number
+  coverageThresholdPct: number
+  minModuleQuestionCount: number
   askConfidence: boolean
   achievementsEnabled: boolean
   labPassingScore: number

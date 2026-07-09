@@ -221,6 +221,7 @@ Reports are the portable record for safe practical work. They must cite syntheti
 | Module and domain analytics | `question.module`, derived `domain`, and `district`. |
 | CEH+ filtering | `question.track` where `module` is `0`. |
 | Full-text search | Lowercased `title`, `body`, `tags`, and `moduleName`. |
+| CEH coverage matrix | `module`, `total`, `seen`, `attempts`, `accuracy`, `dueCount`, coverage target, and minimum module inventory settings. |
 | Question Bank filters | `module`, `domain`, `difficulty`, `type`, active/archive status, selected tags, bookmark state, pin notes, and last attempt result. |
 | Review queue | `reviews[questionId]`, `dueAt`, `confidence`, and `suspended`. |
 | Review summaries | `reviewSummaries`, `completedAt`, accuracy, weak modules, and next actions. |

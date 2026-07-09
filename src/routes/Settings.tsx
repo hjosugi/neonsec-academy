@@ -333,6 +333,30 @@ export function Settings() {
                 style={{ width: '100%' }}
               />
             </div>
+            <div className="field">
+              <label className="label">Coverage target · {settings.coverageThresholdPct ?? 80}% per module</label>
+              <input
+                type="range"
+                min={20}
+                max={100}
+                step={5}
+                value={settings.coverageThresholdPct ?? 80}
+                onChange={(e) => set({ coverageThresholdPct: Number(e.target.value) })}
+                style={{ width: '100%' }}
+              />
+            </div>
+            <div className="field">
+              <label className="label">Minimum question inventory · {settings.minModuleQuestionCount ?? 10} per module</label>
+              <input
+                type="range"
+                min={0}
+                max={30}
+                step={1}
+                value={settings.minModuleQuestionCount ?? 10}
+                onChange={(e) => set({ minModuleQuestionCount: Number(e.target.value) })}
+                style={{ width: '100%' }}
+              />
+            </div>
             <Toggle
               label="Ask confidence"
               hint="Use a 1-5 self-rating to tune review spacing; hidden input defaults to 3."

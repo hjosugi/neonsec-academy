@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom'
+import type { ModuleStat } from '../types'
+import { useStore } from '../store/useStore'
 import { useDomainStats, useModuleStats, useOverview, useReadiness } from '../store/selectors'
 import { DOMAINS } from '../data/taxonomy'
 import { pct } from '../lib/format'
@@ -27,15 +29,38 @@ function trendLabel(trend: string): string {
   }
 }
 
+function moduleCoveragePct(m: ModuleStat): number {
+  return m.total > 0 ? Math.round((m.seen / m.total) * 100) : 0
+}
+
+function moduleStatusBadges(m: ModuleStat, coverageTargetPct: number, minQuestionCount: number) {
+  if (m.total === 0) return [{ label: 'missing', cls: 'badge--red' }]
+  const badges: Array<{ label: string; cls: string }> = []
+  if (m.total < minQuestionCount) badges.push({ label: 'low inventory', cls: 'badge--amber' })
+  if (m.attempts === 0) badges.push({ label: 'unanswered', cls: 'badge--amber' })
+  else {
+    if (moduleCoveragePct(m) < coverageTargetPct) badges.push({ label: 'low coverage', cls: 'badge--amber' })
+    if (m.mastery < 0.6) badges.push({ label: 'weak', cls: 'badge--red' })
+  }
+  return badges.length ? badges : [{ label: 'ready', cls: 'badge--green' }]
+}
+
 export function Analytics() {
   const navigate = useNavigate()
   const mods = useModuleStats()
   const domains = useDomainStats()
   const ov = useOverview()
   const readiness = useReadiness()
+  const settings = useStore((s) => s.settings)
+  const updateSettings = useStore((s) => s.updateSettings)
+  const coverageTargetPct = settings.coverageThresholdPct ?? 80
+  const minQuestionCount = settings.minModuleQuestionCount ?? 10
 
   const radarPoints = domains.map((d) => ({ label: d.domainName, value: Math.max(0.02, d.mastery) }))
   const started = domains.some((d) => d.attempts > 0)
+  const warningCount = mods.filter((m) =>
+    moduleStatusBadges(m, coverageTargetPct, minQuestionCount).some((badge) => badge.label !== 'ready'),
+  ).length
 
   return (
     <div className="page">
@@ -113,6 +138,37 @@ export function Analytics() {
         </Panel>
       </div>
 
+      <Panel
+        title="Coverage Thresholds"
+        className="mb-3"
+        right={<span className="term t-xs dim">{warningCount} module warnings</span>}
+      >
+        <div className="grid-2">
+          <div className="field" style={{ margin: 0 }}>
+            <label className="label">Coverage target (%)</label>
+            <input
+              className="input"
+              type="number"
+              min={0}
+              max={100}
+              value={coverageTargetPct}
+              onChange={(e) => updateSettings({ coverageThresholdPct: Number(e.currentTarget.value) })}
+            />
+          </div>
+          <div className="field" style={{ margin: 0 }}>
+            <label className="label">Minimum questions per module</label>
+            <input
+              className="input"
+              type="number"
+              min={0}
+              max={50}
+              value={minQuestionCount}
+              onChange={(e) => updateSettings({ minModuleQuestionCount: Number(e.currentTarget.value) })}
+            />
+          </div>
+        </div>
+      </Panel>
+
       <Panel title="Module Matrix" right={<span className="term t-xs dim">click a row to drill</span>}>
         <div className="scroll-x">
           <table className="table">
@@ -120,6 +176,8 @@ export function Analytics() {
               <tr>
                 <th>Module</th>
                 <th>Domain</th>
+                <th>Status</th>
+                <th>Coverage</th>
                 <th style={{ width: 180 }}>Mastery</th>
                 <th>Accuracy</th>
                 <th>Confidence</th>
@@ -129,32 +187,46 @@ export function Analytics() {
               </tr>
             </thead>
             <tbody>
-              {mods.map((m) => (
-                <tr key={m.module} className="clickable" onClick={() => navigate(`/practice?module=${m.module}`)}>
-                  <td>
-                    <span className="badge badge--cyan" style={{ marginRight: '0.4rem' }}>
-                      M{String(m.module).padStart(2, '0')}
-                    </span>
-                    <span className="t-sm">{m.moduleName}</span>
-                  </td>
-                  <td className="term t-xs dim">{DOMAINS[m.domain].short}</td>
-                  <td>
-                    <div className="row" style={{ gap: '0.5rem' }}>
-                      <Meter value={m.attempts === 0 ? 0 : m.mastery * 100} color={m.mastery >= 0.6 ? 'var(--acid-green)' : 'var(--neon-magenta)'} />
-                      <span className="term t-xs tabnum" style={{ width: 30 }}>
-                        {m.attempts === 0 ? '—' : Math.round(m.mastery * 100)}
+              {mods.map((m) => {
+                const badges = moduleStatusBadges(m, coverageTargetPct, minQuestionCount)
+                const coverage = moduleCoveragePct(m)
+                return (
+                  <tr key={m.module} className="clickable" onClick={() => navigate(`/practice?module=${m.module}`)}>
+                    <td>
+                      <span className="badge badge--cyan" style={{ marginRight: '0.4rem' }}>
+                        M{String(m.module).padStart(2, '0')}
                       </span>
-                    </div>
-                  </td>
-                  <td className="mono tabnum t-sm">{m.accuracy < 0 ? '—' : `${Math.round(m.accuracy * 100)}%`}</td>
-                  <td className="mono tabnum t-sm">{confidenceLabel(m.avgConfidence)}</td>
-                  <td className="term t-xs dim">{trendLabel(m.recentTrend)}</td>
-                  <td className="term t-sm dim">
-                    {m.seen}/{m.total}
-                  </td>
-                  <td className={m.dueCount > 0 ? 'neon-amber' : 'dim'}>{m.dueCount || '·'}</td>
-                </tr>
-              ))}
+                      <span className="t-sm">{m.moduleName}</span>
+                    </td>
+                    <td className="term t-xs dim">{DOMAINS[m.domain].short}</td>
+                    <td>
+                      <div className="row wrap" style={{ gap: '0.3rem' }}>
+                        {badges.map((badge) => (
+                          <span key={badge.label} className={`badge ${badge.cls}`}>
+                            {badge.label}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="mono tabnum t-sm">{m.total === 0 ? '—' : `${coverage}%`}</td>
+                    <td>
+                      <div className="row" style={{ gap: '0.5rem' }}>
+                        <Meter value={m.attempts === 0 ? 0 : m.mastery * 100} color={m.mastery >= 0.6 ? 'var(--acid-green)' : 'var(--neon-magenta)'} />
+                        <span className="term t-xs tabnum" style={{ width: 30 }}>
+                          {m.attempts === 0 ? '—' : Math.round(m.mastery * 100)}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="mono tabnum t-sm">{m.accuracy < 0 ? '—' : `${Math.round(m.accuracy * 100)}%`}</td>
+                    <td className="mono tabnum t-sm">{confidenceLabel(m.avgConfidence)}</td>
+                    <td className="term t-xs dim">{trendLabel(m.recentTrend)}</td>
+                    <td className="term t-sm dim">
+                      {m.seen}/{m.total}
+                    </td>
+                    <td className={m.dueCount > 0 ? 'neon-amber' : 'dim'}>{m.dueCount || '·'}</td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>

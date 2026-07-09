@@ -54,6 +54,8 @@ const defaultSettings: Settings = {
   sound: false,
   dailyGoal: 20,
   reviewDailyLimit: 20,
+  coverageThresholdPct: 80,
+  minModuleQuestionCount: 10,
   askConfidence: true,
   achievementsEnabled: true,
   labPassingScore: 80,
