@@ -83,6 +83,26 @@ When `module` is `0`, `track` must be one of:
 - `ir`
 - `threat-model`
 
+## Concept Card Schema
+
+Concept cards are authored in `src/data/conceptCards.ts` and are safe study companions for the
+question bank. They must stay conceptual and defensive, not procedural.
+
+| Field | Type | Required | Notes |
+|---|---|---:|---|
+| `id` | string | yes | Stable `CC-CEH-MM-NN` identifier. |
+| `module` | number | yes | CEH module `1`-`20`. |
+| `title` | string | yes | Short concept name. |
+| `tags` | string[] | yes | Must overlap likely question tags for reciprocal linking. |
+| `meaning` | string | yes | What the concept means. |
+| `whenUsed` | string | yes | When the learner should apply the concept. |
+| `examTrap` | string | yes | Common wrong mental model or answer trap. |
+| `rememberPhrase` | string | yes | Short recall phrase. |
+
+Every CEH module should have at least five concept cards. Card viewer links are derived from matching
+module and overlapping tags; avoid real targets, commands, payloads, exploit chains, evasion steps,
+persistence steps, credential handling instructions, or data theft detail.
+
 ## Minimal Valid Examples
 
 ```json

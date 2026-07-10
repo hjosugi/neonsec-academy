@@ -11,6 +11,8 @@ Question 1 ── * Attempt
 Question 1 ── 0..1 ReviewItem
 Question 1 ── 0..1 MistakeNote
 Question * ── 1 CEH Module / CEH+ Track
+ConceptCard * ── 1 CEH Module
+ConceptCard * ── * Question (derived by module + tag overlap)
 
 ExamSession 1 ── * ExamAnswer
 ExamResult 1 ── * DomainScore
@@ -26,6 +28,7 @@ Report 1 ── * Finding
 | Entity | Identity | Timestamps |
 |---|---|---|
 | `Question` | Stable `id`; seed IDs never change, imported ID collisions are remapped. | User-authored questions store `createdAt` and `updatedAt`; seed timestamps are represented by git history. |
+| `ConceptCard` | Stable `id`; seed concept cards never change without a migration note. | Versioned in source; links are derived by module/tag overlap at runtime. |
 | `Choice` | Array position plus exact choice text inside a `Question`. | Inherits question timestamps. |
 | `Explanation` | Embedded in `Question`. | Inherits question timestamps. |
 | `Attempt` | Stable generated `id`. | Immutable `at` timestamp; no `updatedAt` because attempts are append-only. |
@@ -73,6 +76,25 @@ Rules:
 - `source` is `seed` or `user`; imported packs normalize to `user`.
 - `title` is required in the in-app authoring form for new user questions and optional for legacy seed/import rows.
 - User-authored questions may include `createdAt` and `updatedAt`.
+
+## ConceptCard
+
+```json
+{
+  "id": "CC-CEH-20-01",
+  "module": 20,
+  "title": "Symmetric encryption",
+  "tags": ["symmetric-encryption", "block-cipher"],
+  "meaning": "Symmetric encryption uses the same secret key for encryption and decryption.",
+  "whenUsed": "Use it for fast bulk data protection when key sharing is already solved.",
+  "examTrap": "The hard part is key management, not the speed of the cipher.",
+  "rememberPhrase": "One shared secret, fast protection."
+}
+```
+
+Concept cards are seed content in `src/data/conceptCards.ts`. Each CEH module has at least five
+cards. Card-to-question links are derived at runtime by same-module matching and tag overlap; card
+detail pages link to related questions, and Question Detail links back to related cards.
 
 ## Attempt
 

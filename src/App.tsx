@@ -6,6 +6,7 @@ import { Dashboard } from './routes/Dashboard'
 import { QuestionBank } from './routes/QuestionBank'
 import { QuestionDetail } from './routes/QuestionDetail'
 import { QuestionEditor } from './routes/QuestionEditor'
+import { ConceptCards } from './routes/ConceptCards'
 import { Practice } from './routes/Practice'
 import { Review } from './routes/Review'
 import { Exam } from './routes/Exam'
@@ -56,6 +57,8 @@ export default function App() {
           <Route path="/bank/new" element={<QuestionEditor />} />
           <Route path="/bank/:id" element={<QuestionDetail />} />
           <Route path="/bank/:id/edit" element={<QuestionEditor />} />
+          <Route path="/cards" element={<ConceptCards />} />
+          <Route path="/cards/:id" element={<ConceptCards />} />
           <Route path="/practice" element={<Practice />} />
           <Route path="/review" element={<Review />} />
           <Route path="/exam" element={<Exam />} />

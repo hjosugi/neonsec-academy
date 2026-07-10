@@ -64,6 +64,18 @@ export interface Question extends RawQuestion {
   district: DistrictId
 }
 
+// ---- Concept cards ----
+export interface ConceptCard {
+  id: string
+  module: number
+  title: string
+  tags: string[]
+  meaning: string
+  whenUsed: string
+  examTrap: string
+  rememberPhrase: string
+}
+
 // ---- Spaced repetition ----
 export type Grade = 'again' | 'hard' | 'good' | 'easy'
 

@@ -7,6 +7,7 @@ artifacts only, no real targets, no real credentials, and no operational attack 
 ## Source Of Truth
 
 - Seed questions: `src/data/questions/group-*.json`
+- Concept cards: `src/data/conceptCards.ts`
 - In-app custom questions: browser storage, exportable as question packs from Settings
 - Safe Labs: `src/data/labs.ts`
 - Question validation script: `npm run validate:content`
@@ -51,6 +52,27 @@ Do not include:
 - Commands, payloads, target lists, exploit chains, evasion steps, persistence steps, or data theft
   instructions.
 - Questions that reward unauthorized action as the correct answer.
+
+## Concept Card Authoring
+
+Concept cards are one-screen memory aids linked to questions by module and tag overlap. Each CEH
+module should keep at least five cards, and each card must include:
+
+| Field | Notes |
+|---|---|
+| `meaning` | Define the concept plainly. |
+| `whenUsed` | State when to apply the concept in exam reasoning or defensive work. |
+| `examTrap` | Name the common misconception or tempting wrong answer. |
+| `rememberPhrase` | Keep it short enough for recall during review. |
+
+Good cards:
+
+- Reinforce meaning, judgment, detection, control choice, or remediation.
+- Reuse tags that appear in related questions so links stay useful.
+- Mention offensive CEH topics only as recognition, classification, detection, or defense.
+
+Do not include commands, payloads, target selection, exploit chains, evasion recipes, persistence
+steps, credential handling instructions, or data theft detail.
 
 ## Question Type Patterns
 

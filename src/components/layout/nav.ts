@@ -33,6 +33,7 @@ export const NAV: NavSection[] = [
     items: [
       { to: '/', label: 'Dashboard', icon: LayoutDashboard },
       { to: '/bank', label: 'Question Bank', icon: BookOpenCheck },
+      { to: '/cards', label: 'Concept Cards', icon: ClipboardList },
       { to: '/practice', label: 'Practice', icon: Crosshair },
       { to: '/review', label: 'Review Queue', icon: RefreshCcw, badge: 'due' },
       { to: '/exam', label: 'Mock Exam', icon: Timer },

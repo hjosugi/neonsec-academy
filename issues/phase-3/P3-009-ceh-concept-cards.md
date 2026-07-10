@@ -19,23 +19,23 @@ estimate: "3d"
 
 ## Requirements
 
-- [ ] 各 module に minimum 5 concept cards を用意する
-- [ ] cards は meaning, when used, exam trap, remember phrase を含める
-- [ ] 危険な tool 手順ではなく、概念・判断・防御観点に寄せる
-- [ ] cards を問題と相互リンクする
+- [x] 各 module に minimum 5 concept cards を用意する
+- [x] cards は meaning, when used, exam trap, remember phrase を含める
+- [x] 危険な tool 手順ではなく、概念・判断・防御観点に寄せる
+- [x] cards を問題と相互リンクする
 
 ## Acceptance Criteria
 
-- [ ] 最低 100 枚の card 仕様が用意される
-- [ ] question detail から関連 card を見られる
-- [ ] card から関連 questions に行ける
+- [x] 最低 100 枚の card 仕様が用意される
+- [x] question detail から関連 card を見られる
+- [x] card から関連 questions に行ける
 
 ## Subtasks
 
-- [ ] card schema を作る
-- [ ] card samples を作る
-- [ ] question link を作る
-- [ ] card viewer を作る
+- [x] card schema を作る
+- [x] card samples を作る
+- [x] question link を作る
+- [x] card viewer を作る
 
 ## Dependencies
 
@@ -47,17 +47,17 @@ estimate: "3d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 

@@ -225,6 +225,9 @@ export function Dashboard() {
               <Link to="/bank" className="btn btn--ghost btn--block">
                 ▤ Browse question bank
               </Link>
+              <Link to="/cards" className="btn btn--ghost btn--block">
+                ▣ Concept cards
+              </Link>
               <Link to="/mistakes" className="btn btn--ghost btn--block">
                 ⚑ Mistake notebook
                 <span className="term t-xs dim" style={{ display: 'block' }}>

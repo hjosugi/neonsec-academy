@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { useAllQuestionMap } from '../store/selectors'
+import { CONCEPT_CARDS } from '../data/conceptCards'
 import { DISTRICTS, DOMAINS } from '../data/taxonomy'
+import { conceptCardsForQuestion } from '../lib/conceptCards'
 import { DAY, formatDateTime, formatDuration, pct, relativeDay, startOfDay } from '../lib/format'
 import type { Attempt } from '../types'
 import { PageHeader } from '../components/ui/PageHeader'
@@ -93,6 +95,7 @@ export function QuestionDetail() {
   const isArchived = archivedIds.includes(question.id)
   const bookmarked = bookmarks.includes(question.id)
   const district = DISTRICTS.find((d) => d.id === question.district)
+  const relatedCards = conceptCardsForQuestion(question, CONCEPT_CARDS, 5)
   const setReviewDueIn = (days: number) => rescheduleReview(question.id, startOfDay(Date.now()) + days * DAY)
   const retryLater = () => {
     setReviewDueIn(0)
@@ -147,6 +150,21 @@ export function QuestionDetail() {
                 </span>
               ))}
             </div>
+          </Panel>
+
+          <Panel title="Concept Cards">
+            {relatedCards.length === 0 ? (
+              <p className="muted t-sm">No concept cards linked.</p>
+            ) : (
+              <div className="stack stack--sm">
+                {relatedCards.map((card) => (
+                  <button key={card.id} className="btn btn--ghost btn--block" onClick={() => navigate(`/cards/${card.id}`)}>
+                    <span className="term t-xs dim">{card.id}</span>
+                    <span style={{ display: 'block' }}>{card.title}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </Panel>
 
           <Panel title="Review Schedule">

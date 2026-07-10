@@ -162,6 +162,14 @@ recorded as `mode: "drill"` attempts, update Review Queue scheduling, and feed A
 mastery. Completed or partial drills are saved as `DrillResult` entries and shown in Dashboard /
 Analytics.
 
+## Concept Cards
+
+Concept Cards provide one-screen review notes for the surrounding knowledge behind CEH questions.
+Each CEH module has five seed cards with `meaning`, `whenUsed`, `examTrap`, and `rememberPhrase`.
+Cards stay conceptual and defensive; they do not include tool procedures, payloads, target steps, or
+credential-handling instructions. The `/cards` viewer lists and searches cards, card detail links to
+related questions, and Question Detail links back to related cards through module and tag overlap.
+
 ## Final Gate Checklist
 
 試験予約前の最終判定として、`/final-gate` は次の条件をまとめて評価する。
