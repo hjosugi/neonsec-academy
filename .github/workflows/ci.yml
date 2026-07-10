@@ -19,6 +19,8 @@ jobs:
         run: npm run typecheck
       - name: Validate question bank
         run: npm run validate:content
+      - name: Safety scan
+        run: npm run validate:safety
       - name: Unit tests
         run: npm test
       - name: Build

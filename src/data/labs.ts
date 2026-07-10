@@ -5,6 +5,8 @@
 // ============================================================
 import type { Difficulty, Severity } from '../types'
 
+export type LabKind = 'local' | 'dataset' | 'simulated' | 'writeup'
+
 export interface LabFinding {
   title: string
   severity: Severity
@@ -36,6 +38,7 @@ export interface Lab {
   id: string
   title: string
   category: string
+  kind: LabKind
   glyph: string
   color: string
   difficulty: Difficulty
@@ -104,6 +107,7 @@ export const LABS: Lab[] = [
     id: 'soc-bruteforce',
     title: 'SOC Triage: Suspicious Logins',
     category: 'SOC',
+    kind: 'dataset',
     glyph: '☰',
     color: '#48cae4',
     difficulty: 'easy',
@@ -168,6 +172,7 @@ export const LABS: Lab[] = [
     id: 'cloud-iam',
     title: 'Cloud Config Review: Over-Permissive IAM',
     category: 'Cloud',
+    kind: 'simulated',
     glyph: '⛁',
     color: '#00b4d8',
     difficulty: 'medium',
@@ -233,6 +238,7 @@ export const LABS: Lab[] = [
     id: 'web-idor',
     title: 'Web AppSec: Broken Access Control',
     category: 'Web',
+    kind: 'simulated',
     glyph: '⧉',
     color: '#39ff14',
     difficulty: 'medium',
@@ -288,6 +294,7 @@ Content-Type: application/json
     id: 'net-cleartext',
     title: 'Network Review: Cleartext Credentials',
     category: 'Network',
+    kind: 'dataset',
     glyph: '⊟',
     color: '#9d4edd',
     difficulty: 'easy',
@@ -338,6 +345,7 @@ Content-Type: application/json
     id: 'phish-headers',
     title: 'Phishing Analysis: Email Headers',
     category: 'Awareness',
+    kind: 'dataset',
     glyph: '✉',
     color: '#ffcc00',
     difficulty: 'easy',
@@ -393,6 +401,7 @@ X-Sender-IP: 203.0.113.200`,
     id: 'threat-model',
     title: 'Threat Modeling: STRIDE Pass',
     category: 'Threat Model',
+    kind: 'writeup',
     glyph: '❖',
     color: '#ff3366',
     difficulty: 'hard',

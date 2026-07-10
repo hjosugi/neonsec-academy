@@ -224,7 +224,7 @@ export function LabDetail() {
   return (
     <div className="page">
       <PageHeader
-        eyebrow={<>Safe Lab // {lab.category}</>}
+        eyebrow={<>Safe Lab // {lab.category} // {lab.kind}</>}
         title={lab.title}
         actions={
           <button className="btn btn--ghost btn--sm" onClick={() => navigate('/labs')}>
@@ -279,6 +279,7 @@ export function LabDetail() {
           </div>
           <div className="row wrap" style={{ gap: '0.4rem', justifyContent: 'flex-end' }}>
             <span className="badge badge--cyan">{effectiveRubric.challengeType}</span>
+            <span className="badge badge--purple">{lab.kind}</span>
             <span className={`badge ${hasReport ? 'badge--green' : 'badge--amber'}`}>
               report {hasReport ? 'submitted' : 'missing'}
             </span>

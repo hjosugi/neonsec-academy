@@ -1,7 +1,7 @@
 {
   "name": "neonsec-academy",
   "private": true,
-  "version": "1.0.17",
+  "version": "1.0.18",
   "type": "module",
   "description": "NeonSec Academy — a cyberpunk CEH exam-prep platform: question bank, spaced-repetition review, mock exams, weakness analytics, and safe practical labs.",
   "scripts": {
@@ -11,6 +11,7 @@
     "preview": "vite preview --host",
     "typecheck": "tsc --noEmit",
     "validate:content": "node scripts/validate_questions.mjs",
+    "validate:safety": "node scripts/safety_scan.mjs",
     "test": "vitest run"
   },
   "license": "MIT",

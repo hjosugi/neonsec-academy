@@ -36,6 +36,9 @@ export function Labs() {
             <span className="badge mt-1" style={{ borderColor: lab.color, color: lab.color }}>
               {lab.category}
             </span>
+            <span className="badge mt-1" style={{ marginLeft: '0.35rem' }}>
+              {lab.kind}
+            </span>
             <p className="term t-xs dim mt-2" style={{ lineHeight: 1.5 }}>
               {lab.brief.length > 120 ? lab.brief.slice(0, 118) + '…' : lab.brief}
             </p>

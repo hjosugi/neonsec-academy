@@ -161,6 +161,7 @@ Each lab needs:
 | `id` | Stable slug used in route/local progress keys. |
 | `title` | User-facing lab title. |
 | `category` | Short grouping such as `SOC`, `Cloud`, `Web`, `Network`, `Social`, or `Threat Model`. |
+| `kind` | One of `local`, `dataset`, `simulated`, or `writeup`. |
 | `difficulty` | `easy`, `medium`, or `hard`. |
 | `brief` | What the learner is analyzing and what deliverable is expected. |
 | `scope.allowed` | The exact local/synthetic artifacts and app tools the learner may use. |
@@ -182,6 +183,7 @@ Each lab needs:
 - [ ] Hints teach reasoning without giving operational misuse steps.
 - [ ] Model findings are report-ready and use synthetic scope language.
 - [ ] The report builder can use the lab title, scope, summary, and model findings safely.
+- [ ] `npm run validate:safety` passes before publishing.
 
 ## Review Checklist
 

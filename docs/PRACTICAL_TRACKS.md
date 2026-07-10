@@ -51,3 +51,11 @@ Safe Labs score practical work with these components:
 Each lab defines a challenge type and maps rubric components to its objectives. Hints and missing
 scope acknowledgement apply penalties. Settings can tune the passing score, hint penalty, and scope
 warning penalty without changing the lab content.
+
+## Lab Registry Safety
+
+Every lab declares a `kind`: `local`, `dataset`, `simulated`, or `writeup`. Lab Detail displays the
+scope contract before evidence, and the learner must acknowledge the synthetic, read-only boundary
+before starting. The registry validator rejects missing scope, invalid kinds, public IP addresses,
+real email domains, live domains, and credential-like assignments. CI also runs
+`npm run validate:safety` so unsafe lab metadata cannot be published.

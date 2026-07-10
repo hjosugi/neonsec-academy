@@ -289,6 +289,31 @@ Readiness thresholds are persisted with other local settings:
 
 `examTargetPct` remains part of the profile because it is the learner's personal mock-score target.
 
+## LabChallenge
+
+```json
+{
+  "id": "soc-bruteforce",
+  "title": "SOC Triage: Suspicious Logins",
+  "category": "SOC",
+  "kind": "dataset",
+  "difficulty": "easy",
+  "scope": {
+    "allowed": ["The provided synthetic log", "Local note-taking and the report builder"],
+    "forbidden": ["Any real host or account", "Any external lookup", "Generating traffic"]
+  },
+  "evidenceTitle": "auth.log (synthetic)",
+  "objectives": ["Classify the activity", "Identify the pivot event"],
+  "rubric": { "challengeType": "soc-triage", "passingScore": 80 }
+}
+```
+
+Lab kinds are `local`, `dataset`, `simulated`, and `writeup`. All labs must declare allowed and
+forbidden scope before evidence is visible. `validateLabRegistry` checks lab schema and unsafe
+metadata, while `npm run validate:safety` scans release content for public IPs, real email domains,
+credential-like assignments, live domains, private keys, access tokens, and actionable command
+recipes. CI runs the safety scan before publishing.
+
 ## Report
 
 ```json

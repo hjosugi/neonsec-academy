@@ -22,13 +22,13 @@ estimate: "3d"
 - [x] lab ごとに scope contract を表示する
 - [x] 開始前に user acknowledgement を必須にする
 - [x] external target, public IP, real email, real credentials を禁止フィールドとして検出する
-- [ ] lab は local / dataset / simulated / writeup の種類に分ける
+- [x] lab は local / dataset / simulated / writeup の種類に分ける
 
 ## Acceptance Criteria
 
 - [x] scope 未確認では lab を開始できない
 - [x] lab detail に allowed/forbidden が表示される
-- [ ] unsafe metadata を含む lab は publish できない
+- [x] unsafe metadata を含む lab は publish できない
 
 ## Subtasks
 
@@ -47,17 +47,17 @@ estimate: "3d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
