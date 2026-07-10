@@ -167,6 +167,7 @@ Each lab needs:
 | `scope.allowed` | The exact local/synthetic artifacts and app tools the learner may use. |
 | `scope.forbidden` | Explicitly forbid real systems, external lookups, traffic generation, credentials, and payload execution. |
 | `evidenceTitle` / `evidence` | Static synthetic artifact. Use fictional names and documentation IP ranges. |
+| `flagChallenge` | Prompt, local asset metadata, unique expected flag, scoped hints, explanation, remediation, and report prompt. |
 | `objectives` | Checklist items that map to scoring components. |
 | `rubric` | Component scoring for flag/diagnosis, evidence, explanation, remediation, and safety. |
 | `guiding` | Hints with teaching answers. Hints should not introduce real-world action steps. |
@@ -177,10 +178,13 @@ Each lab needs:
 - [ ] The lab can be completed without leaving the app.
 - [ ] The scope contract is visible and specific.
 - [ ] The evidence is fictional or synthetic and contains no real secret or personal data.
+- [ ] The expected flag uses a unique `FLAG{UPPER_SNAKE_CASE}` value and is only a local training answer.
+- [ ] Every Flag Challenge asset describes material already supplied inside the app.
 - [ ] The forbidden list rules out real targets, credentials, third-party services, traffic generation,
   and payload execution.
 - [ ] Objectives require evidence and remediation, not just naming a vulnerability.
 - [ ] Hints teach reasoning without giving operational misuse steps.
+- [ ] Explanation, remediation, and report prompt stay defensive and unlock safely after an accepted flag.
 - [ ] Model findings are report-ready and use synthetic scope language.
 - [ ] The report builder can use the lab title, scope, summary, and model findings safely.
 - [ ] `npm run validate:safety` passes before publishing.

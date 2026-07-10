@@ -31,6 +31,8 @@ target.
 - Safe Labs are static, local, read-only exercises with an explicit scope contract.
 - Lab scoring requires scope acknowledgement and penalizes missing acknowledgement.
 - Lab evidence uses fictional systems and documentation IP ranges instead of live targets.
+- Flag challenges derive answers only from supplied static assets; flags are training labels, never credentials or secrets.
+- Flag submission warns against pasting real credentials, tokens, customer values, or production secrets.
 - Reports label scope as synthetic and ask for evidence, impact, and remediation.
 - Question packs are validated before import and only become user-authored local questions.
 - Full backups and question packs are local JSON files; the app does not upload them.

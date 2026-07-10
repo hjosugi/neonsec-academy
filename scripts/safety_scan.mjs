@@ -188,7 +188,9 @@ function scanQuestions() {
 
 function scanLabs() {
   const text = scanTextFile(LAB_FILE)
-  counters.labs = [...text.matchAll(/\n\s+id:\s*['"][^'"]+['"]/g)].length
+  // Count only top-level LABS entries. Nested Flag Challenge assets also have
+  // `id` fields and must not inflate the lab-definition count.
+  counters.labs = [...text.matchAll(/^  \{\r?\n    id:\s*['"][^'"]+['"]/gm)].length
 }
 
 function walk(dir) {

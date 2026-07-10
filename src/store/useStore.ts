@@ -12,6 +12,8 @@ import type {
   EvidenceItem,
   ExamSession,
   ExamResult,
+  FlagAttempt,
+  FlagHintUse,
   Grade,
   MistakeNote,
   Profile,
@@ -23,6 +25,7 @@ import type {
   Settings,
 } from '../types'
 import { SEED_QUESTIONS, enrichQuestion } from '../data/questions'
+import { LABS, labById } from '../data/labs'
 import { XP } from '../data/taxonomy'
 import { DAY, dayKey, startOfDay } from '../lib/format'
 import { uid } from '../lib/id'
@@ -36,6 +39,14 @@ import {
   normalizeEvidenceItems,
   reconcileReportEvidenceLinks,
 } from '../lib/evidence'
+import {
+  flagHintUsesForChallenge,
+  isFlagChallengeSolved,
+  isFlagCorrect,
+  normalizeFlagAttempts,
+  normalizeFlagHintUses,
+  sanitizeFlagSubmission,
+} from '../lib/flagChallenge'
 
 const SCHEMA_VERSION = 1
 
@@ -133,6 +144,8 @@ interface AppState {
   userQuestions: RawQuestion[]
   examResults: ExamResult[]
   activeExam: ExamSession | null
+  flagAttempts: FlagAttempt[]
+  flagHintUses: FlagHintUse[]
   evidenceItems: EvidenceItem[]
   reports: Report[]
 }
@@ -180,6 +193,9 @@ interface AppActions {
   examGoto: (index: number) => void
   cancelExam: () => void
   submitExam: () => ExamResult | null
+  // flag challenges
+  submitLabFlag: (challengeId: string, submitted: string) => FlagAttempt | null
+  revealLabFlagHint: (challengeId: string, hintIndex: number) => boolean
   // evidence + reports
   upsertEvidence: (item: EvidenceItem) => void
   deleteEvidence: (id: string) => void
@@ -204,6 +220,12 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
     return currentState
   }
   const persisted = persistedState as Partial<AppState>
+  const flagAttempts = Array.isArray(persisted.flagAttempts)
+    ? normalizeFlagAttempts(persisted.flagAttempts, LABS)
+    : currentState.flagAttempts
+  const flagHintUses = Array.isArray(persisted.flagHintUses)
+    ? normalizeFlagHintUses(persisted.flagHintUses, LABS)
+    : currentState.flagHintUses
   const evidenceItems = Array.isArray(persisted.evidenceItems)
     ? normalizeEvidenceItems(persisted.evidenceItems)
     : currentState.evidenceItems
@@ -214,6 +236,8 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
   return {
     ...currentState,
     ...persisted,
+    flagAttempts,
+    flagHintUses,
     evidenceItems,
     reports,
   }
@@ -234,6 +258,8 @@ const initialState: AppState = {
   userQuestions: [],
   examResults: [],
   activeExam: null,
+  flagAttempts: [],
+  flagHintUses: [],
   evidenceItems: [],
   reports: [],
 }
@@ -529,6 +555,39 @@ export const useStore = create<Store>()(
         return result
       },
 
+      submitLabFlag: (challengeId, submitted) => {
+        const lab = labById(challengeId)
+        const clean = sanitizeFlagSubmission(submitted)
+        const state = get()
+        if (!lab || !clean || isFlagChallengeSolved(state.flagAttempts, challengeId)) return null
+
+        const attempt: FlagAttempt = {
+          id: uid('fa-'),
+          challengeId,
+          submitted: clean,
+          correct: isFlagCorrect(lab.flagChallenge, clean),
+          hintCount: flagHintUsesForChallenge(state.flagHintUses, challengeId).length,
+          at: Date.now(),
+        }
+        set((s) => ({ flagAttempts: [...s.flagAttempts, attempt] }))
+        return attempt
+      },
+
+      revealLabFlagHint: (challengeId, hintIndex) => {
+        const lab = labById(challengeId)
+        if (!lab || !Number.isInteger(hintIndex) || hintIndex < 0 || hintIndex >= lab.flagChallenge.hints.length) {
+          return false
+        }
+        const state = get()
+        if (isFlagChallengeSolved(state.flagAttempts, challengeId)) return false
+        if (state.flagHintUses.some((use) => use.challengeId === challengeId && use.hintIndex === hintIndex)) {
+          return false
+        }
+        const hintUse: FlagHintUse = { challengeId, hintIndex, usedAt: Date.now() }
+        set((s) => ({ flagHintUses: [...s.flagHintUses, hintUse] }))
+        return true
+      },
+
       upsertEvidence: (item) =>
         set((s) => {
           const index = s.evidenceItems.findIndex((existing) => existing.id === item.id)
@@ -622,6 +681,8 @@ export const useStore = create<Store>()(
           drillResults: [],
           examResults: [],
           activeExam: null,
+          flagAttempts: [],
+          flagHintUses: [],
           profile: {
             ...defaultProfile,
             createdAt: s.profile.createdAt,
@@ -647,6 +708,8 @@ export const useStore = create<Store>()(
           archivedIds: s.archivedIds,
           userQuestions: s.userQuestions,
           examResults: s.examResults,
+          flagAttempts: s.flagAttempts,
+          flagHintUses: s.flagHintUses,
           evidenceItems: s.evidenceItems,
           reports: s.reports,
         }
@@ -658,6 +721,12 @@ export const useStore = create<Store>()(
           const d = JSON.parse(json)
           if (typeof d !== 'object' || d === null) return false
           set((s) => {
+            const flagAttempts = Array.isArray(d.flagAttempts)
+              ? normalizeFlagAttempts(d.flagAttempts, LABS)
+              : s.flagAttempts
+            const flagHintUses = Array.isArray(d.flagHintUses)
+              ? normalizeFlagHintUses(d.flagHintUses, LABS)
+              : s.flagHintUses
             const evidenceItems = Array.isArray(d.evidenceItems)
               ? normalizeEvidenceItems(d.evidenceItems)
               : s.evidenceItems
@@ -678,6 +747,8 @@ export const useStore = create<Store>()(
               archivedIds: Array.isArray(d.archivedIds) ? d.archivedIds : s.archivedIds,
               userQuestions: Array.isArray(d.userQuestions) ? d.userQuestions : s.userQuestions,
               examResults: Array.isArray(d.examResults) ? d.examResults : s.examResults,
+              flagAttempts,
+              flagHintUses,
               evidenceItems,
               reports,
             }
@@ -706,6 +777,8 @@ export const useStore = create<Store>()(
         userQuestions: s.userQuestions,
         examResults: s.examResults,
         activeExam: s.activeExam,
+        flagAttempts: s.flagAttempts,
+        flagHintUses: s.flagHintUses,
         evidenceItems: s.evidenceItems,
         reports: s.reports,
       }),

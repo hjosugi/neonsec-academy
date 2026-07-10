@@ -7,6 +7,12 @@ import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { EmptyState } from '../components/ui/EmptyState'
 import { ChallengeEvidenceVault } from '../components/lab/ChallengeEvidenceVault'
+import { FlagChallengePanel } from '../components/lab/FlagChallengePanel'
+import {
+  flagAttemptsForChallenge,
+  flagHintUsesForChallenge,
+  isFlagChallengeSolved,
+} from '../lib/flagChallenge'
 
 const SEV_CLASS: Record<string, string> = {
   critical: 'badge--red',
@@ -94,16 +100,27 @@ function objectivesReady(component: LabRubricComponent, done: boolean[]) {
   return indexes.length === 0 || indexes.every((i) => Boolean(done[i]))
 }
 
-function scoreLab(rubric: LabRubric, done: boolean[], ack: boolean, hasReport: boolean, revealedHintCount: number) {
+function scoreLab(
+  rubric: LabRubric,
+  done: boolean[],
+  ack: boolean,
+  hasReport: boolean,
+  flagSolved: boolean,
+  revealedHintCount: number,
+) {
   const rows: ScoreRow[] = rubric.components.map((component) => {
     const reportPoints = component.reportPoints ?? 0
     const basePoints = component.points - reportPoints
-    const ready = objectivesReady(component, done)
+    const objectiveReady = objectivesReady(component, done)
+    const ready = component.key === 'flag' ? flagSolved : objectiveReady
     const earned = ready && ack ? basePoints + (hasReport ? reportPoints : 0) : 0
-    const missing = (component.objectiveIndexes ?? []).filter((i) => !done[i])
+    const missing = component.key === 'flag'
+      ? []
+      : (component.objectiveIndexes ?? []).filter((i) => !done[i])
     const blockers: string[] = []
 
     if (!ack) blockers.push('acknowledge scope')
+    if (component.key === 'flag' && !flagSolved) blockers.push('submit the accepted flag')
     if (missing.length > 0) blockers.push(`objective ${missing.map((i) => `#${i + 1}`).join(', ')}`)
     if (reportPoints > 0 && !hasReport) blockers.push('submit report')
 
@@ -152,6 +169,8 @@ export function LabDetail() {
   const lab = labById(id)
   const reports = useStore((s) => s.reports)
   const settings = useStore((s) => s.settings)
+  const allFlagAttempts = useStore((s) => s.flagAttempts)
+  const allFlagHintUses = useStore((s) => s.flagHintUses)
 
   const [progressLabId, setProgressLabId] = useState(lab?.id ?? '')
   const [ack, setAck] = useState(() => readLabProgress(lab).ack)
@@ -197,9 +216,14 @@ export function LabDetail() {
   }
   const labReport = reports.find((report) => isReportForLab(report, lab))
   const hasReport = Boolean(labReport)
-  const score = scoreLab(effectiveRubric, done, ack, hasReport, revealedHints.size)
+  const flagAttempts = flagAttemptsForChallenge(allFlagAttempts, lab.id)
+  const flagHintUses = flagHintUsesForChallenge(allFlagHintUses, lab.id)
+  const flagSolved = isFlagChallengeSolved(flagAttempts, lab.id)
+  const totalHintCount = revealedHints.size + flagHintUses.length
+  const score = scoreLab(effectiveRubric, done, ack, hasReport, flagSolved, totalHintCount)
   const meterStyle = { '--v': `${score.pct}%`, '--c': scoreColor(score.pct) } as CSSProperties
   const doneCount = done.filter(Boolean).length
+  const flagObjectiveIndexes = effectiveRubric.components.find((component) => component.key === 'flag')?.objectiveIndexes ?? []
 
   const toggleHint = (i: number) => {
     const willReveal = !openHints.has(i)
@@ -221,6 +245,11 @@ export function LabDetail() {
   const openReport = () => {
     if (labReport) navigate('/reports', { state: { openReportId: labReport.id } })
     else navigate('/reports', { state: { prefillLab: lab } })
+  }
+
+  const markFlagObjectiveComplete = () => {
+    const indexes = new Set(flagObjectiveIndexes)
+    setDone((current) => current.map((value, index) => indexes.has(index) ? true : value))
   }
 
   return (
@@ -282,6 +311,9 @@ export function LabDetail() {
           <div className="row wrap" style={{ gap: '0.4rem', justifyContent: 'flex-end' }}>
             <span className="badge badge--cyan">{effectiveRubric.challengeType}</span>
             <span className="badge badge--purple">{lab.kind}</span>
+            <span className={`badge ${flagSolved ? 'badge--green' : 'badge--amber'}`}>
+              flag {flagSolved ? 'accepted' : 'pending'}
+            </span>
             <span className={`badge ${hasReport ? 'badge--green' : 'badge--amber'}`}>
               report {hasReport ? 'submitted' : 'missing'}
             </span>
@@ -343,7 +375,7 @@ export function LabDetail() {
           {(score.hintPenalty > 0 || score.scopePenalty > 0) && (
             <div style={{ borderTop: '1px dashed var(--hairline)', paddingTop: '0.65rem' }}>
               <p className="term t-xs muted" style={{ marginBottom: 0 }}>
-                Adjustments: {revealedHints.size} hint{revealedHints.size === 1 ? '' : 's'} revealed
+                Adjustments: {totalHintCount} hint{totalHintCount === 1 ? '' : 's'} recorded
                 {score.scopePenalty > 0 ? '; scope acknowledgement missing' : ''}.
               </p>
             </div>
@@ -364,6 +396,13 @@ export function LabDetail() {
                   <code>{lab.evidence}</code>
                 </pre>
               </Panel>
+
+              <FlagChallengePanel
+                key={`flag-${lab.id}`}
+                lab={lab}
+                onSolved={markFlagObjectiveComplete}
+                onOpenReport={openReport}
+              />
 
               <ChallengeEvidenceVault
                 key={lab.id}
@@ -400,11 +439,12 @@ export function LabDetail() {
                       <input
                         type="checkbox"
                         checked={done[i]}
+                        disabled={flagObjectiveIndexes.includes(i) && !flagSolved}
                         onChange={(e) => setDone((d) => d.map((v, j) => (j === i ? e.target.checked : v)))}
                         style={{ marginTop: 3 }}
                       />
                       <span className="t-sm" style={{ textDecoration: done[i] ? 'line-through' : 'none', opacity: done[i] ? 0.6 : 1 }}>
-                        {o}
+                        {o}{flagObjectiveIndexes.includes(i) && !flagSolved ? ' (unlock by solving the flag)' : ''}
                       </span>
                     </label>
                   ))}
@@ -420,8 +460,21 @@ export function LabDetail() {
                 </button>
               </Panel>
 
-              <Panel title="Model Answer" right={<button className="btn btn--ghost btn--sm" onClick={() => setShowModel((v) => !v)}>{showModel ? 'hide' : 'reveal'}</button>}>
-                {showModel ? (
+              <Panel
+                title="Model Answer"
+                right={
+                  <button
+                    className="btn btn--ghost btn--sm"
+                    disabled={!flagSolved}
+                    onClick={() => setShowModel((v) => !v)}
+                  >
+                    {!flagSolved ? 'locked' : showModel ? 'hide' : 'reveal'}
+                  </button>
+                }
+              >
+                {!flagSolved ? (
+                  <p className="term t-xs dim">Submit the accepted flag to unlock model findings.</p>
+                ) : showModel ? (
                   <div className="stack stack--sm">
                     {lab.modelFindings.map((f, i) => (
                       <div key={i} className="panel" style={{ background: 'var(--panel-inset)', padding: '0.7rem 0.85rem' }}>

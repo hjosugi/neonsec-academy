@@ -1,6 +1,15 @@
-import type { Lab, LabKind } from '../data/labs'
+import type { FlagChallengeAssetKind, Lab, LabKind } from '../data/labs'
+import { canonicalFlag, isExpectedFlagValid } from './flagChallenge'
 
 export const LAB_KINDS: LabKind[] = ['local', 'dataset', 'simulated', 'writeup']
+export const FLAG_ASSET_KINDS: FlagChallengeAssetKind[] = [
+  'log',
+  'config',
+  'request-response',
+  'capture',
+  'headers',
+  'architecture',
+]
 
 export interface LabRegistryError {
   labId: string
@@ -40,7 +49,7 @@ function isNonTargetDottedToken(domain: string): boolean {
 }
 
 function textFields(lab: Lab): Array<[string, string]> {
-  return [
+  const fields: Array<[string, string]> = [
     ['title', lab.title],
     ['category', lab.category],
     ['brief', lab.brief],
@@ -52,6 +61,24 @@ function textFields(lab: Lab): Array<[string, string]> {
     ['guiding', lab.guiding.map((item) => `${item.q}\n${item.a}`).join('\n')],
     ['modelFindings', lab.modelFindings.map((finding) => `${finding.title}\n${finding.impact}\n${finding.remediation}`).join('\n')],
   ]
+  if (lab.flagChallenge) {
+    const challenge = lab.flagChallenge
+    fields.push(
+      ['flagChallenge.prompt', typeof challenge.prompt === 'string' ? challenge.prompt : ''],
+      [
+        'flagChallenge.assets',
+        Array.isArray(challenge.assets)
+          ? challenge.assets.map((asset) => `${asset?.label ?? ''}\n${asset?.description ?? ''}`).join('\n')
+          : '',
+      ],
+      ['flagChallenge.expectedFlag', typeof challenge.expectedFlag === 'string' ? challenge.expectedFlag : ''],
+      ['flagChallenge.hints', Array.isArray(challenge.hints) ? challenge.hints.join('\n') : ''],
+      ['flagChallenge.explanation', typeof challenge.explanation === 'string' ? challenge.explanation : ''],
+      ['flagChallenge.remediation', typeof challenge.remediation === 'string' ? challenge.remediation : ''],
+      ['flagChallenge.reportPrompt', typeof challenge.reportPrompt === 'string' ? challenge.reportPrompt : ''],
+    )
+  }
+  return fields
 }
 
 function scanUnsafeText(lab: Lab, errors: LabRegistryError[]) {
@@ -95,6 +122,7 @@ function scanUnsafeText(lab: Lab, errors: LabRegistryError[]) {
 export function validateLabRegistry(labs: Lab[]): LabRegistryError[] {
   const errors: LabRegistryError[] = []
   const ids = new Set<string>()
+  const expectedFlags = new Set<string>()
 
   for (const lab of labs) {
     if (!lab.id.trim()) errors.push({ labId: lab.id || '<missing>', field: 'id', kind: 'schema', message: 'Lab id is required.' })
@@ -112,6 +140,67 @@ export function validateLabRegistry(labs: Lab[]): LabRegistryError[] {
     }
     if (!lab.evidenceTitle.trim() || !lab.evidence.trim()) {
       errors.push({ labId: lab.id, field: 'evidence', kind: 'schema', message: 'Evidence title and evidence are required.' })
+    }
+    if (!lab.flagChallenge) {
+      errors.push({ labId: lab.id, field: 'flagChallenge', kind: 'schema', message: 'Flag challenge metadata is required.' })
+    } else {
+      const challenge = lab.flagChallenge
+      const requiredText = [challenge.prompt, challenge.explanation, challenge.remediation, challenge.reportPrompt]
+      if (requiredText.some((value) => typeof value !== 'string' || !value.trim())) {
+        errors.push({
+          labId: lab.id,
+          field: 'flagChallenge',
+          kind: 'schema',
+          message: 'Prompt, explanation, remediation, and report prompt are required.',
+        })
+      }
+      if (!Array.isArray(challenge.assets) || challenge.assets.length === 0) {
+        errors.push({ labId: lab.id, field: 'flagChallenge.assets', kind: 'schema', message: 'At least one local asset is required.' })
+      } else {
+        const assetIds = new Set<string>()
+        for (const asset of challenge.assets) {
+          if (
+            !asset
+            || typeof asset.id !== 'string'
+            || typeof asset.label !== 'string'
+            || typeof asset.description !== 'string'
+            || !asset.id.trim()
+            || !asset.label.trim()
+            || !asset.description.trim()
+          ) {
+            errors.push({ labId: lab.id, field: 'flagChallenge.assets', kind: 'schema', message: 'Every asset needs an id, label, and description.' })
+            continue
+          }
+          if (assetIds.has(asset.id)) {
+            errors.push({ labId: lab.id, field: 'flagChallenge.assets', kind: 'schema', message: 'Asset ids must be unique within a challenge.' })
+          }
+          assetIds.add(asset.id)
+          if (!FLAG_ASSET_KINDS.includes(asset.kind)) {
+            errors.push({ labId: lab.id, field: 'flagChallenge.assets.kind', kind: 'schema', message: 'Asset kind is invalid.' })
+          }
+        }
+      }
+      if (
+        !Array.isArray(challenge.hints)
+        || challenge.hints.length === 0
+        || challenge.hints.some((hint) => typeof hint !== 'string' || !hint.trim())
+      ) {
+        errors.push({ labId: lab.id, field: 'flagChallenge.hints', kind: 'schema', message: 'At least one non-empty hint is required.' })
+      }
+      if (!isExpectedFlagValid(challenge.expectedFlag)) {
+        errors.push({
+          labId: lab.id,
+          field: 'flagChallenge.expectedFlag',
+          kind: 'schema',
+          message: 'Expected flag must use FLAG{UPPER_SNAKE_CASE} format.',
+        })
+      } else {
+        const expectedFlag = canonicalFlag(challenge.expectedFlag)!
+        if (expectedFlags.has(expectedFlag)) {
+          errors.push({ labId: lab.id, field: 'flagChallenge.expectedFlag', kind: 'schema', message: 'Expected flags must be unique.' })
+        }
+        expectedFlags.add(expectedFlag)
+      }
     }
     scanUnsafeText(lab, errors)
   }

@@ -162,6 +162,14 @@ recorded as `mode: "drill"` attempts, update Review Queue scheduling, and feed A
 mastery. Completed or partial drills are saved as `DrillResult` entries and shown in Dashboard /
 Analytics.
 
+## Flag Challenge Analytics
+
+Safe Labs persist append-only flag attempts and unique hint use separately from question attempts.
+Analytics shows completion, attempt accuracy, incorrect attempts, first-try solves, hint counts, and
+the latest attempt per challenge. These results do not alter CEH question mastery or spaced-review
+schedules; they provide a separate practical-performance signal and link back to the relevant lab.
+Raw submitted flags and hint history remain private backup data.
+
 ## Concept Cards
 
 Concept Cards provide one-screen review notes for the surrounding knowledge behind CEH questions.

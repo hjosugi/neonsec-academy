@@ -14,6 +14,25 @@ export interface LabFinding {
   remediation: string
 }
 
+export type FlagChallengeAssetKind = 'log' | 'config' | 'request-response' | 'capture' | 'headers' | 'architecture'
+
+export interface FlagChallengeAsset {
+  id: string
+  label: string
+  kind: FlagChallengeAssetKind
+  description: string
+}
+
+export interface FlagChallengeDefinition {
+  prompt: string
+  assets: FlagChallengeAsset[]
+  expectedFlag: string
+  hints: string[]
+  explanation: string
+  remediation: string
+  reportPrompt: string
+}
+
 export type LabScoreComponentKey = 'flag' | 'evidence' | 'explanation' | 'remediation' | 'safety'
 
 export interface LabRubricComponent {
@@ -46,6 +65,7 @@ export interface Lab {
   scope: { allowed: string[]; forbidden: string[] }
   evidenceTitle: string
   evidence: string
+  flagChallenge: FlagChallengeDefinition
   objectives: string[]
   rubric: LabRubric
   guiding: { q: string; a: string }[]
@@ -127,6 +147,29 @@ export const LABS: Lab[] = [
 ... (417 similar FAIL events across 60 usernames in 9 minutes) ...
 2026-07-08T02:49:58Z user=erin  src=203.0.113.77 result=SUCCESS mfa=no
 2026-07-08T02:50:31Z user=erin  src=203.0.113.77 action=export_all_records`,
+    flagChallenge: {
+      prompt:
+        'Classify the primary authentication attack pattern shown by the prepared timeline. Submit the pattern as a flag.',
+      assets: [
+        {
+          id: 'auth-log',
+          label: 'auth.log (synthetic)',
+          kind: 'log',
+          description: 'Prepared authentication events across fictional users and documentation-range sources.',
+        },
+      ],
+      expectedFlag: 'FLAG{PASSWORD_SPRAY}',
+      hints: [
+        'Count how many distinct usernames are targeted by the same source.',
+        'The source makes a small number of guesses across many accounts rather than many guesses against one account.',
+      ],
+      explanation:
+        'One source produces failures across many usernames before a successful login, which is the defining pattern of password spraying.',
+      remediation:
+        'Enforce MFA for every account, detect one-source-to-many-user failure velocity, throttle the source, and reset the affected fictional account.',
+      reportPrompt:
+        'Write a finding that cites the multi-user failure sequence and successful non-MFA login, then explains impact and prioritized containment.',
+    },
     objectives: [
       'Classify the activity (single-account brute force vs password spraying vs credential stuffing)',
       'Identify the pivot event where the attacker likely succeeded',
@@ -197,6 +240,35 @@ export const LABS: Lab[] = [
   "encryption_at_rest": false,
   "access_logging": false
 }`,
+    flagChallenge: {
+      prompt:
+        'Identify the highest-impact authorization design flaw in the prepared runtime-role policy and submit it as a flag.',
+      assets: [
+        {
+          id: 'runtime-policy',
+          label: 'role-policy.json (synthetic)',
+          kind: 'config',
+          description: 'Prepared IAM statement for a fictional application runtime role.',
+        },
+        {
+          id: 'bucket-settings',
+          label: 'bucket-settings.json (synthetic)',
+          kind: 'config',
+          description: 'Prepared public-access, encryption, and logging settings for a fictional bucket.',
+        },
+      ],
+      expectedFlag: 'FLAG{WILDCARD_IAM}',
+      hints: [
+        'Compare the actions and resources granted with what a runtime role actually needs.',
+        'Both fields use the broadest possible wildcard.',
+      ],
+      explanation:
+        'Allowing every action on every resource violates least privilege and gives a compromised application an account-wide blast radius.',
+      remediation:
+        'Replace the wildcard statement with only required actions on named resources, then review access with a policy analyzer.',
+      reportPrompt:
+        'Document the wildcard authorization risk separately from the bucket exposure and prioritize least-privilege remediation.',
+    },
     objectives: [
       'Explain what is wrong with the IAM statement',
       'Identify the three risky bucket settings',
@@ -259,6 +331,29 @@ Content-Type: application/json
 
 { "invoice_id": 5581, "owner_user_id": 1007, "total": "412.00",
   "billing_name": "Synthetic Customer 1007" }`,
+    flagChallenge: {
+      prompt:
+        'Name the authorization vulnerability demonstrated by the prepared request and response, then submit the class as a flag.',
+      assets: [
+        {
+          id: 'invoice-exchange',
+          label: 'request-response.txt (synthetic)',
+          kind: 'request-response',
+          description: 'Static exchange from a fictional toy application with mismatched session and resource owners.',
+        },
+      ],
+      expectedFlag: 'FLAG{BROKEN_ACCESS_CONTROL}',
+      hints: [
+        'Compare the authenticated user ID with the owner ID in the returned object.',
+        'The server returns an object owned by another user without an object-level authorization check.',
+      ],
+      explanation:
+        'User 1002 receives invoice data owned by user 1007, demonstrating missing server-side object-level authorization.',
+      remediation:
+        'Authorize every object access against the authenticated identity on the server and cover cross-user requests with negative tests.',
+      reportPrompt:
+        'Write a broken-access-control finding using the owner mismatch as evidence and describe the required server-side authorization rule.',
+    },
     objectives: [
       'Name the vulnerability class',
       'Explain how you know authorization failed',
@@ -311,6 +406,29 @@ Content-Type: application/json
 44   3.02     192.0.2.11 -> 192.0.2.60   HTTP   POST /login  (form, no TLS)
 45   3.03     192.0.2.60 -> 192.0.2.11   HTTP   200 OK  Set-Cookie: sid=... (no Secure flag)
 88   9.14     192.0.2.12 -> 192.0.2.70   TELNET login: admin`,
+    flagChallenge: {
+      prompt:
+        'Identify the shared security failure across the prepared FTP, HTTP, and Telnet observations and submit it as a flag.',
+      assets: [
+        {
+          id: 'capture-summary',
+          label: 'capture-summary.txt (synthetic)',
+          kind: 'capture',
+          description: 'Static packet-summary rows from a deliberately prepared training capture.',
+        },
+      ],
+      expectedFlag: 'FLAG{CLEARTEXT_CREDENTIALS}',
+      hints: [
+        'Focus on what an on-path observer could read without decrypting anything.',
+        'FTP, the non-TLS login, and Telnet all expose authentication or session material in plaintext.',
+      ],
+      explanation:
+        'The prepared protocols transmit credentials or session material without transport encryption, making them readable on path.',
+      remediation:
+        'Replace FTP and Telnet with encrypted alternatives, require HTTPS, and set Secure and HttpOnly cookie attributes.',
+      reportPrompt:
+        'Summarize every cleartext protocol observation, its impact, and the secure replacement without including any real credential value.',
+    },
     objectives: [
       'List every protocol here that exposes credentials or sessions in cleartext',
       'Explain the risk of the missing cookie Secure flag',
@@ -366,6 +484,29 @@ Authentication-Results: mx.neoncorp.example;
   dkim=none;
   dmarc=fail action=quarantine
 X-Sender-IP: 203.0.113.200`,
+    flagChallenge: {
+      prompt:
+        'Identify the sender-domain deception technique that reinforces the failed authentication results and submit it as a flag.',
+      assets: [
+        {
+          id: 'message-headers',
+          label: 'message-headers.txt (synthetic)',
+          kind: 'headers',
+          description: 'Prepared headers using fictional example domains and a documentation-range sender address.',
+        },
+      ],
+      expectedFlag: 'FLAG{LOOKALIKE_DOMAIN}',
+      hints: [
+        'Compare the From and Reply-To domains with the intended organization domain.',
+        'The message uses related-looking cousin domains rather than the fictional organization domain.',
+      ],
+      explanation:
+        'The display name and cousin domains imitate the fictional organization while SPF and DMARC fail and no DKIM signature exists.',
+      remediation:
+        'Quarantine the message, block the fictional cousin domains, and verify urgent requests through a known internal channel.',
+      reportPrompt:
+        'Write a phishing finding that cites the domain mismatch and authentication failures, then recommends user and mail-control actions.',
+    },
     objectives: [
       'State whether SPF, DKIM, and DMARC passed or failed',
       'Identify the two social-engineering pressure tactics',
@@ -418,6 +559,29 @@ X-Sender-IP: 203.0.113.200`,
 - JWTs signed with a shared secret; secret stored in an env var in the repo's .env (committed)
 - File uploads stored in a public object bucket
 Trust boundaries: browser<->API (internet), API<->AI service (internet), API<->DB (internal)`,
+    flagChallenge: {
+      prompt:
+        'Identify the single most urgent trust and identity design failure in the fictional architecture and submit it as a flag.',
+      assets: [
+        {
+          id: 'architecture',
+          label: 'architecture.md (synthetic)',
+          kind: 'architecture',
+          description: 'Fictional components, trust boundaries, and deliberately unsafe design notes.',
+        },
+      ],
+      expectedFlag: 'FLAG{EXPOSED_SIGNING_SECRET}',
+      hints: [
+        'Ask which issue could let a repository reader impersonate any user.',
+        'The signing material is committed with the application source instead of being held by a secrets manager.',
+      ],
+      explanation:
+        'A committed signing secret enables token forgery and combines Spoofing with Elevation of Privilege across the application.',
+      remediation:
+        'Rotate the fictional signing secret, remove it from history, load replacements from a secrets manager, and add secret scanning.',
+      reportPrompt:
+        'Create a critical finding that connects source-controlled signing material to token forgery, then order rotation and repository cleanup actions.',
+    },
     objectives: [
       'List the key assets and the trust boundaries',
       'Give one concrete threat for Spoofing, Tampering, Info Disclosure, and Elevation',

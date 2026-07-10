@@ -2,6 +2,27 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.20 - 2026-07-10
+
+Safe, persisted flag challenges with hint tracking, explanation unlocks, and practical analytics.
+
+### Added
+
+- Flag Challenge definitions for all six synthetic labs, including prompt, asset metadata, expected
+  flag, scoped hints, explanation, remediation, and report prompt.
+- Case-insensitive flag submission with append-only attempt history, persisted hint use, solved-state
+  locking, and private backup/import support.
+- Correct-answer unlock flow for explanations, remediation guidance, report handoff, and model findings.
+- Flag challenge completion, attempt accuracy, incorrect attempts, hint use, and first-try results in
+  Analytics and Safe Lab cards.
+
+### Changed
+
+- Lab scoring now awards the flag component only after an accepted flag and includes recorded flag
+  hints in the configured hint penalty.
+- Lab registry validation now requires safe, complete, unique Flag Challenge metadata.
+- Safety scan lab counts now ignore nested asset IDs and report the six top-level lab definitions.
+
 ## v1.0.19 - 2026-07-10
 
 Challenge-linked local evidence management and report citations for Safe Labs.

@@ -43,9 +43,9 @@ Neon City Map
 | Mock Exam `/exam` | Start or resume timed CEH mock exams and inspect exam history. | Dashboard, nav, command palette. | Exam Runner, Exam Result, Analytics, Final Gate. |
 | Exam Runner `/exam/run` | Complete a timed exam with answer state, flags, and navigator. | Mock Exam resume/start. | Exam Result on submit, Mock Exam on cancel. |
 | Exam Result `/exam/result/:id` | Review score, pass/fail state, per-domain results, and missed answers. | Mock Exam history, submit flow. | Practice weak areas, Question Detail, Analytics. |
-| Analytics `/analytics` | Inspect module matrix, domain mastery, readiness factors, and weak modules. | Dashboard, nav, exam result. | Practice module drill, Final Gate, Question Bank. |
+| Analytics `/analytics` | Inspect module matrix, domain mastery, flag challenge results, readiness factors, and weak modules. | Dashboard, nav, exam result, Safe Labs. | Practice module drill, Safe Labs, Final Gate, Question Bank. |
 | Mistakes `/mistakes` | Maintain mistake notes, trap patterns, next actions, and resolved state. | Review result, Question Detail, nav. | Question Detail, Review Queue, Practice. |
-| Safe Labs `/labs`, `/labs/:id` | Pick a synthetic lab, acknowledge scope, analyze evidence, and score objectives. | Nav, Beyond track links, Dashboard. | Lab Detail, Reports, Analytics. |
+| Safe Labs `/labs`, `/labs/:id` | Pick a synthetic lab, acknowledge scope, inspect local assets, submit flags, reveal recorded hints, unlock explanations, preserve evidence, and score objectives. | Nav, Beyond track links, Dashboard, Analytics. | Lab Detail, Reports, Evidence Vault, Analytics. |
 | Evidence Vault `/evidence` | Review private synthetic evidence grouped by challenge and return to a lab for editing. | Nav, Lab Detail. | Lab Detail, Reports. |
 | CEH+ Tracks `/beyond` | Browse practical tracks and launch related drills or labs. | Nav, City Map, Dashboard. | Practice with `track`, Safe Labs, Reports. |
 | Reports `/reports` | Build safe findings reports, link Vault citations, and export Markdown. | Lab Detail, Evidence Vault, nav, command palette. | Safe Labs, Evidence Vault, Settings export, local Markdown download. |
@@ -102,5 +102,5 @@ Exam → Select Preset → 125 Questions → Submit → Result Report → Review
 ### Practical Lab
 
 ```text
-Labs → Scope Contract → Challenge → Evidence → Finding → Report → Summary
+Labs → Scope Contract → Local Assets → Flag Attempt / Hint → Explanation → Evidence → Finding → Report → Analytics
 ```

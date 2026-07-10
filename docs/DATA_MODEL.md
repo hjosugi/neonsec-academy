@@ -18,6 +18,9 @@ ExamSession 1 ── * ExamAnswer
 ExamResult 1 ── * DomainScore
 ExamResult * ── * Question
 
+LabChallenge 1 ── 1 FlagChallengeDefinition
+LabChallenge 1 ── * FlagAttempt
+LabChallenge 1 ── * FlagHintUse
 LabChallenge 1 ── * EvidenceItem
 LabChallenge 1 ── * Finding
 Report 1 ── * Finding
@@ -40,6 +43,9 @@ Finding * ── * EvidenceItem (via evidenceIds)
 | `ExamSession` | Stable generated `id`. | `createdAt`, `startedAt`, and optional `endedAt`. |
 | `ExamResult` | `sessionId` from the submitted session. | `submittedAt`. |
 | `LabChallenge` | Static lab `id`. | Versioned in source; lab progress is local state. |
+| `FlagChallengeDefinition` | Embedded in one static `LabChallenge`. | Versioned in source with the lab. |
+| `FlagAttempt` | Stable generated `id`; `challengeId` references a static lab. | Immutable `at`; attempts are append-only until progress reset. |
+| `FlagHintUse` | Unique `challengeId` + `hintIndex` pair. | Earliest valid `usedAt` is retained. |
 | `StaticLabArtifact` | `evidenceTitle` + `evidence` inside a static lab. | Versioned in source. |
 | `EvidenceItem` | Stable generated `id`; `challengeId` links it to one lab challenge. | User-selected `timestamp` plus `createdAt` and `updatedAt`. |
 | `Finding` | Stable generated `id` inside a report, or static model finding inside a lab. | Report findings inherit the parent report timestamps. |
@@ -305,6 +311,22 @@ Readiness thresholds are persisted with other local settings:
     "forbidden": ["Any real host or account", "Any external lookup", "Generating traffic"]
   },
   "evidenceTitle": "auth.log (synthetic)",
+  "flagChallenge": {
+    "prompt": "Classify the prepared authentication pattern and submit a flag.",
+    "assets": [
+      {
+        "id": "auth-log",
+        "label": "auth.log (synthetic)",
+        "kind": "log",
+        "description": "Prepared authentication events for fictional users."
+      }
+    ],
+    "expectedFlag": "FLAG{PASSWORD_SPRAY}",
+    "hints": ["Count distinct usernames targeted by one source."],
+    "explanation": "One source tests a small number of guesses across many users.",
+    "remediation": "Enforce MFA and alert on one-source-to-many-user failure velocity.",
+    "reportPrompt": "Cite the failure sequence and successful non-MFA login."
+  },
   "objectives": ["Classify the activity", "Identify the pivot event"],
   "rubric": { "challengeType": "soc-triage", "passingScore": 80 }
 }
@@ -312,9 +334,49 @@ Readiness thresholds are persisted with other local settings:
 
 Lab kinds are `local`, `dataset`, `simulated`, and `writeup`. All labs must declare allowed and
 forbidden scope before evidence is visible. `validateLabRegistry` checks lab schema and unsafe
-metadata, while `npm run validate:safety` scans release content for public IPs, real email domains,
-credential-like assignments, live domains, private keys, access tokens, and actionable command
-recipes. CI runs the safety scan before publishing.
+metadata, including complete and unique Flag Challenge definitions. Asset kinds are `log`, `config`,
+`request-response`, `capture`, `headers`, and `architecture`; every asset is static metadata for
+content already supplied inside the app. Expected flags use `FLAG{UPPER_SNAKE_CASE}`. They are local
+training answers shipped in the static client, not secrets or authentication values.
+
+`npm run validate:safety` scans release content for public IPs, real email domains, credential-like
+assignments, live domains, private keys, access tokens, and actionable command recipes. CI runs the
+safety scan before publishing.
+
+## FlagAttempt And FlagHintUse
+
+```json
+{
+  "flagAttempts": [
+    {
+      "id": "fa-92ab",
+      "challengeId": "soc-bruteforce",
+      "submitted": "FLAG{PASSWORD_SPRAY}",
+      "correct": true,
+      "hintCount": 1,
+      "at": 1783692000000
+    }
+  ],
+  "flagHintUses": [
+    {
+      "challengeId": "soc-bruteforce",
+      "hintIndex": 0,
+      "usedAt": 1783691900000
+    }
+  ]
+}
+```
+
+Non-empty submissions up to 160 printable characters become append-only attempts. Comparison trims
+outer whitespace and is case-insensitive. Once a challenge has an accepted attempt, additional
+submissions and new hint reveals are locked. Each hint index is recorded only once, and the number of
+used hints is snapshotted onto the attempt.
+
+Full-backup import and browser hydration reject malformed timestamps, control characters, unknown
+challenge IDs, and out-of-range hints. Stored `correct` values are not trusted: correctness is
+recomputed from the current static challenge definition. Flag analytics derive attempted, solved,
+first-try, incorrect-attempt, accuracy, and hint counts from these normalized rows. Raw submissions
+and hint history remain private and are not included in the public-safe Markdown export.
 
 ## EvidenceItem
 
@@ -385,6 +447,7 @@ report may cite records from multiple challenges. Reports must cite synthetic ev
 | Seed question | Never hard-deleted in user storage; archived by adding its ID to `archivedIds`. | Remove the ID from `archivedIds`. |
 | User question | Can be archived like seed content, or removed from `userQuestions` when explicitly deleted. | Archived user questions can be restored; hard-deleted user questions require re-import or re-authoring. |
 | Attempts and reviews | `resetProgress` clears them as study progress. | Restore from full backup import. |
+| Flag attempts and hints | `resetProgress` clears solved state, attempt history, and recorded flag hints. | Restore from private full backup import. |
 | Review summaries | `resetProgress` clears saved summaries. | Restore from full backup import. |
 | Mistake notes | Can be resolved or deleted. | Restore from full backup import. |
 | Bookmarks and pin notes | Bookmarks toggle per question; blanking a pin note removes that note. | Restore from full backup import. |
@@ -404,6 +467,7 @@ report may cite records from multiple challenges. Reports must cite synthetic ev
 | Review queue | `reviews[questionId]`, `dueAt`, `confidence`, and `suspended`. |
 | Review summaries | `reviewSummaries`, `completedAt`, accuracy, weak modules, and next actions. |
 | Attempt history | `questionId`, `at`, `mode`, `chosen`, `correct`, `timeMs`, `confidence`, and `reasoningGap`. |
+| Flag challenge analytics | `flagAttempts[].challengeId`, `correct`, `at`, `hintCount`, plus unique `flagHintUses` indexes. |
 | Mistake notebook | `mistakes[questionId]`, resolved state, `updatedAt`, question module, and question tags. |
 | Pin notes | `pinNotes[questionId]`, with the matching bookmark used for pinned views. |
 | Evidence Vault | `evidenceItems[].id`, grouped by `challengeId` and sorted by `timestamp`. |
@@ -413,7 +477,7 @@ report may cite records from multiple challenges. Reports must cite synthetic ev
 
 - Full backup export includes `version`, `exportedAt`, profile, settings, attempts, reviews,
   review summaries, mistakes, bookmarks, pin notes, archived IDs, user questions, exam results, and
-  Evidence Vault items, and reports.
+  flag attempts, flag hint uses, Evidence Vault items, and reports.
 - Question-pack export uses `format: "neonsec-question-pack"` and `version: 1`.
 - Seed validation runs with `npm run validate:content`.
 - Question-pack import reuses the same core validation rules in `src/lib/questionPacks.ts`.

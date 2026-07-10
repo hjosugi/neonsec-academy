@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { EvidenceItem, Report } from '../types'
+import { LABS } from '../data/labs'
 import { mergePersistedStoreState, useStore } from './useStore'
 
 const evidence: EvidenceItem = {
@@ -20,7 +21,7 @@ beforeAll(() => {
 })
 
 beforeEach(() => {
-  useStore.setState({ evidenceItems: [], reports: [] })
+  useStore.setState({ flagAttempts: [], flagHintUses: [], evidenceItems: [], reports: [] })
 })
 
 afterAll(() => {
@@ -143,5 +144,73 @@ describe('evidence store persistence', () => {
 
     expect(hydrated.evidenceItems).toEqual([evidence])
     expect(hydrated.reports[0].findings[0].evidenceIds).toEqual([evidence.id])
+  })
+})
+
+describe('flag challenge persistence', () => {
+  const challenge = LABS.find((lab) => lab.id === 'soc-bruteforce')!
+
+  it('records wrong and correct attempts, then locks a solved challenge', () => {
+    expect(useStore.getState().submitLabFlag(challenge.id, '')).toBeNull()
+    expect(useStore.getState().submitLabFlag('missing-lab', 'FLAG{UNKNOWN}')).toBeNull()
+    const wrong = useStore.getState().submitLabFlag(challenge.id, 'FLAG{BRUTE_FORCE}')
+    const correct = useStore.getState().submitLabFlag(challenge.id, ' flag{password_spray} ')
+    const afterSolve = useStore.getState().submitLabFlag(challenge.id, challenge.flagChallenge.expectedFlag)
+
+    expect(wrong).toMatchObject({ challengeId: challenge.id, correct: false, hintCount: 0 })
+    expect(correct).toMatchObject({ challengeId: challenge.id, correct: true, hintCount: 0 })
+    expect(afterSolve).toBeNull()
+    expect(useStore.getState().revealLabFlagHint(challenge.id, 0)).toBe(false)
+    expect(useStore.getState().flagAttempts).toHaveLength(2)
+  })
+
+  it('records each valid hint only once and snapshots hint count on attempts', () => {
+    expect(useStore.getState().revealLabFlagHint(challenge.id, 0)).toBe(true)
+    expect(useStore.getState().revealLabFlagHint(challenge.id, 0)).toBe(false)
+    expect(useStore.getState().revealLabFlagHint(challenge.id, 99)).toBe(false)
+
+    const attempt = useStore.getState().submitLabFlag(challenge.id, 'FLAG{NOT_YET}')
+
+    expect(useStore.getState().flagHintUses).toHaveLength(1)
+    expect(attempt?.hintCount).toBe(1)
+  })
+
+  it('round-trips flag history in private backups and recalculates correctness on import', () => {
+    useStore.getState().revealLabFlagHint(challenge.id, 0)
+    useStore.getState().submitLabFlag(challenge.id, challenge.flagChallenge.expectedFlag)
+    const backup = JSON.parse(useStore.getState().exportData())
+    backup.flagAttempts[0].correct = false
+    useStore.setState({ flagAttempts: [], flagHintUses: [] })
+
+    expect(useStore.getState().importData(JSON.stringify(backup))).toBe(true)
+    expect(useStore.getState().flagAttempts[0].correct).toBe(true)
+    expect(useStore.getState().flagHintUses).toHaveLength(1)
+  })
+
+  it('normalizes flag state during browser hydration', () => {
+    const hydrated = mergePersistedStoreState(
+      {
+        flagAttempts: [
+          {
+            id: 'fa-imported',
+            challengeId: challenge.id,
+            submitted: challenge.flagChallenge.expectedFlag,
+            correct: false,
+            hintCount: 0,
+            at: 100,
+          },
+          { id: 'invalid', challengeId: 'missing', submitted: 'FLAG{UNKNOWN}', at: 200 },
+        ],
+        flagHintUses: [
+          { challengeId: challenge.id, hintIndex: 0, usedAt: 50 },
+          { challengeId: challenge.id, hintIndex: 99, usedAt: 60 },
+        ],
+      },
+      useStore.getState(),
+    )
+
+    expect(hydrated.flagAttempts).toHaveLength(1)
+    expect(hydrated.flagAttempts[0].correct).toBe(true)
+    expect(hydrated.flagHintUses).toEqual([{ challengeId: challenge.id, hintIndex: 0, usedAt: 50 }])
   })
 })
