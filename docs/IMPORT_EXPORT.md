@@ -12,7 +12,7 @@ or other unsafe material.
 | Export | File name | Format | Use when |
 |---|---|---|---|
 | Full progress backup | `neonsec-backup.json` | App state JSON, `version: 1` | You want to back up or move your own study state. |
-| Public-safe progress summary | `neonsec-public-progress.md` | Markdown | You want to share aggregate progress without private notes, raw answers, custom question text, or report evidence. |
+| Public-safe progress summary | `neonsec-public-progress.md` | Markdown | You want to share aggregate progress without private notes, raw answers, custom question text, or report/Vault evidence. |
 | Question pack | `neonsec-question-pack.json` | `neonsec-question-pack`, `version: 1` | You want to share user-authored questions without sharing personal progress. |
 | Question JSONL | `neonsec-question-pack.jsonl` | One `RawQuestion` JSON object per line | You want line-oriented editing, diffing, or batch import/export. |
 | Question CSV | Custom `.csv` | Header row plus MCQ rows only | You want spreadsheet import for basic multiple-choice questions. |
@@ -40,10 +40,11 @@ The backup includes:
 - `archivedIds`
 - `userQuestions`
 - `examResults`
+- `evidenceItems`
 - `reports`
 
 Use full backups for your own device migration or recovery. Do not publish them; they can contain
-personal study history, custom mistake notes, reports, settings, and authored questions.
+personal study history, custom mistake notes, Evidence Vault entries, reports, settings, and authored questions.
 
 ## Import Full Progress
 
@@ -91,6 +92,7 @@ The Markdown excludes:
 - Custom question text and answers.
 - Mistake notebook notes.
 - Report scope, summary, impact, remediation, and evidence.
+- Evidence Vault titles, notes, sources, file/screenshot references, and timestamps.
 - Full backup JSON.
 
 Common sensitive report-title patterns are masked before export: email addresses, IPv4 addresses, and
@@ -175,8 +177,12 @@ saving. The preview warns how many collisions will be renamed.
 ## Markdown Exports
 
 Reports export Markdown from the Reports screen. A report can be blank, created manually, or seeded
-from a Safe Lab. Exported reports include title, synthetic scope, summary, findings, impact,
-remediation, evidence, and a generated-by footer.
+from a Safe Lab. Findings can link challenge-matched Evidence Vault items; exported reports resolve
+those links into citations with evidence type, title, source, capture time, optional file/screenshot
+reference, and note. Exported reports also include title, synthetic scope, summary, findings, impact,
+remediation, manual evidence notes, and a generated-by footer. Import and browser hydration discard
+invalid Vault rows, deduplicate citation IDs, and remove missing or cross-challenge links before they
+reach the report builder.
 
 Mock Exam Result exports Markdown from the Exam Report screen. The snapshot includes score, target,
 safety margin, time spent, flagged accuracy, module breakdown, and the next seven-day repair plan.

@@ -109,7 +109,7 @@ function readLabProgressSummaries(): LabProgressSummary[] {
 const PRIVACY_CHECKS = [
   {
     id: 'publicOnly',
-    label: 'Public export excludes raw answers, custom questions, mistake notes, and report evidence.',
+    label: 'Public export excludes raw answers, custom questions, mistake notes, and report/Vault evidence.',
   },
   {
     id: 'maskedTitles',
@@ -516,7 +516,7 @@ export function Settings() {
           <Panel title="Data">
             <p className="term t-xs dim mb-2">
               Everything is stored locally in your browser. The full backup is private and may include notes, custom
-              questions, answers, and report details.
+              questions, answers, Evidence Vault entries, and report details.
             </p>
             <div className="stack stack--sm">
               <button className="btn btn--ghost btn--block" onClick={doExport}>

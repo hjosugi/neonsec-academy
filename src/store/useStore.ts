@@ -9,6 +9,7 @@ import type {
   AttemptConfidence,
   AttemptMode,
   DrillResult,
+  EvidenceItem,
   ExamSession,
   ExamResult,
   Grade,
@@ -30,6 +31,11 @@ import { isCorrect } from '../lib/grade'
 import { moduleStats, domainStats } from '../lib/analytics'
 import { computeDerivedBadges } from '../lib/badges'
 import { gradeExam } from '../lib/exam'
+import {
+  normalizeEvidenceItem,
+  normalizeEvidenceItems,
+  reconcileReportEvidenceLinks,
+} from '../lib/evidence'
 
 const SCHEMA_VERSION = 1
 
@@ -127,6 +133,7 @@ interface AppState {
   userQuestions: RawQuestion[]
   examResults: ExamResult[]
   activeExam: ExamSession | null
+  evidenceItems: EvidenceItem[]
   reports: Report[]
 }
 
@@ -173,7 +180,9 @@ interface AppActions {
   examGoto: (index: number) => void
   cancelExam: () => void
   submitExam: () => ExamResult | null
-  // reports
+  // evidence + reports
+  upsertEvidence: (item: EvidenceItem) => void
+  deleteEvidence: (id: string) => void
   upsertReport: (report: Report) => void
   deleteReport: (id: string) => void
   // profile / settings
@@ -190,6 +199,26 @@ interface AppActions {
 
 export type Store = AppState & AppActions
 
+export function mergePersistedStoreState(persistedState: unknown, currentState: Store): Store {
+  if (!persistedState || typeof persistedState !== 'object' || Array.isArray(persistedState)) {
+    return currentState
+  }
+  const persisted = persistedState as Partial<AppState>
+  const evidenceItems = Array.isArray(persisted.evidenceItems)
+    ? normalizeEvidenceItems(persisted.evidenceItems)
+    : currentState.evidenceItems
+  const reports = reconcileReportEvidenceLinks(
+    Array.isArray(persisted.reports) ? persisted.reports : currentState.reports,
+    evidenceItems,
+  )
+  return {
+    ...currentState,
+    ...persisted,
+    evidenceItems,
+    reports,
+  }
+}
+
 const initialState: AppState = {
   version: SCHEMA_VERSION,
   profile: defaultProfile,
@@ -205,6 +234,7 @@ const initialState: AppState = {
   userQuestions: [],
   examResults: [],
   activeExam: null,
+  evidenceItems: [],
   reports: [],
 }
 
@@ -499,12 +529,52 @@ export const useStore = create<Store>()(
         return result
       },
 
+      upsertEvidence: (item) =>
+        set((s) => {
+          const index = s.evidenceItems.findIndex((existing) => existing.id === item.id)
+          const previous = index >= 0 ? s.evidenceItems[index] : undefined
+          const now = Date.now()
+          const normalized = normalizeEvidenceItem({
+            ...item,
+            challengeId: previous?.challengeId ?? item.challengeId,
+            createdAt: previous?.createdAt ?? item.createdAt ?? now,
+            updatedAt: now,
+          })
+          if (!normalized) return {}
+
+          const evidenceItems = [...s.evidenceItems]
+          if (index >= 0) evidenceItems[index] = normalized
+          else evidenceItems.unshift(normalized)
+          evidenceItems.sort((a, b) => b.timestamp - a.timestamp)
+          return { evidenceItems }
+        }),
+
+      deleteEvidence: (id) =>
+        set((s) => {
+          const now = Date.now()
+          const reports = s.reports.map((report) => {
+            let changed = false
+            const findings = report.findings.map((finding) => {
+              const evidenceIds = (finding.evidenceIds ?? []).filter((evidenceId) => evidenceId !== id)
+              if (evidenceIds.length === (finding.evidenceIds ?? []).length) return finding
+              changed = true
+              return { ...finding, evidenceIds }
+            })
+            return changed ? { ...report, findings, updatedAt: now } : report
+          })
+          return {
+            evidenceItems: s.evidenceItems.filter((item) => item.id !== id),
+            reports,
+          }
+        }),
+
       upsertReport: (report) =>
         set((s) => {
           const idx = s.reports.findIndex((r) => r.id === report.id)
           const reports = [...s.reports]
-          if (idx >= 0) reports[idx] = report
-          else reports.unshift(report)
+          const normalized = reconcileReportEvidenceLinks([report], s.evidenceItems)[0]
+          if (idx >= 0) reports[idx] = normalized
+          else reports.unshift(normalized)
           return { reports }
         }),
 
@@ -577,6 +647,7 @@ export const useStore = create<Store>()(
           archivedIds: s.archivedIds,
           userQuestions: s.userQuestions,
           examResults: s.examResults,
+          evidenceItems: s.evidenceItems,
           reports: s.reports,
         }
         return JSON.stringify(payload, null, 2)
@@ -586,21 +657,31 @@ export const useStore = create<Store>()(
         try {
           const d = JSON.parse(json)
           if (typeof d !== 'object' || d === null) return false
-          set((s) => ({
-            profile: { ...defaultProfile, ...(d.profile ?? {}) },
-            settings: { ...defaultSettings, ...(d.settings ?? {}) },
-            attempts: Array.isArray(d.attempts) ? d.attempts : s.attempts,
-            reviews: d.reviews ?? s.reviews,
-            mistakes: d.mistakes ?? s.mistakes,
-            bookmarks: Array.isArray(d.bookmarks) ? d.bookmarks : s.bookmarks,
-            pinNotes: d.pinNotes && typeof d.pinNotes === 'object' ? d.pinNotes : s.pinNotes,
-            reviewSummaries: Array.isArray(d.reviewSummaries) ? d.reviewSummaries : s.reviewSummaries,
-            drillResults: Array.isArray(d.drillResults) ? d.drillResults : s.drillResults,
-            archivedIds: Array.isArray(d.archivedIds) ? d.archivedIds : s.archivedIds,
-            userQuestions: Array.isArray(d.userQuestions) ? d.userQuestions : s.userQuestions,
-            examResults: Array.isArray(d.examResults) ? d.examResults : s.examResults,
-            reports: Array.isArray(d.reports) ? d.reports : s.reports,
-          }))
+          set((s) => {
+            const evidenceItems = Array.isArray(d.evidenceItems)
+              ? normalizeEvidenceItems(d.evidenceItems)
+              : s.evidenceItems
+            const reports = reconcileReportEvidenceLinks(
+              Array.isArray(d.reports) ? d.reports : s.reports,
+              evidenceItems,
+            )
+            return {
+              profile: { ...defaultProfile, ...(d.profile ?? {}) },
+              settings: { ...defaultSettings, ...(d.settings ?? {}) },
+              attempts: Array.isArray(d.attempts) ? d.attempts : s.attempts,
+              reviews: d.reviews ?? s.reviews,
+              mistakes: d.mistakes ?? s.mistakes,
+              bookmarks: Array.isArray(d.bookmarks) ? d.bookmarks : s.bookmarks,
+              pinNotes: d.pinNotes && typeof d.pinNotes === 'object' ? d.pinNotes : s.pinNotes,
+              reviewSummaries: Array.isArray(d.reviewSummaries) ? d.reviewSummaries : s.reviewSummaries,
+              drillResults: Array.isArray(d.drillResults) ? d.drillResults : s.drillResults,
+              archivedIds: Array.isArray(d.archivedIds) ? d.archivedIds : s.archivedIds,
+              userQuestions: Array.isArray(d.userQuestions) ? d.userQuestions : s.userQuestions,
+              examResults: Array.isArray(d.examResults) ? d.examResults : s.examResults,
+              evidenceItems,
+              reports,
+            }
+          })
           return true
         } catch {
           return false
@@ -625,8 +706,10 @@ export const useStore = create<Store>()(
         userQuestions: s.userQuestions,
         examResults: s.examResults,
         activeExam: s.activeExam,
+        evidenceItems: s.evidenceItems,
         reports: s.reports,
       }),
+      merge: mergePersistedStoreState,
     },
   ),
 )

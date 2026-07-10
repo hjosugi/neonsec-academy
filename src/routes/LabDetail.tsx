@@ -6,6 +6,7 @@ import { useStore } from '../store/useStore'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { EmptyState } from '../components/ui/EmptyState'
+import { ChallengeEvidenceVault } from '../components/lab/ChallengeEvidenceVault'
 
 const SEV_CLASS: Record<string, string> = {
   critical: 'badge--red',
@@ -84,8 +85,8 @@ function reportScope(lab: Lab) {
   return `Synthetic lab: ${lab.category}. Allowed: ${lab.scope.allowed.join('; ')}.`
 }
 
-function isReportForLab(report: { title: string; scope: string; summary: string }, lab: Lab) {
-  return report.title === reportTitle(lab) || (report.scope === reportScope(lab) && report.summary === lab.brief)
+function isReportForLab(report: { challengeId?: string; title: string; scope: string; summary: string }, lab: Lab) {
+  return report.challengeId === lab.id || report.title === reportTitle(lab) || (report.scope === reportScope(lab) && report.summary === lab.brief)
 }
 
 function objectivesReady(component: LabRubricComponent, done: boolean[]) {
@@ -194,7 +195,8 @@ export function LabDetail() {
     hintPenalty: settings.labHintPenalty ?? lab.rubric.hintPenalty,
     scopeWarningPenalty: settings.labScopeWarningPenalty ?? lab.rubric.scopeWarningPenalty,
   }
-  const hasReport = reports.some((report) => isReportForLab(report, lab))
+  const labReport = reports.find((report) => isReportForLab(report, lab))
+  const hasReport = Boolean(labReport)
   const score = scoreLab(effectiveRubric, done, ack, hasReport, revealedHints.size)
   const meterStyle = { '--v': `${score.pct}%`, '--c': scoreColor(score.pct) } as CSSProperties
   const doneCount = done.filter(Boolean).length
@@ -217,7 +219,7 @@ export function LabDetail() {
   }
 
   const openReport = () => {
-    if (hasReport) navigate('/reports')
+    if (labReport) navigate('/reports', { state: { openReportId: labReport.id } })
     else navigate('/reports', { state: { prefillLab: lab } })
   }
 
@@ -363,6 +365,14 @@ export function LabDetail() {
                 </pre>
               </Panel>
 
+              <ChallengeEvidenceVault
+                key={lab.id}
+                challengeId={lab.id}
+                challengeTitle={lab.title}
+                defaultSource={lab.evidenceTitle}
+                onOpenReport={openReport}
+              />
+
               <Panel title="Guiding Questions">
                 <div className="stack stack--sm">
                   {lab.guiding.map((g, i) => (
@@ -406,7 +416,7 @@ export function LabDetail() {
                   Write up what you found. A persisted lab report contributes to the evidence and remediation score.
                 </p>
                 <button className="btn btn--primary btn--block" onClick={openReport}>
-                  {hasReport ? '⎙ View reports' : '⎙ Draft report'}
+                  {hasReport ? '⎙ Edit lab report' : '⎙ Draft report'}
                 </button>
               </Panel>
 

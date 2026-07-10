@@ -19,23 +19,23 @@ lab の観察結果、スクリーンショット名、ログ抜粋、メモを 
 
 ## Requirements
 
-- [ ] evidence item: title, type, note, source, timestamp, related challenge を持つ
-- [ ] file path や screenshot reference を保存できる設計にする
-- [ ] sensitive data warning を表示する
-- [ ] evidence を report finding に紐付けられる
+- [x] evidence item: title, type, note, source, timestamp, related challenge を持つ
+- [x] file path や screenshot reference を保存できる設計にする
+- [x] sensitive data warning を表示する
+- [x] evidence を report finding に紐付けられる
 
 ## Acceptance Criteria
 
-- [ ] lab 中に evidence を追加できる
-- [ ] evidence 一覧を challenge ごとに見られる
-- [ ] report builder から evidence を引用できる
+- [x] lab 中に evidence を追加できる
+- [x] evidence 一覧を challenge ごとに見られる
+- [x] report builder から evidence を引用できる
 
 ## Subtasks
 
-- [ ] evidence schema を作る
-- [ ] add/edit UI を作る
-- [ ] lab link を作る
-- [ ] report link を作る
+- [x] evidence schema を作る
+- [x] add/edit UI を作る
+- [x] lab link を作る
+- [x] report link を作る
 
 ## Dependencies
 
@@ -47,18 +47,22 @@ lab の観察結果、スクリーンショット名、ログ抜粋、メモを 
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- Implemented challenge-scoped local persistence, lab add/edit/delete UI, a grouped Vault route,
+  direct lab-to-report editing, finding links, and Markdown citations. Backup and browser hydration
+  reject invalid Vault rows and reconcile duplicate, missing, or cross-challenge citations. Verified
+  with unit/build/content/safety checks plus a desktop/mobile browser smoke flow including reload
+  persistence.

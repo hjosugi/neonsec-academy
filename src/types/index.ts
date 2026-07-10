@@ -306,7 +306,22 @@ export interface DomainStat {
   mastery: number
 }
 
-// ---- Report builder (Phase 4/5, safe synthetic scenarios only) ----
+// ---- Evidence vault + report builder (Phase 4/5, safe synthetic scenarios only) ----
+export type EvidenceType = 'observation' | 'log' | 'screenshot' | 'file' | 'note'
+
+export interface EvidenceItem {
+  id: string
+  challengeId: string
+  title: string
+  type: EvidenceType
+  note: string
+  source: string
+  reference: string
+  timestamp: number
+  createdAt: number
+  updatedAt: number
+}
+
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'info'
 
 export interface Finding {
@@ -316,10 +331,12 @@ export interface Finding {
   impact: string
   remediation: string
   evidence: string
+  evidenceIds?: string[]
 }
 
 export interface Report {
   id: string
+  challengeId?: string
   title: string
   scope: string
   summary: string

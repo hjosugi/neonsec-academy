@@ -17,6 +17,7 @@ import { Analytics } from './routes/Analytics'
 import { Mistakes } from './routes/Mistakes'
 import { Labs } from './routes/Labs'
 import { LabDetail } from './routes/LabDetail'
+import { EvidenceVault } from './routes/EvidenceVault'
 import { Beyond } from './routes/Beyond'
 import { Reports } from './routes/Reports'
 import { CityMap } from './routes/CityMap'
@@ -69,6 +70,7 @@ export default function App() {
           <Route path="/mistakes" element={<Mistakes />} />
           <Route path="/labs" element={<Labs />} />
           <Route path="/labs/:id" element={<LabDetail />} />
+          <Route path="/evidence" element={<EvidenceVault />} />
           <Route path="/beyond" element={<Beyond />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/map" element={<CityMap />} />
