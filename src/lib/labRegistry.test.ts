@@ -18,6 +18,15 @@ const baseLab: Lab = {
   },
   evidenceTitle: 'evidence.txt',
   evidence: 'src=203.0.113.10 user=alice@example.invalid result=FAIL',
+  flagChallenge: {
+    prompt: 'Classify the prepared event and submit a flag.',
+    assets: [{ id: 'evidence', label: 'evidence.txt', kind: 'log', description: 'Synthetic event data.' }],
+    expectedFlag: 'FLAG{SYNTHETIC_EVENT}',
+    hints: ['Read the prepared result field.'],
+    explanation: 'The prepared event is a safe schema example.',
+    remediation: 'Keep analysis within the supplied dataset.',
+    reportPrompt: 'Describe the event and defensive response.',
+  },
   objectives: ['Classify the event'],
   rubric: {
     challengeType: 'test',
@@ -48,5 +57,31 @@ describe('lab registry validation', () => {
   it('rejects invalid lab kind', () => {
     const errors = validateLabRegistry([{ ...baseLab, kind: 'external' as Lab['kind'] }])
     expect(errors.some((error) => error.field === 'kind')).toBe(true)
+  })
+
+  it('rejects missing or malformed flag challenge metadata', () => {
+    const missing = validateLabRegistry([{ ...baseLab, flagChallenge: undefined } as unknown as Lab])
+    const malformed = validateLabRegistry([
+      { ...baseLab, flagChallenge: { ...baseLab.flagChallenge, expectedFlag: 'password spray', hints: [] } },
+    ])
+
+    expect(missing.some((error) => error.field === 'flagChallenge')).toBe(true)
+    expect(malformed.some((error) => error.field === 'flagChallenge.expectedFlag')).toBe(true)
+    expect(malformed.some((error) => error.field === 'flagChallenge.hints')).toBe(true)
+  })
+
+  it('rejects duplicate expected flags and duplicate asset ids', () => {
+    const duplicateAssets: Lab = {
+      ...baseLab,
+      id: 'test-lab-2',
+      flagChallenge: {
+        ...baseLab.flagChallenge,
+        assets: [...baseLab.flagChallenge.assets, { ...baseLab.flagChallenge.assets[0] }],
+      },
+    }
+    const errors = validateLabRegistry([baseLab, duplicateAssets])
+
+    expect(errors.some((error) => error.message === 'Expected flags must be unique.')).toBe(true)
+    expect(errors.some((error) => error.message === 'Asset ids must be unique within a challenge.')).toBe(true)
   })
 })

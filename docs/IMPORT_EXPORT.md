@@ -40,11 +40,14 @@ The backup includes:
 - `archivedIds`
 - `userQuestions`
 - `examResults`
+- `flagAttempts`
+- `flagHintUses`
 - `evidenceItems`
 - `reports`
 
 Use full backups for your own device migration or recovery. Do not publish them; they can contain
-personal study history, custom mistake notes, Evidence Vault entries, reports, settings, and authored questions.
+personal study history, submitted flags, hint use, custom mistake notes, Evidence Vault entries,
+reports, settings, and authored questions.
 
 ## Import Full Progress
 
@@ -56,9 +59,10 @@ In the app:
 4. Confirm that the app shows a successful import message.
 
 Import accepts JSON objects and merges missing profile/settings fields with current defaults. Optional
-arrays are imported only when present as arrays; otherwise the current local value is kept. This makes
-older or partial backups safer to load, but it also means imported data should still be reviewed after
-loading.
+arrays are imported only when present as arrays; otherwise the current local value is kept. Flag
+attempts and hint uses are additionally normalized against current static challenges: unknown rows
+are discarded, hint indexes are deduplicated, and correctness is recalculated. This makes older or
+partial backups safer to load, but it also means imported data should still be reviewed after loading.
 
 Before importing:
 
@@ -89,6 +93,7 @@ The Markdown includes:
 The Markdown excludes:
 
 - Raw chosen answers and question IDs.
+- Submitted flag values and per-hint use history.
 - Custom question text and answers.
 - Mistake notebook notes.
 - Report scope, summary, impact, remediation, and evidence.

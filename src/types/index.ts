@@ -306,7 +306,22 @@ export interface DomainStat {
   mastery: number
 }
 
-// ---- Evidence vault + report builder (Phase 4/5, safe synthetic scenarios only) ----
+// ---- Flag challenges, Evidence Vault, and reports (safe synthetic scenarios only) ----
+export interface FlagAttempt {
+  id: string
+  challengeId: string
+  submitted: string
+  correct: boolean
+  hintCount: number
+  at: number
+}
+
+export interface FlagHintUse {
+  challengeId: string
+  hintIndex: number
+  usedAt: number
+}
+
 export type EvidenceType = 'observation' | 'log' | 'screenshot' | 'file' | 'note'
 
 export interface EvidenceItem {

@@ -3,7 +3,9 @@ import type { DrillResult, ModuleStat } from '../types'
 import { useStore } from '../store/useStore'
 import { useDomainStats, useModuleStats, useOverview, useReadiness } from '../store/selectors'
 import { DOMAINS } from '../data/taxonomy'
+import { LABS } from '../data/labs'
 import { formatDateTime, pct } from '../lib/format'
+import { computeFlagChallengeAnalytics } from '../lib/flagChallenge'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { Meter } from '../components/ui/Meter'
@@ -73,8 +75,11 @@ export function Analytics() {
   const settings = useStore((s) => s.settings)
   const updateSettings = useStore((s) => s.updateSettings)
   const drillResults = useStore((s) => s.drillResults)
+  const flagAttempts = useStore((s) => s.flagAttempts)
+  const flagHintUses = useStore((s) => s.flagHintUses)
   const coverageTargetPct = settings.coverageThresholdPct ?? 80
   const minQuestionCount = settings.minModuleQuestionCount ?? 10
+  const flagAnalytics = computeFlagChallengeAnalytics(LABS, flagAttempts, flagHintUses)
 
   const radarPoints = domains.map((d) => ({ label: d.domainName, value: Math.max(0.02, d.mastery) }))
   const started = domains.some((d) => d.attempts > 0)
@@ -237,6 +242,64 @@ export function Analytics() {
             ))}
           </div>
         )}
+      </Panel>
+
+      <Panel
+        title="Flag Challenge Results"
+        className="mb-3"
+        right={
+          <button className="btn btn--ghost btn--sm" onClick={() => navigate('/labs')}>
+            Safe Labs →
+          </button>
+        }
+      >
+        <div className="grid-4 mb-3">
+          <div className="stat">
+            <div className="stat__value">{flagAnalytics.solvedChallenges}/{flagAnalytics.totalChallenges}</div>
+            <div className="stat__label">Solved</div>
+          </div>
+          <div className="stat">
+            <div className="stat__value">{flagAnalytics.solveRatePct}%</div>
+            <div className="stat__label">Challenge completion</div>
+          </div>
+          <div className="stat">
+            <div className="stat__value">
+              {flagAnalytics.totalAttempts > 0 ? `${flagAnalytics.attemptAccuracyPct}%` : '—'}
+            </div>
+            <div className="stat__label">Attempt accuracy</div>
+          </div>
+          <div className="stat">
+            <div className="stat__value">{flagAnalytics.hintsUsed}</div>
+            <div className="stat__label">Hints recorded</div>
+          </div>
+        </div>
+
+        <div className="stack stack--sm">
+          {flagAnalytics.byChallenge.map((row) => (
+            <div
+              key={row.challengeId}
+              className="row row--between wrap"
+              style={{ gap: '0.75rem', borderTop: '1px dashed var(--hairline)', padding: '0.65rem 0' }}
+            >
+              <div>
+                <div className="row wrap" style={{ gap: '0.4rem' }}>
+                  <span className={`badge ${row.solved ? 'badge--green' : row.attempts > 0 ? 'badge--amber' : ''}`}>
+                    {row.solved ? 'solved' : row.attempts > 0 ? 'in progress' : 'not started'}
+                  </span>
+                  <span className="t-sm" style={{ color: 'var(--text-main)' }}>{row.title}</span>
+                </div>
+                <div className="term t-xs dim mt-1">
+                  {row.attempts} attempts · {row.incorrectAttempts} incorrect · {row.hintsUsed} hints
+                  {row.firstTrySolved ? ' · first-try solve' : ''}
+                  {row.lastAttemptAt ? ` · latest ${formatDateTime(row.lastAttemptAt)}` : ''}
+                </div>
+              </div>
+              <button className="btn btn--ghost btn--sm" onClick={() => navigate(`/labs/${row.challengeId}`)}>
+                Open →
+              </button>
+            </div>
+          ))}
+        </div>
       </Panel>
 
       <Panel title="Module Matrix" right={<span className="term t-xs dim">click a row to drill</span>}>
