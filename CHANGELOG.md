@@ -2,7 +2,9 @@
 
 All notable changes to NeonSec Academy are documented here.
 
-## Unreleased
+## v1.0.19 - 2026-07-10
+
+Challenge-linked local evidence management and report citations for Safe Labs.
 
 ### Added
 
