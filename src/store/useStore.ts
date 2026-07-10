@@ -8,6 +8,7 @@ import type {
   Attempt,
   AttemptConfidence,
   AttemptMode,
+  DrillResult,
   ExamSession,
   ExamResult,
   Grade,
@@ -121,6 +122,7 @@ interface AppState {
   bookmarks: string[]
   pinNotes: Record<string, string>
   reviewSummaries: ReviewSessionSummary[]
+  drillResults: DrillResult[]
   archivedIds: string[]
   userQuestions: RawQuestion[]
   examResults: ExamResult[]
@@ -153,6 +155,7 @@ interface AppActions {
   toggleBookmark: (questionId: string) => void
   updatePinNote: (questionId: string, note: string) => void
   saveReviewSummary: (summary: ReviewSessionSummary) => void
+  saveDrillResult: (result: DrillResult) => void
   upsertMistake: (questionId: string, patch: Partial<MistakeNote>) => void
   deleteMistake: (questionId: string) => void
   toggleMistakeResolved: (questionId: string) => void
@@ -197,6 +200,7 @@ const initialState: AppState = {
   bookmarks: [],
   pinNotes: {},
   reviewSummaries: [],
+  drillResults: [],
   archivedIds: [],
   userQuestions: [],
   examResults: [],
@@ -299,6 +303,14 @@ export const useStore = create<Store>()(
             summary,
             ...s.reviewSummaries.filter((item) => item.id !== summary.id),
           ].slice(0, 30),
+        })),
+
+      saveDrillResult: (result) =>
+        set((s) => ({
+          drillResults: [
+            result,
+            ...s.drillResults.filter((item) => item.id !== result.id),
+          ].slice(0, 50),
         })),
 
       upsertMistake: (questionId, patch) =>
@@ -537,6 +549,7 @@ export const useStore = create<Store>()(
           bookmarks: [],
           pinNotes: {},
           reviewSummaries: [],
+          drillResults: [],
           examResults: [],
           activeExam: null,
           profile: {
@@ -560,6 +573,7 @@ export const useStore = create<Store>()(
           bookmarks: s.bookmarks,
           pinNotes: s.pinNotes,
           reviewSummaries: s.reviewSummaries,
+          drillResults: s.drillResults,
           archivedIds: s.archivedIds,
           userQuestions: s.userQuestions,
           examResults: s.examResults,
@@ -581,6 +595,7 @@ export const useStore = create<Store>()(
             bookmarks: Array.isArray(d.bookmarks) ? d.bookmarks : s.bookmarks,
             pinNotes: d.pinNotes && typeof d.pinNotes === 'object' ? d.pinNotes : s.pinNotes,
             reviewSummaries: Array.isArray(d.reviewSummaries) ? d.reviewSummaries : s.reviewSummaries,
+            drillResults: Array.isArray(d.drillResults) ? d.drillResults : s.drillResults,
             archivedIds: Array.isArray(d.archivedIds) ? d.archivedIds : s.archivedIds,
             userQuestions: Array.isArray(d.userQuestions) ? d.userQuestions : s.userQuestions,
             examResults: Array.isArray(d.examResults) ? d.examResults : s.examResults,
@@ -605,6 +620,7 @@ export const useStore = create<Store>()(
         bookmarks: s.bookmarks,
         pinNotes: s.pinNotes,
         reviewSummaries: s.reviewSummaries,
+        drillResults: s.drillResults,
         archivedIds: s.archivedIds,
         userQuestions: s.userQuestions,
         examResults: s.examResults,

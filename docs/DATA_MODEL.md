@@ -185,6 +185,32 @@ result model. Weighted presets store editable `moduleCounts` in local browser st
 `neonsec:exam-weight-presets:v1`; generated exams keep the selected question IDs, seed, shuffled
 choice order, and preset label in the persisted session/result.
 
+## DrillResult
+
+```json
+{
+  "id": "drill-8e91",
+  "createdAt": 1783630800000,
+  "completedAt": 1783631400000,
+  "filters": {
+    "source": "module",
+    "module": 20,
+    "tag": "cryptography",
+    "type": "mcq",
+    "difficulty": "hard",
+    "requestedCount": 10
+  },
+  "questionIds": ["Q-CEH-020-001"],
+  "total": 10,
+  "correct": 8,
+  "accuracyPct": 80
+}
+```
+
+Drill results store the filter snapshot and score for recent weak-module drills. Individual answers
+are also recorded as `Attempt` rows with `mode: "drill"`, so Review Queue scheduling and Analytics
+module mastery update immediately after each answer.
+
 ## ExamResult
 
 ```json

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { AttemptConfidence, Grade, MistakeNote, Question } from '../../types'
+import type { AttemptConfidence, AttemptMode, Grade, MistakeNote, Question } from '../../types'
 import { useStore } from '../../store/useStore'
 import { correctChoices, isCorrect, isFreeform } from '../../lib/grade'
 import { GRADE_META } from '../../lib/srs'
@@ -10,6 +10,7 @@ import { Explanation } from './Explanation'
 interface Props {
   question: Question
   mode: 'practice' | 'review'
+  attemptMode?: Extract<AttemptMode, 'practice' | 'drill'>
   index?: number
   total?: number
   onNext: (correct: boolean, reasoningGap?: string) => void
@@ -18,7 +19,7 @@ interface Props {
 const CONFIDENCE_OPTIONS: AttemptConfidence[] = [1, 2, 3, 4, 5]
 const REVIEW_GRADE_KEYS: Grade[] = ['again', 'hard', 'good', 'easy']
 
-export function QuestionRunner({ question, mode, index, total, onNext }: Props) {
+export function QuestionRunner({ question, mode, attemptMode = 'practice', index, total, onNext }: Props) {
   const recordAttempt = useStore((s) => s.recordAttempt)
   const gradeReview = useStore((s) => s.gradeReview)
   const bookmarks = useStore((s) => s.bookmarks)
@@ -61,7 +62,7 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
     setGraded(true)
     // practice + choice -> record immediately (correctness known)
     if (mode === 'practice' && !isFreeformQuestion) {
-      recordAttempt(question.id, chosenValue, isCorrect(question, chosenValue), 'practice', elapsedMs(), effectiveConfidence)
+      recordAttempt(question.id, chosenValue, isCorrect(question, chosenValue), attemptMode, elapsedMs(), effectiveConfidence)
     }
   }
 
@@ -69,7 +70,7 @@ export function QuestionRunner({ question, mode, index, total, onNext }: Props) 
     const gap = compareNote.trim()
     setSelfCorrect(ok)
     if (mode === 'practice') {
-      recordAttempt(question.id, chosenValue, ok, 'practice', elapsedMs(), effectiveConfidence, gap)
+      recordAttempt(question.id, chosenValue, ok, attemptMode, elapsedMs(), effectiveConfidence, gap)
       onNext(ok, gap)
     }
     // review free-form -> grade buttons handle it (see below)

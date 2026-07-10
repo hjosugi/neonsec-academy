@@ -152,6 +152,16 @@ all questions. The filtered set can be bulk-added to today's Review Queue. Indiv
 be sent to the Mistake Notebook with the explanation trap, correct reasoning, memory phrase, and a
 module-specific next action prefilled.
 
+## Weak Module Drill
+
+Practice can run a focused drill from all questions, one CEH module, a CEH+ track, pinned questions,
+or the current weakest modules. Drills can be narrowed by tag, question type, and difficulty, then
+started with 10, 20, or 30 questions. Queue generation prefers questions that were not recently
+attempted and only falls back to older questions when the fresh pool is too small. Drill answers are
+recorded as `mode: "drill"` attempts, update Review Queue scheduling, and feed Analytics module
+mastery. Completed or partial drills are saved as `DrillResult` entries and shown in Dashboard /
+Analytics.
+
 ## Final Gate Checklist
 
 試験予約前の最終判定として、`/final-gate` は次の条件をまとめて評価する。

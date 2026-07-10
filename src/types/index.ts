@@ -113,6 +113,32 @@ export interface Attempt {
   reasoningGap?: string
 }
 
+// ---- Focus drills ----
+export type DrillSource = 'all' | 'module' | 'track' | 'bookmarked' | 'weak'
+export type DrillDifficulty = Difficulty | 'any'
+export type DrillQuestionType = QType | 'any'
+
+export interface DrillFilterSnapshot {
+  source: DrillSource
+  module?: number
+  track?: TrackKey
+  tag?: string | null
+  type: DrillQuestionType
+  difficulty: DrillDifficulty
+  requestedCount: number
+}
+
+export interface DrillResult {
+  id: string
+  createdAt: number
+  completedAt: number
+  filters: DrillFilterSnapshot
+  questionIds: string[]
+  total: number
+  correct: number
+  accuracyPct: number
+}
+
 // ---- Mistake notebook ----
 export interface MistakeNote {
   questionId: string

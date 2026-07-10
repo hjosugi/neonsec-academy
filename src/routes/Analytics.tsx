@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom'
-import type { ModuleStat } from '../types'
+import type { DrillResult, ModuleStat } from '../types'
 import { useStore } from '../store/useStore'
 import { useDomainStats, useModuleStats, useOverview, useReadiness } from '../store/selectors'
 import { DOMAINS } from '../data/taxonomy'
-import { pct } from '../lib/format'
+import { formatDateTime, pct } from '../lib/format'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { Meter } from '../components/ui/Meter'
@@ -45,6 +45,25 @@ function moduleStatusBadges(m: ModuleStat, coverageTargetPct: number, minQuestio
   return badges.length ? badges : [{ label: 'ready', cls: 'badge--green' }]
 }
 
+function drillLabel(result: DrillResult): string {
+  const f = result.filters
+  const parts = [
+    f.source === 'weak'
+      ? 'Weak modules'
+      : f.source === 'module'
+        ? `M${String(f.module ?? 0).padStart(2, '0')}`
+        : f.source === 'track'
+          ? 'CEH+ track'
+          : f.source === 'bookmarked'
+            ? 'Pinned'
+            : 'All bank',
+  ]
+  if (f.tag) parts.push(`#${f.tag}`)
+  if (f.type !== 'any') parts.push(f.type)
+  if (f.difficulty !== 'any') parts.push(f.difficulty)
+  return parts.join(' · ')
+}
+
 export function Analytics() {
   const navigate = useNavigate()
   const mods = useModuleStats()
@@ -53,6 +72,7 @@ export function Analytics() {
   const readiness = useReadiness()
   const settings = useStore((s) => s.settings)
   const updateSettings = useStore((s) => s.updateSettings)
+  const drillResults = useStore((s) => s.drillResults)
   const coverageTargetPct = settings.coverageThresholdPct ?? 80
   const minQuestionCount = settings.minModuleQuestionCount ?? 10
 
@@ -189,6 +209,34 @@ export function Analytics() {
             />
           </div>
         </div>
+      </Panel>
+
+      <Panel
+        title="Drill Results"
+        className="mb-3"
+        right={
+          <button className="btn btn--ghost btn--sm" onClick={() => navigate('/practice?mode=weak&count=10')}>
+            Weak drill →
+          </button>
+        }
+      >
+        {drillResults.length === 0 ? (
+          <p className="muted t-sm">No drill results yet. Run a weak module drill to feed the matrix.</p>
+        ) : (
+          <div className="stack stack--sm">
+            {drillResults.slice(0, 5).map((result) => (
+              <div key={result.id} className="row row--between wrap" style={{ gap: '0.75rem', padding: '0.45rem 0' }}>
+                <div>
+                  <div className="term t-sm">{drillLabel(result)}</div>
+                  <div className="term t-xs dim">{formatDateTime(result.completedAt)} · {result.total} questions</div>
+                </div>
+                <span className={`badge ${result.accuracyPct >= 70 ? 'badge--green' : 'badge--amber'}`}>
+                  {result.accuracyPct}% · {result.correct}/{result.total}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </Panel>
 
       <Panel title="Module Matrix" right={<span className="term t-xs dim">click a row to drill</span>}>

@@ -63,6 +63,7 @@ export function Dashboard() {
   const profile = useStore((s) => s.profile)
   const settings = useStore((s) => s.settings)
   const mistakes = useStore((s) => s.mistakes)
+  const drillResults = useStore((s) => s.drillResults)
   const streak = profile.streakDays
   const badges = profile.badges
   const mistakeList = Object.values(mistakes)
@@ -76,6 +77,7 @@ export function Dashboard() {
     () => results.slice(-8).map((r) => Math.round(r.scorePct)),
     [results],
   )
+  const latestDrill = drillResults[0]
   const band = BAND[readiness.band]
 
   return (
@@ -158,8 +160,8 @@ export function Dashboard() {
           <Panel
             title="Weakest Modules"
             right={
-              <button className="btn btn--magenta btn--sm" onClick={() => navigate('/practice?mode=weak')}>
-                Drill weak →
+              <button className="btn btn--magenta btn--sm" onClick={() => navigate('/practice?mode=weak&count=10')}>
+                Weak drill →
               </button>
             }
           >
@@ -175,6 +177,11 @@ export function Dashboard() {
                   onClick: () => navigate(`/practice?module=${m.module}`),
                 }))}
               />
+            )}
+            {latestDrill && (
+              <p className="term t-xs dim mt-2">
+                Last drill: {latestDrill.accuracyPct}% · {latestDrill.correct}/{latestDrill.total} correct
+              </p>
             )}
           </Panel>
         </div>

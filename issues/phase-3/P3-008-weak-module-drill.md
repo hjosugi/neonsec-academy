@@ -19,22 +19,22 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] module / tag / question type / difficulty を選んで drill を作る
-- [ ] 10, 20, 30 問の quick presets を用意する
+- [x] module / tag / question type / difficulty を選んで drill を作る
+- [x] 10, 20, 30 問の quick presets を用意する
 - [x] drill 結果を review と analytics に反映する
 - [x] 同じ問題の連続出題を避ける
 
 ## Acceptance Criteria
 
 - [x] Cryptography 10 問 drill を開始できる
-- [ ] drill result が保存される
+- [x] drill result が保存される
 - [x] weakness dashboard が更新される
 
 ## Subtasks
 
 - [x] drill generator を作る
 - [x] session UI を作る
-- [ ] result save を作る
+- [x] result save を作る
 - [x] dashboard 連携を作る
 
 ## Dependencies
@@ -47,17 +47,17 @@ estimate: "2d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
