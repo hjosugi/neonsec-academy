@@ -18,9 +18,10 @@ ExamSession 1 ── * ExamAnswer
 ExamResult 1 ── * DomainScore
 ExamResult * ── * Question
 
-LabChallenge 1 ── * Evidence
+LabChallenge 1 ── * EvidenceItem
 LabChallenge 1 ── * Finding
 Report 1 ── * Finding
+Finding * ── * EvidenceItem (via evidenceIds)
 ```
 
 ## Identity And Timestamp Policy
@@ -39,7 +40,8 @@ Report 1 ── * Finding
 | `ExamSession` | Stable generated `id`. | `createdAt`, `startedAt`, and optional `endedAt`. |
 | `ExamResult` | `sessionId` from the submitted session. | `submittedAt`. |
 | `LabChallenge` | Static lab `id`. | Versioned in source; lab progress is local state. |
-| `Evidence` | Static evidence block inside a lab. | Versioned in source. |
+| `StaticLabArtifact` | `evidenceTitle` + `evidence` inside a static lab. | Versioned in source. |
+| `EvidenceItem` | Stable generated `id`; `challengeId` links it to one lab challenge. | User-selected `timestamp` plus `createdAt` and `updatedAt`. |
 | `Finding` | Stable generated `id` inside a report, or static model finding inside a lab. | Report findings inherit the parent report timestamps. |
 | `Report` | Stable generated `id`. | `createdAt` and `updatedAt`. |
 
@@ -314,11 +316,42 @@ metadata, while `npm run validate:safety` scans release content for public IPs, 
 credential-like assignments, live domains, private keys, access tokens, and actionable command
 recipes. CI runs the safety scan before publishing.
 
+## EvidenceItem
+
+```json
+{
+  "id": "ev-8e91",
+  "challengeId": "soc-bruteforce",
+  "title": "Synthetic authentication sequence",
+  "type": "log",
+  "note": "The prepared log shows repeated failures before one successful event.",
+  "source": "auth.log (synthetic)",
+  "reference": "artifacts/auth-log.txt",
+  "timestamp": 1783630800000,
+  "createdAt": 1783630800000,
+  "updatedAt": 1783630800000
+}
+```
+
+Evidence types are `observation`, `log`, `screenshot`, `file`, and `note`. Each item belongs to one
+lab challenge through `challengeId`; the global `/evidence` view groups records by that key. A
+`reference` stores a local file path, screenshot name, or other non-uploaded reference—the app does
+not read or upload the referenced file. Evidence is private local data, is included in full backup
+JSON, and is excluded from public-safe progress export. Invalid backup and browser-persistence rows
+are discarded during import or hydration. An existing item's `challengeId` is immutable, preventing
+an edit from silently moving linked evidence to another challenge. Deleting an item also removes its
+ID from report findings so saved links cannot dangle.
+
+The lab editor displays a persistent warning not to store credentials, personal/customer data,
+production logs, or system secrets. Only synthetic or intentionally prepared training material is
+allowed.
+
 ## Report
 
 ```json
 {
   "id": "r-44df",
+  "challengeId": "cloud-iam",
   "title": "Synthetic IAM Review",
   "scope": "Provided synthetic config only.",
   "summary": "One over-privileged role needs remediation.",
@@ -329,7 +362,8 @@ recipes. CI runs the safety scan before publishing.
       "severity": "high",
       "impact": "The fictional role could modify unrelated synthetic resources.",
       "remediation": "Replace wildcard permissions with least-privilege actions.",
-      "evidence": "Synthetic policy statement allows action '*' on resource '*'."
+      "evidence": "Synthetic policy statement allows action '*' on resource '*'.",
+      "evidenceIds": ["ev-8e91"]
     }
   ],
   "createdAt": 1783630800000,
@@ -337,7 +371,12 @@ recipes. CI runs the safety scan before publishing.
 }
 ```
 
-Reports are the portable record for safe practical work. They must cite synthetic evidence only.
+Reports are the portable record for safe practical work. `challengeId` is optional for legacy and
+standalone reports. A finding keeps its free-form `evidence` note for backward compatibility and
+stores Vault links in optional `evidenceIds`; Markdown export resolves those IDs into quoted
+citations. On save, import, and browser hydration, link IDs are deduplicated and missing IDs are
+removed. A challenge-linked report can cite only evidence with the same `challengeId`; a standalone
+report may cite records from multiple challenges. Reports must cite synthetic evidence only.
 
 ## Deletion, Archive, And Restore
 
@@ -349,6 +388,7 @@ Reports are the portable record for safe practical work. They must cite syntheti
 | Review summaries | `resetProgress` clears saved summaries. | Restore from full backup import. |
 | Mistake notes | Can be resolved or deleted. | Restore from full backup import. |
 | Bookmarks and pin notes | Bookmarks toggle per question; blanking a pin note removes that note. | Restore from full backup import. |
+| Evidence Vault | Deleting an item also removes its ID from linked report findings. | Restore from private full backup import. |
 | Reports | Can be deleted. | Restore from full backup import or Markdown copy if exported. |
 
 ## Index And Search Keys
@@ -366,13 +406,14 @@ Reports are the portable record for safe practical work. They must cite syntheti
 | Attempt history | `questionId`, `at`, `mode`, `chosen`, `correct`, `timeMs`, `confidence`, and `reasoningGap`. |
 | Mistake notebook | `mistakes[questionId]`, resolved state, `updatedAt`, question module, and question tags. |
 | Pin notes | `pinNotes[questionId]`, with the matching bookmark used for pinned views. |
+| Evidence Vault | `evidenceItems[].id`, grouped by `challengeId` and sorted by `timestamp`. |
 | Reports | `report.id`, `updatedAt`, and finding severity. |
 
 ## Import And Export Schema
 
 - Full backup export includes `version`, `exportedAt`, profile, settings, attempts, reviews,
   review summaries, mistakes, bookmarks, pin notes, archived IDs, user questions, exam results, and
-  reports.
+  Evidence Vault items, and reports.
 - Question-pack export uses `format: "neonsec-question-pack"` and `version: 1`.
 - Seed validation runs with `npm run validate:content`.
 - Question-pack import reuses the same core validation rules in `src/lib/questionPacks.ts`.

@@ -46,8 +46,9 @@ Neon City Map
 | Analytics `/analytics` | Inspect module matrix, domain mastery, readiness factors, and weak modules. | Dashboard, nav, exam result. | Practice module drill, Final Gate, Question Bank. |
 | Mistakes `/mistakes` | Maintain mistake notes, trap patterns, next actions, and resolved state. | Review result, Question Detail, nav. | Question Detail, Review Queue, Practice. |
 | Safe Labs `/labs`, `/labs/:id` | Pick a synthetic lab, acknowledge scope, analyze evidence, and score objectives. | Nav, Beyond track links, Dashboard. | Lab Detail, Reports, Analytics. |
+| Evidence Vault `/evidence` | Review private synthetic evidence grouped by challenge and return to a lab for editing. | Nav, Lab Detail. | Lab Detail, Reports. |
 | CEH+ Tracks `/beyond` | Browse practical tracks and launch related drills or labs. | Nav, City Map, Dashboard. | Practice with `track`, Safe Labs, Reports. |
-| Reports `/reports` | Build safe findings reports and export Markdown. | Lab Detail, nav, command palette. | Safe Labs, Settings export, local Markdown download. |
+| Reports `/reports` | Build safe findings reports, link Vault citations, and export Markdown. | Lab Detail, Evidence Vault, nav, command palette. | Safe Labs, Evidence Vault, Settings export, local Markdown download. |
 | City Map `/map` | Secondary visual navigation across CEH modules and CEH+ tracks. | Nav world section, command palette. | Practice module drill, Beyond, Analytics. |
 | Settings `/settings` | Manage theme/accessibility preferences and local import/export. | Nav, command palette. | Dashboard, Question Bank after import, local file export. |
 | Final Gate `/final-gate` | Check pre-booking readiness against score, backlog, weak modules, and coverage. | Dashboard, Analytics, Mock Exam. | Mock Exam, Review Queue, Analytics, Markdown export. |
@@ -63,6 +64,7 @@ Neon City Map
 | `/exam/run` | Resume the active exam session if one exists. |
 | `/exam/result/:id` | Open a submitted exam result. |
 | `/labs/:id` | Open a specific synthetic lab. |
+| `/evidence` | Open Evidence Vault grouped by lab challenge. |
 
 ## Empty States
 

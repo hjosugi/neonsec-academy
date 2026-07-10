@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 import {
+  Archive,
   BookOpenCheck,
   BrainCircuit,
   ChartNoAxesColumnIncreasing,
@@ -45,6 +46,7 @@ export const NAV: NavSection[] = [
       { to: '/analytics', label: 'Analytics', icon: ChartNoAxesColumnIncreasing },
       { to: '/mistakes', label: 'Mistakes', icon: Flag },
       { to: '/labs', label: 'Safe Labs', icon: FlaskConical },
+      { to: '/evidence', label: 'Evidence Vault', icon: Archive },
       { to: '/beyond', label: 'CEH+ Tracks', icon: BrainCircuit },
       { to: '/reports', label: 'Reports', icon: FileText },
     ],

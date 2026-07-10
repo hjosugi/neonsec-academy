@@ -2,6 +2,18 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## Unreleased
+
+### Added
+
+- Challenge-linked Evidence Vault records for observations, log excerpts, screenshots, file
+  references, and analyst notes.
+- Lab-side evidence add/edit/delete workflow with sensitive-data warnings and challenge grouping.
+- Report finding links to Vault records, including selected evidence citations in Markdown export.
+- Backup/import and browser-hydration normalization, including duplicate, dangling, and cross-challenge
+  citation cleanup.
+- Direct lab-to-report editing hand-off plus tests for Evidence Vault persistence and link integrity.
+
 ## v1.0.5 - 2026-07-10
 
 Question import/export closure patch for JSONL and CSV workflows.

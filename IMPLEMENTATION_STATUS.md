@@ -34,9 +34,10 @@ delivered as per‑question explanations.
 
 ## Phase 4 — Safe Practical Labs 🟡
 Six synthetic labs with scope contracts, evidence, objectives, guiding Q&A, model findings, and
-scoring rubrics (`data/labs.ts`, `routes/Labs*.tsx`); report builder with Markdown export
-(`routes/Reports.tsx`).
-⬜ Evidence vault, flag‑challenge engine, and the full 20‑challenge simulator remain as issues.
+scoring rubrics (`data/labs.ts`, `routes/Labs*.tsx`); a challenge-grouped Evidence Vault with
+report citations (`routes/EvidenceVault.tsx`, `components/lab/ChallengeEvidenceVault.tsx`); and a
+report builder with Markdown export (`routes/Reports.tsx`).
+⬜ The flag‑challenge engine and full 20‑challenge simulator remain as issues.
 
 ## Phase 5 — CEH+ Practical Track 🟡
 A **Beyond District** hub (`routes/Beyond.tsx`) unifies the six CEH+ tracks

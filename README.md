@@ -36,7 +36,8 @@ generation.
 | Analytics | Module and domain mastery, weakest modules, due backlog, readiness scoring, badges, streaks, and XP. |
 | Mistake Notebook | Records why an answer was wrong, correct reasoning, trap pattern, memory phrase, next action, and resolution state. |
 | Safe Labs | Six synthetic, read-only practical labs: SOC suspicious logins, cloud IAM review, web IDOR review, cleartext credentials, phishing header analysis, and STRIDE threat modeling. |
-| Reports | Findings reports with scope, summary, severity, impact, remediation, evidence, Markdown copy, and Markdown download. |
+| Evidence Vault | Challenge-linked observations, log excerpts, screenshot/file references, and notes with local-only persistence and explicit sensitive-data warnings. |
+| Reports | Findings reports with scope, summary, severity, impact, remediation, linked Vault citations, Markdown copy, and Markdown download. |
 | Final Gate | Pre-booking checklist for mock-score streak, due backlog, weak-module count, and CEH module coverage, exportable as Markdown. |
 | City Map | The 20 CEH modules and CEH+ track mapped to Neon Tokyo-7 districts for navigation and progress scanning. |
 
@@ -82,7 +83,7 @@ npm run validate:content
 3. Use Question Bank to search, filter, pin, clone, or author questions.
 4. Use Review Queue daily; it is driven by your answers and recall grades.
 5. Use Mock Exam for timed exam practice and Analytics for module/domain weaknesses.
-6. Use Safe Labs and Reports to practice analysis and remediation writing with synthetic artifacts.
+6. Use Safe Labs to capture synthetic observations in Evidence Vault, then cite them from report findings.
 7. Use Final Gate before booking an exam date; export its checklist when you need a study handoff.
 8. Use Settings to export/import a full progress backup or portable user-authored question packs.
 
@@ -104,11 +105,11 @@ locally and can be exchanged as `neonsec-question-pack` v1 JSON. Safe Labs are m
 
 NeonSec Academy has no backend and no telemetry. Browser storage contains the only copy of local
 progress unless you export it. A full backup includes profile, settings, attempts, review state,
-mistake notes, archived question IDs, custom questions, exam results, and reports. Question packs
+mistake notes, archived question IDs, custom questions, exam results, Evidence Vault entries, and reports. Question packs
 include only user-authored questions.
 
 Settings also provides a public-safe Markdown export for aggregate progress sharing. It excludes raw
-answers, custom question text, mistake notes, report evidence, and full backup data.
+answers, custom question text, mistake notes, report/Vault evidence, and full backup data.
 
 Do not put real credentials, real customer data, third-party secrets, production logs, or live
 target details into custom questions, labs, reports, notes, or imported JSON.
