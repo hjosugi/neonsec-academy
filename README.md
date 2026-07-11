@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](README.md) | [日本語](README.ja.md)
+
 # NeonSec Academy
 
 [![CI](https://github.com/hjosugi/neonsec-academy/actions/workflows/ci.yml/badge.svg)](https://github.com/hjosugi/neonsec-academy/actions/workflows/ci.yml)

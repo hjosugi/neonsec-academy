@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](ACCEPTANCE_TEST_RUN.md) | [日本語](ACCEPTANCE_TEST_RUN.ja.md)
+
 # v1.0 Acceptance Test Run
 
 Run date: 2026-07-09

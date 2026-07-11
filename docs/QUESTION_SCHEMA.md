@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](QUESTION_SCHEMA.md) | [日本語](QUESTION_SCHEMA.ja.md)
+
 # Question Schema
 
 This is the release schema used by the seed content validator and question-pack import parser. See

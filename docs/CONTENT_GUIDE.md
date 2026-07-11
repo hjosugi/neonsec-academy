@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](CONTENT_GUIDE.md) | [日本語](CONTENT_GUIDE.ja.md)
+
 # Content Authoring Guide
 
 This guide covers release-safe authoring for questions and labs. All content must follow
