@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](DESIGN_SYSTEM.md) | [日本語](DESIGN_SYSTEM.ja.md)
+
 # Cyberpunk Productivity Design System
 
 ## Design Principle

@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](CEH_OFFICIAL_NOTES.md) | [日本語](CEH_OFFICIAL_NOTES.ja.md)
+
 # CEH Official Notes Used for Planning
 
 この Issue Pack は、EC-Council の公開情報をもとに構成しています。

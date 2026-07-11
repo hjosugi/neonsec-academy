@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](REVIEW_SYSTEM.md) | [日本語](REVIEW_SYSTEM.ja.md)
+
 # Review System Design
 
 ## Goal
