@@ -5,7 +5,7 @@
 
 ## Design Principle
 
-Cyberpunk は雰囲気。問題管理と復習管理が主役。
+Cyberpunk is atmosphere. Question management and review management are the main act.
 
 ```text
 Neon where it guides.
@@ -107,11 +107,11 @@ Priority: scope acknowledgement and synthetic evidence must stay visible before 
 
 ## Cyberpunk Rules
 
-- Neon glow は active state, focus, danger/safety state だけに使う。
-- 問題文、解説、コード、ログには glitch animation を使わない。
-- Sound は default off。
-- Reduced motion / Low glow / High contrast を必須にする。
-- City map は補助 visualization。主要導線は productivity UI に置く。
+- Use neon glow only for active state, focus, and danger/safety state.
+- Never use glitch animation on question text, explanations, code, or logs.
+- Sound is off by default.
+- Reduced motion / Low glow / High contrast are mandatory.
+- The city map is a supporting visualization. Keep the primary path in the productivity UI.
 
 ## Component Vocabulary
 

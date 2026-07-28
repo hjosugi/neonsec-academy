@@ -137,4 +137,4 @@ scripts/             コンテンツ検証とGitHubインポートヘルパー
 
 ## ライセンス
 
-MIT。 [LICENSE](LICENSE)を参照してください。CEHおよびCertified Ethical HackerはEC-Councilの商標です; これは独立した非公式の学習補助ツールです。
+MIT。CEHおよびCertified Ethical HackerはEC-Councilの商標です; これは独立した非公式の学習補助ツールです。

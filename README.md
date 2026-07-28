@@ -158,5 +158,5 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-MIT. See [LICENSE](LICENSE). CEH and Certified Ethical Hacker are trademarks of EC-Council; this
+MIT. CEH and Certified Ethical Hacker are trademarks of EC-Council; this
 is an independent, unofficial study aid.

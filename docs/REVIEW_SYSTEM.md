@@ -5,7 +5,7 @@
 
 ## Goal
 
-ユーザーが毎日迷わず復習できるようにする。
+Let the user review every day without having to decide what to do.
 
 ## Review Priority
 
@@ -183,11 +183,11 @@ related questions, and Question Detail links back to related cards through modul
 
 ## Final Gate Checklist
 
-試験予約前の最終判定として、`/final-gate` は次の条件をまとめて評価する。
+As the final judgement before booking the exam, `/final-gate` evaluates the following conditions together.
 
-- 直近 mock exam が設定回数ぶん連続して目標点以上
-- due review backlog が設定上限以内
-- weak module 数が設定上限以内
-- CEH 20 module に問題が存在し、少なくとも 1 問は回答済み
+- The most recent mock exams have met the target score for the configured number of runs in a row
+- The due review backlog is within the configured limit
+- The number of weak modules is within the configured limit
+- Every one of the 20 CEH modules has questions, and at least one has been answered
 
-Fail の場合は各 check に next action を出し、結果は Markdown checklist として export できる。
+On a fail it emits a next action for each check, and the result can be exported as a Markdown checklist.
