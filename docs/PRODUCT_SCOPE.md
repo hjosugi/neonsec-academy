@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](PRODUCT_SCOPE.md) | [日本語](PRODUCT_SCOPE.ja.md)
+
 # Product Scope
 
 NeonSec Academy exists to help CEH learners manage questions, review mistakes, and prove practical

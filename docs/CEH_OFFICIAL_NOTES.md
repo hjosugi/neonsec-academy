@@ -1,15 +1,18 @@
+<!-- i18n: language-switcher -->
+[English](CEH_OFFICIAL_NOTES.md) | [日本語](CEH_OFFICIAL_NOTES.ja.md)
+
 # CEH Official Notes Used for Planning
 
-この Issue Pack は、EC-Council の公開情報をもとに構成しています。
+This Issue Pack is put together from EC-Council public information.
 
 ## Key planning facts
 
-- CEH v13 / CEH AI は 20 modules を中心に構成される。
-- 公式ページでは 221 hands-on labs、550 attack techniques、4,000+ tools が説明されている。
-- CEH knowledge exam は 4 hours / 125 multiple-choice questions。
-- CEH Practical は 6 hours / 20 real-world challenges。
-- CEH Master は CEH knowledge exam と CEH Practical の両方を前提にする。
-- CEH の典型的な passing cut score は exam form により 65%〜85% と説明されている。
+- CEH v13 / CEH AI is organised around 20 modules.
+- The official page describes 221 hands-on labs, 550 attack techniques, and 4,000+ tools.
+- The CEH knowledge exam is 4 hours / 125 multiple-choice questions.
+- CEH Practical is 6 hours / 20 real-world challenges.
+- CEH Master requires both the CEH knowledge exam and CEH Practical.
+- The typical CEH passing cut score is described as 65%-85%, depending on the exam form.
 
 ## Official source URLs
 

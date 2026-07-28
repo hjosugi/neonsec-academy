@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](SECURITY_LEGAL_REVIEW.md) | [日本語](SECURITY_LEGAL_REVIEW.ja.md)
+
 # Security, Legal, and Content Safety Review
 
 Review date: 2026-07-09

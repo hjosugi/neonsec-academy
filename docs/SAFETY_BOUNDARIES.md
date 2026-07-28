@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](SAFETY_BOUNDARIES.md) | [日本語](SAFETY_BOUNDARIES.ja.md)
+
 # Safety Boundaries
 
 NeonSec Academy is a study tool for authorized defensive security learning. Its content must teach

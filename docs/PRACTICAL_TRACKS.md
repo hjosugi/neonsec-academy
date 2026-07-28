@@ -1,6 +1,9 @@
+<!-- i18n: language-switcher -->
+[English](PRACTICAL_TRACKS.md) | [日本語](PRACTICAL_TRACKS.ja.md)
+
 # CEH+ Practical Tracks
 
-CEH の先を見据え、次の実践 track を用意する。
+Looking beyond CEH, the following practical tracks are provided.
 
 ## Track 1: Pentest Engagement Workflow
 

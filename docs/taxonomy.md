@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](taxonomy.md) | [日本語](taxonomy.ja.md)
+
 # Taxonomy
 
 This taxonomy is the classification source for CEH modules, exam domains, CEH+ practical tracks,

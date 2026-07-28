@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](KEYBOARD_SHORTCUTS.md) | [日本語](KEYBOARD_SHORTCUTS.ja.md)
+
 # Keyboard Shortcuts
 
 ## Global

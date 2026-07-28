@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](IMPORT_EXPORT.md) | [日本語](IMPORT_EXPORT.ja.md)
+
 # Import And Export
 
 NeonSec Academy stores state locally in the browser. Import/export is for backup, device transfer,

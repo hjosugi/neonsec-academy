@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](MILESTONES.en.md) | [日本語](MILESTONES.md)
+
 # Milestones
 
 ## Phase 0 - Foundation

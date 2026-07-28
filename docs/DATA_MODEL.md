@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](DATA_MODEL.md) | [日本語](DATA_MODEL.ja.md)
+
 # Data Model
 
 NeonSec Academy stores user data in browser storage through the Zustand store in

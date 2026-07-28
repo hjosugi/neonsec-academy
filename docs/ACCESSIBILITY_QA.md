@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](ACCESSIBILITY_QA.md) | [日本語](ACCESSIBILITY_QA.ja.md)
+
 # Accessibility QA
 
 Review date: 2026-07-10

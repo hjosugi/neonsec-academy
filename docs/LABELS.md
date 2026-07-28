@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](LABELS.md) | [日本語](LABELS.ja.md)
+
 # Labels
 
 - `phase:0`: Foundation, scope, safety, design direction

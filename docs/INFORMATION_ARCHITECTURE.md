@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](INFORMATION_ARCHITECTURE.md) | [日本語](INFORMATION_ARCHITECTURE.ja.md)
+
 # Information Architecture
 
 ## Primary Navigation

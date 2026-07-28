@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](RELEASE_NOTES_V1.md) | [日本語](RELEASE_NOTES_V1.ja.md)
+
 # NeonSec Academy v1 Release Notes
 
 Current release: v1.0.5
