@@ -6,6 +6,7 @@ import {
   auditTrackChallenge,
   gradeTrackDraft,
   normalizeTrackSubmissions,
+  timelineComplete,
   timelineFromLines,
   trackQuestionId,
   trackStats,
@@ -72,6 +73,23 @@ describe('track challenge content', () => {
     expect(stats.weakest[0].key).toBe('public-exposure')
   })
 
+  it('ships at least ten SOC log investigations across five log sources with detection, containment, and timelines', () => {
+    const soc = TRACK_CHALLENGES.filter((challenge) => challenge.track === 'soc')
+    expect(soc.length).toBeGreaterThanOrEqual(10)
+    expect(new Set(soc.map((challenge) => challenge.category))).toEqual(
+      new Set(['auth-log', 'web-access-log', 'dns-log', 'endpoint-alert', 'firewall-log']),
+    )
+    for (const challenge of soc) {
+      expect(challenge.kind).toBe('log-investigation')
+      expect(challenge.cehModules.length).toBeGreaterThan(0)
+      expect(challenge.skills.some((skill) => skill.startsWith('soc-'))).toBe(true)
+      expect(challenge.writeups.map((item) => item.key)).toEqual(['indicator', 'affected-asset', 'next-action'])
+      expect(challenge.detection?.length).toBeGreaterThan(30)
+      expect(challenge.containment?.length).toBeGreaterThan(30)
+      expect(challenge.timeline!.length).toBeGreaterThanOrEqual(2)
+    }
+  })
+
   it('compiles every challenge into a module-0 review question', () => {
     for (const challenge of TRACK_CHALLENGES) {
       const question = SEED_QUESTIONS.find((item) => item.id === trackQuestionId(challenge))
@@ -130,6 +148,17 @@ describe('track challenge grading', () => {
     const stats = trackStats(TRACK_CHALLENGES, submissions, 'appsec')
     expect(stats).toMatchObject({ attempted: 2, solved: 1 })
     expect(stats.byCategory.find((row) => row.key === first.category)).toMatchObject({ attempted: first.category === second.category ? 2 : 1 })
+  })
+
+  it('requires a described timeline for SOC investigations', () => {
+    const soc = trackChallengeById('SOC-01')!
+    const base = perfectDraft(soc)
+    const noTimeline = gradeTrackDraft(soc, base)
+    expect(noTimeline).toMatchObject({ correct: true, writeupsComplete: false, missingWriteups: ['timeline'] })
+    const events = timelineFromLines(soc, soc.answerLines).map((event) => ({ ...event, observation: 'Observed indicator event' }))
+    expect(events.length).toBeGreaterThanOrEqual(2)
+    expect(gradeTrackDraft(soc, { ...base, timeline: events })).toMatchObject({ writeupsComplete: true, scorePct: 100 })
+    expect(timelineComplete(events.slice(0, 1))).toBe(false)
   })
 
   it('builds timeline rows only for timestamped lines', () => {

@@ -48,6 +48,13 @@ Focus: timeline, indicators, affected assets, containment idea.
 
 Safe mode: synthetic logs only.
 
+Workspace: `/tracks/soc` has 10 log investigation challenges (`src/data/tracks/soc.ts`), two each for
+auth logs, web access logs, DNS logs, endpoint alerts, and firewall logs. Every challenge carries CEH
+module mappings and `soc-*` skill tags. The learner selects indicator lines, builds a timeline from
+the timestamped lines (each event needs an observation), classifies the activity, and writes the
+indicator, affected asset, and next action. Results explain the detection logic and a containment
+idea and show the model timeline. Wrong answers are scheduled into the Review Queue.
+
 ## Track 5: Incident Response Report
 
 Focus: timeline, impact, containment, eradication, recovery, lessons learned.

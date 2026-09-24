@@ -19,22 +19,22 @@ estimate: "4d"
 
 ## Requirements
 
-- [ ] auth log, web access log, DNS log, endpoint alert, firewall log の synthetic dataset を使う
-- [ ] 課題は timeline, indicator, affected asset, next action を提出させる
-- [ ] CEH module と SOC skill tag を両方付ける
+- [x] auth log, web access log, DNS log, endpoint alert, firewall log の synthetic dataset を使う
+- [x] 課題は timeline, indicator, affected asset, next action を提出させる
+- [x] CEH module と SOC skill tag を両方付ける
 - [x] 解説は detection logic と containment idea を含める
 
 ## Acceptance Criteria
 
-- [ ] 最低 10 個の log investigation challenge 仕様がある
-- [ ] timeline builder と連携できる
+- [x] 最低 10 個の log investigation challenge 仕様がある
+- [x] timeline builder と連携できる
 - [x] wrong answers が review queue に入る
 
 ## Subtasks
 
-- [ ] log dataset format を作る
+- [x] log dataset format を作る
 - [x] scenario を作る
-- [ ] timeline form を作る
+- [x] timeline form を作る
 - [x] review 連携を作る
 
 ## Dependencies
@@ -47,18 +47,22 @@ estimate: "4d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- `/tracks/soc` ships 10 synthetic log investigations (auth, web access, DNS, endpoint alert,
+  firewall) with CEH module and SOC skill tags. Learners submit a timeline (built from selected log
+  lines), indicator, affected asset, and next action; results explain detection logic and
+  containment. Wrong answers enter the Review Queue. Verified with unit, type, content, safety, audit,
+  and build checks.

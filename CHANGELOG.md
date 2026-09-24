@@ -2,6 +2,20 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.30 - 2026-09-24
+
+CEH+ SOC log investigation track with a timeline builder and review-queue hand-off.
+
+### Added
+
+- 10 SOC log investigation challenges across auth logs, web access logs, DNS logs, endpoint alerts,
+  and firewall logs, each with CEH module mappings and `soc-*` skill tags.
+- Timeline builder: selected timestamped lines become timeline events that need an observation; SOC
+  submissions require at least two described events and store the learner timeline.
+- Deliverables for indicator, affected asset, and next action, with results that explain detection
+  logic, a containment idea, and the model timeline.
+- `/tracks/soc` workspace with weakness stats; wrong answers are scheduled into the Review Queue.
+
 ## v1.0.29 - 2026-09-24
 
 CEH+ Cloud IAM / config review track with least-privilege explanations and weakness stats.

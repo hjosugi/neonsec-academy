@@ -411,3 +411,22 @@ describe('track challenge store', () => {
     expect(useStore.getState().trackSubmissions).toHaveLength(2)
   })
 })
+
+describe('SOC investigation store', () => {
+  it('stores the learner timeline and sends wrong answers to the review queue', async () => {
+    const { trackChallengeById } = await import('../data/tracks')
+    const { timelineFromLines, trackQuestionId } = await import('../lib/trackChallenges')
+    useStore.setState({ trackSubmissions: [], attempts: [], reviews: {} })
+    const soc = trackChallengeById('SOC-05')!
+    const timeline = timelineFromLines(soc, soc.answerLines).map((event) => ({ ...event, observation: 'Beacon-like lookup' }))
+    const submission = useStore.getState().submitTrackChallenge(soc.id, {
+      selectedLines: soc.answerLines,
+      classification: soc.classification.options.find((option) => option !== soc.classification.answer)!,
+      writeups: {},
+      timeline,
+    })!
+    expect(submission.correct).toBe(false)
+    expect(submission.timeline).toEqual(timeline)
+    expect(useStore.getState().reviews[trackQuestionId(soc)]).toMatchObject({ lastResult: 'incorrect' })
+  })
+})

@@ -101,6 +101,15 @@ export interface TrackDraft {
   timeline?: TrackTimelineEvent[]
 }
 
+export const TIMELINE_MIN_EVENTS = 2
+
+/** A usable investigation timeline: two or more timestamped events, each with an observation. */
+export function timelineComplete(timeline: TrackTimelineEvent[] | undefined): boolean {
+  if (!timeline) return false
+  const described = timeline.filter((event) => event.time && event.observation.trim().length >= 5)
+  return described.length >= TIMELINE_MIN_EVENTS
+}
+
 export interface TrackGrade {
   linesCorrect: boolean
   missedLines: number[]
@@ -125,11 +134,15 @@ export function gradeTrackDraft(challenge: TrackChallenge, draft: TrackDraft): T
   const missingWriteups = challenge.writeups
     .filter((item) => (draft.writeups[item.key] ?? '').trim().length < WRITEUP_MIN_LENGTH)
     .map((item) => item.key)
+  // SOC investigations also require a timeline: at least two timestamped events with observations.
+  const needsTimeline = challenge.track === 'soc'
+  if (needsTimeline && !timelineComplete(draft.timeline)) missingWriteups.push('timeline')
   const writeupsComplete = missingWriteups.length === 0
+  const deliverableCount = challenge.writeups.length + (needsTimeline ? 1 : 0)
   const lineCredit = challenge.answerLines.length > 0
     ? Math.max(0, (challenge.answerLines.length - missedLines.length - Math.max(0, extraLines.length - 1)) / challenge.answerLines.length)
     : 0
-  const writeupCredit = challenge.writeups.length > 0 ? (challenge.writeups.length - missingWriteups.length) / challenge.writeups.length : 0
+  const writeupCredit = deliverableCount > 0 ? (deliverableCount - missingWriteups.length) / deliverableCount : 0
   const scorePct = Math.round(lineCredit * 40 + (classificationCorrect ? 30 : 0) + writeupCredit * 30)
   return {
     linesCorrect,
