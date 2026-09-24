@@ -38,6 +38,7 @@ function input(): PortfolioInput {
     trackSubmissions: [],
     trackChallenges: TRACK_CHALLENGES,
     trackNames,
+    stories: [{ id: 's1', skillId: 'web', kind: 'strength', format: 'star', title: 'Finding an IDOR', situation: 'In a synthetic lab at api.neoncorp.example', task: 'Review access control', action: 'Compared session and owner ids', result: 'Wrote a high finding with a fix', memo: 'I found a broken access control issue.', evidence: ['Web AppSec: Broken Access Control'], createdAt: 1, updatedAt: 1 }],
     reflection: 'Learned to triage before reporting. TODO add next goal.',
     displayName: 'neon-learner',
   }
@@ -53,6 +54,8 @@ describe('portfolio exporter', () => {
     expect(result.markdown).toContain('[email-removed]')
     expect(result.markdown).toContain('[ip-removed]')
     expect(result.markdown).toContain('Cloud review for [host-removed]')
+    expect(result.markdown).toContain('## Interview Stories')
+    expect(result.markdown).toContain('- **Situation:** In a synthetic lab at api.neoncorp.example')
     expect(result.markdown).toContain('api_key=[redacted]')
     expect(result.markdown).not.toContain('Evidence line from')
     expect(result.markdown).not.toContain('User 1002 read 5581')

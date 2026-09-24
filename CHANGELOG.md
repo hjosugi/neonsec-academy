@@ -2,6 +2,21 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.34 - 2026-09-25
+
+Security Interview Readiness Tracker with skill evidence, STAR stories, honest gaps, and answer memos.
+
+### Added
+
+- Interview Tracker (`/interview`) with skill evidence for every CEH domain and CEH+ track: concept
+  accuracy, solved Safe Labs, related reports, and solved track challenges, rated strong, developing,
+  or gap.
+- Honest-gap statements with a next plan built from weak modules and unsolved labs or challenges.
+- STAR and concise story templates that cite evidence, plus English answer memos with a speaking-time
+  estimate for 1-2 minute answers.
+- Stories persist, round-trip through backups, and appear in the Portfolio exporter's Interview Stories
+  section (public-safe by default).
+
 ## v1.0.33 - 2026-09-25
 
 Portfolio Evidence Exporter with public-safe mode, sensitive placeholder check, and privacy checklist.

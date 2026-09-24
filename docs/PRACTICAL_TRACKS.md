@@ -183,6 +183,16 @@ check scans the final Markdown (export is blocked while sensitive values remain)
 unfinished template placeholders such as `TODO` or `<your name>`. A privacy checklist must be fully
 confirmed before export or copy.
 
+## Security Interview Readiness Tracker
+
+The Interview Tracker (`/interview`) maps study and practice to interview stories. Each CEH domain
+and CEH+ track shows its evidence — concept accuracy from question attempts, solved Safe Labs,
+related lab reports, and solved track challenges — with a status of strong, developing, or gap.
+Gaps come with an honest-gap statement and a next plan built from weak modules and unsolved labs or
+challenges. Stories use STAR (situation, task, action, result) or a concise format, cite their
+evidence, and include an English answer memo with an estimated speaking time (aim for 1-2 minutes).
+Saved stories feed the Portfolio exporter's Interview Stories section.
+
 ## Lab Registry Safety
 
 Every lab declares a `kind`: `local`, `dataset`, `simulated`, or `writeup`. Lab Detail displays the

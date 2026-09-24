@@ -489,3 +489,19 @@ describe('portfolio profile store', () => {
     expect(useStore.getState().portfolio).toMatchObject({ displayName: 'neon-learner', reflection: 'Triage first, then report.' })
   })
 })
+
+describe('interview story store', () => {
+  it('saves, updates, deletes, and restores stories', () => {
+    useStore.setState({ interviewStories: [] })
+    const story = { id: 'is-1', skillId: 'soc', kind: 'gap' as const, format: 'concise' as const, title: 'Growth area: SOC', situation: '', task: '', action: '', result: '', memo: 'SOC is still a growth area; my plan is to finish the log track.', evidence: [], createdAt: 1, updatedAt: 1 }
+    useStore.getState().upsertStory(story)
+    useStore.getState().upsertStory({ ...story, title: 'Growth area: SOC log work' })
+    expect(useStore.getState().interviewStories).toHaveLength(1)
+    expect(useStore.getState().interviewStories[0]).toMatchObject({ title: 'Growth area: SOC log work', createdAt: 1 })
+    const backup = useStore.getState().exportData()
+    useStore.getState().deleteStory('is-1')
+    expect(useStore.getState().interviewStories).toEqual([])
+    expect(useStore.getState().importData(backup)).toBe(true)
+    expect(useStore.getState().interviewStories[0].id).toBe('is-1')
+  })
+})

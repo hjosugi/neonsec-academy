@@ -33,6 +33,7 @@ export function Portfolio() {
   const triageFindings = useStore((s) => s.triageFindings)
   const trackSubmissions = useStore((s) => s.trackSubmissions)
   const portfolio = useStore((s) => s.portfolio)
+  const stories = useStore((s) => s.interviewStories)
   const savePortfolio = useStore((s) => s.savePortfolio)
 
   const [publicSafe, setPublicSafe] = useState(true)
@@ -51,12 +52,13 @@ export function Portfolio() {
         trackSubmissions,
         trackChallenges: TRACK_CHALLENGES,
         trackNames: TRACK_NAMES,
+        stories,
         reflection: portfolio.reflection,
         displayName: portfolio.displayName,
       },
       { publicSafe, sections, reportIds },
     ),
-    [examResults, practicalResults, reports, triageFindings, trackSubmissions, portfolio, publicSafe, sections, reportIds],
+    [examResults, practicalResults, reports, triageFindings, trackSubmissions, stories, portfolio, publicSafe, sections, reportIds],
   )
   const gate = canExportPortfolio(result, confirmed)
 

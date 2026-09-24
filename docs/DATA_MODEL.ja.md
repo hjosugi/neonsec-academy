@@ -282,6 +282,10 @@ Attemptは追加のみです。訂正は履歴を編集するのではなく、�
 
 `examTargetPct`は学習者の個人的な模擬スコア目標のためプロフィールの一部です。
 
+`InterviewStory`（`interviewStories`）は `skillId`（CEH ドメインまたは CEH+ トラック）、`kind`（strength / gap）、
+`format`（star / concise）、`title`、STAR 項目、英語回答の `memo`、引用した `evidence`、タイムスタンプを保存します。
+スキルの根拠自体は実行時に導出され、保存されません。
+
 `PortfolioProfile`（`portfolio`）はポートフォリオエクスポーターが使う任意の `displayName` と `reflection`
 メモを保存します。エクスポートする Markdown はその都度生成され、保存されません。
 

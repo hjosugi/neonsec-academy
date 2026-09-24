@@ -19,23 +19,23 @@ CEH と実践 track の成果を、面接で説明できる形に整理する。
 
 ## Requirements
 
-- [ ] skill evidence を STAR 形式または concise story に変換する
-- [ ] concept, lab, report, reflection を紐付ける
-- [ ] 弱点 module は honest gap と next plan として表示する
-- [ ] 英語面接用の短い回答メモを保存できる
+- [x] skill evidence を STAR 形式または concise story に変換する
+- [x] concept, lab, report, reflection を紐付ける
+- [x] 弱点 module は honest gap と next plan として表示する
+- [x] 英語面接用の短い回答メモを保存できる
 
 ## Acceptance Criteria
 
-- [ ] skill ごとに evidence が表示される
-- [ ] 1〜2 分の説明メモを保存できる
-- [ ] portfolio exporter と連携できる
+- [x] skill ごとに evidence が表示される
+- [x] 1〜2 分の説明メモを保存できる
+- [x] portfolio exporter と連携できる
 
 ## Subtasks
 
-- [ ] skill evidence model を作る
-- [ ] story template を作る
-- [ ] tracker UI を作る
-- [ ] portfolio 連携を作る
+- [x] skill evidence model を作る
+- [x] story template を作る
+- [x] tracker UI を作る
+- [x] portfolio 連携を作る
 
 ## Dependencies
 
@@ -47,18 +47,21 @@ CEH と実践 track の成果を、面接で説明できる形に整理する。
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- `/interview` shows evidence per skill (concepts, labs, reports, track challenges), turns weak areas
+  into honest gaps with next plans, and saves STAR/concise stories with English answer memos and a
+  speaking-time estimate. Stories flow into the Portfolio exporter. Verified with unit, type, content,
+  safety, audit, and build checks.

@@ -59,6 +59,7 @@ Neon City Map
 | Incident Response `/tracks/ir` | Build an incident timeline from synthetic artifacts and SOC timelines, write the IR report, and export Markdown. | CEH+ Tracks. | SOC track, Markdown export. |
 | Threat Modeling `/tracks/threat-model`, `/tracks/threat-model/:id` | Model assets, trust boundaries, STRIDE threats, and mitigations for fictional architectures and build a remediation backlog. | CEH+ Tracks. | Reports, Markdown export. |
 | Portfolio `/portfolio` | Build a public-safe Markdown portfolio with a sensitive placeholder check and privacy checklist. | Nav. | Local Markdown download or copy. |
+| Interview Tracker `/interview` | Review skill evidence, honest gaps with next plans, and write STAR stories and English answer memos. | Nav. | Portfolio, Safe Labs, CEH+ Tracks. |
 | Reports `/reports` | Build safe findings reports, link Vault citations, and export Markdown. | Lab Detail, Evidence Vault, nav, command palette. | Safe Labs, Evidence Vault, Settings export, local Markdown download. |
 | City Map `/map` | Secondary visual navigation across CEH modules and CEH+ tracks. | Nav world section, command palette. | Practice module drill, Beyond, Analytics. |
 | Settings `/settings` | Manage theme/accessibility preferences and local import/export. | Nav, command palette. | Dashboard, Question Bank after import, local file export. |

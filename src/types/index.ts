@@ -384,6 +384,26 @@ export interface PortfolioProfile {
   updatedAt: number
 }
 
+// ---- Security interview readiness tracker (P5-008) ----
+export interface InterviewStory {
+  id: string
+  /** CEH domain id or CEH+ track key. */
+  skillId: string
+  kind: 'strength' | 'gap'
+  format: 'star' | 'concise'
+  title: string
+  situation: string
+  task: string
+  action: string
+  result: string
+  /** Short spoken-answer memo (English interview, 1-2 minutes). */
+  memo: string
+  /** Labs, reports, or challenges the story cites. */
+  evidence: string[]
+  createdAt: number
+  updatedAt: number
+}
+
 // ---- Player / settings ----
 export type StudyGoal = 'ceh-exam' | 'ceh-practical' | 'ceh-plus' | 'all'
 

@@ -50,8 +50,8 @@ A **Beyond District** hub (`routes/Beyond.tsx`) unifies the six CEH+ tracks
 (pentest / appsec / cloud / soc / ir / threat‑model): per‑track question coverage + accuracy,
 linked safe labs, and one‑click track drilling (`/practice?track=<key>`). A public-safe Portfolio exporter
 (`routes/Portfolio.tsx`, `lib/portfolio.ts`) turns results into shareable Markdown. A guided pentest engagement workflow (`routes/EngagementWorkflow.tsx`, `lib/engagement.ts`) covers
-scope, RoE, inventory, triage, and report delivery. ⬜ An interview‑readiness tracker remains as an
-issue (P5‑008).
+scope, RoE, inventory, triage, and report delivery. An interview-readiness tracker (`routes/InterviewTracker.tsx`, `lib/interview.ts`) turns evidence into
+STAR stories and honest-gap plans.
 
 ## Phase 6 — Cyberpunk Polish & Launch 🟡
 Visual theme, command palette (`/` or ⌘K), effect toggles (reduce‑motion / low‑glow /

@@ -302,6 +302,10 @@ Readiness thresholds are persisted with other local settings:
 
 `examTargetPct` remains part of the profile because it is the learner's personal mock-score target.
 
+`InterviewStory` (`interviewStories`) stores `skillId` (CEH domain or CEH+ track), `kind`
+(strength or gap), `format` (star or concise), `title`, STAR fields, the English answer `memo`, cited
+`evidence`, and timestamps. Skill evidence itself is derived at runtime and never stored.
+
 `PortfolioProfile` (`portfolio`) stores the optional `displayName` and `reflection` notes used by the
 Portfolio exporter; the exported Markdown itself is generated on demand and never stored.
 

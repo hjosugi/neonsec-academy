@@ -1,6 +1,7 @@
 import type { TrackChallenge } from '../data/tracks/types'
 import type {
   ExamResult,
+  InterviewStory,
   PracticalResult,
   Report,
   Severity,
@@ -18,7 +19,7 @@ import { effectiveSeverity } from './triage'
 // removes evidence text and replaces sensitive values with placeholders.
 // ============================================================
 
-export type PortfolioSection = 'mockExams' | 'practical' | 'tracks' | 'reports' | 'findings' | 'reflections'
+export type PortfolioSection = 'mockExams' | 'practical' | 'tracks' | 'reports' | 'findings' | 'stories' | 'reflections'
 
 export const PORTFOLIO_SECTIONS: Array<{ key: PortfolioSection; label: string; description: string }> = [
   { key: 'mockExams', label: 'Mock exam stats', description: 'Best, latest, and average scores; no answers.' },
@@ -26,6 +27,7 @@ export const PORTFOLIO_SECTIONS: Array<{ key: PortfolioSection; label: string; d
   { key: 'tracks', label: 'CEH+ track progress', description: 'Solved challenges per track.' },
   { key: 'reports', label: 'Lab reports', description: 'Report titles, scope, and sanitized finding summaries.' },
   { key: 'findings', label: 'Sanitized findings', description: 'Triage findings: title, severity, status, remediation.' },
+  { key: 'stories', label: 'Interview stories', description: 'Saved STAR stories, honest gaps, and answer memos.' },
   { key: 'reflections', label: 'Reflection notes', description: 'Your own lessons-learned notes.' },
 ]
 
@@ -46,6 +48,7 @@ export interface PortfolioInput {
   trackSubmissions: TrackSubmission[]
   trackChallenges: TrackChallenge[]
   trackNames: Record<TrackKey, string>
+  stories: InterviewStory[]
   reflection: string
   displayName: string
 }
@@ -173,6 +176,26 @@ export function buildPortfolio(input: PortfolioInput, options: PortfolioOptions)
       if (!options.publicSafe) lines.push(`  - Asset: ${inline(finding.asset)}; evidence: ${inline(finding.evidence)}`)
     }
     lines.push('')
+  }
+
+  if (include('stories')) {
+    lines.push('## Interview Stories', '')
+    if (input.stories.length === 0) lines.push('_No stories saved yet._', '')
+    for (const story of input.stories) {
+      rawText += `${story.title}\n${story.situation}\n${story.task}\n${story.action}\n${story.result}\n${story.memo}\n`
+      lines.push(`### ${safe(inline(story.title))}${story.kind === 'gap' ? ' (growth area)' : ''}`, '')
+      if (story.format === 'star') {
+        lines.push(
+          `- **Situation:** ${safe(inline(story.situation)) || '—'}`,
+          `- **Task:** ${safe(inline(story.task)) || '—'}`,
+          `- **Action:** ${safe(inline(story.action)) || '—'}`,
+          `- **Result:** ${safe(inline(story.result)) || '—'}`,
+        )
+      }
+      if (story.memo.trim()) lines.push(`- **Answer memo:** ${safe(inline(story.memo))}`)
+      if (story.evidence.length > 0) lines.push(`- **Evidence:** ${safe(story.evidence.map(inline).join('; '))}`)
+      lines.push('')
+    }
   }
 
   if (include('reflections')) {

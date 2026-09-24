@@ -13,6 +13,7 @@ import {
   Gauge,
   LayoutDashboard,
   MapPinned,
+  MessagesSquare,
   RefreshCcw,
   Scale,
   Settings2,
@@ -55,6 +56,7 @@ export const NAV: NavSection[] = [
       { to: '/triage', label: 'Triage', icon: Scale },
       { to: '/reports', label: 'Reports', icon: FileText },
       { to: '/portfolio', label: 'Portfolio', icon: Briefcase },
+      { to: '/interview', label: 'Interview Prep', icon: MessagesSquare },
     ],
   },
   {

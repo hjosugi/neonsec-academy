@@ -12,6 +12,7 @@ import type {
   EngagementProgress,
   EvidenceItem,
   IncidentWorkspace,
+  InterviewStory,
   ExamSession,
   ExamResult,
   FlagAttempt,
@@ -57,6 +58,7 @@ import { INCIDENTS } from '../data/tracks/incidents'
 import { blankIncidentWorkspace, importSocTimelines, normalizeIncidentWorkspaces } from '../lib/incidentResponse'
 import { THREAT_MODEL_SCENARIOS } from '../data/tracks/threatModel'
 import { normalizeThreatModelWork, threatModelReport } from '../lib/threatModel'
+import { normalizeStories } from '../lib/interview'
 import {
   normalizeEvidenceItem,
   normalizeEvidenceItems,
@@ -218,6 +220,7 @@ interface AppState {
   incidentWorkspaces: Record<string, IncidentWorkspace>
   threatModels: Record<string, ThreatModelWork>
   portfolio: PortfolioProfile
+  interviewStories: InterviewStory[]
 }
 
 interface AppActions {
@@ -291,6 +294,9 @@ interface AppActions {
   threatModelToReport: (scenarioId: string) => string | null
   // portfolio
   savePortfolio: (patch: Partial<Omit<PortfolioProfile, 'updatedAt'>>) => void
+  // interview readiness
+  upsertStory: (story: InterviewStory) => void
+  deleteStory: (id: string) => void
   // flag challenges
   submitLabFlag: (challengeId: string, submitted: string) => FlagAttempt | null
   revealLabFlagHint: (challengeId: string, hintIndex: number) => boolean
@@ -376,6 +382,7 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
     incidentWorkspaces,
     threatModels,
     portfolio: normalizePortfolio(persisted.portfolio) ?? currentState.portfolio,
+    interviewStories: Array.isArray(persisted.interviewStories) ? normalizeStories(persisted.interviewStories) : currentState.interviewStories,
   }
 }
 
@@ -407,6 +414,7 @@ const initialState: AppState = {
   incidentWorkspaces: {},
   threatModels: {},
   portfolio: { displayName: '', reflection: '', updatedAt: 0 },
+  interviewStories: [],
 }
 
 export const useStore = create<Store>()(
@@ -937,6 +945,16 @@ export const useStore = create<Store>()(
           },
         })),
 
+      upsertStory: (story) =>
+        set((s) => {
+          const previous = s.interviewStories.find((item) => item.id === story.id)
+          const [normalized] = normalizeStories([{ ...story, createdAt: previous?.createdAt ?? story.createdAt, updatedAt: Date.now() }])
+          if (!normalized) return {}
+          return { interviewStories: [normalized, ...s.interviewStories.filter((item) => item.id !== story.id)] }
+        }),
+
+      deleteStory: (id) => set((s) => ({ interviewStories: s.interviewStories.filter((item) => item.id !== id) })),
+
       submitLabFlag: (challengeId, submitted) => {
         const lab = labById(challengeId)
         const clean = sanitizeFlagSubmission(submitted)
@@ -1219,6 +1237,7 @@ export const useStore = create<Store>()(
           incidentWorkspaces: s.incidentWorkspaces,
           threatModels: s.threatModels,
           portfolio: s.portfolio,
+          interviewStories: s.interviewStories,
         }
         return JSON.stringify(payload, null, 2)
       },
@@ -1280,6 +1299,7 @@ export const useStore = create<Store>()(
                 ? normalizeThreatModelWork(d.threatModels, THREAT_MODEL_SCENARIOS)
                 : s.threatModels,
               portfolio: normalizePortfolio(d.portfolio) ?? s.portfolio,
+              interviewStories: Array.isArray(d.interviewStories) ? normalizeStories(d.interviewStories) : s.interviewStories,
             }
           })
           return true
@@ -1319,6 +1339,7 @@ export const useStore = create<Store>()(
         incidentWorkspaces: s.incidentWorkspaces,
         threatModels: s.threatModels,
         portfolio: s.portfolio,
+        interviewStories: s.interviewStories,
       }),
       merge: mergePersistedStoreState,
     },
