@@ -189,8 +189,9 @@ saving. The preview warns how many collisions will be renamed.
 Reports export Markdown from the Reports screen. A report can be blank, created manually, or seeded
 from a Safe Lab. Findings can link challenge-matched Evidence Vault items; exported reports resolve
 those links into citations with evidence type, title, source, capture time, optional file/screenshot
-reference, and note. Exported reports also include title, synthetic scope, summary, findings, impact,
-remediation, manual evidence notes, and a generated-by footer. Import and browser hydration discard
+reference, and note. Exported reports contain the Report Builder sections in order: title, Executive Summary, Scope,
+Methodology, Findings (severity, affected asset, triage status/likelihood, impact, remediation, manual
+evidence notes, Vault citations), Remediation Plan, Appendix, and a generated-by footer. Import and browser hydration discard
 invalid Vault rows, deduplicate citation IDs, and remove missing or cross-challenge links before they
 reach the report builder.
 

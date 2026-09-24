@@ -41,7 +41,7 @@ generation.
 | Safe Labs | Eleven synthetic, read-only flag challenges with persisted attempts and hints: SOC suspicious logins, cloud IAM review, four web concept labs (access control, input validation, session rotation, security headers), cleartext credentials (PCAP summary), phishing headers, web access log forced browsing, firewall rule shadowing, and STRIDE threat modeling. Web concept labs show an unsafe-target warning and a finding/impact/remediation worksheet that feeds the lab report. Dataset-analysis labs add a line-numbered viewer that sends selected lines to the Evidence Vault and lab report, plus a detection/prevention debrief. |
 | Evidence Vault | Challenge-linked observations, log excerpts, screenshot/file references, and notes with local-only persistence and explicit sensitive-data warnings. |
 | Triage | Vulnerability triage board: affected asset, evidence, impact × likelihood rubric with manual severity override, open/confirmed/false-positive/accepted-risk/fixed status flow with justification notes, fix priority, lab import, and report hand-off. |
-| Reports | Findings reports with scope, summary, severity, impact, remediation, linked Vault citations, Markdown copy, and Markdown download. |
+| Reports | Report Builder with executive summary, scope, methodology, findings (asset, severity, impact, remediation, Vault citations), remediation plan, and appendix; drafts sections from findings, shows a quality checklist and safety warnings, and exports Markdown. |
 | Final Gate | Pre-booking checklist for mock-score streak, due backlog, weak-module count, and CEH module coverage, exportable as Markdown. |
 | City Map | The 20 CEH modules and CEH+ track mapped to Neon Tokyo-7 districts for navigation and progress scanning. |
 

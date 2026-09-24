@@ -403,8 +403,13 @@ export interface Report {
   challengeId?: string
   title: string
   scope: string
+  /** Executive summary. */
   summary: string
+  methodology?: string
   findings: Finding[]
+  /** Prioritised remediation roadmap section. */
+  remediationPlan?: string
+  appendix?: string
   createdAt: number
   updatedAt: number
 }

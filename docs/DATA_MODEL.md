@@ -436,6 +436,7 @@ allowed.
   "title": "Synthetic IAM Review",
   "scope": "Provided synthetic config only.",
   "summary": "One over-privileged role needs remediation.",
+  "methodology": "Static review of the synthetic policy export inside the app.",
   "findings": [
     {
       "id": "f-1",
@@ -444,13 +445,22 @@ allowed.
       "impact": "The fictional role could modify unrelated synthetic resources.",
       "remediation": "Replace wildcard permissions with least-privilege actions.",
       "evidence": "Synthetic policy statement allows action '*' on resource '*'.",
-      "evidenceIds": ["ev-8e91"]
+      "evidenceIds": ["ev-8e91"],
+      "asset": "app-runtime role (synthetic)",
+      "status": "confirmed",
+      "likelihood": "likely"
     }
   ],
+  "remediationPlan": "1. [Immediate] Replace the wildcard statement.",
+  "appendix": "Synthetic artifacts reviewed: role-policy.json (synthetic).",
   "createdAt": 1783630800000,
   "updatedAt": 1783630800000
 }
 ```
+
+Reports carry the Report Builder sections: `summary` (executive summary), `scope`, optional
+`methodology`, `findings`, optional `remediationPlan`, and optional `appendix`. Findings may add
+`asset`, `status`, `likelihood`, and `triageId` when they come from the Triage board.
 
 Reports are the portable record for safe practical work. `challengeId` is optional for legacy and
 standalone reports. A finding keeps its free-form `evidence` note for backward compatibility and

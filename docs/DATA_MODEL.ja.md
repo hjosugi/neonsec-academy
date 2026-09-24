@@ -393,6 +393,7 @@ Web コンセプトラボは `webConcept: { concept, unsafeTargetWarning }` を�
   "title": "Synthetic IAM Review",
   "scope": "Provided synthetic config only.",
   "summary": "One over-privileged role needs remediation.",
+  "methodology": "Static review of the synthetic policy export inside the app.",
   "findings": [
     {
       "id": "f-1",
@@ -401,13 +402,22 @@ Web コンセプトラボは `webConcept: { concept, unsafeTargetWarning }` を�
       "impact": "The fictional role could modify unrelated synthetic resources.",
       "remediation": "Replace wildcard permissions with least-privilege actions.",
       "evidence": "Synthetic policy statement allows action '*' on resource '*'.",
-      "evidenceIds": ["ev-8e91"]
+      "evidenceIds": ["ev-8e91"],
+      "asset": "app-runtime role (synthetic)",
+      "status": "confirmed",
+      "likelihood": "likely"
     }
   ],
+  "remediationPlan": "1. [Immediate] Replace the wildcard statement.",
+  "appendix": "Synthetic artifacts reviewed: role-policy.json (synthetic).",
   "createdAt": 1783630800000,
   "updatedAt": 1783630800000
 }
 ```
+
+レポートは Report Builder のセクションを持ちます: `summary`（エグゼクティブサマリー）、`scope`、任意の
+`methodology`、`findings`、任意の `remediationPlan`、任意の `appendix`。トリアージボード由来の所見は
+`asset`、`status`、`likelihood`、`triageId` を持つ場合があります。
 
 レポートは安全な実践作業の持ち運び可能な記録です。`challengeId`はレガシーや単独レポートではオプションです。ファインディングは後方互換のため自由記述の`evidence`ノートを保持し、Vaultリンクをオプションの`evidenceIds`に保存します。Markdownエクスポート時はそのIDを引用として解決します。保存・インポート・ブラウザ復元時、リンクIDは重複排除され、欠損IDは削除されます。チャレンジ連携レポートは同じ`challengeId`の証拠のみ引用でき、単独レポートは複数チャレンジのレコードを引用可能です。レポートは合成証拠のみ引用しなければなりません。
 

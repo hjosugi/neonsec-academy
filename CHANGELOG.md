@@ -2,6 +2,28 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.24 - 2026-09-24
+
+Report Builder with six report sections, generated drafts, a quality checklist, and safety warnings.
+
+### Added
+
+- Methodology, remediation plan, and appendix sections alongside executive summary, scope, and
+  findings; lab reports are seeded with a methodology and an appendix of synthetic artifacts.
+- **Draft from findings** (executive summary), **Generate from findings** (severity-ordered remediation
+  roadmap), **Sort by severity**, and an affected-asset field per finding.
+- Report quality checklist covering summary, synthetic scope, methodology, findings, complete finding
+  fields, evidence citations, remediation plan, ordering, appendix, and safety.
+- Always-on safety warning that lists detected public IPs, real email hosts, non-training URLs,
+  credentials, private keys, and tokens by field.
+- Shared `contentSafety` detectors (strict and host-only modes plus redaction) with tests.
+
+### Changed
+
+- Markdown export now emits Executive Summary, Scope, Methodology, Findings, Remediation Plan, and
+  Appendix sections.
+- Lab registry unsafe-text scanning reuses the shared content-safety detectors.
+
 ## v1.0.23 - 2026-09-24
 
 Vulnerability triage workflow with severity rubric, status flow, and report hand-off.

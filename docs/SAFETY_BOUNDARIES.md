@@ -38,7 +38,9 @@ target.
 - Flag submission warns against pasting real credentials, tokens, customer values, or production secrets.
 - Web concept labs show an unsafe-target warning in the scope contract and use only static
   request/response or header captures from fictional toy apps.
-- Reports label scope as synthetic and ask for evidence, impact, and remediation.
+- Reports label scope as synthetic and ask for evidence, impact, and remediation. The Report Builder
+  always shows a safety warning and lists detected public IPs, real email hosts, non-training URLs,
+  credentials, private keys, and tokens; the quality checklist fails until they are removed.
 - Question packs are validated before import and only become user-authored local questions.
 - Full backups and question packs are local JSON files; the app does not upload them.
 - The app has no backend, no telemetry, and no network scanner.

@@ -2,6 +2,7 @@ import type { FlagChallengeAssetKind, Lab, LabKind } from '../data/labs'
 import { canonicalFlag, isExpectedFlagValid } from './flagChallenge'
 import { isAnalysisType } from './analysisChallenges'
 import { isWebConcept } from './webConcept'
+import { scanSensitiveText, type SafetyHitKind } from './contentSafety'
 
 export const LAB_KINDS: LabKind[] = ['local', 'dataset', 'simulated', 'writeup']
 export const FLAG_ASSET_KINDS: FlagChallengeAssetKind[] = [
@@ -19,35 +20,6 @@ export interface LabRegistryError {
   kind: 'schema' | 'public-ip' | 'real-email' | 'live-domain' | 'credential'
   message: string
   value?: string
-}
-
-const SAFE_DOMAIN_SUFFIXES = ['.example', '.internal', '.test', '.invalid', '.localhost']
-const NON_TARGET_DOTTED_SUFFIXES = ['.json', '.log', '.md', '.txt']
-const NON_TARGET_DOTTED = new Set(['smtp.mailfrom'])
-
-function isDocumentationIp(ip: string): boolean {
-  return ip.startsWith('192.0.2.') || ip.startsWith('198.51.100.') || ip.startsWith('203.0.113.')
-}
-
-function isPrivateOrLocalIp(ip: string): boolean {
-  const [a, b] = ip.split('.').map(Number)
-  return (
-    a === 10 ||
-    a === 127 ||
-    (a === 172 && b >= 16 && b <= 31) ||
-    (a === 192 && b === 168) ||
-    (a === 169 && b === 254)
-  )
-}
-
-function isSafeDomain(domain: string): boolean {
-  const normalized = domain.toLowerCase().replace(/\.$/, '')
-  return SAFE_DOMAIN_SUFFIXES.some((suffix) => normalized.endsWith(suffix))
-}
-
-function isNonTargetDottedToken(domain: string): boolean {
-  const normalized = domain.toLowerCase().replace(/\.$/, '')
-  return NON_TARGET_DOTTED.has(normalized) || NON_TARGET_DOTTED_SUFFIXES.some((suffix) => normalized.endsWith(suffix))
 }
 
 function textFields(lab: Lab): Array<[string, string]> {
@@ -95,40 +67,29 @@ function textFields(lab: Lab): Array<[string, string]> {
   return fields
 }
 
+const HIT_KIND: Record<SafetyHitKind, LabRegistryError['kind']> = {
+  'public-ip': 'public-ip',
+  'real-email': 'real-email',
+  'live-domain': 'live-domain',
+  'live-url': 'live-domain',
+  credential: 'credential',
+  'private-key': 'credential',
+  'access-token': 'credential',
+}
+
+const HIT_MESSAGE: Record<LabRegistryError['kind'], string> = {
+  schema: 'Schema error.',
+  'public-ip': 'Public IP is not allowed in lab metadata.',
+  'real-email': 'Email must use a safe training domain.',
+  'live-domain': 'Domain must be a safe training domain.',
+  credential: 'Credential-like assignment must be a placeholder.',
+}
+
 function scanUnsafeText(lab: Lab, errors: LabRegistryError[]) {
   for (const [field, value] of textFields(lab)) {
-    const ipRe = /\b(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)\b/g
-    for (const match of value.matchAll(ipRe)) {
-      const ip = match[0]
-      if (!isDocumentationIp(ip) && !isPrivateOrLocalIp(ip)) {
-        errors.push({ labId: lab.id, field, kind: 'public-ip', message: 'Public IP is not allowed in lab metadata.', value: ip })
-      }
-    }
-
-    const emailRe = /\b[A-Z0-9._%+-]+@([A-Z0-9.-]+\.[A-Z]{2,})\b/gi
-    for (const match of value.matchAll(emailRe)) {
-      const email = match[0]
-      const host = match[1]
-      if (!isSafeDomain(host)) {
-        errors.push({ labId: lab.id, field, kind: 'real-email', message: 'Email must use a safe training domain.', value: email })
-      }
-    }
-
-    const domainRe = /\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}\b/gi
-    for (const match of value.matchAll(domainRe)) {
-      const domain = match[0]
-      if (!isSafeDomain(domain) && !isNonTargetDottedToken(domain)) {
-        errors.push({ labId: lab.id, field, kind: 'live-domain', message: 'Domain must be a safe training domain.', value: domain })
-      }
-    }
-
-    const credentialRe = /\b(?:password|passwd|pwd|token|secret|api[_-]?key)\s*[:=]\s*(\S+)/gi
-    for (const match of value.matchAll(credentialRe)) {
-      const raw = match[0]
-      const credential = match[1].replace(/[,"'}\]]+$/, '')
-      if (!/^(?:\*+|<[^>]+>|placeholder|example|redacted|none|null)$/i.test(credential) && credential.length >= 8) {
-        errors.push({ labId: lab.id, field, kind: 'credential', message: 'Credential-like assignment must be a placeholder.', value: raw })
-      }
+    for (const hit of scanSensitiveText(value, { domains: 'strict' })) {
+      const kind = HIT_KIND[hit.kind]
+      errors.push({ labId: lab.id, field, kind, message: HIT_MESSAGE[kind], value: hit.value })
     }
   }
 }

@@ -19,17 +19,17 @@ Finding, impact, evidence, remediation をまとめた実務寄り report を作
 
 ## Requirements
 
-- [ ] Executive summary, scope, methodology, findings, remediation, appendix を持つ
+- [x] Executive summary, scope, methodology, findings, remediation, appendix を持つ
 - [x] finding から report section を生成できる
 - [x] Markdown export を提供する
-- [ ] report quality checklist を表示する
+- [x] report quality checklist を表示する
 
 ## Acceptance Criteria
 
 - [x] lab result から report を作成できる
 - [x] finding が report に反映される
 - [x] Markdown export ができる
-- [ ] quality checklist がすべて確認できる
+- [x] quality checklist がすべて確認できる
 
 ## Subtasks
 
@@ -48,18 +48,21 @@ report に実ターゲット名、実 IP、実 credential、第三者データ�
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- Reports now have executive summary, scope, methodology, findings, remediation plan, and appendix
+  sections, generated drafts from findings, a visible quality checklist, a safety warning with detected
+  real-target/credential values, and Markdown export of every section. Lab results seed complete
+  reports. Verified with unit, type, content, safety, and build checks.

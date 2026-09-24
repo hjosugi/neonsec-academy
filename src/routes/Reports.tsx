@@ -8,6 +8,15 @@ import { formatDate } from '../lib/format'
 import { EVIDENCE_TYPE_LABELS, evidenceForChallenge } from '../lib/evidence'
 import { reportToMarkdown } from '../lib/reportMarkdown'
 import { createLabReport, isReportForLab } from '../lib/labReport'
+import {
+  generateExecutiveSummary,
+  generateRemediationPlan,
+  reportQualityChecklist,
+  reportQualityScore,
+  reportSafetyHits,
+  sortFindingsBySeverity,
+} from '../lib/reportQuality'
+import { SAFETY_HIT_LABELS } from '../lib/contentSafety'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { EmptyState } from '../components/ui/EmptyState'
@@ -107,6 +116,14 @@ export function Reports() {
 
   // ---- editor ----
   if (draft) {
+    const checks = reportQualityChecklist(draft, evidenceItems)
+    const quality = reportQualityScore(checks)
+    const safetyHits = reportSafetyHits(draft)
+    const fillGenerated = (field: 'summary' | 'remediationPlan', value: string) => {
+      const current = (draft[field] ?? '').trim()
+      if (current && current !== value && !window.confirm('Replace the current text with a generated draft?')) return
+      patch({ [field]: value })
+    }
     return (
       <div className="page" style={{ maxWidth: 900 }}>
         <PageHeader
@@ -124,6 +141,30 @@ export function Reports() {
           }
         />
 
+        <div
+          className="t-sm mb-3"
+          role="note"
+          style={{
+            color: 'var(--warning-amber)',
+            border: '1px solid rgba(255,204,0,0.35)',
+            borderRadius: 'var(--r-md)',
+            background: 'rgba(255,204,0,0.06)',
+            padding: '0.75rem 0.85rem',
+          }}
+        >
+          Safety warning: reports describe synthetic training scenarios only. Do not include real target names, real
+          IP addresses, real credentials or tokens, customer data, or any third-party information.
+          {safetyHits.length > 0 && (
+            <ul className="term t-xs mt-2" style={{ margin: '0.5rem 0 0', paddingLeft: '1.1rem', color: 'var(--danger-red)' }}>
+              {safetyHits.slice(0, 8).map((hit, index) => (
+                <li key={`${hit.field}-${hit.value}-${index}`}>
+                  {hit.field}: {SAFETY_HIT_LABELS[hit.kind]} <code>{hit.value}</code> — {hit.message}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <Panel className="mb-3">
           <div className="field">
             <label className="label">Title</label>
@@ -133,17 +174,38 @@ export function Reports() {
             <label className="label">Scope (synthetic)</label>
             <input className="input" value={draft.scope} onChange={(e) => patch({ scope: e.target.value })} placeholder="Synthetic dataset only…" />
           </div>
+          <div className="field">
+            <div className="row row--between wrap" style={{ gap: '0.4rem' }}>
+              <label className="label" htmlFor="report-summary" style={{ margin: 0 }}>Executive summary</label>
+              <button className="btn btn--ghost btn--sm" type="button" onClick={() => fillGenerated('summary', generateExecutiveSummary(draft))}>
+                Draft from findings
+              </button>
+            </div>
+            <textarea id="report-summary" className="textarea mt-1" value={draft.summary} onChange={(e) => patch({ summary: e.target.value })} />
+          </div>
           <div className="field" style={{ margin: 0 }}>
-            <label className="label">Executive summary</label>
-            <textarea className="textarea" value={draft.summary} onChange={(e) => patch({ summary: e.target.value })} />
+            <label className="label" htmlFor="report-methodology">Methodology</label>
+            <textarea
+              id="report-methodology"
+              className="textarea"
+              style={{ minHeight: 60 }}
+              value={draft.methodology ?? ''}
+              placeholder="How the synthetic evidence was reviewed, tools used inside the app, and what was out of scope."
+              onChange={(e) => patch({ methodology: e.target.value })}
+            />
           </div>
         </Panel>
 
         <div className="row row--between mb-2">
           <h3 className="panel__title">Findings ({draft.findings.length})</h3>
-          <button className="btn btn--ghost btn--sm" onClick={() => patch({ findings: [...draft.findings, blankFinding()] })}>
-            ＋ Add finding
-          </button>
+          <div className="row wrap" style={{ gap: '0.4rem' }}>
+            <button className="btn btn--ghost btn--sm" disabled={draft.findings.length < 2} onClick={() => patch({ findings: sortFindingsBySeverity(draft.findings) })}>
+              Sort by severity
+            </button>
+            <button className="btn btn--ghost btn--sm" onClick={() => patch({ findings: [...draft.findings, blankFinding()] })}>
+              ＋ Add finding
+            </button>
+          </div>
         </div>
 
         <div className="stack mb-3">
@@ -170,6 +232,10 @@ export function Reports() {
                     ))}
                   </select>
                 </div>
+              </div>
+              <div className="field">
+                <label className="label">Affected asset (synthetic)</label>
+                <input className="input" value={f.asset ?? ''} onChange={(e) => patchFinding(f.id, { asset: e.target.value })} placeholder="e.g. api.neoncorp.example /invoices" />
               </div>
               <div className="field">
                 <label className="label">Impact</label>
@@ -253,6 +319,64 @@ export function Reports() {
           ))}
           {draft.findings.length === 0 && <p className="muted t-sm">No findings yet — add one above.</p>}
         </div>
+
+        <Panel className="mb-3">
+          <div className="field">
+            <div className="row row--between wrap" style={{ gap: '0.4rem' }}>
+              <label className="label" htmlFor="report-remediation" style={{ margin: 0 }}>Remediation plan</label>
+              <button
+                className="btn btn--ghost btn--sm"
+                type="button"
+                disabled={draft.findings.length === 0}
+                onClick={() => fillGenerated('remediationPlan', generateRemediationPlan(draft))}
+              >
+                Generate from findings
+              </button>
+            </div>
+            <textarea
+              id="report-remediation"
+              className="textarea mt-1"
+              style={{ minHeight: 90 }}
+              value={draft.remediationPlan ?? ''}
+              placeholder="Prioritised fixes: immediate, short term, planned — with owners and verification."
+              onChange={(e) => patch({ remediationPlan: e.target.value })}
+            />
+          </div>
+          <div className="field" style={{ margin: 0 }}>
+            <label className="label" htmlFor="report-appendix">Appendix</label>
+            <textarea
+              id="report-appendix"
+              className="textarea"
+              style={{ minHeight: 60 }}
+              value={draft.appendix ?? ''}
+              placeholder="Synthetic artifacts reviewed, Vault references, assumptions."
+              onChange={(e) => patch({ appendix: e.target.value })}
+            />
+          </div>
+        </Panel>
+
+        <Panel
+          title="Report quality checklist"
+          className="mb-3"
+          right={<span className={`badge ${quality.ready ? 'badge--green' : 'badge--amber'}`}>{quality.passed}/{quality.total} · {quality.ready ? 'ready' : 'needs work'}</span>}
+        >
+          <ul className="stack stack--sm" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+            {checks.map((check) => (
+              <li key={check.id} className="row" style={{ gap: '0.55rem', alignItems: 'flex-start' }}>
+                <span className={`badge ${check.passed ? 'badge--green' : check.required ? 'badge--red' : 'badge--amber'}`} aria-hidden="true">
+                  {check.passed ? '✓' : check.required ? '✕' : '!'}
+                </span>
+                <span className="grow">
+                  <span className="t-sm" style={{ color: 'var(--text-main)' }}>
+                    {check.label}{check.required ? '' : ' (recommended)'}
+                    <span className="sr-only">{check.passed ? ' — passed' : ' — not yet'}</span>
+                  </span>
+                  {!check.passed && <span className="term t-xs dim" style={{ display: 'block' }}>{check.detail}</span>}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Panel>
 
         <div className="row wrap" style={{ gap: '0.5rem' }}>
           <button className="btn btn--green" onClick={() => { save(); download(`${draft.title.replace(/\s+/g, '-').toLowerCase() || 'report'}.md`, reportToMarkdown(draft, evidenceItems)) }}>

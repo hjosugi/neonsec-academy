@@ -95,6 +95,18 @@ from effective severity and status. Lab Detail can import a lab's model findings
 and any valid finding can be added to an existing or new report; re-adding refreshes the same report
 finding, and Markdown export includes asset, status, and likelihood.
 
+## Report Builder
+
+Reports have six sections: executive summary, scope, methodology, findings, remediation plan, and
+appendix. Drafting a report from a Safe Lab seeds the scope, summary, methodology, model findings,
+and an appendix listing the synthetic artifacts. **Draft from findings** writes an executive summary
+from the severity mix and top finding; **Generate from findings** writes a severity-ordered
+remediation roadmap; **Sort by severity** reorders findings. A quality checklist shows every check
+(executive summary, synthetic scope, methodology, findings, complete finding fields, evidence
+citations, remediation plan, severity ordering, appendix, and safety) with pass/fail status. A
+safety warning is always shown, and detected public IPs, real email hosts, non-training URLs,
+credentials, private keys, and tokens are listed by field.
+
 ## Lab Registry Safety
 
 Every lab declares a `kind`: `local`, `dataset`, `simulated`, or `writeup`. Lab Detail displays the

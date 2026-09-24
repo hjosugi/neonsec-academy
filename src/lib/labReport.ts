@@ -23,6 +23,27 @@ export function findLabReport<T extends ReportIdentity>(reports: T[], lab: Lab):
   return reports.find((report) => report.challengeId === lab.id) ?? reports.find((report) => isReportForLab(report, lab))
 }
 
+/** Methodology paragraph for a report drafted from a Safe Lab result. */
+export function labReportMethodology(lab: Lab): string {
+  return [
+    `Static, read-only review of the synthetic artifact "${lab.evidenceTitle}" (${lab.kind} lab, ${lab.rubric.challengeType}).`,
+    'The flag challenge was answered only from the supplied assets; supporting lines were captured in the Evidence Vault;',
+    'findings were rated by impact and likelihood and mapped to remediation. No live system, account, or network was touched.',
+  ].join(' ')
+}
+
+/** Appendix listing the lab's synthetic assets and the report prompt. */
+export function labReportAppendix(lab: Lab): string {
+  const assets = lab.flagChallenge.assets.map((asset) => `- ${asset.label} (${asset.kind}): ${asset.description}`)
+  return [
+    'Synthetic artifacts reviewed:',
+    ...assets,
+    '',
+    `Report prompt: ${lab.flagChallenge.reportPrompt}`,
+    'All hosts, addresses, and accounts are fictional training data.',
+  ].join('\n')
+}
+
 /** Seeds a lab report from the lab's model findings so the learner edits rather than starts blank. */
 export function createLabReport(lab: Lab, now = Date.now()): Report {
   return {
@@ -31,7 +52,9 @@ export function createLabReport(lab: Lab, now = Date.now()): Report {
     title: labReportTitle(lab),
     scope: labReportScope(lab),
     summary: lab.brief,
+    methodology: labReportMethodology(lab),
     findings: lab.modelFindings.map((finding) => ({ id: uid('f-'), evidence: '', evidenceIds: [], ...finding })),
+    appendix: labReportAppendix(lab),
     createdAt: now,
     updatedAt: now,
   }
