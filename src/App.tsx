@@ -34,6 +34,7 @@ import { CityMap } from './routes/CityMap'
 import { Settings } from './routes/Settings'
 import { NotFound } from './routes/NotFound'
 import { Onboarding } from './routes/Onboarding'
+import { Landing } from './routes/Landing'
 
 function useThemeSync() {
   const settings = useStore((s) => s.settings)
@@ -57,6 +58,7 @@ function ScrollTop() {
 export default function App() {
   useThemeSync()
   const onboarded = useStore((s) => s.profile.onboarded)
+  const { pathname } = useLocation()
 
   return (
     <>
@@ -97,10 +99,11 @@ export default function App() {
           <Route path="/interview" element={<InterviewTracker />} />
           <Route path="/map" element={<CityMap />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/welcome" element={<Landing />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-      {!onboarded && <Onboarding />}
+      {!onboarded && pathname !== '/welcome' && <Onboarding />}
     </>
   )
 }

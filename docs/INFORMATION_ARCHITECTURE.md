@@ -63,6 +63,7 @@ Neon City Map
 | Interview Tracker `/interview` | Review skill evidence, honest gaps with next plans, and write STAR stories and English answer memos. | Nav. | Portfolio, Safe Labs, CEH+ Tracks. |
 | Reports `/reports` | Build safe findings reports, link Vault citations, and export Markdown. | Lab Detail, Evidence Vault, nav, command palette. | Safe Labs, Evidence Vault, Settings export, local Markdown download. |
 | City Map `/map` | Secondary visual navigation across CEH modules and CEH+ tracks. | Nav world section, command palette. | Practice module drill, Beyond, Analytics. |
+| Welcome `/welcome` | Landing page: core value in 30 seconds, safety copy, and demo mode entry points to the dashboard, review queue, mock exam report, lab report, and city map. | First visit (onboarding link), nav. | Demo mode screens, onboarding. |
 | Settings `/settings` | Manage theme/accessibility preferences and local import/export. | Nav, command palette. | Dashboard, Question Bank after import, local file export. |
 | Final Gate `/final-gate` | Check pre-booking readiness against score, backlog, weak modules, and coverage. | Dashboard, Analytics, Mock Exam. | Mock Exam, Review Queue, Analytics, Markdown export. |
 

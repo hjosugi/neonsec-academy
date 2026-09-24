@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { StudyGoal } from '../types'
 import { useStore } from '../store/useStore'
 import { SEED_QUESTIONS } from '../data/questions'
@@ -12,6 +13,7 @@ const GOALS: Array<{ id: StudyGoal; label: string; hint: string }> = [
 
 export function Onboarding() {
   const complete = useStore((s) => s.completeOnboarding)
+  const navigate = useNavigate()
   const updateProfile = useStore((s) => s.updateProfile)
   const updateSettings = useStore((s) => s.updateSettings)
   const archiveQuestion = useStore((s) => s.archiveQuestion)
@@ -52,6 +54,9 @@ export function Onboarding() {
             <div className="term dim upper" style={{ letterSpacing: '0.3em', fontSize: '0.72rem' }}>
               CEH Trainer · Induction
             </div>
+            <button className="btn btn--ghost btn--sm mt-2" type="button" onClick={() => navigate('/welcome')}>
+              New here? See what it does and explore the demo →
+            </button>
           </div>
 
           <p className="muted mb-2">

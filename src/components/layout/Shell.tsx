@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
+import { useStore } from '../../store/useStore'
 import { Sidebar } from './Sidebar'
 import { StatusBar } from './StatusBar'
 import { CommandPalette } from './CommandPalette'
@@ -7,6 +8,8 @@ import { CommandPalette } from './CommandPalette'
 export function Shell() {
   const [navOpen, setNavOpen] = useState(false)
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const demoActive = useStore((s) => s.demo.active)
+  const exitDemo = useStore((s) => s.exitDemo)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -35,6 +38,15 @@ export function Shell() {
       )}
       <StatusBar onMenu={() => setNavOpen((o) => !o)} onSearch={() => setPaletteOpen(true)} />
       <main className="main">
+        {demoActive && (
+          <div className="demo-banner" role="status">
+            <span>Demo mode — you are viewing a synthetic learner. Your own progress is parked locally.</span>
+            <span className="row" style={{ gap: '0.4rem' }}>
+              <Link className="btn btn--ghost btn--sm" to="/welcome">Tour</Link>
+              <button className="btn btn--primary btn--sm" onClick={() => exitDemo()}>Exit demo</button>
+            </span>
+          </div>
+        )}
         <Outlet />
       </main>
       {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} />}

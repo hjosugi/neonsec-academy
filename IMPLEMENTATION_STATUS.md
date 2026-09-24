@@ -58,7 +58,8 @@ Visual theme, command palette (`/` or ⌘K), effect toggles (reduce‑motion / l
 high‑contrast / scanlines), theme presets, responsive layout, onboarding, city map, release
 documentation, public-safe analytics export, full backup import/export, security review artifacts,
 accessibility QA evidence, and acceptance test evidence are in. Shareable question packs are in
-Settings. ⬜ A dedicated demo/landing mode remains tracked for follow-up.
+Settings. A landing page and safe demo mode (`routes/Landing.tsx`, `lib/demoData.ts`) load a deterministic synthetic
+learner and restore the user's own progress on exit.
 
 ## New issues added — and mostly already implemented this pass
 - **P1‑011** ✅ Automated unit tests (Vitest) — coverage across srs / grade / exam / analytics / readiness / packs / final gate / privacy export

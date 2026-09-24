@@ -527,3 +527,45 @@ describe('lab pack store', () => {
     expect(useStore.getState().labPacks).toEqual([])
   })
 })
+
+describe('demo mode', () => {
+  it('parks the learner data, loads the synthetic demo, and restores on exit', () => {
+    const storage = new Map<string, string>()
+    const fakeStorage = {
+      getItem: (key: string) => storage.get(key) ?? null,
+      setItem: (key: string, value: string) => { storage.set(key, value) },
+      removeItem: (key: string) => { storage.delete(key) },
+    }
+    vi.stubGlobal('window', { localStorage: fakeStorage })
+    try {
+      useStore.setState({ attempts: [], reports: [], demo: { active: false, startedAt: null } })
+      useStore.getState().savePortfolio({ displayName: 'real-me', reflection: 'mine' })
+      expect(useStore.getState().startDemo()).toBe(true)
+      const demo = useStore.getState()
+      expect(demo.demo.active).toBe(true)
+      expect(demo.attempts.length).toBeGreaterThan(100)
+      expect(demo.portfolio.displayName).toBe('demo-learner')
+      expect(demo.reports.map((report) => report.id)).toContain('demo-report-1')
+
+      expect(useStore.getState().exitDemo()).toBe(true)
+      const restored = useStore.getState()
+      expect(restored.demo.active).toBe(false)
+      expect(restored.attempts).toEqual([])
+      expect(restored.portfolio.displayName).toBe('real-me')
+      expect(storage.size).toBe(0)
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('refuses to start when the current data cannot be parked', () => {
+    vi.stubGlobal('window', { localStorage: { setItem: () => { throw new Error('quota') }, getItem: () => null, removeItem: () => undefined } })
+    try {
+      useStore.setState({ demo: { active: false, startedAt: null } })
+      expect(useStore.getState().startDemo()).toBe(false)
+      expect(useStore.getState().demo.active).toBe(false)
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+})

@@ -93,7 +93,9 @@ npm run audit:labs
 
 ## Usage
 
-1. Open the app and complete the onboarding modal.
+1. Open the app and complete the onboarding modal, or open **Welcome / Demo** (`/welcome`) to see the
+   landing page and explore demo mode with a synthetic learner (your own progress is parked locally and
+   restored when you exit the demo).
 2. Use Dashboard to pick the next study action: review due questions, practice, or start a mock.
 3. Use Question Bank to search, filter, pin, clone, or author questions.
 4. Use Review Queue daily; it is driven by your answers and recall grades.

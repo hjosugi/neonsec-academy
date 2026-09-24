@@ -607,3 +607,19 @@
     gap: 0.65rem;
   }
 }
+
+/* ---- Demo mode banner (P6-010) ---- */
+.demo-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid rgba(255, 204, 0, 0.45);
+  border-radius: var(--r-md);
+  background: rgba(255, 204, 0, 0.08);
+  color: var(--warning-amber);
+  font-size: 0.85rem;
+}

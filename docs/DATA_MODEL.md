@@ -302,6 +302,11 @@ Readiness thresholds are persisted with other local settings:
 
 `examTargetPct` remains part of the profile because it is the learner's personal mock-score target.
 
+`demo` (`{ active, startedAt }`) marks demo mode. Starting the demo parks the learner's full backup in
+localStorage under `neonsec-academy:pre-demo-backup` and imports a deterministic synthetic dataset;
+exiting restores the parked backup and removes the key. Demo mode refuses to start if the backup
+cannot be parked.
+
 `InterviewStory` (`interviewStories`) stores `skillId` (CEH domain or CEH+ track), `kind`
 (strength or gap), `format` (star or concise), `title`, STAR fields, the English answer `memo`, cited
 `evidence`, and timestamps. Skill evidence itself is derived at runtime and never stored.

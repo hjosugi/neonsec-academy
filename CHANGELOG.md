@@ -2,6 +2,22 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.37 - 2026-09-25
+
+Landing page and safe demo mode with synthetic demo content.
+
+### Added
+
+- Landing page (`/welcome`) that explains problem management, the review system, and practical
+  evidence in one screen, with safety copy and entry points to demo screens: dashboard, review queue,
+  mock exam report, lab report, and city map.
+- Deterministic synthetic demo dataset: attempts across all modules, due reviews, mistake notes, two
+  mock exams, a solved SOC lab with cited evidence, a report, and a triage finding.
+- Demo mode that parks the learner's full backup locally before loading the demo, shows a demo banner,
+  and restores the parked data on exit; it refuses to start if the backup cannot be parked.
+- Onboarding link to the landing page and a Welcome / Demo nav entry; tests check the demo data is
+  public-safe and the landing copy passes the lab safety audit rules.
+
 ## v1.0.36 - 2026-09-25
 
 Advanced Lab Pack Authoring: pack format, sample pack, import preview, and safety-gated import.

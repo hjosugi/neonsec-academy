@@ -17,6 +17,7 @@ import {
   RefreshCcw,
   Scale,
   Settings2,
+  Sparkles,
   Timer,
 } from 'lucide-react'
 
@@ -62,6 +63,7 @@ export const NAV: NavSection[] = [
   {
     section: 'World',
     items: [
+      { to: '/welcome', label: 'Welcome / Demo', icon: Sparkles },
       { to: '/map', label: 'City Map', icon: MapPinned },
       { to: '/settings', label: 'Settings', icon: Settings2 },
     ],

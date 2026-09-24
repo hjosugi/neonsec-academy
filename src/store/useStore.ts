@@ -62,6 +62,7 @@ import { normalizeThreatModelWork, threatModelReport } from '../lib/threatModel'
 import { normalizeStories } from '../lib/interview'
 import { installedPackFromPreview, previewLabPack } from '../lib/labPacks'
 import { APP_VERSION } from '../lib/appVersion'
+import { DEMO_BACKUP_KEY, buildDemoDataset } from '../lib/demoData'
 import {
   normalizeEvidenceItem,
   normalizeEvidenceItems,
@@ -252,6 +253,8 @@ interface AppState {
   portfolio: PortfolioProfile
   interviewStories: InterviewStory[]
   labPacks: InstalledLabPack[]
+  /** Demo mode (P6-010): synthetic dataset loaded; the learner's data is parked in localStorage. */
+  demo: { active: boolean; startedAt: number | null }
 }
 
 interface AppActions {
@@ -332,6 +335,11 @@ interface AppActions {
   /** Validates and re-audits a pack; installs it only when every check passes. */
   installLabPack: (json: string) => { ok: boolean; errors: string[] }
   uninstallLabPack: (id: string) => void
+  // demo mode
+  /** Parks the current data and loads the synthetic demo dataset. Returns false if parking failed. */
+  startDemo: () => boolean
+  /** Restores the parked data and leaves demo mode. */
+  exitDemo: () => boolean
   // flag challenges
   submitLabFlag: (challengeId: string, submitted: string) => FlagAttempt | null
   revealLabFlagHint: (challengeId: string, hintIndex: number) => boolean
@@ -452,6 +460,7 @@ const initialState: AppState = {
   portfolio: { displayName: '', reflection: '', updatedAt: 0 },
   interviewStories: [],
   labPacks: [],
+  demo: { active: false, startedAt: null },
 }
 
 export const useStore = create<Store>()(
@@ -1002,6 +1011,40 @@ export const useStore = create<Store>()(
 
       uninstallLabPack: (id) => set((s) => ({ labPacks: s.labPacks.filter((pack) => pack.id !== id) })),
 
+      startDemo: () => {
+        const state = get()
+        if (state.demo.active) return true
+        try {
+          window.localStorage.setItem(DEMO_BACKUP_KEY, state.exportData())
+        } catch {
+          return false
+        }
+        const dataset = buildDemoDataset(SEED_QUESTIONS)
+        if (!get().importData(JSON.stringify(dataset.payload))) return false
+        set({ demo: { active: true, startedAt: Date.now() }, activeExam: null, activePractical: null })
+        return true
+      },
+
+      exitDemo: () => {
+        let backup: string | null = null
+        try {
+          backup = window.localStorage.getItem(DEMO_BACKUP_KEY)
+        } catch {
+          backup = null
+        }
+        const restored = backup ? get().importData(backup) : false
+        if (!restored) {
+          set({ ...initialState, profile: { ...defaultProfile, createdAt: Date.now() }, settings: get().settings })
+        }
+        try {
+          window.localStorage.removeItem(DEMO_BACKUP_KEY)
+        } catch {
+          // Removing the parked copy is best-effort.
+        }
+        set({ demo: { active: false, startedAt: null }, activeExam: null, activePractical: null })
+        return restored
+      },
+
       submitLabFlag: (challengeId, submitted) => {
         const lab = labById(challengeId)
         const clean = sanitizeFlagSubmission(submitted)
@@ -1390,6 +1433,7 @@ export const useStore = create<Store>()(
         portfolio: s.portfolio,
         interviewStories: s.interviewStories,
         labPacks: s.labPacks,
+        demo: s.demo,
       }),
       merge: mergePersistedStoreState,
     },

@@ -43,6 +43,8 @@ target.
   credentials, private keys, and tokens; the quality checklist fails until they are removed.
 - Question packs are validated before import and only become user-authored local questions.
 - Full backups and question packs are local JSON files; the app does not upload them.
+- The landing page and demo mode use only a deterministic synthetic dataset; landing copy is tested
+  against the lab safety audit rules so it does not read like attack tooling.
 - The app has no backend, no telemetry, and no network scanner.
 
 These controls reduce risk, but they do not make unsafe user-authored content acceptable. Authors
