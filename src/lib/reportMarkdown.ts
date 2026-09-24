@@ -14,6 +14,14 @@ export function reportToMarkdown(report: Report, evidenceItems: EvidenceItem[]):
 
   report.findings.forEach((finding, index) => {
     lines.push(`### ${index + 1}. [${finding.severity.toUpperCase()}] ${finding.title || 'Untitled finding'}`)
+    if (finding.asset) lines.push(`- **Affected asset:** ${inline(finding.asset)}`)
+    if (finding.status || finding.likelihood) {
+      const parts = [
+        finding.status ? `status ${finding.status}` : '',
+        finding.likelihood ? `likelihood ${finding.likelihood}` : '',
+      ].filter(Boolean)
+      lines.push(`- **Triage:** ${parts.join('; ')}`)
+    }
     lines.push(`- **Impact:** ${finding.impact || '—'}`)
     lines.push(`- **Remediation:** ${finding.remediation || '—'}`)
     if (finding.evidence) lines.push(`- **Evidence note:** ${inline(finding.evidence)}`)

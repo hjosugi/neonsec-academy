@@ -51,6 +51,7 @@ Neon City Map
 | Safe Labs `/labs`, `/labs/:id` | Pick a synthetic lab, acknowledge scope, inspect local assets, submit flags, reveal recorded hints, unlock explanations, preserve evidence, and score objectives. | Nav, Beyond track links, Dashboard, Analytics. | Lab Detail, Reports, Evidence Vault, Analytics. |
 | Evidence Vault `/evidence` | Review private synthetic evidence grouped by challenge and return to a lab for editing. | Nav, Lab Detail. | Lab Detail, Reports. |
 | CEH+ Tracks `/beyond` | Browse practical tracks and launch related drills or labs. | Nav, City Map, Dashboard. | Practice with `track`, Safe Labs, Reports. |
+| Triage `/triage` | Rate impact and likelihood, set rubric or manual severity, move findings through the status flow, and add them to reports. | Nav, Lab Detail deliverable. | Reports, Safe Labs. |
 | Reports `/reports` | Build safe findings reports, link Vault citations, and export Markdown. | Lab Detail, Evidence Vault, nav, command palette. | Safe Labs, Evidence Vault, Settings export, local Markdown download. |
 | City Map `/map` | Secondary visual navigation across CEH modules and CEH+ tracks. | Nav world section, command palette. | Practice module drill, Beyond, Analytics. |
 | Settings `/settings` | Manage theme/accessibility preferences and local import/export. | Nav, command palette. | Dashboard, Question Bank after import, local file export. |

@@ -25,6 +25,7 @@ LabChallenge 1 ── * FlagHintUse
 LabChallenge 1 ── * EvidenceItem
 LabChallenge 1 ── * Finding
 Report 1 ── * Finding
+TriageFinding 0..1 ── * Finding (via triageId)
 Finding * ── * EvidenceItem (via evidenceIds)
 ```
 
@@ -50,6 +51,7 @@ Finding * ── * EvidenceItem (via evidenceIds)
 | `StaticLabArtifact` | 静的ラボ内の`evidenceTitle` + `evidence`。 | ソースでバージョン管理。 |
 | `EvidenceItem` | 安定した生成`id`。`challengeId`でラボチャレンジにリンク。 | ユーザー選択の`timestamp`、`createdAt`、`updatedAt`。 |
 | `Finding` | レポート内の安定した生成`id`、またはラボ内の静的モデルファインディング。 | レポートファインディングは親レポートのタイムスタンプを継承。 |
+| `TriageFinding` | 生成された安定 `id`。任意の `sourceLabId`。 | `createdAt`、`updatedAt`、および `at` を持つ追記専用のステータス `history`。 |
 | `Report` | 安定した生成`id`。 | `createdAt`と`updatedAt`。 |
 
 ## Question

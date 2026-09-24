@@ -164,6 +164,7 @@ export function LabDetail() {
   const settings = useStore((s) => s.settings)
   const allFlagAttempts = useStore((s) => s.flagAttempts)
   const allFlagHintUses = useStore((s) => s.flagHintUses)
+  const importLabFindingsToTriage = useStore((s) => s.importLabFindingsToTriage)
 
   const [progressLabId, setProgressLabId] = useState(lab?.id ?? '')
   const [ack, setAck] = useState(() => readLabProgress(lab).ack)
@@ -492,6 +493,15 @@ export function LabDetail() {
                 </p>
                 <button className="btn btn--primary btn--block" onClick={openReport}>
                   {hasReport ? '⎙ Edit lab report' : '⎙ Draft report'}
+                </button>
+                <button
+                  className="btn btn--ghost btn--block mt-2"
+                  onClick={() => {
+                    importLabFindingsToTriage(lab.id)
+                    navigate('/triage')
+                  }}
+                >
+                  ⚖ Triage findings (severity, likelihood, status)
                 </button>
               </Panel>
 

@@ -356,6 +356,46 @@ export interface Finding {
   remediation: string
   evidence: string
   evidenceIds?: string[]
+  /** Affected asset (synthetic host, component, or file). */
+  asset?: string
+  likelihood?: Likelihood
+  status?: FindingStatus
+  /** Triage board finding this report finding was copied from. */
+  triageId?: string
+}
+
+// ---- Vulnerability triage (P4-006) ----
+export type ImpactRating = 'minimal' | 'moderate' | 'significant' | 'severe'
+export type Likelihood = 'unlikely' | 'possible' | 'likely' | 'almost-certain'
+export type FindingStatus = 'open' | 'confirmed' | 'false-positive' | 'accepted-risk' | 'fixed'
+export type FixPriority = 'P1' | 'P2' | 'P3' | 'P4' | 'none'
+
+export interface TriageStatusChange {
+  from: FindingStatus
+  to: FindingStatus
+  note: string
+  at: number
+}
+
+export interface TriageFinding {
+  id: string
+  title: string
+  asset: string
+  evidence: string
+  evidenceIds?: string[]
+  impact: string
+  impactRating: ImpactRating
+  likelihood: Likelihood
+  /** Manual severity; used when `severityMode` is `manual`. */
+  severity: Severity
+  severityMode: 'rubric' | 'manual'
+  remediation: string
+  status: FindingStatus
+  statusNote?: string
+  sourceLabId?: string
+  history: TriageStatusChange[]
+  createdAt: number
+  updatedAt: number
 }
 
 export interface Report {

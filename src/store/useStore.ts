@@ -25,6 +25,8 @@ import type {
   ReviewSessionSummary,
   Settings,
   Severity,
+  FindingStatus,
+  TriageFinding,
 } from '../types'
 import { SEED_QUESTIONS, enrichQuestion } from '../data/questions'
 import { LABS, labById } from '../data/labs'
@@ -43,6 +45,13 @@ import {
 } from '../lib/evidence'
 import { citeEvidenceInReport, createLabReport, findLabReport } from '../lib/labReport'
 import { normalizeLabWorksheets, worksheetStatus, worksheetToFinding } from '../lib/webConcept'
+import {
+  addTriageFindingToReport,
+  normalizeTriageFindings,
+  rubricSeverity,
+  transitionStatus,
+  validateTriageFinding,
+} from '../lib/triage'
 import {
   flagHintUsesForChallenge,
   isFlagChallengeSolved,
@@ -153,6 +162,7 @@ interface AppState {
   evidenceItems: EvidenceItem[]
   reports: Report[]
   labWorksheets: LabWorksheet[]
+  triageFindings: TriageFinding[]
 }
 
 interface AppActions {
@@ -210,6 +220,14 @@ interface AppActions {
   saveLabWorksheet: (worksheet: Omit<LabWorksheet, 'updatedAt'>) => void
   /** Adds a complete worksheet to the lab report as a finding; returns the report id. */
   addWorksheetToReport: (labId: string, severity: Severity) => string | null
+  // vulnerability triage
+  upsertTriageFinding: (finding: TriageFinding) => boolean
+  deleteTriageFinding: (id: string) => void
+  setTriageStatus: (id: string, to: FindingStatus, note: string) => boolean
+  /** Imports a lab's model findings as open triage items; returns how many were added. */
+  importLabFindingsToTriage: (labId: string) => number
+  /** Copies a triage finding into a report (null = new report); returns the report id. */
+  addTriageToReport: (findingId: string, reportId: string | null) => string | null
   deleteReport: (id: string) => void
   // profile / settings
   updateSettings: (patch: Partial<Settings>) => void
@@ -246,6 +264,9 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
   const labWorksheets = Array.isArray(persisted.labWorksheets)
     ? normalizeLabWorksheets(persisted.labWorksheets, LABS)
     : currentState.labWorksheets
+  const triageFindings = Array.isArray(persisted.triageFindings)
+    ? normalizeTriageFindings(persisted.triageFindings)
+    : currentState.triageFindings
   return {
     ...currentState,
     ...persisted,
@@ -254,6 +275,7 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
     evidenceItems,
     reports,
     labWorksheets,
+    triageFindings,
   }
 }
 
@@ -277,6 +299,7 @@ const initialState: AppState = {
   evidenceItems: [],
   reports: [],
   labWorksheets: [],
+  triageFindings: [],
 }
 
 export const useStore = create<Store>()(
@@ -676,6 +699,84 @@ export const useStore = create<Store>()(
           return { labWorksheets: [normalized, ...s.labWorksheets.filter((item) => item.labId !== normalized.labId)] }
         }),
 
+      upsertTriageFinding: (finding) => {
+        const now = Date.now()
+        const previous = get().triageFindings.find((item) => item.id === finding.id)
+        const [normalized] = normalizeTriageFindings([{
+          ...finding,
+          createdAt: previous?.createdAt ?? finding.createdAt ?? now,
+          updatedAt: now,
+        }])
+        if (!normalized || !validateTriageFinding(normalized).ok) return false
+        set((s) => ({ triageFindings: [normalized, ...s.triageFindings.filter((item) => item.id !== normalized.id)] }))
+        return true
+      },
+
+      deleteTriageFinding: (id) => set((s) => ({ triageFindings: s.triageFindings.filter((item) => item.id !== id) })),
+
+      setTriageStatus: (id, to, note) => {
+        const finding = get().triageFindings.find((item) => item.id === id)
+        if (!finding) return false
+        const next = transitionStatus(finding, to, note)
+        if (!next) return false
+        set((s) => ({ triageFindings: s.triageFindings.map((item) => (item.id === id ? next : item)) }))
+        return true
+      },
+
+      importLabFindingsToTriage: (labId) => {
+        const lab = labById(labId)
+        if (!lab) return 0
+        const existing = get().triageFindings
+        const now = Date.now()
+        const added: TriageFinding[] = lab.modelFindings
+          .filter((model) => !existing.some((item) => item.sourceLabId === lab.id && item.title === model.title))
+          .map((model, index) => {
+            const impactRating = model.severity === 'critical' ? 'severe' : model.severity === 'high' ? 'significant' : model.severity === 'medium' ? 'moderate' : 'minimal'
+            const likelihood = model.severity === 'critical' || model.severity === 'high' ? 'likely' : 'possible'
+            return {
+              id: uid('tf-'),
+              title: model.title,
+              asset: `${lab.evidenceTitle} (${lab.category} lab)`,
+              evidence: `Synthetic lab evidence: ${lab.evidenceTitle}. ${lab.flagChallenge.explanation}`,
+              evidenceIds: [],
+              impact: model.impact,
+              impactRating,
+              likelihood,
+              severity: model.severity,
+              severityMode: rubricSeverity(impactRating, likelihood) === model.severity ? 'rubric' : 'manual',
+              remediation: model.remediation,
+              status: 'open',
+              sourceLabId: lab.id,
+              history: [],
+              createdAt: now + index,
+              updatedAt: now + index,
+            }
+          })
+        if (added.length > 0) set((s) => ({ triageFindings: [...added, ...s.triageFindings] }))
+        return added.length
+      },
+
+      addTriageToReport: (findingId, reportId) => {
+        const state = get()
+        const finding = state.triageFindings.find((item) => item.id === findingId)
+        if (!finding || !validateTriageFinding(finding).ok) return null
+        const now = Date.now()
+        const target = reportId ? state.reports.find((report) => report.id === reportId) : undefined
+        if (reportId && !target) return null
+        const base: Report = target ?? {
+          id: uid('r-'),
+          title: 'Vulnerability triage report',
+          scope: 'Synthetic findings triaged in NeonSec Academy. No real systems were tested.',
+          summary: '',
+          findings: [],
+          createdAt: now,
+          updatedAt: now,
+        }
+        const report = addTriageFindingToReport(base, finding, now)
+        state.upsertReport(report)
+        return report.id
+      },
+
       addWorksheetToReport: (labId, severity) => {
         const lab = labById(labId)
         const state = get()
@@ -763,6 +864,7 @@ export const useStore = create<Store>()(
           evidenceItems: s.evidenceItems,
           reports: s.reports,
           labWorksheets: s.labWorksheets,
+          triageFindings: s.triageFindings,
         }
         return JSON.stringify(payload, null, 2)
       },
@@ -788,6 +890,9 @@ export const useStore = create<Store>()(
             const labWorksheets = Array.isArray(d.labWorksheets)
               ? normalizeLabWorksheets(d.labWorksheets, LABS)
               : s.labWorksheets
+            const triageFindings = Array.isArray(d.triageFindings)
+              ? normalizeTriageFindings(d.triageFindings)
+              : s.triageFindings
             return {
               profile: { ...defaultProfile, ...(d.profile ?? {}) },
               settings: { ...defaultSettings, ...(d.settings ?? {}) },
@@ -806,6 +911,7 @@ export const useStore = create<Store>()(
               evidenceItems,
               reports,
               labWorksheets,
+              triageFindings,
             }
           })
           return true
@@ -837,6 +943,7 @@ export const useStore = create<Store>()(
         evidenceItems: s.evidenceItems,
         reports: s.reports,
         labWorksheets: s.labWorksheets,
+        triageFindings: s.triageFindings,
       }),
       merge: mergePersistedStoreState,
     },

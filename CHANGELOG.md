@@ -2,6 +2,23 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.23 - 2026-09-24
+
+Vulnerability triage workflow with severity rubric, status flow, and report hand-off.
+
+### Added
+
+- Triage board (`/triage`) for findings with title, affected asset, evidence, impact, likelihood,
+  severity, remediation, and status.
+- 4×4 impact × likelihood severity rubric with optional manual override and deviation warning, plus
+  fix priority (P1-P4) derived from effective severity and status.
+- Status flow (open, confirmed, false positive, accepted risk, fixed) with allowed transitions, re-open
+  paths, required justification notes, and an append-only status history.
+- Lab Detail and the Triage board import a lab's model findings as open triage items.
+- Add-to-report hand-off to an existing or new report without duplicates; Markdown export includes
+  affected asset, status, and likelihood.
+- Triage findings are normalized on import and hydration and included in full backups.
+
 ## v1.0.22 - 2026-09-24
 
 Web App Security Concept Labs with unsafe-target warnings and finding worksheets.

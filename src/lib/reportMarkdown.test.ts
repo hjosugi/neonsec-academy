@@ -53,4 +53,13 @@ describe('report Markdown evidence citations', () => {
 
     expect(markdown).not.toContain('Unlinked item')
   })
+
+  it('includes triage context when a finding carries asset, status, and likelihood', () => {
+    const markdown = reportToMarkdown({
+      ...report,
+      findings: [{ ...report.findings[0], asset: 'api.neoncorp.example', status: 'confirmed', likelihood: 'likely' }],
+    }, [])
+    expect(markdown).toContain('- **Affected asset:** api.neoncorp.example')
+    expect(markdown).toContain('- **Triage:** status confirmed; likelihood likely')
+  })
 })

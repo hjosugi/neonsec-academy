@@ -48,6 +48,7 @@ The backup includes:
 - `evidenceItems`
 - `reports`
 - `labWorksheets`
+- `triageFindings`
 
 Use full backups for your own device migration or recovery. Do not publish them; they can contain
 personal study history, submitted flags, hint use, custom mistake notes, Evidence Vault entries,

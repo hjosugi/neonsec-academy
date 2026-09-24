@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   MapPinned,
   RefreshCcw,
+  Scale,
   Settings2,
   Timer,
 } from 'lucide-react'
@@ -48,6 +49,7 @@ export const NAV: NavSection[] = [
       { to: '/labs', label: 'Safe Labs', icon: FlaskConical },
       { to: '/evidence', label: 'Evidence Vault', icon: Archive },
       { to: '/beyond', label: 'CEH+ Tracks', icon: BrainCircuit },
+      { to: '/triage', label: 'Triage', icon: Scale },
       { to: '/reports', label: 'Reports', icon: FileText },
     ],
   },

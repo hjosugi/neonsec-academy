@@ -37,7 +37,8 @@ Eleven synthetic labs (six dataset-analysis families: PCAP, web log, auth log, c
 persisted flag attempts/hints, explanation unlocks, and scoring/Analytics integration
 (`components/lab/FlagChallengePanel.tsx`, `lib/flagChallenge.ts`); a challenge-grouped Evidence Vault with
 report citations (`routes/EvidenceVault.tsx`, `components/lab/ChallengeEvidenceVault.tsx`); and a
-report builder with Markdown export (`routes/Reports.tsx`).
+report builder with Markdown export (`routes/Reports.tsx`); a vulnerability triage board with rubric/manual
+severity, status flow, and report hand-off (`routes/Triage.tsx`, `lib/triage.ts`).
 ⬜ The full 20‑challenge simulator remains as an issue.
 
 ## Phase 5 — CEH+ Practical Track 🟡

@@ -279,3 +279,43 @@ describe('web concept worksheets', () => {
     expect(useStore.getState().labWorksheets[0].labId).toBe('web-security-headers')
   })
 })
+
+describe('vulnerability triage store', () => {
+  beforeEach(() => {
+    useStore.setState({ triageFindings: [], reports: [] })
+  })
+
+  it('imports lab findings, changes status and severity, adds to a report, and survives backups', () => {
+    const store = useStore.getState()
+    expect(store.importLabFindingsToTriage('cloud-iam')).toBe(2)
+    expect(useStore.getState().importLabFindingsToTriage('cloud-iam')).toBe(0)
+
+    const [first] = useStore.getState().triageFindings
+    expect(first).toMatchObject({ status: 'open', sourceLabId: 'cloud-iam' })
+    expect(useStore.getState().upsertTriageFinding({ ...first, severityMode: 'manual', severity: 'low' })).toBe(true)
+    expect(useStore.getState().setTriageStatus(first.id, 'fixed', 'verified')).toBe(false)
+    expect(useStore.getState().setTriageStatus(first.id, 'confirmed', '')).toBe(true)
+
+    const reportId = useStore.getState().addTriageToReport(first.id, null)
+    expect(reportId).toBeTruthy()
+    const report = useStore.getState().reports.find((item) => item.id === reportId)!
+    expect(report.findings[0]).toMatchObject({ triageId: first.id, status: 'confirmed', severity: 'low' })
+    expect(useStore.getState().addTriageToReport(first.id, reportId)).toBe(reportId)
+    expect(useStore.getState().reports.find((item) => item.id === reportId)!.findings).toHaveLength(1)
+
+    const backup = useStore.getState().exportData()
+    useStore.setState({ triageFindings: [] })
+    expect(useStore.getState().importData(backup)).toBe(true)
+    expect(useStore.getState().triageFindings.find((item) => item.id === first.id)).toMatchObject({
+      status: 'confirmed',
+      severityMode: 'manual',
+      severity: 'low',
+    })
+  })
+
+  it('rejects invalid findings', () => {
+    const invalid = { ...useStore.getState().triageFindings[0], id: 'tf-x', title: 'Missing asset', asset: '', evidence: '', impact: '', remediation: '', status: 'open' as const, history: [], impactRating: 'moderate' as const, likelihood: 'possible' as const, severity: 'medium' as const, severityMode: 'rubric' as const, createdAt: 1, updatedAt: 1 }
+    expect(useStore.getState().upsertTriageFinding(invalid)).toBe(false)
+    expect(useStore.getState().triageFindings).toEqual([])
+  })
+})

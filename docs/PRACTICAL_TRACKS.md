@@ -83,6 +83,18 @@ an unsafe-target warning in the scope contract, and includes a Finding Worksheet
 writes the finding, impact, and remediation. A complete worksheet can be added to the lab report as a
 finding with a chosen severity. No payload lists or live-site testing steps are included.
 
+## Vulnerability Triage
+
+The Triage board (`/triage`) turns findings into prioritized work. Each triage finding records title,
+affected asset, evidence, impact, likelihood, severity, remediation, and status. Severity combines a
+4×4 impact × likelihood rubric (score 1-16 → info/low/medium/high/critical) with an optional manual
+override; large deviations from the rubric are flagged. Status follows
+`open → confirmed | false-positive`, `confirmed → accepted-risk | fixed`, with re-open paths, and
+false positive, accepted risk, and fixed require a justification note. Fix priority (P1-P4) derives
+from effective severity and status. Lab Detail can import a lab's model findings as open triage items,
+and any valid finding can be added to an existing or new report; re-adding refreshes the same report
+finding, and Markdown export includes asset, status, and likelihood.
+
 ## Lab Registry Safety
 
 Every lab declares a `kind`: `local`, `dataset`, `simulated`, or `writeup`. Lab Detail displays the

@@ -27,6 +27,7 @@ LabChallenge 1 ── * FlagHintUse
 LabChallenge 1 ── * EvidenceItem
 LabChallenge 1 ── * Finding
 Report 1 ── * Finding
+TriageFinding 0..1 ── * Finding (via triageId)
 Finding * ── * EvidenceItem (via evidenceIds)
 ```
 
@@ -52,6 +53,7 @@ Finding * ── * EvidenceItem (via evidenceIds)
 | `StaticLabArtifact` | `evidenceTitle` + `evidence` inside a static lab. | Versioned in source. |
 | `EvidenceItem` | Stable generated `id`; `challengeId` links it to one lab challenge. | User-selected `timestamp` plus `createdAt` and `updatedAt`. |
 | `Finding` | Stable generated `id` inside a report, or static model finding inside a lab. | Report findings inherit the parent report timestamps. |
+| `TriageFinding` | Stable generated `id`; optional `sourceLabId`. | `createdAt`, `updatedAt`, and append-only status `history` entries with `at`. |
 | `Report` | Stable generated `id`. | `createdAt` and `updatedAt`. |
 
 ## Question
