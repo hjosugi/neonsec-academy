@@ -9,6 +9,7 @@ import type {
   AttemptConfidence,
   AttemptMode,
   DrillResult,
+  EngagementProgress,
   EvidenceItem,
   ExamSession,
   ExamResult,
@@ -42,6 +43,8 @@ import { moduleStats, domainStats } from '../lib/analytics'
 import { computeDerivedBadges } from '../lib/badges'
 import { gradeExam } from '../lib/exam'
 import { gradePracticalSession } from '../lib/practicalSim'
+import { ENGAGEMENTS } from '../data/tracks/engagement'
+import { engagementReport, engagementStatus, normalizeEngagementProgress } from '../lib/engagement'
 import {
   normalizeEvidenceItem,
   normalizeEvidenceItems,
@@ -169,6 +172,7 @@ interface AppState {
   triageFindings: TriageFinding[]
   activePractical: PracticalSession | null
   practicalResults: PracticalResult[]
+  engagementProgress: Record<string, EngagementProgress>
 }
 
 interface AppActions {
@@ -220,6 +224,11 @@ interface AppActions {
   practicalGoto: (index: number) => void
   cancelPractical: () => void
   submitPractical: () => PracticalResult | null
+  // pentest engagement workflow
+  saveEngagementProgress: (progress: EngagementProgress) => void
+  /** Creates or refreshes the engagement report from triage decisions; returns its id. */
+  generateEngagementReport: (scenarioId: string) => string | null
+  resetEngagement: (scenarioId: string) => void
   // flag challenges
   submitLabFlag: (challengeId: string, submitted: string) => FlagAttempt | null
   revealLabFlagHint: (challengeId: string, hintIndex: number) => boolean
@@ -279,6 +288,9 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
   const triageFindings = Array.isArray(persisted.triageFindings)
     ? normalizeTriageFindings(persisted.triageFindings)
     : currentState.triageFindings
+  const engagementProgress = persisted.engagementProgress !== undefined
+    ? normalizeEngagementProgress(persisted.engagementProgress, ENGAGEMENTS)
+    : currentState.engagementProgress
   return {
     ...currentState,
     ...persisted,
@@ -288,6 +300,7 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
     reports,
     labWorksheets,
     triageFindings,
+    engagementProgress,
   }
 }
 
@@ -314,6 +327,7 @@ const initialState: AppState = {
   triageFindings: [],
   activePractical: null,
   practicalResults: [],
+  engagementProgress: {},
 }
 
 export const useStore = create<Store>()(
@@ -673,6 +687,36 @@ export const useStore = create<Store>()(
         return result
       },
 
+      saveEngagementProgress: (progress) =>
+        set((s) => {
+          const scenario = ENGAGEMENTS.find((item) => item.id === progress.scenarioId)
+          if (!scenario) return {}
+          const now = Date.now()
+          const normalized = normalizeEngagementProgress({ [scenario.id]: { ...progress, updatedAt: now } }, ENGAGEMENTS)[scenario.id]
+          if (!normalized) return {}
+          const complete = engagementStatus(scenario, normalized).complete
+          normalized.completedAt = complete ? normalized.completedAt ?? now : undefined
+          return { engagementProgress: { ...s.engagementProgress, [scenario.id]: normalized } }
+        }),
+
+      generateEngagementReport: (scenarioId) => {
+        const scenario = ENGAGEMENTS.find((item) => item.id === scenarioId)
+        const progress = get().engagementProgress[scenarioId]
+        if (!scenario || !progress) return null
+        const existing = progress.reportId ? get().reports.find((report) => report.id === progress.reportId) : undefined
+        const report = engagementReport(scenario, { ...progress, reportId: existing?.id }, Date.now())
+        get().upsertReport(existing ? { ...report, createdAt: existing.createdAt } : report)
+        get().saveEngagementProgress({ ...progress, reportId: report.id })
+        return report.id
+      },
+
+      resetEngagement: (scenarioId) =>
+        set((s) => {
+          const engagementProgress = { ...s.engagementProgress }
+          delete engagementProgress[scenarioId]
+          return { engagementProgress }
+        }),
+
       submitLabFlag: (challengeId, submitted) => {
         const lab = labById(challengeId)
         const clean = sanitizeFlagSubmission(submitted)
@@ -948,6 +992,7 @@ export const useStore = create<Store>()(
           labWorksheets: s.labWorksheets,
           triageFindings: s.triageFindings,
           practicalResults: s.practicalResults,
+          engagementProgress: s.engagementProgress,
         }
         return JSON.stringify(payload, null, 2)
       },
@@ -996,6 +1041,9 @@ export const useStore = create<Store>()(
               labWorksheets,
               triageFindings,
               practicalResults: Array.isArray(d.practicalResults) ? d.practicalResults : s.practicalResults,
+              engagementProgress: d.engagementProgress !== undefined
+                ? normalizeEngagementProgress(d.engagementProgress, ENGAGEMENTS)
+                : s.engagementProgress,
             }
           })
           return true
@@ -1030,6 +1078,7 @@ export const useStore = create<Store>()(
         triageFindings: s.triageFindings,
         activePractical: s.activePractical,
         practicalResults: s.practicalResults,
+        engagementProgress: s.engagementProgress,
       }),
       merge: mergePersistedStoreState,
     },

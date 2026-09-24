@@ -282,6 +282,10 @@ Attemptは追加のみです。訂正は履歴を編集するのではなく、�
 
 `examTargetPct`は学習者の個人的な模擬スコア目標のためプロフィールの一部です。
 
+`EngagementProgress`（`engagementProgress` にシナリオ ID ごと）は、ステップごとのチェック、スコープクイズの回答、
+資産ごとのスコープ内/外の判断、所見ごとのトリアージのステータスと重大度、RoE の確認、生成した `reportId`、
+5 ステップ完了時の `completedAt` を保存します。インポートと復元時には静的シナリオと一致しない回答を破棄します。
+
 `PracticalSession`（シード、プリセット名、20 件の `questionIds`、`chosen` と任意の `selfCorrect`・`unsure`
 を持つ `answers`、`durationSec`、`startedAt`、`currentIndex`）はシミュレーター実行中 `activePractical` として
 保存されます。提出すると、スコア、合格点、所要時間、`wrongIds`、`weakIds`、`perModule` / `perSkill` /

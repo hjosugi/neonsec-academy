@@ -2,6 +2,21 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.27 - 2026-09-24
+
+CEH+ pentest engagement workflow track from scope review to report delivery.
+
+### Added
+
+- Fictional engagement scenario (Neon Harbor Logistics) with a statement of work, rules of engagement,
+  12 assets, a 6-question scope-violation quiz, and 8 prepared findings.
+- Engagement workflow (`/tracks/pentest`) with five steps — scope, RoE, asset inventory, finding triage,
+  report delivery — each with a checklist, deliverable, feedback, and completion rules.
+- Markdown engagement report generated from confirmed findings (scope, methodology, severity-ordered
+  findings, remediation plan, RoE and closed-item appendix), exportable and editable in the Report
+  Builder.
+- Engagement progress persisted, normalized on import and hydration, and included in full backups.
+
 ## v1.0.26 - 2026-09-24
 
 Automated Lab Safety Audit with stored audit records, reviewed overrides, and a CI publish gate.

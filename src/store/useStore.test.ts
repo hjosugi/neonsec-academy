@@ -347,3 +347,33 @@ describe('practical simulator store', () => {
     expect(state.reviews[unsureId]).toBeDefined()
   })
 })
+
+describe('engagement workflow store', () => {
+  it('saves progress, generates and refreshes one report, and marks completion', async () => {
+    const { ENGAGEMENTS } = await import('../data/tracks/engagement')
+    const { blankEngagementProgress } = await import('../lib/engagement')
+    const scenario = ENGAGEMENTS[0]
+    useStore.setState({ engagementProgress: {}, reports: [] })
+    const progress = blankEngagementProgress(scenario)
+    for (const step of scenario.steps) progress.checklist[step.key] = step.checklist.map(() => true)
+    for (const item of scenario.scopeQuiz) progress.quizAnswers[item.id] = item.answer
+    for (const asset of scenario.assets) progress.inventory[asset.id] = asset.inScope
+    for (const finding of scenario.findings) progress.triage[finding.id] = { status: finding.expectedStatus, severity: finding.expectedSeverity }
+    progress.roeAcknowledged = true
+    useStore.getState().saveEngagementProgress(progress)
+    expect(useStore.getState().engagementProgress[scenario.id].completedAt).toBeUndefined()
+
+    const reportId = useStore.getState().generateEngagementReport(scenario.id)
+    expect(reportId).toBeTruthy()
+    expect(useStore.getState().engagementProgress[scenario.id]).toMatchObject({ reportId })
+    expect(useStore.getState().engagementProgress[scenario.id].completedAt).toBeGreaterThan(0)
+    expect(useStore.getState().generateEngagementReport(scenario.id)).toBe(reportId)
+    expect(useStore.getState().reports.filter((report) => report.id === reportId)).toHaveLength(1)
+
+    const backup = useStore.getState().exportData()
+    useStore.getState().resetEngagement(scenario.id)
+    expect(useStore.getState().engagementProgress[scenario.id]).toBeUndefined()
+    expect(useStore.getState().importData(backup)).toBe(true)
+    expect(useStore.getState().engagementProgress[scenario.id].reportId).toBe(reportId)
+  })
+})

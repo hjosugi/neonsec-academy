@@ -21,6 +21,7 @@ import { LabDetail } from './routes/LabDetail'
 import { LabSafetyAudit } from './routes/LabSafetyAudit'
 import { EvidenceVault } from './routes/EvidenceVault'
 import { Beyond } from './routes/Beyond'
+import { EngagementWorkflow } from './routes/EngagementWorkflow'
 import { Reports } from './routes/Reports'
 import { Triage } from './routes/Triage'
 import { CityMap } from './routes/CityMap'
@@ -77,6 +78,7 @@ export default function App() {
           <Route path="/labs/:id" element={<LabDetail />} />
           <Route path="/evidence" element={<EvidenceVault />} />
           <Route path="/beyond" element={<Beyond />} />
+          <Route path="/tracks/pentest" element={<EngagementWorkflow />} />
           <Route path="/triage" element={<Triage />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/map" element={<CityMap />} />

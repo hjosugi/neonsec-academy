@@ -302,6 +302,11 @@ Readiness thresholds are persisted with other local settings:
 
 `examTargetPct` remains part of the profile because it is the learner's personal mock-score target.
 
+`EngagementProgress` (per scenario id in `engagementProgress`) stores checklist marks per step, scope
+quiz answers, in/out-of-scope decisions per asset, triage status and severity per finding, RoE
+acknowledgement, the generated `reportId`, and `completedAt` once all five steps are complete.
+Import and hydration drop answers that do not match the static scenario.
+
 `PracticalSession` (seed, preset label, 20 `questionIds`, `answers` with `chosen`, optional
 `selfCorrect` and `unsure`, `durationSec`, `startedAt`, `currentIndex`) is persisted as
 `activePractical` while a simulator run is open. Submitting produces a `PracticalResult` with score,

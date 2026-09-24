@@ -11,6 +11,13 @@ Focus: scope, rules of engagement, evidence, finding triage, report.
 
 Safe mode: synthetic organization and static datasets only.
 
+Workspace: `/tracks/pentest` walks one fictional engagement (Neon Harbor Logistics) through five
+steps — scope review with a scope-violation quiz, rules-of-engagement acknowledgement, asset
+inventory against the written scope, triage of prepared scanner and manual-test notes (confirmed,
+false positive, out of scope, with severity), and report delivery. Every step has a checklist and a
+deliverable; the final deliverable is a Markdown report generated from confirmed findings that also
+opens in the Report Builder.
+
 ## Track 2: AppSec Code Review
 
 Focus: authz, input validation, secrets handling, dependency risk, secure fix.

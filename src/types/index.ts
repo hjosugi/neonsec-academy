@@ -1,3 +1,5 @@
+import type { EngagementFindingStatus, EngagementStepKey } from '../data/tracks/types'
+
 // ============================================================
 // NeonSec Academy — domain types
 // Aligned with docs/DATA_MODEL.md and docs/QUESTION_SCHEMA.md
@@ -287,6 +289,20 @@ export interface PracticalResult {
   perSkill: Array<PracticalBreakdownRow & { skill: string }>
   perKind: Array<PracticalBreakdownRow & { kind: PracticalKind }>
   nextActions: string[]
+}
+
+// ---- CEH+ pentest engagement workflow (P5-001) ----
+export interface EngagementProgress {
+  scenarioId: string
+  checklist: Record<EngagementStepKey, boolean[]>
+  quizAnswers: Record<string, string>
+  /** Learner's in-scope decision per asset id. */
+  inventory: Record<string, boolean>
+  triage: Record<string, { status: EngagementFindingStatus; severity: Severity }>
+  roeAcknowledged: boolean
+  reportId?: string
+  completedAt?: number
+  updatedAt: number
 }
 
 // ---- Player / settings ----

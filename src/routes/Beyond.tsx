@@ -28,6 +28,11 @@ const TRACK_LABS: Record<TrackKey, string[]> = {
   'threat-model': ['threat-model'],
 }
 
+/** Hands-on practical workspaces per track (engagement workflow, challenge tracks, IR, threat modeling). */
+const TRACK_WORKSPACES: Partial<Record<TrackKey, { to: string; label: string }>> = {
+  pentest: { to: '/tracks/pentest', label: 'Engagement workflow' },
+}
+
 export function Beyond() {
   const navigate = useNavigate()
   const questions = useActiveQuestions()
@@ -138,6 +143,11 @@ export function Beyond() {
                 </div>
               )}
 
+              {TRACK_WORKSPACES[t.key] && (
+                <Link className="btn btn--green btn--sm btn--block mt-2" to={TRACK_WORKSPACES[t.key]!.to}>
+                  {TRACK_WORKSPACES[t.key]!.label} →
+                </Link>
+              )}
               <button
                 className="btn btn--primary btn--sm btn--block mt-2"
                 disabled={t.total === 0}
