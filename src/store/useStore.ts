@@ -15,6 +15,7 @@ import type {
   FlagAttempt,
   FlagHintUse,
   Grade,
+  LabWorksheet,
   MistakeNote,
   Profile,
   Question,
@@ -23,6 +24,7 @@ import type {
   ReviewItem,
   ReviewSessionSummary,
   Settings,
+  Severity,
 } from '../types'
 import { SEED_QUESTIONS, enrichQuestion } from '../data/questions'
 import { LABS, labById } from '../data/labs'
@@ -40,6 +42,7 @@ import {
   reconcileReportEvidenceLinks,
 } from '../lib/evidence'
 import { citeEvidenceInReport, createLabReport, findLabReport } from '../lib/labReport'
+import { normalizeLabWorksheets, worksheetStatus, worksheetToFinding } from '../lib/webConcept'
 import {
   flagHintUsesForChallenge,
   isFlagChallengeSolved,
@@ -149,6 +152,7 @@ interface AppState {
   flagHintUses: FlagHintUse[]
   evidenceItems: EvidenceItem[]
   reports: Report[]
+  labWorksheets: LabWorksheet[]
 }
 
 interface AppActions {
@@ -203,6 +207,9 @@ interface AppActions {
   sendEvidenceToLabReport: (item: EvidenceItem, findingId?: string) => string | null
   deleteEvidence: (id: string) => void
   upsertReport: (report: Report) => void
+  saveLabWorksheet: (worksheet: Omit<LabWorksheet, 'updatedAt'>) => void
+  /** Adds a complete worksheet to the lab report as a finding; returns the report id. */
+  addWorksheetToReport: (labId: string, severity: Severity) => string | null
   deleteReport: (id: string) => void
   // profile / settings
   updateSettings: (patch: Partial<Settings>) => void
@@ -236,6 +243,9 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
     Array.isArray(persisted.reports) ? persisted.reports : currentState.reports,
     evidenceItems,
   )
+  const labWorksheets = Array.isArray(persisted.labWorksheets)
+    ? normalizeLabWorksheets(persisted.labWorksheets, LABS)
+    : currentState.labWorksheets
   return {
     ...currentState,
     ...persisted,
@@ -243,6 +253,7 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
     flagHintUses,
     evidenceItems,
     reports,
+    labWorksheets,
   }
 }
 
@@ -265,6 +276,7 @@ const initialState: AppState = {
   flagHintUses: [],
   evidenceItems: [],
   reports: [],
+  labWorksheets: [],
 }
 
 export const useStore = create<Store>()(
@@ -657,6 +669,26 @@ export const useStore = create<Store>()(
 
       deleteReport: (id) => set((s) => ({ reports: s.reports.filter((r) => r.id !== id) })),
 
+      saveLabWorksheet: (worksheet) =>
+        set((s) => {
+          const normalized = normalizeLabWorksheets([{ ...worksheet, updatedAt: Date.now() }], LABS)[0]
+          if (!normalized) return {}
+          return { labWorksheets: [normalized, ...s.labWorksheets.filter((item) => item.labId !== normalized.labId)] }
+        }),
+
+      addWorksheetToReport: (labId, severity) => {
+        const lab = labById(labId)
+        const state = get()
+        const worksheet = state.labWorksheets.find((item) => item.labId === labId)
+        if (!lab || !worksheet || !worksheetStatus(worksheet).complete) return null
+        const now = Date.now()
+        const existing = findLabReport(state.reports, lab)
+        const base = existing ? { ...existing, challengeId: existing.challengeId ?? lab.id } : { ...createLabReport(lab, now), findings: [] }
+        const report: Report = { ...base, findings: [...base.findings, worksheetToFinding(worksheet, lab, severity)], updatedAt: now }
+        state.upsertReport(report)
+        return report.id
+      },
+
       updateSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
 
       updateProfile: (patch) => set((s) => ({ profile: { ...s.profile, ...patch } })),
@@ -730,6 +762,7 @@ export const useStore = create<Store>()(
           flagHintUses: s.flagHintUses,
           evidenceItems: s.evidenceItems,
           reports: s.reports,
+          labWorksheets: s.labWorksheets,
         }
         return JSON.stringify(payload, null, 2)
       },
@@ -752,6 +785,9 @@ export const useStore = create<Store>()(
               Array.isArray(d.reports) ? d.reports : s.reports,
               evidenceItems,
             )
+            const labWorksheets = Array.isArray(d.labWorksheets)
+              ? normalizeLabWorksheets(d.labWorksheets, LABS)
+              : s.labWorksheets
             return {
               profile: { ...defaultProfile, ...(d.profile ?? {}) },
               settings: { ...defaultSettings, ...(d.settings ?? {}) },
@@ -769,6 +805,7 @@ export const useStore = create<Store>()(
               flagHintUses,
               evidenceItems,
               reports,
+              labWorksheets,
             }
           })
           return true
@@ -799,6 +836,7 @@ export const useStore = create<Store>()(
         flagHintUses: s.flagHintUses,
         evidenceItems: s.evidenceItems,
         reports: s.reports,
+        labWorksheets: s.labWorksheets,
       }),
       merge: mergePersistedStoreState,
     },

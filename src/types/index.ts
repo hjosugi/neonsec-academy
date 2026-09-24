@@ -339,6 +339,15 @@ export interface EvidenceItem {
 
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'info'
 
+/** Learner-written finding / impact / remediation for a web concept lab. */
+export interface LabWorksheet {
+  labId: string
+  finding: string
+  impact: string
+  remediation: string
+  updatedAt: number
+}
+
 export interface Finding {
   id: string
   title: string

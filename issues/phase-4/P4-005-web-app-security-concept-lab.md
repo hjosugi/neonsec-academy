@@ -19,20 +19,20 @@ CEH 受験者として、Web app の脆弱性を攻撃手順の暗記ではな�
 
 ## Requirements
 
-- [ ] broken access control, input validation, session, security headers などを扱う
+- [x] broken access control, input validation, session, security headers などを扱う
 - [x] 課題は local toy app または静的 request/response dataset に限定する
 - [x] 各課題で finding, impact, remediation を書かせる
 - [x] 危険な payload 集や実サイト検査手順は含めない
 
 ## Acceptance Criteria
 
-- [ ] 最低 4 つの web concept lab sample がある
-- [ ] 各 sample は remediation を要求する
+- [x] 最低 4 つの web concept lab sample がある
+- [x] 各 sample は remediation を要求する
 - [x] unsafe target warning が表示される
 
 ## Subtasks
 
-- [ ] lab template を作る
+- [x] lab template を作る
 - [x] sample request/response を作る
 - [x] report prompt を作る
 - [x] safety review を行う
@@ -47,18 +47,22 @@ CEH 受験者として、Web app の脆弱性を攻撃手順の暗記ではな�
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- Four static web concept labs (access control, input validation, session rotation, security
+  headers) use fictional toy-app exchanges, show an unsafe-target warning in the scope contract, and
+  require a finding/impact/remediation worksheet that can be added to the lab report. Registry
+  validation enforces static assets and the warning. Verified with unit, type, content, safety, and
+  build checks.

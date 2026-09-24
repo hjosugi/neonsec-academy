@@ -74,6 +74,15 @@ prove a finding and either save them to the Evidence Vault as a log excerpt or *
 which saves the excerpt and cites it on the lab report (creating the report from the model findings
 if needed). The citation appears in Markdown export.
 
+## Web App Security Concept Labs
+
+Four static web concept labs cover broken access control (`web-idor`), input validation
+(`web-input-validation`), session management (`web-session-rotation`), and security headers
+(`web-security-headers`). Each uses a fictional toy app's captured request/response or headers, shows
+an unsafe-target warning in the scope contract, and includes a Finding Worksheet where the learner
+writes the finding, impact, and remediation. A complete worksheet can be added to the lab report as a
+finding with a chosen severity. No payload lists or live-site testing steps are included.
+
 ## Lab Registry Safety
 
 Every lab declares a `kind`: `local`, `dataset`, `simulated`, or `writeup`. Lab Detail displays the

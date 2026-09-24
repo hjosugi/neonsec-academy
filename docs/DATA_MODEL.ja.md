@@ -320,6 +320,10 @@ Attemptは追加のみです。訂正は履歴を編集するのではなく、�
 }
 ```
 
+Web コンセプトラボは `webConcept: { concept, unsafeTargetWarning }` を持ちます。学習者の
+`LabWorksheet`（`labId`、`finding`、`impact`、`remediation`、`updatedAt`）はラボごとに 1 件
+`labWorksheets` に保存され、フルバックアップに含まれ、3 項目が揃うとレポートの所見になります。
+
 データセット分析ラボは `analysis: { type, detection, prevention }` を持ちます（`type` は `pcap`、
 `web-log`、`auth-log`、`cloud-config`、`firewall-rule`、`email-headers`）。選択したアーティファクト行は
 `type: "log"` と `access.log (synthetic) L8-L9` のような `reference` を持つ `EvidenceItem` になり、

@@ -248,3 +248,34 @@ describe('lab dataset evidence hand-off', () => {
     expect(useStore.getState().reports).toEqual([])
   })
 })
+
+describe('web concept worksheets', () => {
+  beforeEach(() => {
+    useStore.setState({ labWorksheets: [], reports: [] })
+  })
+
+  it('saves a worksheet, adds it to the lab report, and round-trips through backups', () => {
+    const store = useStore.getState()
+    store.saveLabWorksheet({ labId: 'web-security-headers', finding: 'short', impact: '', remediation: '' })
+    expect(useStore.getState().addWorksheetToReport('web-security-headers', 'medium')).toBeNull()
+
+    store.saveLabWorksheet({
+      labId: 'web-security-headers',
+      finding: 'Login page lacks frame-ancestors and X-Frame-Options.',
+      impact: 'Any site can frame and disguise the login form.',
+      remediation: 'Send CSP frame-ancestors none and X-Frame-Options DENY.',
+    })
+    expect(useStore.getState().labWorksheets).toHaveLength(1)
+
+    const reportId = useStore.getState().addWorksheetToReport('web-security-headers', 'medium')
+    expect(reportId).toBeTruthy()
+    const report = useStore.getState().reports[0]
+    expect(report).toMatchObject({ id: reportId, challengeId: 'web-security-headers' })
+    expect(report.findings.map((finding) => finding.title)).toEqual(['Login page lacks frame-ancestors and X-Frame-Options.'])
+
+    const backup = useStore.getState().exportData()
+    useStore.setState({ labWorksheets: [] })
+    expect(useStore.getState().importData(backup)).toBe(true)
+    expect(useStore.getState().labWorksheets[0].labId).toBe('web-security-headers')
+  })
+})

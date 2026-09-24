@@ -172,10 +172,25 @@ Each lab needs:
 | `evidenceTitle` / `evidence` | Static synthetic artifact. Use fictional names and documentation IP ranges. |
 | `flagChallenge` | Prompt, local asset metadata, unique expected flag, scoped hints, explanation, remediation, and report prompt. |
 | `analysis` | Optional dataset-analysis metadata: `type` (`pcap`, `web-log`, `auth-log`, `cloud-config`, `firewall-rule`, `email-headers`), `detection`, and `prevention`. Required for analysis challenges. |
+| `webConcept` | Optional web concept metadata: `concept` (`access-control`, `input-validation`, `session`, `security-headers`) and `unsafeTargetWarning`. Web concept labs must be `simulated` or `local` and use a static `request-response` or `headers` asset. |
 | `objectives` | Checklist items that map to scoring components. |
 | `rubric` | Component scoring for flag/diagnosis, evidence, explanation, remediation, and safety. |
 | `guiding` | Hints with teaching answers. Hints should not introduce real-world action steps. |
 | `modelFindings` | Findings with severity, impact, and remediation for report handoff. |
+
+## Web Concept Lab Template
+
+Web concept labs teach causes and fixes, not attack procedures. Use this template:
+
+1. **Artifact:** a static request/response exchange, header capture, or short toy-app handler excerpt
+   on a fictional `.example` host. No payload lists, no live URLs, no tool output.
+2. **Concept:** one of `access-control`, `input-validation`, `session`, or `security-headers`.
+3. **Unsafe target warning:** one or two sentences explaining why the learner must not reproduce the
+   request against real sites. Lab Detail shows it in the scope contract before the evidence.
+4. **Flag:** the vulnerability class or root cause (for example `FLAG{SESSION_FIXATION}`).
+5. **Objectives:** name the flaw, then write the finding, impact, and remediation. The Finding
+   Worksheet requires all three (20+ characters each) before it can be added to the lab report.
+6. **Model findings:** report-ready severity, impact, and remediation.
 
 ## Lab Checklist
 

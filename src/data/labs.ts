@@ -27,6 +27,15 @@ export interface LabFinding {
 
 export type FlagChallengeAssetKind = 'log' | 'config' | 'request-response' | 'capture' | 'headers' | 'architecture'
 
+/** Web security concepts covered by static request/response concept labs (P4-005). */
+export type WebConceptKey = 'access-control' | 'input-validation' | 'session' | 'security-headers'
+
+export interface WebConceptLab {
+  concept: WebConceptKey
+  /** Shown above the artifact: why the learner must not test real targets. */
+  unsafeTargetWarning: string
+}
+
 export interface FlagChallengeAsset {
   id: string
   label: string
@@ -79,6 +88,8 @@ export interface Lab {
   flagChallenge: FlagChallengeDefinition
   /** Present on dataset-analysis challenges; drives the analysis debrief. */
   analysis?: LabAnalysis
+  /** Present on web concept labs; enables the finding worksheet and unsafe-target warning. */
+  webConcept?: WebConceptLab
   objectives: string[]
   rubric: LabRubric
   guiding: { q: string; a: string }[]
@@ -381,10 +392,15 @@ Content-Type: application/json
       reportPrompt:
         'Write a broken-access-control finding using the owner mismatch as evidence and describe the required server-side authorization rule.',
     },
+    webConcept: {
+      concept: 'access-control',
+      unsafeTargetWarning:
+        'Changing object ids in requests to applications you do not own is unauthorized testing. Review only this static exchange from a fictional toy app.',
+    },
     objectives: [
       'Name the vulnerability class',
       'Explain how you know authorization failed',
-      'Describe the correct server-side check',
+      'Write the remediation: the correct server-side authorization check',
       'State the impact in one sentence',
     ],
     rubric: rubric('web-access-control-review', {
@@ -409,6 +425,300 @@ Content-Type: application/json
         severity: 'high',
         impact: 'Any authenticated user can read other users’ invoice data by changing the ID.',
         remediation: 'Enforce ownership checks on every object access server-side; add automated authorization tests.',
+      },
+    ],
+  },
+  {
+    id: 'web-input-validation',
+    title: 'Web AppSec: Query Built From Input',
+    category: 'Web',
+    kind: 'simulated',
+    glyph: '⌁',
+    color: '#80ffdb',
+    difficulty: 'medium',
+    brief:
+      'A support agent searched a fictional CRM toy app for a customer surname containing an apostrophe and received a database error. Read the captured exchange and the server snippet, explain the input-handling flaw, and describe the secure fix. Static review only — no live app.',
+    scope: {
+      allowed: ['The static request/response and toy server snippet below', 'The report builder and Evidence Vault'],
+      forbidden: ['Sending any request to any application', 'Crafting or testing injection strings', 'Any real database or customer data'],
+    },
+    evidenceTitle: 'crm-search exchange (synthetic)',
+    evidence: `# Legitimate search by a support agent for the surname O'Hara
+GET /api/customers?surname=O'Hara HTTP/1.1
+Host: crm.neoncorp.example
+Cookie: session=<agent-session>
+
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{ "error": "syntax error at or near \\"Hara\\"",
+  "query": "SELECT id, name, phone FROM customers WHERE surname = 'O'Hara'",
+  "driver": "neon-sql-driver 4.2" }
+
+# Toy server handler (excerpt)
+const sql = "SELECT id, name, phone FROM customers WHERE surname = '" + surnameParam + "'"
+const rows = await runQuery(sql)`,
+    flagChallenge: {
+      prompt:
+        'Name the root-cause coding flaw that lets an ordinary apostrophe change the structure of the database query, and submit it as a flag.',
+      assets: [
+        {
+          id: 'crm-exchange',
+          label: 'crm-search exchange (synthetic)',
+          kind: 'request-response',
+          description: 'Static request, error response, and handler excerpt from a fictional CRM toy app.',
+        },
+      ],
+      expectedFlag: 'FLAG{UNPARAMETERIZED_QUERY}',
+      hints: [
+        'Look at how the handler combines the surname value with the SQL text.',
+        'The input is concatenated into the statement instead of being passed as a bound parameter.',
+      ],
+      explanation:
+        'The handler concatenates the surname into the SQL string, so the apostrophe in a legitimate name ends the string literal early and breaks the statement. Input that can change query structure is the root cause of SQL injection, and the verbose error discloses the query text to the client.',
+      remediation:
+        'Use parameterized queries or prepared statements for every value, validate input against expected formats, return generic errors to clients, and log details server-side.',
+      reportPrompt:
+        'Write a finding that cites the concatenation line and the leaked query text, explains the injection and information-disclosure impact, and recommends parameterization and error handling.',
+    },
+    webConcept: {
+      concept: 'input-validation',
+      unsafeTargetWarning:
+        'Do not paste the captured request into a browser or tool, and never test inputs against applications you do not own. This exercise is a static reading of a fictional toy app.',
+    },
+    objectives: [
+      'Identify the line where user input becomes part of the SQL statement',
+      'Write the finding: name the flaw and cite the evidence',
+      'Write the impact in business terms, including the leaked error details',
+      'Write the remediation: parameterization, validation, and safe error handling',
+    ],
+    rubric: rubric('web-input-validation-review', {
+      flag: [0],
+      evidence: [1],
+      explanation: [2],
+      remediation: [3],
+    }),
+    guiding: [
+      {
+        q: 'Why did an apostrophe break the query?',
+        a: 'The value is placed inside a quoted SQL string by concatenation. The apostrophe in O\'Hara closes the literal early, so the rest of the name is parsed as SQL. Any input that can change query structure is an injection flaw.',
+      },
+      {
+        q: 'Is escaping apostrophes a sufficient fix?',
+        a: 'No. Manual escaping is error-prone and context-dependent. Bound parameters keep data separate from code for every value and every database driver.',
+      },
+      {
+        q: 'What else is wrong with the response?',
+        a: 'It returns the raw query, database error, and driver version to the client. Those details help an attacker and should stay in server-side logs.',
+      },
+    ],
+    modelFindings: [
+      {
+        title: 'SQL statement built by concatenating user input',
+        severity: 'high',
+        impact: 'User-controlled input can alter query structure, enabling unauthorized reads or changes to customer records.',
+        remediation: 'Replace concatenation with parameterized queries throughout the data layer and add tests with apostrophes and other special characters.',
+      },
+      {
+        title: 'Verbose database errors returned to clients',
+        severity: 'medium',
+        impact: 'The response discloses query text, schema names, and driver version that help an attacker refine attempts.',
+        remediation: 'Return a generic error with a correlation id; log the detailed error server-side only.',
+      },
+    ],
+  },
+  {
+    id: 'web-session-rotation',
+    title: 'Web AppSec: Session Not Rotated at Login',
+    category: 'Web',
+    kind: 'simulated',
+    glyph: '⎔',
+    color: '#b5e48c',
+    difficulty: 'medium',
+    brief:
+      'Three captured exchanges from a fictional toy portal show the session cookie before login, during login, and after login. Decide what the session handling gets wrong and describe the secure design. Static review only — no live app.',
+    scope: {
+      allowed: ['The three static exchanges below', 'The report builder and Evidence Vault'],
+      forbidden: ['Sending any request to any application', 'Using or replaying any session value', 'Any real account or browser profile'],
+    },
+    evidenceTitle: 'portal-session exchanges (synthetic)',
+    evidence: `# 1) Anonymous visit to the login page
+GET /login HTTP/1.1
+Host: portal.neoncorp.example
+
+HTTP/1.1 200 OK
+Set-Cookie: sid=SID-DEMO-7F3A; Path=/
+
+# 2) Credentials submitted with the pre-login session id
+POST /login HTTP/1.1
+Host: portal.neoncorp.example
+Cookie: sid=SID-DEMO-7F3A
+Content-Type: application/x-www-form-urlencoded
+
+username=aiko&password=<redacted>
+
+HTTP/1.1 302 Found
+Location: /dashboard
+
+# 3) Authenticated request after login
+GET /dashboard HTTP/1.1
+Host: portal.neoncorp.example
+Cookie: sid=SID-DEMO-7F3A
+
+HTTP/1.1 200 OK`,
+    flagChallenge: {
+      prompt:
+        'Name the session-management vulnerability demonstrated when the same identifier issued before login stays valid after authentication, and submit it as a flag.',
+      assets: [
+        {
+          id: 'portal-exchanges',
+          label: 'portal-session exchanges (synthetic)',
+          kind: 'request-response',
+          description: 'Static pre-login, login, and post-login exchanges from a fictional toy portal.',
+        },
+      ],
+      expectedFlag: 'FLAG{SESSION_FIXATION}',
+      hints: [
+        'Compare the session identifier in exchange 1 with the one used in exchange 3.',
+        'The login response never issues a new identifier, so a value known before login is still valid afterwards.',
+      ],
+      explanation:
+        'The portal keeps the anonymous session identifier after a successful login. Anyone who planted or learned that pre-login value would share the authenticated session. The cookie also lacks Secure, HttpOnly, and SameSite attributes.',
+      remediation:
+        'Issue a new session identifier on login and privilege change, invalidate the old one server-side, and set Secure, HttpOnly, and SameSite on the session cookie with idle and absolute timeouts.',
+      reportPrompt:
+        'Write a finding that cites the unchanged identifier across the three exchanges and the missing cookie attributes, then describe the rotation and cookie-hardening fix.',
+    },
+    webConcept: {
+      concept: 'session',
+      unsafeTargetWarning:
+        'Never reuse, share, or replay a real session cookie. The identifiers here are placeholders from a fictional toy portal and must not be tried anywhere.',
+    },
+    objectives: [
+      'Name the session flaw shown across the three exchanges',
+      'Write the finding with evidence: which identifier persists and which response should have changed it',
+      'Write the impact, including the risk from missing cookie attributes',
+      'Write the remediation: rotation, invalidation, cookie attributes, and timeouts',
+    ],
+    rubric: rubric('web-session-review', {
+      flag: [0],
+      evidence: [1],
+      explanation: [2],
+      remediation: [3],
+    }),
+    guiding: [
+      {
+        q: 'Where should the identifier have changed?',
+        a: 'In the login response (exchange 2). A successful authentication must issue a fresh session identifier and invalidate the anonymous one.',
+      },
+      {
+        q: 'What do the missing cookie attributes add to the risk?',
+        a: 'Without Secure the cookie can travel over plain HTTP; without HttpOnly script can read it; without SameSite it is sent on cross-site requests. Each widens the ways a session can be exposed or misused.',
+      },
+    ],
+    modelFindings: [
+      {
+        title: 'Session identifier not rotated after authentication (session fixation)',
+        severity: 'high',
+        impact: 'A session identifier known before login grants the authenticated session afterwards, enabling account takeover.',
+        remediation: 'Regenerate the session identifier on login and privilege changes and invalidate the previous identifier server-side.',
+      },
+      {
+        title: 'Session cookie missing Secure, HttpOnly, and SameSite',
+        severity: 'medium',
+        impact: 'The session cookie may be exposed over cleartext, read by injected script, or sent on cross-site requests.',
+        remediation: 'Set Secure, HttpOnly, and SameSite=Lax or Strict, and enforce idle and absolute session timeouts.',
+      },
+    ],
+  },
+  {
+    id: 'web-security-headers',
+    title: 'Web AppSec: Missing Security Headers',
+    category: 'Web',
+    kind: 'simulated',
+    glyph: '⌸',
+    color: '#ffd6a5',
+    difficulty: 'easy',
+    brief:
+      'Review the response headers of a fictional toy banking login page and decide which browser-enforced protections are missing. Explain the risk of each gap and write a header baseline. Static review only — no live app.',
+    scope: {
+      allowed: ['The static response headers below', 'The report builder and Evidence Vault'],
+      forbidden: ['Requesting any real or fictional site', 'Building framing or overlay pages', 'Any real browser session or account'],
+    },
+    evidenceTitle: 'login-response-headers.txt (synthetic)',
+    evidence: `# Response for GET /login on bank-portal.neoncorp.example (synthetic)
+HTTP/1.1 200 OK
+Server: neon-httpd/2.4.1
+Content-Type: text/html
+Set-Cookie: sid=SID-DEMO-51C0; Path=/; HttpOnly
+Cache-Control: no-store
+# Not present: Content-Security-Policy
+# Not present: Strict-Transport-Security
+# Not present: X-Frame-Options or CSP frame-ancestors
+# Not present: X-Content-Type-Options
+# Not present: Referrer-Policy`,
+    flagChallenge: {
+      prompt:
+        'The login page can be embedded inside a frame on any other site. Name the UI-redress attack this enables and submit it as a flag.',
+      assets: [
+        {
+          id: 'login-headers',
+          label: 'login-response-headers.txt (synthetic)',
+          kind: 'headers',
+          description: 'Prepared response headers for a fictional toy login page with protections absent.',
+        },
+      ],
+      expectedFlag: 'FLAG{CLICKJACKING}',
+      hints: [
+        'Which missing header or directive controls whether other sites may frame this page?',
+        'A framed, visually hidden login page can trick a user into clicking controls they cannot see.',
+      ],
+      explanation:
+        'Without X-Frame-Options or a CSP frame-ancestors directive, any site can frame the login page and overlay it to trick users into unintended clicks. The missing CSP, HSTS, nosniff, and referrer policy remove further browser-enforced defenses.',
+      remediation:
+        'Send CSP with frame-ancestors none or self, HSTS with a long max-age, X-Content-Type-Options nosniff, a strict Referrer-Policy, and remove the server version banner.',
+      reportPrompt:
+        'Write one finding for the framing risk and one for the remaining header baseline gaps, citing the absent headers and giving a prioritized header baseline.',
+    },
+    webConcept: {
+      concept: 'security-headers',
+      unsafeTargetWarning:
+        'Checking headers on sites you do not own is out of scope. Review only this synthetic header capture from a fictional toy app.',
+    },
+    objectives: [
+      'Name the attack enabled by the missing framing control',
+      'Write the finding with evidence: list every absent header and the version banner',
+      'Write the impact of each missing protection',
+      'Write the remediation as a prioritized header baseline',
+    ],
+    rubric: rubric('web-security-header-review', {
+      flag: [0],
+      evidence: [1],
+      explanation: [2],
+      remediation: [3],
+    }),
+    guiding: [
+      {
+        q: 'Which gap matters most for a login page?',
+        a: 'Framing. Without frame-ancestors or X-Frame-Options the login form can be embedded and disguised, so users may submit or click without realising.',
+      },
+      {
+        q: 'What does HSTS add if the site already redirects to HTTPS?',
+        a: 'HSTS tells the browser to use HTTPS for every future request, removing the first cleartext request that a redirect-only setup leaves exposed.',
+      },
+    ],
+    modelFindings: [
+      {
+        title: 'Login page can be framed by any site (clickjacking)',
+        severity: 'medium',
+        impact: 'Users can be tricked into interacting with a hidden, framed login page.',
+        remediation: 'Send Content-Security-Policy frame-ancestors none (or self) and X-Frame-Options DENY for older browsers.',
+      },
+      {
+        title: 'Security header baseline missing and server version disclosed',
+        severity: 'low',
+        impact: 'No CSP, HSTS, nosniff, or referrer policy; the version banner eases vulnerability matching.',
+        remediation: 'Adopt a header baseline (CSP, HSTS, nosniff, Referrer-Policy) in the shared server config and remove version banners.',
       },
     ],
   },

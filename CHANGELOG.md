@@ -2,6 +2,26 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.22 - 2026-09-24
+
+Web App Security Concept Labs with unsafe-target warnings and finding worksheets.
+
+### Added
+
+- Three static web concept labs from fictional toy apps: input validation (`web-input-validation`),
+  session rotation (`web-session-rotation`), and security headers (`web-security-headers`); together
+  with the existing access-control lab they cover the four web concepts.
+- `webConcept` metadata with an unsafe-target warning shown in the scope contract before evidence.
+- Finding Worksheet for web concept labs: finding, impact, and remediation are required (20+ characters
+  each), persisted locally, included in full backups, and addable to the lab report as a finding.
+- Web concept lab template in the content guide and tests for concept coverage, worksheet status,
+  normalization, report hand-off, and backup round-trips.
+
+### Changed
+
+- Lab registry validation requires web concept labs to be simulated or local, use a static
+  request/response or headers asset, and include a non-empty unsafe-target warning.
+
 ## v1.0.21 - 2026-09-24
 
 Dataset-analysis challenges for PCAP, web log, auth log, cloud config, and firewall rule review.

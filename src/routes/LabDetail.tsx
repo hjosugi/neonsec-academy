@@ -9,6 +9,8 @@ import { EmptyState } from '../components/ui/EmptyState'
 import { ChallengeEvidenceVault } from '../components/lab/ChallengeEvidenceVault'
 import { FlagChallengePanel } from '../components/lab/FlagChallengePanel'
 import { LabDatasetViewer } from '../components/lab/LabDatasetViewer'
+import { WebConceptWorksheet } from '../components/lab/WebConceptWorksheet'
+import { WEB_CONCEPTS } from '../lib/webConcept'
 import { findLabReport } from '../lib/labReport'
 import { ANALYSIS_TYPES } from '../lib/analysisChallenges'
 import {
@@ -278,6 +280,23 @@ export function LabDetail() {
             </ul>
           </div>
         </div>
+        {lab.webConcept && (
+          <div
+            className="t-sm mt-3"
+            role="alert"
+            style={{
+              color: 'var(--danger-red)',
+              border: '1px solid rgba(255,51,102,0.4)',
+              borderRadius: 'var(--r-md)',
+              background: 'rgba(255,51,102,0.06)',
+              padding: '0.75rem 0.85rem',
+            }}
+          >
+            <strong>Unsafe target warning · {WEB_CONCEPTS[lab.webConcept.concept].label}:</strong>{' '}
+            {lab.webConcept.unsafeTargetWarning} Testing websites or APIs without the owner's written authorization is
+            illegal in most jurisdictions.
+          </div>
+        )}
         {!ack && (
           <label className="toggle mt-3">
             <input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} />
@@ -437,6 +456,10 @@ export function LabDetail() {
                   ))}
                 </div>
               </Panel>
+
+              {lab.webConcept && (
+                <WebConceptWorksheet key={`worksheet-${lab.id}`} lab={lab} onOpenReport={openReport} />
+              )}
 
               {lab.analysis && (
                 <Panel

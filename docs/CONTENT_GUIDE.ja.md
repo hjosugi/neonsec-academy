@@ -159,10 +159,25 @@ Memory phrase:
 | `evidenceTitle` / `evidence` | 静的な合成アーティファクト。架空の名前とドキュメントIP範囲を使用します。 |
 | `flagChallenge` | プロンプト、ローカルアセットメタデータ、期待されるユニークなフラグ、範囲のヒント、説明、修正、報告プロンプト。 |
 | `analysis` | 任意のデータセット分析メタデータ: `type`（`pcap`、`web-log`、`auth-log`、`cloud-config`、`firewall-rule`、`email-headers`）、`detection`、`prevention`。分析チャレンジでは必須。 |
+| `webConcept` | 任意の Web コンセプトメタデータ: `concept`（`access-control`、`input-validation`、`session`、`security-headers`）と `unsafeTargetWarning`。Web コンセプトラボは `simulated` または `local` で、静的な `request-response` か `headers` アセットを使う必要があります。 |
 | `objectives` | スコアリングコンポーネントにマッピングされたチェックリスト項目。 |
 | `rubric` | フラグ/診断、証拠、説明、修正、安全性のためのコンポーネントスコアリング。 |
 | `guiding` | 教育的な回答を含むヒント。ヒントは実世界の行動手順を導入してはいけません。 |
 | `modelFindings` | 報告の引き渡しのための重大度、影響、修正を含む発見。 |
+
+## Web コンセプトラボのテンプレート
+
+Web コンセプトラボは攻撃手順ではなく、原因と修正を教えます。次のテンプレートを使います:
+
+1. **アーティファクト:** 架空の `.example` ホスト上の静的なリクエスト/レスポンス、ヘッダーキャプチャ、
+   または短いトイアプリのハンドラー抜粋。ペイロード集、実 URL、ツール出力は含めません。
+2. **コンセプト:** `access-control`、`input-validation`、`session`、`security-headers` のいずれか。
+3. **危険なターゲットの警告:** 実サイトに対してリクエストを再現してはいけない理由を 1〜2 文で説明します。
+   ラボ詳細では証拠の前にスコープ契約内で表示されます。
+4. **フラグ:** 脆弱性クラスまたは根本原因（例: `FLAG{SESSION_FIXATION}`）。
+5. **目標:** 欠陥を特定し、所見・影響・修正を書きます。Finding Worksheet は 3 つすべて（各 20 文字以上）
+   を満たすとラボレポートに追加できます。
+6. **モデル所見:** レポートに使える重大度、影響、修正。
 
 ## ラボチェックリスト
 

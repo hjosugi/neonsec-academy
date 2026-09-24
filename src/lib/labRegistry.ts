@@ -1,6 +1,7 @@
 import type { FlagChallengeAssetKind, Lab, LabKind } from '../data/labs'
 import { canonicalFlag, isExpectedFlagValid } from './flagChallenge'
 import { isAnalysisType } from './analysisChallenges'
+import { isWebConcept } from './webConcept'
 
 export const LAB_KINDS: LabKind[] = ['local', 'dataset', 'simulated', 'writeup']
 export const FLAG_ASSET_KINDS: FlagChallengeAssetKind[] = [
@@ -78,6 +79,12 @@ function textFields(lab: Lab): Array<[string, string]> {
       ['flagChallenge.remediation', typeof challenge.remediation === 'string' ? challenge.remediation : ''],
       ['flagChallenge.reportPrompt', typeof challenge.reportPrompt === 'string' ? challenge.reportPrompt : ''],
     )
+  }
+  if (lab.webConcept) {
+    fields.push([
+      'webConcept.unsafeTargetWarning',
+      typeof lab.webConcept.unsafeTargetWarning === 'string' ? lab.webConcept.unsafeTargetWarning : '',
+    ])
   }
   if (lab.analysis) {
     fields.push(
@@ -226,6 +233,34 @@ export function validateLabRegistry(labs: Lab[]): LabRegistryError[] {
           field: 'analysis',
           kind: 'schema',
           message: 'Analysis challenges must explain both detection and prevention.',
+        })
+      }
+    }
+    if (lab.webConcept !== undefined) {
+      const concept = lab.webConcept
+      if (!concept || !isWebConcept(concept.concept)) {
+        errors.push({ labId: lab.id, field: 'webConcept.concept', kind: 'schema', message: 'Web concept is invalid.' })
+      }
+      if (!concept || typeof concept.unsafeTargetWarning !== 'string' || !concept.unsafeTargetWarning.trim()) {
+        errors.push({
+          labId: lab.id,
+          field: 'webConcept.unsafeTargetWarning',
+          kind: 'schema',
+          message: 'Web concept labs must show an unsafe target warning.',
+        })
+      }
+      if (lab.kind !== 'simulated' && lab.kind !== 'local') {
+        errors.push({ labId: lab.id, field: 'kind', kind: 'schema', message: 'Web concept labs must be simulated or local toy apps.' })
+      }
+      const staticAssets = Array.isArray(lab.flagChallenge?.assets)
+        ? lab.flagChallenge.assets.filter((asset) => asset?.kind === 'request-response' || asset?.kind === 'headers')
+        : []
+      if (staticAssets.length === 0) {
+        errors.push({
+          labId: lab.id,
+          field: 'flagChallenge.assets',
+          kind: 'schema',
+          message: 'Web concept labs must use a static request/response or headers asset.',
         })
       }
     }

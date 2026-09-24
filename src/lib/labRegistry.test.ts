@@ -119,4 +119,19 @@ describe('lab registry validation', () => {
     ])
     expect(errors.some((error) => error.kind === 'live-domain' && error.field === 'analysis.detection')).toBe(true)
   })
+
+  it('requires web concept labs to warn about unsafe targets and use static exchanges', () => {
+    const webLab: Lab = {
+      ...baseLab,
+      kind: 'simulated',
+      webConcept: { concept: 'session', unsafeTargetWarning: ' ' },
+    }
+    const errors = validateLabRegistry([webLab])
+    expect(errors.some((error) => error.field === 'webConcept.unsafeTargetWarning')).toBe(true)
+    expect(errors.some((error) => error.message === 'Web concept labs must use a static request/response or headers asset.')).toBe(true)
+
+    const liveKind = validateLabRegistry([{ ...webLab, kind: 'dataset', webConcept: { concept: 'cookies' as never, unsafeTargetWarning: 'Stay local.' } }])
+    expect(liveKind.some((error) => error.field === 'webConcept.concept')).toBe(true)
+    expect(liveKind.some((error) => error.field === 'kind')).toBe(true)
+  })
 })

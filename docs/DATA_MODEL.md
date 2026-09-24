@@ -345,6 +345,10 @@ Dataset-analysis labs add `analysis: { type, detection, prevention }` where `typ
 become `EvidenceItem` rows with `type: "log"` and a `reference` such as `access.log (synthetic) L8-L9`;
 **Send to report** also appends the item id to a lab report finding's `evidenceIds`.
 
+Web concept labs add `webConcept: { concept, unsafeTargetWarning }`. The learner's
+`LabWorksheet` (`labId`, `finding`, `impact`, `remediation`, `updatedAt`) is stored once per lab in
+`labWorksheets`, included in full backups, and becomes a report finding when all three fields are complete.
+
 Lab kinds are `local`, `dataset`, `simulated`, and `writeup`. All labs must declare allowed and
 forbidden scope before evidence is visible. `validateLabRegistry` checks lab schema and unsafe
 metadata, including complete and unique Flag Challenge definitions. Asset kinds are `log`, `config`,

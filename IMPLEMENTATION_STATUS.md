@@ -33,7 +33,7 @@ exam answer‑review, and Final Gate checklist with Markdown export. 🟡 "Conce
 delivered as per‑question explanations.
 
 ## Phase 4 — Safe Practical Labs 🟡
-Eight synthetic labs (six dataset-analysis families: PCAP, web log, auth log, cloud config, firewall rules, email headers) with scope contracts, evidence, objectives, guiding Q&A, model findings, and
+Eleven synthetic labs (six dataset-analysis families: PCAP, web log, auth log, cloud config, firewall rules, email headers; four web concept labs with unsafe-target warnings and finding worksheets) with scope contracts, evidence, objectives, guiding Q&A, model findings, and
 persisted flag attempts/hints, explanation unlocks, and scoring/Analytics integration
 (`components/lab/FlagChallengePanel.tsx`, `lib/flagChallenge.ts`); a challenge-grouped Evidence Vault with
 report citations (`routes/EvidenceVault.tsx`, `components/lab/ChallengeEvidenceVault.tsx`); and a

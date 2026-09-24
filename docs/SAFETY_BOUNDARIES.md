@@ -36,6 +36,8 @@ target.
 - Lab evidence uses fictional systems and documentation IP ranges instead of live targets.
 - Flag challenges derive answers only from supplied static assets; flags are training labels, never credentials or secrets.
 - Flag submission warns against pasting real credentials, tokens, customer values, or production secrets.
+- Web concept labs show an unsafe-target warning in the scope contract and use only static
+  request/response or header captures from fictional toy apps.
 - Reports label scope as synthetic and ask for evidence, impact, and remediation.
 - Question packs are validated before import and only become user-authored local questions.
 - Full backups and question packs are local JSON files; the app does not upload them.
