@@ -51,6 +51,7 @@ The backup includes:
 - `triageFindings`
 - `practicalResults`
 - `engagementProgress`
+- `trackSubmissions`
 
 Use full backups for your own device migration or recovery. Do not publish them; they can contain
 personal study history, submitted flags, hint use, custom mistake notes, Evidence Vault entries,

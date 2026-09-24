@@ -377,3 +377,37 @@ describe('engagement workflow store', () => {
     expect(useStore.getState().engagementProgress[scenario.id].reportId).toBe(reportId)
   })
 })
+
+describe('track challenge store', () => {
+  it('records submissions, queues misses for review, and hands off to triage and reports', async () => {
+    const { trackChallengeById } = await import('../data/tracks')
+    const { trackQuestionId } = await import('../lib/trackChallenges')
+    useStore.setState({ trackSubmissions: [], attempts: [], reviews: {}, triageFindings: [], reports: [] })
+    const challenge = trackChallengeById('APPSEC-03')!
+    const wrong = useStore.getState().submitTrackChallenge(challenge.id, { selectedLines: [1], classification: challenge.classification.options.find((o) => o !== challenge.classification.answer)!, writeups: {} })!
+    expect(wrong.correct).toBe(false)
+    const questionId = trackQuestionId(challenge)
+    expect(useStore.getState().attempts.at(-1)).toMatchObject({ questionId, correct: false, mode: 'practical' })
+    expect(useStore.getState().reviews[questionId]).toMatchObject({ lastResult: 'incorrect' })
+
+    const right = useStore.getState().submitTrackChallenge(challenge.id, {
+      selectedLines: challenge.answerLines,
+      classification: challenge.classification.answer,
+      writeups: { impact: 'Any customer can read other records.', fix: 'Use parameterized queries everywhere.' },
+    })!
+    expect(right.correct).toBe(true)
+
+    const triageId = useStore.getState().sendTrackChallengeToTriage(challenge.id)
+    expect(useStore.getState().triageFindings.find((item) => item.id === triageId)).toMatchObject({ title: challenge.title, status: 'confirmed', impact: 'Any customer can read other records.' })
+    const reportId = useStore.getState().addTrackChallengeToReport(challenge.id)
+    expect(useStore.getState().addTrackChallengeToReport(challenge.id)).toBe(reportId)
+    const report = useStore.getState().reports.find((item) => item.id === reportId)!
+    expect(report.findings).toHaveLength(1)
+    expect(report.findings[0].remediation).toBe('Use parameterized queries everywhere.')
+
+    const backup = useStore.getState().exportData()
+    useStore.setState({ trackSubmissions: [] })
+    expect(useStore.getState().importData(backup)).toBe(true)
+    expect(useStore.getState().trackSubmissions).toHaveLength(2)
+  })
+})

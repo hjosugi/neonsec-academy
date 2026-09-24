@@ -305,6 +305,27 @@ export interface EngagementProgress {
   updatedAt: number
 }
 
+// ---- CEH+ review-style track challenges (P5-002/003/004) ----
+export interface TrackTimelineEvent {
+  /** ISO-8601 time taken from the selected log line. */
+  time: string
+  line: number
+  observation: string
+}
+
+export interface TrackSubmission {
+  id: string
+  challengeId: string
+  selectedLines: number[]
+  classification: string
+  writeups: Record<string, string>
+  /** SOC challenges: learner-built timeline from selected log lines. */
+  timeline?: TrackTimelineEvent[]
+  correct: boolean
+  scorePct: number
+  at: number
+}
+
 // ---- Player / settings ----
 export type StudyGoal = 'ceh-exam' | 'ceh-practical' | 'ceh-plus' | 'all'
 

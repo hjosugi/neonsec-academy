@@ -22,6 +22,7 @@ import { LabSafetyAudit } from './routes/LabSafetyAudit'
 import { EvidenceVault } from './routes/EvidenceVault'
 import { Beyond } from './routes/Beyond'
 import { EngagementWorkflow } from './routes/EngagementWorkflow'
+import { TrackChallengeDetail, TrackChallengeList } from './routes/TrackWorkspace'
 import { Reports } from './routes/Reports'
 import { Triage } from './routes/Triage'
 import { CityMap } from './routes/CityMap'
@@ -79,6 +80,8 @@ export default function App() {
           <Route path="/evidence" element={<EvidenceVault />} />
           <Route path="/beyond" element={<Beyond />} />
           <Route path="/tracks/pentest" element={<EngagementWorkflow />} />
+          <Route path="/tracks/:track" element={<TrackChallengeList />} />
+          <Route path="/tracks/:track/:id" element={<TrackChallengeDetail />} />
           <Route path="/triage" element={<Triage />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/map" element={<CityMap />} />

@@ -19,23 +19,23 @@ estimate: "4d"
 
 ## Requirements
 
-- [ ] authz, input validation, secrets handling, error handling, dependency risk の課題を作る
+- [x] authz, input validation, secrets handling, error handling, dependency risk の課題を作る
 - [x] 小さな toy code snippet を使う
-- [ ] 各課題で vulnerable line, impact, fix を提出する
-- [ ] 安全な修正例と unit-test idea を解説に含める
+- [x] 各課題で vulnerable line, impact, fix を提出する
+- [x] 安全な修正例と unit-test idea を解説に含める
 
 ## Acceptance Criteria
 
-- [ ] 最低 10 個の code review challenge 仕様がある
+- [x] 最低 10 個の code review challenge 仕様がある
 - [x] 各 challenge に fix explanation がある
-- [ ] finding と report に連携できる
+- [x] finding と report に連携できる
 
 ## Subtasks
 
-- [ ] snippet template を作る
+- [x] snippet template を作る
 - [x] challenge samples を作る
-- [ ] review form を作る
-- [ ] report 連携を作る
+- [x] review form を作る
+- [x] report 連携を作る
 
 ## Dependencies
 
@@ -47,18 +47,22 @@ toy code の静的レビューに限定する。実サービスへの検査、pa
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- `/tracks/appsec` ships 10 toy-snippet code review challenges across authz, input validation,
+  secrets handling, error handling, and dependency risk. Learners submit the vulnerable line(s),
+  classification, impact, and fix; results show the explanation, safe fix, and unit-test idea, and
+  can become Triage or report findings. Misses enter the Review Queue. Verified with unit, type,
+  content, safety, audit, and build checks.

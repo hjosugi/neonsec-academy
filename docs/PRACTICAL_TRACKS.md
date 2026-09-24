@@ -24,6 +24,12 @@ Focus: authz, input validation, secrets handling, dependency risk, secure fix.
 
 Safe mode: toy code snippets only.
 
+Workspace: `/tracks/appsec` has 10 code review challenges (`src/data/tracks/appsec.ts`), two each for
+authz, input validation, secrets handling, error handling, and dependency risk, in TypeScript,
+JavaScript, Python, Java, Go, and manifest snippets. The learner selects the vulnerable line(s),
+classifies the vulnerability, and writes impact and fix; the result shows the explanation, a safe fix
+example, and a unit-test idea. Results can become a Triage finding or a report finding.
+
 ## Track 3: Cloud IAM / Config Review
 
 Focus: least privilege, public exposure, logging, encryption, secret handling.
@@ -66,6 +72,17 @@ The flag component is earned only by an accepted `FLAG{UPPER_SNAKE_CASE}` submis
 unique hint reveals persist locally and feed Analytics. Accepted flags lock further submissions,
 unlock the explanation/remediation/report prompt, and enable the model findings. Guiding-question
 hints and Flag Challenge hints both contribute to the configured hint penalty.
+
+## Track Challenge Engine
+
+AppSec, Cloud, and SOC challenges share one engine (`src/lib/trackChallenges.ts`): select the relevant
+artifact lines, classify the issue, and write the deliverables. Scoring weights lines 40%,
+classification 30%, and writeups 30%; a challenge counts as correct when every answer line is
+selected (one extra context line is tolerated) and the classification matches. Each challenge
+compiles into a module-0 review question (`TC-<id>`), so every submission is recorded as a
+`practical` attempt and misses are scheduled into the Review Queue. Track pages show weakness stats
+by category and skill. Content is validated in tests: schema, track-specific fields, and the Lab
+Safety Audit rules (code and log lines are audited in artifact mode).
 
 ## Dataset Analysis Challenges
 

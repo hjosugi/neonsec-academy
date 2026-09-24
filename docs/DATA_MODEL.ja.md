@@ -282,6 +282,10 @@ Attemptは追加のみです。訂正は履歴を編集するのではなく、�
 
 `examTargetPct`は学習者の個人的な模擬スコア目標のためプロフィールの一部です。
 
+`TrackSubmission`（`trackSubmissions`）は `challengeId`、`selectedLines`、`classification`、キーごとの
+`writeups`、SOC 用の任意の `timeline`（`{ time, line, observation }`）、再計算された `correct` と `scorePct` を
+保存します。インポートと復元時は未知のチャレンジを破棄し、静的チャレンジに対して全行を再採点します。
+
 `EngagementProgress`（`engagementProgress` にシナリオ ID ごと）は、ステップごとのチェック、スコープクイズの回答、
 資産ごとのスコープ内/外の判断、所見ごとのトリアージのステータスと重大度、RoE の確認、生成した `reportId`、
 5 ステップ完了時の `completedAt` を保存します。インポートと復元時には静的シナリオと一致しない回答を破棄します。

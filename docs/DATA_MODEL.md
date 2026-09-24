@@ -302,6 +302,11 @@ Readiness thresholds are persisted with other local settings:
 
 `examTargetPct` remains part of the profile because it is the learner's personal mock-score target.
 
+`TrackSubmission` (`trackSubmissions`) stores `challengeId`, `selectedLines`, `classification`,
+`writeups` by key, an optional SOC `timeline` of `{ time, line, observation }`, and the recomputed
+`correct` and `scorePct`. Import and hydration drop unknown challenges and re-grade every row against
+the static challenge.
+
 `EngagementProgress` (per scenario id in `engagementProgress`) stores checklist marks per step, scope
 quiz answers, in/out-of-scope decisions per asset, triage status and severity per finding, RoE
 acknowledgement, the generated `reportId`, and `completedAt` once all five steps are complete.

@@ -31,6 +31,7 @@ import type {
   Severity,
   FindingStatus,
   TriageFinding,
+  TrackSubmission,
 } from '../types'
 import { SEED_QUESTIONS, enrichQuestion } from '../data/questions'
 import { LABS, labById } from '../data/labs'
@@ -45,6 +46,10 @@ import { gradeExam } from '../lib/exam'
 import { gradePracticalSession } from '../lib/practicalSim'
 import { ENGAGEMENTS } from '../data/tracks/engagement'
 import { engagementReport, engagementStatus, normalizeEngagementProgress } from '../lib/engagement'
+import { TRACK_CHALLENGES, trackChallengeById } from '../data/tracks'
+import { TRACKS } from '../data/taxonomy'
+import { normalizeTrackSubmissions, trackQuestionId, type TrackDraft } from '../lib/trackChallenges'
+import type { TrackChallenge } from '../data/tracks/types'
 import {
   normalizeEvidenceItem,
   normalizeEvidenceItems,
@@ -148,6 +153,25 @@ function withActivity(
   return { ...profile, xp, streakDays, lastActiveDay }
 }
 
+/** Maps a track submission onto finding fields (learner writing first, model answer as fallback). */
+function trackFindingFields(challenge: TrackChallenge, submission: TrackSubmission) {
+  const text = (keys: string[]) => {
+    for (const key of keys) {
+      const value = submission.writeups[key]?.trim()
+      if (value) return value
+    }
+    const model = challenge.writeups.find((item) => keys.includes(item.key))
+    return model?.model ?? ''
+  }
+  const lines = submission.selectedLines.map((line) => `L${line}: ${challenge.artifact.lines[line - 1]?.trim() ?? ''}`)
+  return {
+    asset: challenge.artifact.label,
+    impact: text(['impact', 'risk', 'indicator', 'affected-asset']),
+    remediation: text(['fix', 'remediation', 'next-action']) || challenge.remediation,
+    evidence: [`${challenge.artifact.label} (synthetic)`, ...lines].join('\n'),
+  }
+}
+
 // ============================================================
 interface AppState {
   version: number
@@ -173,6 +197,7 @@ interface AppState {
   activePractical: PracticalSession | null
   practicalResults: PracticalResult[]
   engagementProgress: Record<string, EngagementProgress>
+  trackSubmissions: TrackSubmission[]
 }
 
 interface AppActions {
@@ -229,6 +254,12 @@ interface AppActions {
   /** Creates or refreshes the engagement report from triage decisions; returns its id. */
   generateEngagementReport: (scenarioId: string) => string | null
   resetEngagement: (scenarioId: string) => void
+  // CEH+ track challenges
+  submitTrackChallenge: (challengeId: string, draft: TrackDraft) => TrackSubmission | null
+  /** Creates a triage finding from the latest submission; returns the triage id. */
+  sendTrackChallengeToTriage: (challengeId: string) => string | null
+  /** Adds the latest submission as a finding in the track's review report; returns the report id. */
+  addTrackChallengeToReport: (challengeId: string) => string | null
   // flag challenges
   submitLabFlag: (challengeId: string, submitted: string) => FlagAttempt | null
   revealLabFlagHint: (challengeId: string, hintIndex: number) => boolean
@@ -288,6 +319,9 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
   const triageFindings = Array.isArray(persisted.triageFindings)
     ? normalizeTriageFindings(persisted.triageFindings)
     : currentState.triageFindings
+  const trackSubmissions = Array.isArray(persisted.trackSubmissions)
+    ? normalizeTrackSubmissions(persisted.trackSubmissions, TRACK_CHALLENGES)
+    : currentState.trackSubmissions
   const engagementProgress = persisted.engagementProgress !== undefined
     ? normalizeEngagementProgress(persisted.engagementProgress, ENGAGEMENTS)
     : currentState.engagementProgress
@@ -301,6 +335,7 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
     labWorksheets,
     triageFindings,
     engagementProgress,
+    trackSubmissions,
   }
 }
 
@@ -328,6 +363,7 @@ const initialState: AppState = {
   activePractical: null,
   practicalResults: [],
   engagementProgress: {},
+  trackSubmissions: [],
 }
 
 export const useStore = create<Store>()(
@@ -717,6 +753,97 @@ export const useStore = create<Store>()(
           return { engagementProgress }
         }),
 
+      submitTrackChallenge: (challengeId, draft) => {
+        const challenge = trackChallengeById(challengeId)
+        if (!challenge) return null
+        const now = Date.now()
+        const [submission] = normalizeTrackSubmissions([{ ...draft, id: uid('ts-'), challengeId, at: now }], TRACK_CHALLENGES)
+        if (!submission) return null
+        const questionId = trackQuestionId(challenge)
+        set((s) => {
+          const attempts = [...s.attempts, {
+            id: uid('a-'),
+            questionId,
+            at: now,
+            correct: submission.correct,
+            chosen: submission.classification || null,
+            mode: 'practical' as const,
+          }]
+          const reviews = { ...s.reviews }
+          const existing = reviews[questionId] ?? newReviewItem(questionId, now)
+          // Missed challenges are scheduled like a failed review so they surface in the Review Queue.
+          reviews[questionId] = scheduleNext(existing, autoGrade(submission.correct), now)
+          const profile = withActivity(s.profile, attempts, now, submission.correct ? XP.answerCorrect * 2 : XP.answerWrong, s.settings.dailyGoal)
+          return { trackSubmissions: [...s.trackSubmissions, submission], attempts, reviews, profile }
+        })
+        get().refreshBadges()
+        return submission
+      },
+
+      sendTrackChallengeToTriage: (challengeId) => {
+        const challenge = trackChallengeById(challengeId)
+        const submission = [...get().trackSubmissions].reverse().find((item) => item.challengeId === challengeId)
+        if (!challenge || !submission) return null
+        const finding = trackFindingFields(challenge, submission)
+        const now = Date.now()
+        const triage: TriageFinding = {
+          id: uid('tf-'),
+          title: challenge.title,
+          asset: finding.asset,
+          evidence: finding.evidence,
+          evidenceIds: [],
+          impact: finding.impact,
+          impactRating: 'significant',
+          likelihood: 'possible',
+          severity: rubricSeverity('significant', 'possible'),
+          severityMode: 'rubric',
+          remediation: finding.remediation,
+          status: submission.correct ? 'confirmed' : 'open',
+          history: [],
+          createdAt: now,
+          updatedAt: now,
+        }
+        return get().upsertTriageFinding(triage) ? triage.id : null
+      },
+
+      addTrackChallengeToReport: (challengeId) => {
+        const challenge = trackChallengeById(challengeId)
+        const state = get()
+        const submission = [...state.trackSubmissions].reverse().find((item) => item.challengeId === challengeId)
+        if (!challenge || !submission) return null
+        const title = `${TRACKS[challenge.track].name} review report`
+        const now = Date.now()
+        const existing = state.reports.find((report) => report.title === title)
+        const base: Report = existing ?? {
+          id: uid('r-'),
+          title,
+          scope: `Synthetic ${TRACKS[challenge.track].short} track challenges (fictional artifacts only).`,
+          summary: '',
+          methodology: 'Static review of synthetic artifacts inside NeonSec Academy: select the relevant lines, classify the issue, and write impact and remediation.',
+          findings: [],
+          createdAt: now,
+          updatedAt: now,
+        }
+        const fields = trackFindingFields(challenge, submission)
+        const finding = {
+          id: uid('f-'),
+          title: challenge.title,
+          severity: 'medium' as const,
+          impact: fields.impact,
+          remediation: fields.remediation,
+          evidence: fields.evidence,
+          evidenceIds: [],
+          asset: fields.asset,
+        }
+        const report: Report = {
+          ...base,
+          findings: [...base.findings.filter((item) => item.title !== challenge.title), finding],
+          updatedAt: now,
+        }
+        state.upsertReport(report)
+        return report.id
+      },
+
       submitLabFlag: (challengeId, submitted) => {
         const lab = labById(challengeId)
         const clean = sanitizeFlagSubmission(submitted)
@@ -958,6 +1085,8 @@ export const useStore = create<Store>()(
           activeExam: null,
           activePractical: null,
           practicalResults: [],
+          trackSubmissions: [],
+          engagementProgress: {},
           flagAttempts: [],
           flagHintUses: [],
           profile: {
@@ -993,6 +1122,7 @@ export const useStore = create<Store>()(
           triageFindings: s.triageFindings,
           practicalResults: s.practicalResults,
           engagementProgress: s.engagementProgress,
+          trackSubmissions: s.trackSubmissions,
         }
         return JSON.stringify(payload, null, 2)
       },
@@ -1044,6 +1174,9 @@ export const useStore = create<Store>()(
               engagementProgress: d.engagementProgress !== undefined
                 ? normalizeEngagementProgress(d.engagementProgress, ENGAGEMENTS)
                 : s.engagementProgress,
+              trackSubmissions: Array.isArray(d.trackSubmissions)
+                ? normalizeTrackSubmissions(d.trackSubmissions, TRACK_CHALLENGES)
+                : s.trackSubmissions,
             }
           })
           return true
@@ -1079,6 +1212,7 @@ export const useStore = create<Store>()(
         activePractical: s.activePractical,
         practicalResults: s.practicalResults,
         engagementProgress: s.engagementProgress,
+        trackSubmissions: s.trackSubmissions,
       }),
       merge: mergePersistedStoreState,
     },

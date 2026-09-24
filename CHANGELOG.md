@@ -2,6 +2,23 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.28 - 2026-09-24
+
+CEH+ AppSec code review challenge track on a shared track challenge engine.
+
+### Added
+
+- 10 AppSec code review challenges (authz, input validation, secrets handling, error handling,
+  dependency risk) using toy TypeScript, JavaScript, Python, Java, Go, and manifest snippets.
+- Shared track challenge engine: line selection, classification, and writeups with 40/30/30 scoring,
+  per-category and per-skill weakness stats, and content validation that includes the Lab Safety Audit
+  rules in artifact mode.
+- Track pages (`/tracks/:track`, `/tracks/:track/:id`) with a line-selectable artifact viewer, result
+  feedback, safe fix example, unit-test idea, and hand-off to the Triage board or a track review report.
+- Each challenge compiles into a module-0 review question; submissions are recorded as `practical`
+  attempts and misses are scheduled into the Review Queue. Submissions persist and are re-graded on
+  import.
+
 ## v1.0.27 - 2026-09-24
 
 CEH+ pentest engagement workflow track from scope review to report delivery.

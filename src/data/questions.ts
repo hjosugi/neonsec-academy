@@ -18,6 +18,8 @@ import groupJ from './questions/group-j.json'
 import groupK from './questions/group-k.json'
 import groupL from './questions/group-l.json'
 import groupP from './questions/group-p.json'
+import { TRACK_CHALLENGES } from './tracks'
+import { trackChallengeRawQuestion } from '../lib/trackQuestions'
 
 const GROUPS = [groupA, groupB, groupC, groupD, groupE, groupF, groupG, groupH, groupI, groupJ, groupK, groupL, groupP]
 
@@ -51,7 +53,8 @@ export function enrichQuestion(q: RawQuestion): Question | null {
 }
 
 function loadSeed(): Question[] {
-  const raw = (GROUPS as unknown as RawQuestion[][]).flat()
+  // Track challenges compile into module-0 review questions (ids prefixed TC-).
+  const raw = [...(GROUPS as unknown as RawQuestion[][]).flat(), ...TRACK_CHALLENGES.map(trackChallengeRawQuestion)]
   const seen = new Set<string>()
   const out: Question[] = []
   for (const r of raw) {
