@@ -42,6 +42,36 @@ describe('track challenge content', () => {
     }
   })
 
+  it('ships at least eight cloud config reviews with risk, remediation, and least privilege', () => {
+    const cloud = TRACK_CHALLENGES.filter((challenge) => challenge.track === 'cloud')
+    expect(cloud.length).toBeGreaterThanOrEqual(8)
+    expect(new Set(cloud.map((challenge) => challenge.category))).toEqual(
+      new Set(['iam-over-permission', 'public-exposure', 'weak-logging', 'missing-encryption', 'secret-handling']),
+    )
+    for (const challenge of cloud) {
+      expect(challenge.kind).toBe('config-review')
+      expect(challenge.cehModules).toContain(19)
+      expect(challenge.writeups.map((item) => item.key)).toEqual(['risk', 'remediation'])
+      expect(challenge.leastPrivilege?.length).toBeGreaterThan(40)
+      expect(challenge.remediation.length).toBeGreaterThan(20)
+    }
+  })
+
+  it('reports cloud track weakness stats by category', () => {
+    const cloud = TRACK_CHALLENGES.filter((challenge) => challenge.track === 'cloud')
+    const wrong = cloud.find((challenge) => challenge.category === 'public-exposure')!
+    const right = cloud.find((challenge) => challenge.category === 'weak-logging')!
+    const submissions = normalizeTrackSubmissions([
+      { id: 'c1', challengeId: wrong.id, at: 1, ...perfectDraft(wrong), classification: 'wrong' },
+      { id: 'c2', challengeId: right.id, at: 2, ...perfectDraft(right) },
+    ], TRACK_CHALLENGES)
+    const stats = trackStats(TRACK_CHALLENGES, submissions, 'cloud')
+    expect(stats.total).toBe(cloud.length)
+    expect(stats.byCategory.find((row) => row.key === 'public-exposure')).toMatchObject({ attempted: 1, solved: 0, accuracyPct: 0 })
+    expect(stats.byCategory.find((row) => row.key === 'weak-logging')).toMatchObject({ attempted: 1, solved: 1, accuracyPct: 100 })
+    expect(stats.weakest[0].key).toBe('public-exposure')
+  })
+
   it('compiles every challenge into a module-0 review question', () => {
     for (const challenge of TRACK_CHALLENGES) {
       const question = SEED_QUESTIONS.find((item) => item.id === trackQuestionId(challenge))

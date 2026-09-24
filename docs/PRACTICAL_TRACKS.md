@@ -36,6 +36,12 @@ Focus: least privilege, public exposure, logging, encryption, secret handling.
 
 Safe mode: synthetic config files only.
 
+Workspace: `/tracks/cloud` has 8 vendor-neutral config review challenges (`src/data/tracks/cloud.ts`)
+covering IAM over-permission, public exposure, weak logging, missing encryption, and secret handling,
+with fictional account IDs only. The learner selects the risky lines, classifies the risk, and writes
+risk and remediation; every result explains the least-privilege principle for that config. The track
+page shows cloud weakness stats by category and skill.
+
 ## Track 4: SOC Log Investigation
 
 Focus: timeline, indicators, affected assets, containment idea.

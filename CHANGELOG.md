@@ -2,6 +2,20 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.29 - 2026-09-24
+
+CEH+ Cloud IAM / config review track with least-privilege explanations and weakness stats.
+
+### Added
+
+- 8 vendor-neutral cloud config review challenges (IAM over-permission, public exposure, weak logging,
+  missing encryption, secret handling) with fictional account IDs and synthetic JSON, YAML, and
+  HCL-style configs.
+- Each challenge asks for the risky lines, a risk classification, and risk + remediation writeups, and
+  explains least privilege for that configuration.
+- `/tracks/cloud` workspace with cloud weakness stats by category and skill, review-queue hand-off, and
+  Triage/report integration through the shared track engine.
+
 ## v1.0.28 - 2026-09-24
 
 CEH+ AppSec code review challenge track on a shared track challenge engine.

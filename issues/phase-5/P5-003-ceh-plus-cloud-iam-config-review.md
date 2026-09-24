@@ -22,11 +22,11 @@ Cloud security の基礎を、模擬設定ファイルのレビューで学ぶ t
 - [x] IAM over-permission, public exposure, weak logging, missing encryption, secret handling を扱う
 - [x] vendor 固有操作ではなく、概念と設定レビューを中心にする
 - [x] synthetic config files のみ使う
-- [ ] 各課題に least privilege の説明を入れる
+- [x] 各課題に least privilege の説明を入れる
 
 ## Acceptance Criteria
 
-- [ ] 最低 8 個の cloud config review challenge がある
+- [x] 最低 8 個の cloud config review challenge がある
 - [x] 各 challenge に risk と remediation がある
 - [x] cloud track の weakness stats が出る
 
@@ -34,7 +34,7 @@ Cloud security の基礎を、模擬設定ファイルのレビューで学ぶ t
 
 - [x] cloud scenario を作る
 - [x] config sample を作る
-- [ ] review form を作る
+- [x] review form を作る
 - [x] analytics tag を追加する
 
 ## Dependencies
@@ -47,18 +47,21 @@ Cloud security の基礎を、模擬設定ファイルのレビューで学ぶ t
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- `/tracks/cloud` ships 8 synthetic, vendor-neutral config reviews across IAM over-permission,
+  public exposure, weak logging, missing encryption, and secret handling. Each has risk and
+  remediation deliverables plus a least-privilege explanation; the track page shows weakness stats by
+  category and skill. Verified with unit, type, content, safety, audit, and build checks.

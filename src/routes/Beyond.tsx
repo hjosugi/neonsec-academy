@@ -32,6 +32,7 @@ const TRACK_LABS: Record<TrackKey, string[]> = {
 const TRACK_WORKSPACES: Partial<Record<TrackKey, { to: string; label: string }>> = {
   pentest: { to: '/tracks/pentest', label: 'Engagement workflow' },
   appsec: { to: '/tracks/appsec', label: 'Code review challenges' },
+  cloud: { to: '/tracks/cloud', label: 'Config review challenges' },
 }
 
 export function Beyond() {
