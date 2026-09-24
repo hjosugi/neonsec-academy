@@ -2,6 +2,22 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.25 - 2026-09-24
+
+CEH Practical-style 20 challenge simulator with a readiness report and review-queue hand-off.
+
+### Added
+
+- 32 practical challenges (`group-p.json`, `Q-PRAC-*`) across all 20 CEH modules: dataset analysis,
+  config review, concept lab, and report prompt items, each answered from a synthetic artifact.
+- Practical Sim (`/practical`): seeded 20-challenge sessions (8 dataset, 5 config, 4 concept, 3 report),
+  Full (6 h) and Sprint (2 h) timers, progress navigator, unsure flag, self-graded report prompts, and
+  auto-submit on timeout; active sessions persist across reloads.
+- Practical readiness report by challenge type, CEH module, and skill with next actions and Markdown
+  export; results are kept in `practicalResults` and full backups.
+- Every challenge is recorded as a `practical` attempt; wrong and unsure challenges are scheduled into
+  the Review Queue.
+
 ## v1.0.24 - 2026-09-24
 
 Report Builder with six report sections, generated drafts, a quality checklist, and safety warnings.

@@ -17,6 +17,9 @@ import type {
   Grade,
   LabWorksheet,
   MistakeNote,
+  PracticalAnswer,
+  PracticalResult,
+  PracticalSession,
   Profile,
   Question,
   RawQuestion,
@@ -38,6 +41,7 @@ import { isCorrect } from '../lib/grade'
 import { moduleStats, domainStats } from '../lib/analytics'
 import { computeDerivedBadges } from '../lib/badges'
 import { gradeExam } from '../lib/exam'
+import { gradePracticalSession } from '../lib/practicalSim'
 import {
   normalizeEvidenceItem,
   normalizeEvidenceItems,
@@ -163,6 +167,8 @@ interface AppState {
   reports: Report[]
   labWorksheets: LabWorksheet[]
   triageFindings: TriageFinding[]
+  activePractical: PracticalSession | null
+  practicalResults: PracticalResult[]
 }
 
 interface AppActions {
@@ -208,6 +214,12 @@ interface AppActions {
   examGoto: (index: number) => void
   cancelExam: () => void
   submitExam: () => ExamResult | null
+  // practical simulator
+  startPractical: (session: PracticalSession) => void
+  practicalAnswer: (questionId: string, patch: Partial<PracticalAnswer>) => void
+  practicalGoto: (index: number) => void
+  cancelPractical: () => void
+  submitPractical: () => PracticalResult | null
   // flag challenges
   submitLabFlag: (challengeId: string, submitted: string) => FlagAttempt | null
   revealLabFlagHint: (challengeId: string, hintIndex: number) => boolean
@@ -300,6 +312,8 @@ const initialState: AppState = {
   reports: [],
   labWorksheets: [],
   triageFindings: [],
+  activePractical: null,
+  practicalResults: [],
 }
 
 export const useStore = create<Store>()(
@@ -593,6 +607,72 @@ export const useStore = create<Store>()(
         return result
       },
 
+      startPractical: (session) => set({ activePractical: session }),
+
+      practicalAnswer: (questionId, patch) =>
+        set((s) => {
+          if (!s.activePractical || !s.activePractical.questionIds.includes(questionId)) return {}
+          const previous = s.activePractical.answers[questionId] ?? { chosen: null }
+          return {
+            activePractical: {
+              ...s.activePractical,
+              answers: { ...s.activePractical.answers, [questionId]: { ...previous, ...patch } },
+            },
+          }
+        }),
+
+      practicalGoto: (index) =>
+        set((s) => {
+          if (!s.activePractical) return {}
+          const clamped = Math.max(0, Math.min(index, s.activePractical.questionIds.length - 1))
+          return { activePractical: { ...s.activePractical, currentIndex: clamped } }
+        }),
+
+      cancelPractical: () => set({ activePractical: null }),
+
+      submitPractical: () => {
+        const s = get()
+        const session = s.activePractical
+        if (!session) return null
+        const now = Date.now()
+        const questions = buildQuestionCatalog(s.userQuestions)
+        const result = gradePracticalSession(session, questions, now)
+        const wrong = new Set(result.wrongIds)
+        const weak = new Set(result.weakIds)
+
+        set((st) => {
+          const attempts = [...st.attempts]
+          const reviews = { ...st.reviews }
+          for (const questionId of session.questionIds) {
+            const answer = session.answers[questionId]
+            const correct = !wrong.has(questionId)
+            const confidence: AttemptConfidence = weak.has(questionId) ? 2 : correct ? 4 : 2
+            attempts.push({
+              id: uid('a-'),
+              questionId,
+              at: now,
+              correct,
+              chosen: answer?.chosen ?? null,
+              mode: 'practical',
+              confidence,
+            })
+            // Wrong and unsure challenges are scheduled early so they land in the Review Queue.
+            const existing = reviews[questionId] ?? newReviewItem(questionId, now)
+            reviews[questionId] = scheduleNext(existing, autoGrade(correct, confidence), now, confidence)
+          }
+          const profile = withActivity(st.profile, attempts, now, XP.mockComplete + (result.passed ? XP.mockPass : 0), st.settings.dailyGoal)
+          return {
+            attempts,
+            reviews,
+            profile,
+            activePractical: null,
+            practicalResults: [result, ...st.practicalResults].slice(0, 30),
+          }
+        })
+        get().refreshBadges()
+        return result
+      },
+
       submitLabFlag: (challengeId, submitted) => {
         const lab = labById(challengeId)
         const clean = sanitizeFlagSubmission(submitted)
@@ -832,6 +912,8 @@ export const useStore = create<Store>()(
           drillResults: [],
           examResults: [],
           activeExam: null,
+          activePractical: null,
+          practicalResults: [],
           flagAttempts: [],
           flagHintUses: [],
           profile: {
@@ -865,6 +947,7 @@ export const useStore = create<Store>()(
           reports: s.reports,
           labWorksheets: s.labWorksheets,
           triageFindings: s.triageFindings,
+          practicalResults: s.practicalResults,
         }
         return JSON.stringify(payload, null, 2)
       },
@@ -912,6 +995,7 @@ export const useStore = create<Store>()(
               reports,
               labWorksheets,
               triageFindings,
+              practicalResults: Array.isArray(d.practicalResults) ? d.practicalResults : s.practicalResults,
             }
           })
           return true
@@ -944,6 +1028,8 @@ export const useStore = create<Store>()(
         reports: s.reports,
         labWorksheets: s.labWorksheets,
         triageFindings: s.triageFindings,
+        activePractical: s.activePractical,
+        practicalResults: s.practicalResults,
       }),
       merge: mergePersistedStoreState,
     },

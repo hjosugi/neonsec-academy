@@ -13,6 +13,7 @@ import { Exam } from './routes/Exam'
 import { ExamRunner } from './routes/ExamRunner'
 import { ExamResult } from './routes/ExamResult'
 import { FinalGate } from './routes/FinalGate'
+import { PracticalSim } from './routes/PracticalSim'
 import { Analytics } from './routes/Analytics'
 import { Mistakes } from './routes/Mistakes'
 import { Labs } from './routes/Labs'
@@ -67,6 +68,7 @@ export default function App() {
           <Route path="/exam/run" element={<ExamRunner />} />
           <Route path="/exam/result/:id" element={<ExamResult />} />
           <Route path="/final-gate" element={<FinalGate />} />
+          <Route path="/practical" element={<PracticalSim />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/mistakes" element={<Mistakes />} />
           <Route path="/labs" element={<Labs />} />

@@ -9,6 +9,7 @@ import {
   FileText,
   Flag,
   FlaskConical,
+  Gauge,
   LayoutDashboard,
   MapPinned,
   RefreshCcw,
@@ -39,6 +40,7 @@ export const NAV: NavSection[] = [
       { to: '/practice', label: 'Practice', icon: Crosshair },
       { to: '/review', label: 'Review Queue', icon: RefreshCcw, badge: 'due' },
       { to: '/exam', label: 'Mock Exam', icon: Timer },
+      { to: '/practical', label: 'Practical Sim', icon: Gauge },
     ],
   },
   {

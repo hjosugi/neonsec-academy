@@ -44,6 +44,7 @@ Neon City Map
 | Practice `/practice` | Start untimed drills by all questions, module, CEH+ track, weak areas, or difficulty. | Dashboard, Analytics row click, City Map, Beyond. | Question runner, Review Queue, Analytics. |
 | Review Queue `/review` | Clear due spaced-repetition items and grade recall. | Dashboard due card, nav due badge, command palette. | Mistakes, Question Detail, session summary, Dashboard. |
 | Mock Exam `/exam` | Start or resume timed CEH mock exams and inspect exam history. | Dashboard, nav, command palette. | Exam Runner, Exam Result, Analytics, Final Gate. |
+| Practical Sim `/practical` | Run a timed 20-challenge CEH Practical-style session from synthetic artifacts and review the readiness report. | Nav, command palette. | Review Queue, Question Detail, Markdown export. |
 | Exam Runner `/exam/run` | Complete a timed exam with answer state, flags, and navigator. | Mock Exam resume/start. | Exam Result on submit, Mock Exam on cancel. |
 | Exam Result `/exam/result/:id` | Review score, pass/fail state, per-domain results, and missed answers. | Mock Exam history, submit flow. | Practice weak areas, Question Detail, Analytics. |
 | Analytics `/analytics` | Inspect module matrix, domain mastery, flag challenge results, readiness factors, and weak modules. | Dashboard, nav, exam result, Safe Labs. | Practice module drill, Safe Labs, Final Gate, Question Bank. |

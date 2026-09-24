@@ -18,7 +18,7 @@ implemented as living code + docs (`src/data/taxonomy.ts`, `src/types/`, `docs/`
 | P1‑006 Answer + explanation | ✅ | `components/question/QuestionRunner.tsx` |
 | P1‑007 Attempt history + stats | ✅ | store `attempts`, `lib/analytics.ts` |
 | P1‑008 JSON import/export | ✅ | Settings → export/import |
-| P1‑009 Safe seed set | ✅ | **371 questions**, all 20 modules + CEH+ |
+| P1‑009 Safe seed set | ✅ | **405 questions**, all 20 modules + CEH+ |
 | P1‑010 Cyber terminal layout | ✅ | `components/layout/*` |
 
 ## Phase 2 — Review System ✅
@@ -39,7 +39,9 @@ persisted flag attempts/hints, explanation unlocks, and scoring/Analytics integr
 report citations (`routes/EvidenceVault.tsx`, `components/lab/ChallengeEvidenceVault.tsx`); and a
 report builder with Markdown export (`routes/Reports.tsx`); a vulnerability triage board with rubric/manual
 severity, status flow, and report hand-off (`routes/Triage.tsx`, `lib/triage.ts`).
-⬜ The full 20‑challenge simulator remains as an issue.
+A CEH Practical-style 20-challenge simulator (`routes/PracticalSim.tsx`, `lib/practicalSim.ts`) mixes
+dataset analysis, config review, concept labs, and report prompts with a timer, readiness report, and
+review-queue hand-off.
 
 ## Phase 5 — CEH+ Practical Track 🟡
 A **Beyond District** hub (`routes/Beyond.tsx`) unifies the six CEH+ tracks
@@ -67,6 +69,7 @@ Settings. ⬜ A dedicated demo/landing mode remains tracked for follow-up.
 - **P6‑012** ✅ v1 acceptance test record
 
 ## Question bank size
-Seed bank expanded from 263 → **373** questions (batch-2 `Q-CEHB-*` items deepen the
+Seed bank expanded from 263 → **405** questions (32 `Q-PRAC-*` practical simulator challenges in
+`group-p.json`) (batch-2 `Q-CEHB-*` items deepen the
 high-weight domains: recon, system, network, web; CEH+ additions cover self-graded SOC triage and
 report-writing prompts).

@@ -1,0 +1,810 @@
+[
+  {
+    "id": "Q-PRAC-001",
+    "title": "Spray source in an auth log",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "easy",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:log-analysis"
+    ],
+    "body": "You are reviewing a synthetic authentication log exported from a fictional NeonCorp intranet portal.\n\n```text\n2026-03-14T02:10:02Z user=alice src=198.51.100.24 result=SUCCESS mfa=yes\n2026-03-14T02:11:09Z user=bob   src=203.0.113.45 result=FAIL reason=bad_password\n2026-03-14T02:11:12Z user=carol src=203.0.113.45 result=FAIL reason=bad_password\n2026-03-14T02:11:15Z user=dave  src=203.0.113.45 result=FAIL reason=bad_password\n2026-03-14T02:11:19Z user=erin  src=203.0.113.45 result=FAIL reason=bad_password\n2026-03-14T02:12:40Z user=frank src=192.0.2.18   result=FAIL reason=bad_password\n2026-03-14T02:12:44Z user=frank src=192.0.2.18   result=SUCCESS mfa=yes\n2026-03-14T02:13:02Z user=grace src=203.0.113.45 result=SUCCESS mfa=no\n```\n\nWhich source address performed the password spray?",
+    "choices": [
+      "203.0.113.45",
+      "192.0.2.18",
+      "198.51.100.24",
+      "192.0.2.1"
+    ],
+    "answer": "203.0.113.45",
+    "explanation": {
+      "answer": "203.0.113.45 tried one password each against many different usernames within seconds, then succeeded against an account without MFA.",
+      "why": "Password spraying is one-source-to-many-accounts with few guesses per account; 192.0.2.18 is a single user mistyping once and then succeeding with MFA.",
+      "trap": "Do not pick the address with a FAIL followed by SUCCESS for the same user; that is normal user behavior, not spraying.",
+      "memory_phrase": "Spray = one source, many users, few tries."
+    }
+  },
+  {
+    "id": "Q-PRAC-002",
+    "title": "Cleartext protocol in a packet summary",
+    "type": "mcq",
+    "module": 8,
+    "difficulty": "easy",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:packet-analysis"
+    ],
+    "body": "A synthetic packet summary from a deliberately prepared training capture is shown below.\n\n```text\nNo.  Time   Source        Destination   Proto   Info\n10   0.201  10.20.0.15 -> 10.20.0.40    SSH     Encrypted packet (len=96)\n22   0.954  10.20.0.16 -> 10.20.0.41    TLSv1.3 Application Data\n37   1.482  10.20.0.17 -> 10.20.0.42    TELNET  Data: login: svc_ops\n38   1.790  10.20.0.17 -> 10.20.0.42    TELNET  Data: Password: ******** (masked by dataset)\n51   2.330  10.20.0.18 -> 10.20.0.43    LDAPS   Encrypted bind request\n```\n\nWhich protocol in the capture exposes authentication material to an on-path observer?",
+    "choices": [
+      "TELNET",
+      "SSH",
+      "TLSv1.3",
+      "LDAPS"
+    ],
+    "answer": "TELNET",
+    "explanation": {
+      "answer": "TELNET sends the login name and password as readable characters, so anyone on the path can capture them.",
+      "why": "SSH, TLS 1.3, and LDAPS all encrypt the session; only the TELNET rows show authentication prompts and responses in plaintext.",
+      "trap": "The masked password in the summary is only masked by the training capture; on the wire TELNET transmits it unencrypted.",
+      "memory_phrase": "If you can read the login prompt, so can the attacker."
+    }
+  },
+  {
+    "id": "Q-PRAC-003",
+    "title": "Open port during a sweep",
+    "type": "mcq",
+    "module": 3,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:log-analysis",
+      "skill:packet-analysis"
+    ],
+    "body": "A synthetic perimeter firewall log shows a burst of connection attempts from one fictional source against an internal host.\n\n```text\n2026-03-14T04:20:01Z src=203.0.113.99 dst=10.30.1.25 dport=21   action=DROP flags=S\n2026-03-14T04:20:01Z src=203.0.113.99 dst=10.30.1.25 dport=22   action=DROP flags=S\n2026-03-14T04:20:02Z src=203.0.113.99 dst=10.30.1.25 dport=80   action=DROP flags=S\n2026-03-14T04:20:02Z src=203.0.113.99 dst=10.30.1.25 dport=443  action=DROP flags=S\n2026-03-14T04:20:02Z src=203.0.113.99 dst=10.30.1.25 dport=3389 action=ALLOW flags=S\n2026-03-14T04:20:03Z src=203.0.113.99 dst=10.30.1.25 dport=8080 action=DROP flags=S\n```\n\nWhich destination port was reachable from the scanning source and should be reviewed first?",
+    "choices": [
+      "3389",
+      "22",
+      "443",
+      "8080"
+    ],
+    "answer": "3389",
+    "explanation": {
+      "answer": "Only the connection to port 3389 was allowed; every other probe was dropped by the firewall.",
+      "why": "A sequential SYN burst across many ports from one source is a port sweep, and the allowed remote-desktop port is the exposure that needs an immediate rule review.",
+      "trap": "Do not assume common web ports are open; the action column shows they were dropped.",
+      "memory_phrase": "Read the ALLOW, not the noise."
+    }
+  },
+  {
+    "id": "Q-PRAC-004",
+    "title": "Flood target in flow records",
+    "type": "mcq",
+    "module": 10,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:log-analysis",
+      "skill:packet-analysis"
+    ],
+    "body": "Synthetic flow records summarize one minute of inbound traffic to a fictional NeonCorp edge segment.\n\n```text\nwindow=2026-03-14T05:00Z dst=192.0.2.80:443 syn=48210 synack=48190 ack=312 srcs=2204\nwindow=2026-03-14T05:00Z dst=192.0.2.81:443 syn=640   synack=640   ack=636 srcs=410\nwindow=2026-03-14T05:00Z dst=192.0.2.82:25  syn=90    synack=90    ack=90  srcs=35\nwindow=2026-03-14T05:00Z dst=192.0.2.83:53  syn=12    synack=12    ack=12  srcs=7\n```\n\nWhich destination shows the pattern of a SYN flood?",
+    "choices": [
+      "192.0.2.80:443",
+      "192.0.2.81:443",
+      "192.0.2.82:25",
+      "192.0.2.83:53"
+    ],
+    "answer": "192.0.2.80:443",
+    "explanation": {
+      "answer": "192.0.2.80:443 received tens of thousands of SYNs from thousands of sources, but almost none completed the handshake with an ACK.",
+      "why": "A SYN flood leaves half-open connections: SYN and SYN-ACK counts are high while final ACKs stay low. The other destinations complete their handshakes normally.",
+      "trap": "Raw volume alone is not the signal; compare SYN with completed ACKs.",
+      "memory_phrase": "Many SYNs, few ACKs = half-open flood."
+    }
+  },
+  {
+    "id": "Q-PRAC-005",
+    "title": "Record enumeration in a web log",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:log-analysis",
+      "skill:web-concepts"
+    ],
+    "body": "This synthetic access log comes from a fictional billing portal at billing.neoncorp.example. Every client below is logged in as a different user.\n\n```text\n2026-03-14T06:01:10Z client=198.51.100.7  user=1002 GET /api/invoices/5570 status=200\n2026-03-14T06:01:11Z client=198.51.100.7  user=1002 GET /api/invoices/5571 status=200\n2026-03-14T06:01:11Z client=198.51.100.7  user=1002 GET /api/invoices/5572 status=200\n2026-03-14T06:01:12Z client=198.51.100.7  user=1002 GET /api/invoices/5573 status=200\n2026-03-14T06:02:30Z client=192.0.2.44    user=1007 GET /api/invoices/5581 status=200\n2026-03-14T06:03:05Z client=203.0.113.12  user=1010 GET /api/invoices/5599 status=403\n```\n\nInvoices 5570-5573 belong to four different customers. Which client address shows signs of broken object-level authorization being abused?",
+    "choices": [
+      "198.51.100.7",
+      "192.0.2.44",
+      "203.0.113.12",
+      "billing.neoncorp.example"
+    ],
+    "answer": "198.51.100.7",
+    "explanation": {
+      "answer": "198.51.100.7, logged in as user 1002, walked sequential invoice identifiers and received 200 responses for records owned by other customers.",
+      "why": "Sequential identifiers plus successful responses for other owners indicate the server is not checking ownership per object.",
+      "trap": "A 403 response is the control working; it is not the abuse indicator.",
+      "memory_phrase": "Sequential IDs + 200s for others = IDOR."
+    }
+  },
+  {
+    "id": "Q-PRAC-006",
+    "title": "Zone transfer requester",
+    "type": "mcq",
+    "module": 4,
+    "difficulty": "easy",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:log-analysis"
+    ],
+    "body": "A synthetic query log from the fictional internal DNS server ns1.corp.internal is shown.\n\n```text\n2026-03-14T07:15:02Z client=10.10.4.21  qname=intranet.corp.internal qtype=A    rcode=NOERROR\n2026-03-14T07:15:09Z client=10.10.4.22  qname=mail.corp.internal     qtype=MX   rcode=NOERROR\n2026-03-14T07:16:44Z client=10.10.9.77  qname=corp.internal          qtype=AXFR rcode=NOERROR\n2026-03-14T07:17:01Z client=10.10.0.3   qname=corp.internal          qtype=SOA  rcode=NOERROR\n```\n\nThe only authorized secondary DNS server is 10.10.0.3. Which client performed an unauthorized zone transfer?",
+    "choices": [
+      "10.10.9.77",
+      "10.10.0.3",
+      "10.10.4.21",
+      "10.10.4.22"
+    ],
+    "answer": "10.10.9.77",
+    "explanation": {
+      "answer": "10.10.9.77 requested qtype AXFR for the whole zone and the server answered NOERROR, even though it is not the authorized secondary.",
+      "why": "A successful AXFR hands over every record in the zone, which is a gift for enumeration. Zone transfers should be restricted to named secondaries.",
+      "trap": "The SOA query from 10.10.0.3 is normal replication housekeeping from the authorized secondary.",
+      "memory_phrase": "AXFR only to your secondaries."
+    }
+  },
+  {
+    "id": "Q-PRAC-007",
+    "title": "Suspicious parent process in an EDR alert",
+    "type": "mcq",
+    "module": 7,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:malware-triage",
+      "skill:log-analysis"
+    ],
+    "body": "A synthetic EDR alert from a fictional finance workstation (FIN-WS-014) is shown. Command-line content is redacted by the training dataset.\n\n```text\nalert_id=EDR-2026-0314-88  host=FIN-WS-014  user=mika\n2026-03-14T08:02:11Z process=outlook      pid=4410 action=attachment_saved name=invoice_march\n2026-03-14T08:02:40Z process=winword      pid=5120 parent=explorer pid_parent=3001\n2026-03-14T08:02:47Z process=powershell   pid=5388 parent=winword  cmdline=[REDACTED-ENCODED-COMMAND]\n2026-03-14T08:02:49Z process=powershell   pid=5388 net_connect=203.0.113.150:443\n2026-03-14T08:02:52Z verdict=suspicious rule=office-spawns-script-host severity=high\n```\n\nWhich process spawned the script host, making this a likely malicious document execution chain?",
+    "choices": [
+      "winword",
+      "outlook",
+      "explorer",
+      "powershell"
+    ],
+    "answer": "winword",
+    "explanation": {
+      "answer": "winword is the parent of the powershell process that ran an encoded command and then connected outbound.",
+      "why": "Office applications launching a script host is a classic macro or malicious-document indicator; the right containment is to isolate the host and preserve the document for analysis.",
+      "trap": "explorer launching winword is normal user activity; focus on the unusual parent-child pair.",
+      "memory_phrase": "Office spawning a shell is never routine."
+    }
+  },
+  {
+    "id": "Q-PRAC-008",
+    "title": "Tunneling indicators in DNS",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "hard",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:log-analysis"
+    ],
+    "body": "A synthetic resolver log from a fictional NeonCorp branch office is shown.\n\n```text\n2026-03-14T09:10:01Z client=10.40.2.15 qname=portal.neoncorp.example qtype=A rcode=NOERROR\n2026-03-14T09:10:03Z client=10.40.2.19 qname=q7x2mfk3a9zt0v4b8c1n5r6p.sync-cdn.example qtype=TXT rcode=NOERROR\n2026-03-14T09:10:03Z client=10.40.2.19 qname=m4c8t1z0q2v7b6n5x3a9k1f8.sync-cdn.example qtype=TXT rcode=NOERROR\n2026-03-14T09:10:04Z client=10.40.2.19 qname=z9v2k7m1c4x8t0b3n6q5a2r7.sync-cdn.example qtype=TXT rcode=NOERROR\n2026-03-14T09:10:07Z client=10.40.2.22 qname=updates.vendor-os.example qtype=A rcode=NOERROR\n2026-03-14T09:10:09Z client=10.40.2.15 qname=mail.neoncorp.example qtype=MX rcode=NOERROR\n```\n\nWhich domain shows indicators of DNS tunneling?",
+    "choices": [
+      "sync-cdn.example",
+      "portal.neoncorp.example",
+      "updates.vendor-os.example",
+      "mail.neoncorp.example"
+    ],
+    "answer": "sync-cdn.example",
+    "explanation": {
+      "answer": "sync-cdn.example receives rapid TXT queries whose first label is a long, high-entropy string that never repeats.",
+      "why": "Tunneling encodes data into unique subdomain labels and often uses TXT responses to carry data back. Detection looks for label length, entropy, query rate per domain, and unusual record types.",
+      "trap": "A CDN-sounding name is not proof of legitimacy; judge by the query pattern, not the label.",
+      "memory_phrase": "Long random labels + TXT bursts = tunnel."
+    }
+  },
+  {
+    "id": "Q-PRAC-009",
+    "title": "Rogue access point in a beacon survey",
+    "type": "mcq",
+    "module": 16,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:wireless-concepts"
+    ],
+    "body": "A synthetic wireless survey from a fictional NeonCorp office floor lists observed beacons. The corporate network uses WPA2-Enterprise on channels 1 and 6.\n\n```text\nBSSID              SSID            CH  ENC             SIGNAL\n02:00:5e:10:00:01  NeonCorp-Staff  1   WPA2-Enterprise -58\n02:00:5e:10:00:02  NeonCorp-Staff  6   WPA2-Enterprise -61\n02:00:5e:77:3a:c4  NeonCorp-Staff  11  OPEN            -39\n02:00:5e:10:00:09  NeonCorp-Guest  6   WPA2-PSK        -64\n```\n\nWhich BSSID is the likely evil-twin access point?",
+    "choices": [
+      "02:00:5e:77:3a:c4",
+      "02:00:5e:10:00:01",
+      "02:00:5e:10:00:02",
+      "02:00:5e:10:00:09"
+    ],
+    "answer": "02:00:5e:77:3a:c4",
+    "explanation": {
+      "answer": "02:00:5e:77:3a:c4 advertises the corporate SSID with no encryption, on an unexpected channel, and with an unusually strong signal.",
+      "why": "An evil twin imitates a trusted SSID to lure clients; the mismatch in encryption type, channel, and vendor prefix versus the managed access points is the giveaway. Wireless IDS and client certificate validation mitigate it.",
+      "trap": "The guest network uses a different SSID and is expected; do not flag it just because it uses a pre-shared key.",
+      "memory_phrase": "Same name, weaker lock = twin."
+    }
+  },
+  {
+    "id": "Q-PRAC-010",
+    "title": "Hijacked session identifier",
+    "type": "mcq",
+    "module": 11,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:log-analysis",
+      "skill:web-concepts"
+    ],
+    "body": "A synthetic application log from a fictional HR portal records session activity.\n\n```text\n2026-03-14T10:00:05Z sid=sid-41ac user=hana client=192.0.2.31  agent=Firefox/Win  action=login\n2026-03-14T10:04:18Z sid=sid-41ac user=hana client=192.0.2.31  agent=Firefox/Win  action=view_payslip\n2026-03-14T10:05:02Z sid=sid-7f3a user=ken  client=192.0.2.40  agent=Edge/Win     action=login\n2026-03-14T10:06:40Z sid=sid-41ac user=hana client=203.0.113.66 agent=Chrome/Linux action=update_bank_details\n2026-03-14T10:07:11Z sid=sid-7f3a user=ken  client=192.0.2.40  agent=Edge/Win     action=logout\n```\n\nWhich session identifier shows signs of hijacking?",
+    "choices": [
+      "sid-41ac",
+      "sid-7f3a",
+      "sid-0000",
+      "Both sessions equally"
+    ],
+    "answer": "sid-41ac",
+    "explanation": {
+      "answer": "sid-41ac is used from 192.0.2.31 with Firefox and then, minutes later, from 203.0.113.66 with a different browser and OS to change bank details.",
+      "why": "A single session token appearing from a new address and user agent mid-session suggests it was stolen and replayed. Binding sessions to context, short lifetimes, and re-authentication for sensitive actions reduce the risk.",
+      "trap": "Do not flag sid-7f3a just because it logs out; a clean login-to-logout lifecycle from one client is normal.",
+      "memory_phrase": "One token, two worlds = hijack."
+    }
+  },
+  {
+    "id": "Q-PRAC-011",
+    "title": "Lookalike sender in a mail gateway log",
+    "type": "mcq",
+    "module": 9,
+    "difficulty": "easy",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:log-analysis"
+    ],
+    "body": "A synthetic mail gateway log from a fictional company whose real domain is neoncorp.example is shown.\n\n```text\n2026-03-14T11:20:01Z from=payroll@neoncorp.example        spf=pass dmarc=pass verdict=deliver\n2026-03-14T11:22:14Z from=it-desk@neoncorp-support.example spf=fail dmarc=fail verdict=deliver clicks=7\n2026-03-14T11:23:40Z from=news@vendor-updates.example     spf=pass dmarc=pass verdict=deliver\n2026-03-14T11:25:09Z from=ceo@neoncorp.example            spf=pass dmarc=pass verdict=deliver\n```\n\nWhich sender domain is the lookalike used for phishing?",
+    "choices": [
+      "neoncorp-support.example",
+      "neoncorp.example",
+      "vendor-updates.example",
+      "None of them"
+    ],
+    "answer": "neoncorp-support.example",
+    "explanation": {
+      "answer": "neoncorp-support.example imitates the company domain, fails SPF and DMARC, and still recorded seven clicks.",
+      "why": "Cousin domains borrow brand words to look trustworthy. Failed authentication plus a lookalike name means quarantine the message, block the domain, and notify clicked users.",
+      "trap": "An unfamiliar vendor that passes SPF and DMARC is not automatically malicious; authentication results and brand imitation matter.",
+      "memory_phrase": "Brand word + failed DMARC = lookalike."
+    }
+  },
+  {
+    "id": "Q-PRAC-012",
+    "title": "Unexpected PLC write source",
+    "type": "mcq",
+    "module": 18,
+    "difficulty": "hard",
+    "tags": [
+      "practical",
+      "practical:dataset-analysis",
+      "skill:log-analysis"
+    ],
+    "body": "A synthetic OT monitoring log from a fictional water-treatment training plant is shown. Only the engineering workstation 10.50.0.10 is allowed to write to controllers.\n\n```text\n2026-03-14T12:00:01Z src=10.50.0.10 dst=10.50.1.5 proto=industrial func=read_holding_registers result=ok\n2026-03-14T12:00:31Z src=10.50.0.20 dst=10.50.1.5 proto=industrial func=read_holding_registers result=ok\n2026-03-14T12:03:12Z src=10.50.2.99 dst=10.50.1.5 proto=industrial func=write_single_register reg=40012 result=ok\n2026-03-14T12:03:13Z src=10.50.2.99 dst=10.50.1.5 proto=industrial func=write_single_register reg=40013 result=ok\n2026-03-14T12:05:00Z src=10.50.0.10 dst=10.50.1.5 proto=industrial func=read_coils result=ok\n```\n\nWhich source issued unauthorized write commands to the controller?",
+    "choices": [
+      "10.50.2.99",
+      "10.50.0.10",
+      "10.50.0.20",
+      "10.50.1.5"
+    ],
+    "answer": "10.50.2.99",
+    "explanation": {
+      "answer": "10.50.2.99 sent two successful register writes, but only 10.50.0.10 is allowed to write to controllers.",
+      "why": "In OT, unexpected write functions from non-engineering hosts are high-severity indicators. Network segmentation, allowlisted write sources, and alerting on function codes are key controls.",
+      "trap": "Reads from the historian (10.50.0.20) are normal monitoring traffic.",
+      "memory_phrase": "In OT, watch who writes."
+    }
+  },
+  {
+    "id": "Q-PRAC-013",
+    "title": "Riskiest SSH daemon setting",
+    "type": "mcq",
+    "module": 6,
+    "difficulty": "easy",
+    "tags": [
+      "practical",
+      "practical:config-review",
+      "skill:config-review"
+    ],
+    "body": "Review this synthetic sshd_config excerpt from a fictional internet-facing jump host.\n\n```text\nProtocol 2\nPermitRootLogin yes\nMaxAuthTries 3\nX11Forwarding no\nLoginGraceTime 30\n```\n\nWhich setting is the highest-risk choice for an internet-facing host?",
+    "choices": [
+      "PermitRootLogin yes",
+      "Protocol 2",
+      "MaxAuthTries 3",
+      "X11Forwarding no"
+    ],
+    "answer": "PermitRootLogin yes",
+    "explanation": {
+      "answer": "Allowing direct root login exposes the most privileged account to remote password guessing and removes per-user accountability.",
+      "why": "Hardening disables direct root login, requires named accounts with key-based authentication, and uses privilege elevation with logging.",
+      "trap": "MaxAuthTries 3 and Protocol 2 are hardening settings, not weaknesses.",
+      "memory_phrase": "Root never logs in directly."
+    }
+  },
+  {
+    "id": "Q-PRAC-014",
+    "title": "Web server config exposure",
+    "type": "mcq",
+    "module": 13,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:config-review",
+      "skill:config-review"
+    ],
+    "body": "Review this synthetic web server configuration for the fictional site www.neoncorp.example.\n\n```text\nserver_tokens off;\nssl_protocols TLSv1.2 TLSv1.3;\nlocation /static/ { expires 7d; }\nlocation /backups/ { autoindex on; }\nadd_header X-Content-Type-Options nosniff;\n```\n\nWhich directive creates the most direct information-exposure risk?",
+    "choices": [
+      "location /backups/ { autoindex on; }",
+      "server_tokens off;",
+      "ssl_protocols TLSv1.2 TLSv1.3;",
+      "add_header X-Content-Type-Options nosniff;"
+    ],
+    "answer": "location /backups/ { autoindex on; }",
+    "explanation": {
+      "answer": "Directory listing on a backups path lets any visitor browse and download archived files that may contain data or configuration.",
+      "why": "Backups should never be served from the web root, and automatic directory indexes should be disabled. Detection includes scanning your own configs and alerting on requests to backup paths.",
+      "trap": "Hiding version tokens and restricting TLS versions are hardening steps, not exposures.",
+      "memory_phrase": "No listings, no backups in the web root."
+    }
+  },
+  {
+    "id": "Q-PRAC-015",
+    "title": "Overly broad firewall rule",
+    "type": "mcq",
+    "module": 12,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:config-review",
+      "skill:config-review"
+    ],
+    "body": "Review this synthetic perimeter rule table for a fictional NeonCorp office. Rules are evaluated top to bottom.\n\n```text\nid  action  src              dst             service\n10  allow   10.60.0.0/16     any             tcp/443\n20  allow   any              10.60.5.0/24    tcp/3389\n30  allow   192.0.2.10       10.60.8.5       tcp/22\n99  deny    any              any             any\n```\n\nWhich rule should be removed or tightened first?",
+    "choices": [
+      "Rule 20",
+      "Rule 10",
+      "Rule 30",
+      "Rule 99"
+    ],
+    "answer": "Rule 20",
+    "explanation": {
+      "answer": "Rule 20 allows remote desktop from any source on the internet to an entire internal subnet.",
+      "why": "Remote administration should be reachable only through a VPN or bastion with MFA and a narrow source allowlist. Rule 30 is already narrowed to one source and one host.",
+      "trap": "The final deny-all rule is a good default, not a weakness.",
+      "memory_phrase": "Admin ports never face any."
+    }
+  },
+  {
+    "id": "Q-PRAC-016",
+    "title": "Over-permissive storage policy",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:config-review",
+      "skill:config-review",
+      "skill:cloud-concepts"
+    ],
+    "body": "Review this vendor-neutral synthetic storage policy for the fictional account acct-000000-demo.\n\n```text\n{\n  \"resource\": \"bucket/neoncorp-invoices\",\n  \"statements\": [\n    { \"effect\": \"allow\", \"principal\": \"role/billing-app\", \"actions\": [\"object:read\", \"object:write\"] },\n    { \"effect\": \"allow\", \"principal\": \"*\", \"actions\": [\"object:read\", \"object:list\"] }\n  ],\n  \"encryption\": \"enabled\",\n  \"access_logging\": \"enabled\"\n}\n```\n\nWhich element causes the biggest exposure?",
+    "choices": [
+      "The allow statement for principal \"*\"",
+      "The billing-app role statement",
+      "Encryption set to enabled",
+      "Access logging set to enabled"
+    ],
+    "answer": "The allow statement for principal \"*\"",
+    "explanation": {
+      "answer": "A wildcard principal grants read and list access to anyone, which makes every invoice object publicly readable.",
+      "why": "Least privilege means naming the exact principals and actions that need access. Remove the public statement and use a public-access block guardrail.",
+      "trap": "Encryption at rest does not help when the policy itself grants public read; the storage service decrypts for authorized readers.",
+      "memory_phrase": "Star principal = the whole internet."
+    }
+  },
+  {
+    "id": "Q-PRAC-017",
+    "title": "Weak TLS configuration",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:config-review",
+      "skill:config-review",
+      "skill:crypto-concepts"
+    ],
+    "body": "Review this synthetic TLS configuration for the fictional API gateway gw.neoncorp.example.\n\n```text\nprotocols        = TLSv1.0 TLSv1.1 TLSv1.2\ncipher_suites    = ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES128-GCM-SHA256 RC4-SHA\nhsts_max_age     = 31536000\ncertificate_key  = RSA-3072\n```\n\nWhich change most improves transport security?",
+    "choices": [
+      "Disable TLSv1.0/TLSv1.1 and remove RC4-SHA",
+      "Shorten the HSTS max age",
+      "Downgrade the key to RSA-1024",
+      "Remove the GCM suites"
+    ],
+    "answer": "Disable TLSv1.0/TLSv1.1 and remove RC4-SHA",
+    "explanation": {
+      "answer": "Legacy protocol versions and the RC4 cipher are deprecated and allow downgrade and known cryptographic weaknesses.",
+      "why": "Modern baselines allow only TLS 1.2 and 1.3 with AEAD suites such as AES-GCM, keep strong keys, and use HSTS to prevent protocol stripping.",
+      "trap": "Shortening HSTS or weakening the key makes security worse, not better.",
+      "memory_phrase": "Old protocols and RC4 go first."
+    }
+  },
+  {
+    "id": "Q-PRAC-018",
+    "title": "IoT camera configuration risk",
+    "type": "mcq",
+    "module": 18,
+    "difficulty": "easy",
+    "tags": [
+      "practical",
+      "practical:config-review",
+      "skill:config-review"
+    ],
+    "body": "Review this synthetic configuration exported from a fictional lobby camera (cam-lobby-02) on the office IoT VLAN.\n\n```text\ntelnet_enabled      = true\nadmin_user          = admin\nadmin_credential    = <factory-default>\nfirmware_autoupdate = false\nupnp_port_mapping   = true\n```\n\nWhich combination is the most urgent to fix?",
+    "choices": [
+      "Telnet enabled with the factory-default admin credential",
+      "Firmware auto-update disabled",
+      "UPnP port mapping enabled",
+      "The admin username is \"admin\""
+    ],
+    "answer": "Telnet enabled with the factory-default admin credential",
+    "explanation": {
+      "answer": "A cleartext management service combined with an unchanged default credential lets anyone who can reach the device log in as administrator.",
+      "why": "IoT hardening starts with unique credentials, disabling insecure management services, patching firmware, and turning off automatic port mapping.",
+      "trap": "The other settings are real weaknesses too, but they matter less than an open door with a known key.",
+      "memory_phrase": "Default creds + open telnet = open door."
+    }
+  },
+  {
+    "id": "Q-PRAC-019",
+    "title": "Wireless router security mode",
+    "type": "mcq",
+    "module": 16,
+    "difficulty": "easy",
+    "tags": [
+      "practical",
+      "practical:config-review",
+      "skill:config-review",
+      "skill:wireless-concepts"
+    ],
+    "body": "Review this synthetic wireless router configuration from a fictional branch office.\n\n```text\nssid            = NeonBranch-Ops\nsecurity_mode   = WEP\nwps_enabled     = false\nmgmt_interface  = lan-only\nguest_isolation = true\n```\n\nWhich setting must change first?",
+    "choices": [
+      "security_mode = WEP",
+      "wps_enabled = false",
+      "mgmt_interface = lan-only",
+      "guest_isolation = true"
+    ],
+    "answer": "security_mode = WEP",
+    "explanation": {
+      "answer": "WEP uses broken cryptography whose keys can be recovered from captured traffic, so the network offers effectively no confidentiality.",
+      "why": "Use WPA3 or at minimum WPA2 with a strong passphrase, or WPA2/WPA3-Enterprise for staff networks.",
+      "trap": "Disabled WPS, LAN-only management, and guest isolation are all good settings.",
+      "memory_phrase": "WEP is a sign, not a lock."
+    }
+  },
+  {
+    "id": "Q-PRAC-020",
+    "title": "Release build manifest flag",
+    "type": "mcq",
+    "module": 17,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:config-review",
+      "skill:config-review",
+      "skill:mobile-concepts"
+    ],
+    "body": "Review this synthetic app manifest excerpt from the release build of a fictional banking training app.\n\n```text\n<application\n    android:debuggable=\"true\"\n    android:allowBackup=\"false\"\n    android:usesCleartextTraffic=\"false\">\n  <activity android:name=\"MainActivity\" android:exported=\"true\" />\n```\n\nWhich attribute is the most serious problem in a release build?",
+    "choices": [
+      "android:debuggable=\"true\"",
+      "android:allowBackup=\"false\"",
+      "android:usesCleartextTraffic=\"false\"",
+      "android:exported=\"true\" on the launcher activity"
+    ],
+    "answer": "android:debuggable=\"true\"",
+    "explanation": {
+      "answer": "A debuggable release build lets anyone with device access attach a debugger, inspect memory, and alter app behavior.",
+      "why": "Release builds should be produced by the build pipeline with debugging disabled, and CI should fail if the flag appears.",
+      "trap": "The launcher activity must be exported to start the app, and disabling backup and cleartext traffic are good choices.",
+      "memory_phrase": "Ship release, not debug."
+    }
+  },
+  {
+    "id": "Q-PRAC-021",
+    "title": "Session cookie attributes",
+    "type": "mcq",
+    "module": 14,
+    "difficulty": "easy",
+    "tags": [
+      "practical",
+      "practical:concept-lab",
+      "skill:web-concepts"
+    ],
+    "body": "Static response from a fictional local toy app (shop.neoncorp.example) after a successful login.\n\n```text\nHTTP/1.1 302 Found\nLocation: /account\nSet-Cookie: session=<redacted-session-value>; Path=/\nContent-Length: 0\n```\n\nWhat is missing from the session cookie?",
+    "choices": [
+      "The HttpOnly, Secure, and SameSite attributes",
+      "A longer cookie name",
+      "An Expires date in the past",
+      "Nothing; the cookie is correctly configured"
+    ],
+    "answer": "The HttpOnly, Secure, and SameSite attributes",
+    "explanation": {
+      "answer": "Without HttpOnly the cookie is readable by page scripts, without Secure it can travel over plain HTTP, and without SameSite it is sent on cross-site requests.",
+      "why": "Session cookies should set HttpOnly, Secure, and an appropriate SameSite value, and be served only over TLS.",
+      "trap": "The cookie name and expiry are not the security controls in question.",
+      "memory_phrase": "HttpOnly, Secure, SameSite: the cookie trio."
+    }
+  },
+  {
+    "id": "Q-PRAC-022",
+    "title": "Database error disclosure",
+    "type": "mcq",
+    "module": 15,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:concept-lab",
+      "skill:web-concepts"
+    ],
+    "body": "A tester searches the fictional local toy catalog for a real customer surname and receives this static response.\n\n```text\nGET /search?name=O'Brien HTTP/1.1\nHost: catalog.neoncorp.example\n\nHTTP/1.1 500 Internal Server Error\nDatabaseError: syntax error near 'Brien' in: SELECT * FROM customers WHERE surname = 'O'Brien'\n```\n\nWhat does this response most strongly indicate?",
+    "choices": [
+      "User input is concatenated into the SQL statement instead of being parameterized",
+      "The database server is offline",
+      "The search feature is rate limited",
+      "The surname column is encrypted"
+    ],
+    "answer": "User input is concatenated into the SQL statement instead of being parameterized",
+    "explanation": {
+      "answer": "An ordinary apostrophe broke the query, and the error shows the input was pasted directly into the SQL text.",
+      "why": "String-built SQL is the root cause of SQL injection. Parameterized queries fix it; generic error pages stop the query structure from leaking.",
+      "trap": "A 500 error is not proof that the database is down; the message shows it parsed and rejected the statement.",
+      "memory_phrase": "If a name breaks the query, the query is built wrong."
+    }
+  },
+  {
+    "id": "Q-PRAC-023",
+    "title": "Password storage review",
+    "type": "mcq",
+    "module": 20,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:concept-lab",
+      "skill:crypto-concepts"
+    ],
+    "body": "A synthetic export of a fictional user table shows how passwords are stored. Digest values are replaced by placeholders.\n\n```text\nuser    algorithm  salt   digest\nalice   md5        none   <digest-A>\nbob     md5        none   <digest-B>\ncarol   md5        none   <digest-A>\n```\n\nAlice and Carol share the same digest. What is the core weakness?",
+    "choices": [
+      "An unsalted fast hash, so identical passwords produce identical digests",
+      "The table uses too many columns",
+      "MD5 output is too long to store",
+      "The digests are encrypted with a shared key"
+    ],
+    "answer": "An unsalted fast hash, so identical passwords produce identical digests",
+    "explanation": {
+      "answer": "Without a per-user salt, matching passwords give matching digests, and a fast hash like MD5 makes offline guessing cheap.",
+      "why": "Store passwords with a slow, salted password-hashing function such as Argon2id, scrypt, or bcrypt, and rehash on next login.",
+      "trap": "Hashing is not encryption; the problem is not a key but the lack of salt and work factor.",
+      "memory_phrase": "Salt it, slow it."
+    }
+  },
+  {
+    "id": "Q-PRAC-024",
+    "title": "Shared responsibility for a public bucket",
+    "type": "mcq",
+    "module": 19,
+    "difficulty": "easy",
+    "tags": [
+      "practical",
+      "practical:concept-lab",
+      "skill:cloud-concepts"
+    ],
+    "body": "A fictional company stored exports in a managed object-storage service. A training post-incident note reads:\n\n```text\nservice_model  = managed object storage (PaaS-like)\nroot_cause     = bucket policy granted public read to all principals\nprovider_scope = physical security, storage hardware, service availability\n```\n\nUnder the shared responsibility model, who owned the control that failed?",
+    "choices": [
+      "The customer, because access policy configuration is the customer responsibility",
+      "The provider, because it hosts the storage hardware",
+      "Both equally, by default",
+      "Nobody, because public read is a provider default"
+    ],
+    "answer": "The customer, because access policy configuration is the customer responsibility",
+    "explanation": {
+      "answer": "Access policies, identity, and data classification are always customer-side responsibilities, whatever the service model.",
+      "why": "Providers secure the underlying infrastructure; customers secure their configuration and data. Guardrails like public-access blocks and policy scanning catch this class of mistake.",
+      "trap": "Owning the hardware does not make the provider responsible for the policy the customer wrote.",
+      "memory_phrase": "Provider secures the cloud; you secure what you put in it."
+    }
+  },
+  {
+    "id": "Q-PRAC-025",
+    "title": "Mobile token storage",
+    "type": "mcq",
+    "module": 17,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:concept-lab",
+      "skill:mobile-concepts"
+    ],
+    "body": "A static review of a fictional mobile training app shows where it keeps the session value after login.\n\n```text\nstorage   = shared preferences (plaintext XML)\nkey       = auth_session\nvalue     = <redacted-session-value>\nexpires   = never\n```\n\nWhat is the best remediation?",
+    "choices": [
+      "Store the value in platform keystore-backed secure storage and give it a short lifetime",
+      "Rename the key to something less obvious",
+      "Base64-encode the value before saving it",
+      "Move the value into the app log file"
+    ],
+    "answer": "Store the value in platform keystore-backed secure storage and give it a short lifetime",
+    "explanation": {
+      "answer": "Plaintext preferences can be read from backups, rooted devices, or debugging, and a never-expiring session multiplies the damage.",
+      "why": "Use the platform secure storage backed by the hardware keystore, expire sessions, and support server-side revocation.",
+      "trap": "Renaming or encoding is obfuscation, not protection.",
+      "memory_phrase": "Keystore, not preferences."
+    }
+  },
+  {
+    "id": "Q-PRAC-026",
+    "title": "Vulnerability prioritization",
+    "type": "mcq",
+    "module": 5,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:concept-lab",
+      "skill:vuln-prioritization"
+    ],
+    "body": "A synthetic vulnerability scan summary for fictional NeonCorp assets is shown.\n\n```text\nasset                      exposure   finding                          cvss  exploit_known\nvpn.neoncorp.example       internet   remote code execution in VPN     9.8   yes\nhr-db.corp.internal        internal   outdated library, local only     7.8   no\nkiosk-03.corp.internal     internal   weak TLS cipher offered          5.3   no\nwww.neoncorp.example       internet   missing security header          4.3   no\n```\n\nWhich finding should be remediated first?",
+    "choices": [
+      "The VPN remote code execution on the internet-facing gateway",
+      "The outdated library on the HR database",
+      "The weak TLS cipher on the kiosk",
+      "The missing security header on the website"
+    ],
+    "answer": "The VPN remote code execution on the internet-facing gateway",
+    "explanation": {
+      "answer": "It combines the highest severity, internet exposure, and known exploitation, so it has the highest real-world risk.",
+      "why": "Prioritize by severity, exposure, exploit availability, and asset criticality together; a critical, exploited, internet-facing flaw comes before internal or low-impact issues.",
+      "trap": "Do not rank only by asset sensitivity; the HR database issue is local-only with no known exploit.",
+      "memory_phrase": "Exposed + exploited + critical = first."
+    }
+  },
+  {
+    "id": "Q-PRAC-027",
+    "title": "Spray finding write-up",
+    "type": "report_prompt",
+    "module": 6,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:report-prompt",
+      "skill:reporting",
+      "skill:log-analysis"
+    ],
+    "body": "Using only this synthetic authentication evidence from a fictional NeonCorp portal:\n\n```text\n2026-03-14T02:11:09Z src=203.0.113.45 FAIL x 212 across 58 usernames in 6 minutes\n2026-03-14T02:17:30Z user=grace src=203.0.113.45 result=SUCCESS mfa=no\n2026-03-14T02:18:05Z user=grace action=export_contacts rows=4800\n```\n\nWrite a one-paragraph finding with title, severity, evidence, impact, and remediation.",
+    "answer": "Title: Account takeover via password spraying against an account without MFA. Severity: High. Evidence: 212 failures across 58 usernames from 203.0.113.45 in six minutes, followed by a successful non-MFA login for grace and an export of 4800 contact rows. Impact: A fictional employee account was taken over and used to export contact data. Remediation: Enforce MFA for all accounts, reset the affected account, add per-source failure-velocity detection and throttling, and review the exported data scope.",
+    "explanation": {
+      "answer": "A strong answer names the spray pattern, cites counts and the pivot login from the evidence, states the data impact, and gives prioritized defensive actions.",
+      "why": "Report prompts prove you can turn log reading into a decision-ready finding without adding facts that are not in the evidence.",
+      "trap": "Do not claim a breach of other accounts; the evidence only shows one successful login.",
+      "memory_phrase": "Pattern, pivot, impact, fix."
+    }
+  },
+  {
+    "id": "Q-PRAC-028",
+    "title": "Executive summary for exposed backups",
+    "type": "report_prompt",
+    "module": 13,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:report-prompt",
+      "skill:reporting"
+    ],
+    "body": "A synthetic assessment note for the fictional site www.neoncorp.example reads:\n\n```text\nfinding: directory listing enabled on /backups/\nobserved: listing shows db-export-march and site-config archives (synthetic names)\naccess: unauthenticated, reachable from the internet\n```\n\nWrite a two-sentence executive summary for non-technical leadership.",
+    "answer": "The public website exposes a browsable backups folder that anyone on the internet can open without logging in, which could reveal customer data and system settings. We recommend removing the backups from the web server today, disabling directory listings, and checking access logs to confirm whether anything was downloaded.",
+    "explanation": {
+      "answer": "An executive summary states the business risk in plain language and gives a clear, time-bound action.",
+      "why": "Leadership needs impact and decision, not directives or tool names.",
+      "trap": "Avoid jargon like autoindex and do not speculate that data was stolen without log evidence.",
+      "memory_phrase": "Risk in plain words, then the ask."
+    }
+  },
+  {
+    "id": "Q-PRAC-029",
+    "title": "Cloud storage finding",
+    "type": "report_prompt",
+    "module": 19,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:report-prompt",
+      "skill:reporting",
+      "skill:cloud-concepts"
+    ],
+    "body": "A synthetic config review of the fictional account acct-000000-demo found:\n\n```text\nbucket: neoncorp-invoices\npublic_read: true (principal \"*\")\nencryption_at_rest: false\naccess_logging: false\n```\n\nWrite a finding with severity, impact, and ordered remediation steps.",
+    "answer": "Title: Public, unencrypted, unlogged invoice bucket. Severity: High. Impact: Anyone can read invoice objects, data is not encrypted at rest, and no access log exists to tell whether it was read. Remediation: 1) Remove the public principal and enable a public-access block; 2) enable access logging and review any available provider audit trail; 3) enable encryption at rest with managed keys; 4) add policy-as-code checks to prevent recurrence.",
+    "explanation": {
+      "answer": "Order matters: stop the exposure first, then restore visibility, then add defense in depth and prevention.",
+      "why": "A finding that lists fixes without priority leaves the reader unsure what to do first.",
+      "trap": "Do not start with encryption; it does not stop public reads by itself.",
+      "memory_phrase": "Close, see, strengthen, prevent."
+    }
+  },
+  {
+    "id": "Q-PRAC-030",
+    "title": "Containment recommendation from an EDR alert",
+    "type": "report_prompt",
+    "module": 7,
+    "difficulty": "hard",
+    "tags": [
+      "practical",
+      "practical:report-prompt",
+      "skill:reporting",
+      "skill:malware-triage"
+    ],
+    "body": "A synthetic EDR alert from a fictional finance workstation shows:\n\n```text\nhost=FIN-WS-014 chain=outlook -> winword -> powershell (encoded command, redacted)\nnet_connect=203.0.113.150:443 at 2026-03-14T08:02:49Z\nother_hosts_contacting_203.0.113.150=none observed\n```\n\nWrite a short containment and next-steps recommendation for the incident ticket.",
+    "answer": "Isolate FIN-WS-014 from the network using EDR while keeping it powered on to preserve memory, block 203.0.113.150 at the proxy and firewall, and quarantine the originating email for all recipients. Collect the document and process tree for analysis, reset the user credentials, and hunt for the same parent-child pattern and destination across other hosts before reimaging.",
+    "explanation": {
+      "answer": "Good containment isolates without destroying evidence, blocks the known indicator, removes the delivery vector, and scopes for other victims.",
+      "why": "Recommendations must be actionable and ordered, and preserve evidence for the investigation.",
+      "trap": "Powering off or reimaging immediately destroys volatile evidence; do that after collection.",
+      "memory_phrase": "Isolate, block, preserve, hunt."
+    }
+  },
+  {
+    "id": "Q-PRAC-031",
+    "title": "Leadership summary from finding counts",
+    "type": "report_prompt",
+    "module": 1,
+    "difficulty": "easy",
+    "tags": [
+      "practical",
+      "practical:report-prompt",
+      "skill:reporting"
+    ],
+    "body": "A fictional internal assessment of NeonCorp produced this synthetic severity summary:\n\n```text\ncritical: 1 (internet-facing VPN remote code execution)\nhigh:     3\nmedium:   7\nlow:      12\nscope: authorized, fictional training environment only\n```\n\nWrite a three-sentence summary for leadership that states the overall posture and the first priority.",
+    "answer": "The authorized assessment found 23 issues, including one critical flaw in the internet-facing VPN that could let an outsider run code on it. Overall posture is moderate, but that single critical issue represents the most urgent risk and should be patched or mitigated within 24 hours. The three high findings should follow within the next sprint, with medium and low items tracked in the normal patch cycle.",
+    "explanation": {
+      "answer": "Leadership summaries give totals, the single most important risk, and time-bound priorities.",
+      "why": "Decision makers need a clear order of work and an overall posture statement.",
+      "trap": "Do not list every finding or bury the critical item in the middle.",
+      "memory_phrase": "Total, top risk, timeline."
+    }
+  },
+  {
+    "id": "Q-PRAC-032",
+    "title": "OSINT exposure finding",
+    "type": "report_prompt",
+    "module": 2,
+    "difficulty": "medium",
+    "tags": [
+      "practical",
+      "practical:report-prompt",
+      "skill:reporting"
+    ],
+    "body": "During an authorized footprinting review of a fictional company, the team collected this synthetic public job posting excerpt:\n\n```text\nrole: Senior Platform Engineer at NeonCorp\nstack: VPN appliance model NX-7 firmware 4.2, ticketing on helpdesk.neoncorp.example\ninternal naming: servers follow the pattern tk7-app-NN\ncontact: recruiting@neoncorp.example\n```\n\nWrite a short finding describing the exposure and a remediation.",
+    "answer": "Title: Public job postings disclose internal technology details. Severity: Low. Evidence: A public posting names the VPN appliance model and firmware version, the helpdesk host, and the internal server naming pattern. Impact: Attackers can tailor phishing and vulnerability research to the exact stack. Remediation: Review job-posting templates with security, describe skills generically, remove version numbers and internal naming, and keep the VPN firmware patched.",
+    "explanation": {
+      "answer": "The finding ties public information to how it lowers attacker effort and recommends a process fix plus patching.",
+      "why": "Footprinting findings are about information exposure, so the fix is usually process and content review.",
+      "trap": "Do not treat the recruiting address itself as a vulnerability; it is intentionally public.",
+      "memory_phrase": "Say less about the stack in public."
+    }
+  }
+]

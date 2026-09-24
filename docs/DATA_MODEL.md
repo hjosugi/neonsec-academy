@@ -302,6 +302,12 @@ Readiness thresholds are persisted with other local settings:
 
 `examTargetPct` remains part of the profile because it is the learner's personal mock-score target.
 
+`PracticalSession` (seed, preset label, 20 `questionIds`, `answers` with `chosen`, optional
+`selfCorrect` and `unsure`, `durationSec`, `startedAt`, `currentIndex`) is persisted as
+`activePractical` while a simulator run is open. Submitting produces a `PracticalResult` with score,
+pass mark, time used, `wrongIds`, `weakIds`, and `perModule` / `perSkill` / `perKind` breakdowns,
+stored newest-first in `practicalResults` (30 kept) and included in full backups.
+
 ## LabChallenge
 
 ```json

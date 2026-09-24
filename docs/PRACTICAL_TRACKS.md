@@ -107,6 +107,18 @@ citations, remediation plan, severity ordering, appendix, and safety) with pass/
 safety warning is always shown, and detected public IPs, real email hosts, non-training URLs,
 credentials, private keys, and tokens are listed by field.
 
+## CEH Practical-style Simulator
+
+The Practical Sim (`/practical`) imitates only the format of a hands-on practical: 20 challenges under
+a timer (Full: 6 hours, Sprint: 2 hours). Each session draws, by seed, 8 dataset-analysis, 5
+config-review, 4 concept-lab, and 3 report-prompt challenges from the `practical`-tagged seed
+questions (`group-p.json`), spreading CEH modules. Every answer comes from a synthetic artifact in the
+challenge body; report prompts are self-graded against a model answer. Learners can mark a challenge
+unsure. On finish, the readiness report aggregates results by challenge type, CEH module, and skill,
+lists next actions, and exports Markdown. Every challenge is recorded as a `practical` attempt; wrong
+answers are scheduled like a failed review and unsure-but-correct answers get a short interval, so
+both appear in the Review Queue.
+
 ## Lab Registry Safety
 
 Every lab declares a `kind`: `local`, `dataset`, `simulated`, or `writeup`. Lab Detail displays the

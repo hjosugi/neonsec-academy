@@ -319,3 +319,31 @@ describe('vulnerability triage store', () => {
     expect(useStore.getState().triageFindings).toEqual([])
   })
 })
+
+describe('practical simulator store', () => {
+  it('records practical attempts and queues wrong or unsure challenges for review', async () => {
+    const { createPracticalSession } = await import('../lib/practicalSim')
+    const { SEED_QUESTIONS } = await import('../data/questions')
+    useStore.setState({ attempts: [], reviews: {}, activePractical: null, practicalResults: [] })
+    const session = createPracticalSession(SEED_QUESTIONS, { seed: 3, durationMin: 120, presetLabel: 'Sprint' })!
+    useStore.getState().startPractical(session)
+    const [wrongId, unsureId] = session.questionIds
+    useStore.getState().practicalAnswer(wrongId, { chosen: 'definitely not the answer', selfCorrect: false })
+    const unsureQuestion = SEED_QUESTIONS.find((q) => q.id === unsureId)!
+    useStore.getState().practicalAnswer(unsureId, unsureQuestion.type === 'report_prompt'
+      ? { chosen: 'draft', selfCorrect: true, unsure: true }
+      : { chosen: String(unsureQuestion.answer), unsure: true })
+    useStore.getState().practicalGoto(99)
+    expect(useStore.getState().activePractical?.currentIndex).toBe(19)
+
+    const result = useStore.getState().submitPractical()!
+    const state = useStore.getState()
+    expect(state.activePractical).toBeNull()
+    expect(state.practicalResults[0].id).toBe(result.id)
+    expect(state.attempts.filter((attempt) => attempt.mode === 'practical')).toHaveLength(20)
+    expect(result.wrongIds).toContain(wrongId)
+    expect(result.weakIds).toEqual([unsureId])
+    expect(state.reviews[wrongId].lastResult).toBe('incorrect')
+    expect(state.reviews[unsureId]).toBeDefined()
+  })
+})

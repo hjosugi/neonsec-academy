@@ -19,23 +19,23 @@ CEH Practical を目指すユーザーとして、時間制限つきで 20 chall
 
 ## Requirements
 
-- [ ] 20 challenge session を作成できる
-- [ ] challenge は dataset analysis, config review, report prompt, concept lab を組み合わせる
-- [ ] timer と progress を表示する
-- [ ] session 後に practical readiness report を出す
+- [x] 20 challenge session を作成できる
+- [x] challenge は dataset analysis, config review, report prompt, concept lab を組み合わせる
+- [x] timer と progress を表示する
+- [x] session 後に practical readiness report を出す
 
 ## Acceptance Criteria
 
-- [ ] 20 challenge session を開始・終了できる
-- [ ] 結果が module / skill ごとに集計される
-- [ ] wrong / weak challenges が review queue に入る
+- [x] 20 challenge session を開始・終了できる
+- [x] 結果が module / skill ごとに集計される
+- [x] wrong / weak challenges が review queue に入る
 
 ## Subtasks
 
-- [ ] session model を作る
-- [ ] 20 challenge generator を作る
-- [ ] timer UI を作る
-- [ ] readiness report を作る
+- [x] session model を作る
+- [x] 20 challenge generator を作る
+- [x] timer UI を作る
+- [x] readiness report を作る
 
 ## Dependencies
 
@@ -47,18 +47,21 @@ CEH Practical 風の形式だけを模倣し、実ネットワーク侵入や li
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- Practical Sim builds seeded 20-challenge sessions from 32 synthetic practical challenges (dataset
+  analysis, config review, concept lab, report prompt) with a timer, progress navigator, and a
+  readiness report by type, module, and skill. Wrong and unsure challenges are scheduled into the
+  Review Queue. Verified with unit, type, content, safety, and build checks.

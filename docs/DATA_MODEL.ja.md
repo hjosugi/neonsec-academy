@@ -282,6 +282,12 @@ Attemptは追加のみです。訂正は履歴を編集するのではなく、�
 
 `examTargetPct`は学習者の個人的な模擬スコア目標のためプロフィールの一部です。
 
+`PracticalSession`（シード、プリセット名、20 件の `questionIds`、`chosen` と任意の `selfCorrect`・`unsure`
+を持つ `answers`、`durationSec`、`startedAt`、`currentIndex`）はシミュレーター実行中 `activePractical` として
+保存されます。提出すると、スコア、合格点、所要時間、`wrongIds`、`weakIds`、`perModule` / `perSkill` /
+`perKind` の内訳を持つ `PracticalResult` が `practicalResults` に新しい順で保存され（30 件）、フルバックアップに
+含まれます。
+
 ## LabChallenge
 
 ```json

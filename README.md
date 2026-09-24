@@ -32,9 +32,10 @@ generation.
 
 | Area | Current release behavior |
 |---|---|
-| Question Bank | 371 seed questions across all 20 CEH modules plus CEH+ practical tracks. Search by body/tags/module, filter by module/domain/difficulty/type, pin questions, clone/edit custom questions, and import/export user-authored packs. |
+| Question Bank | 405 seed questions across all 20 CEH modules plus CEH+ practical tracks, including 32 CEH Practical-style challenges with synthetic artifacts. Search by body/tags/module, filter by module/domain/difficulty/type, pin questions, clone/edit custom questions, and import/export user-authored packs. |
 | Practice | Target all modules, a specific CEH module, a CEH+ track, or weak areas. Answers create review items and analytics signals. |
 | Review Queue | SM-2 style spaced repetition schedules due questions and lets you grade recall as again, hard, good, or easy. |
+| Practical Sim | CEH Practical-style simulator: 20 timed challenges (dataset analysis, config review, concept lab, report prompt) from synthetic artifacts, with progress navigator, readiness report by module/skill/type, Markdown export, and wrong/unsure challenges queued for review. |
 | Mock Exam | Full Exam (125 questions/240 minutes), Half Length (63/120), Quick Sim (25/45), and Weakness Focus (40/70), with domain weighting, flags, resume, and per-domain results. |
 | Analytics | Module/domain mastery, flag challenge completion and accuracy, weakest modules, due backlog, readiness scoring, badges, streaks, and XP. |
 | Mistake Notebook | Records why an answer was wrong, correct reasoning, trap pattern, memory phrase, next action, and resolution state. |

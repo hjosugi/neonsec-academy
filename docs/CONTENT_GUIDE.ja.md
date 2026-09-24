@@ -29,7 +29,7 @@
 | `module` | CEHモジュール `1`-`20`、またはCEH+実践トラックの場合は`0`。 |
 | `track` | `module`が`0`の場合のみ必須：`pentest`、`appsec`、`cloud`、`soc`、`ir`、または`threat-model`。 |
 | `difficulty` | `easy`、`medium`、または`hard`。 |
-| `tags` | 空でない短い検索用語のリスト。 |
+| `tags` | 空でない短い検索用語のリスト。 実技シミュレーターのチャレンジは `practical`、`practical:<kind>` タグ 1 つ（`dataset-analysis`、`config-review`、`concept-lab`、`report-prompt`）、`skill:<name>` タグ 1〜2 個を追加します。 |
 | `body` | 質問のプロンプト。範囲を限定し、自己完結させてください。 |
 | `choices` | `mcq`、`multi`、および`true_false`の場合は必須；自由形式のタイプでは省略されます。 |
 | `answer` | 一致する選択肢の文字列、`multi`の場合は選択肢の文字列の配列、または自由形式のタイプの場合はモデル回答の文字列。 |

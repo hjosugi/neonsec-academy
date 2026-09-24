@@ -110,7 +110,7 @@ export interface ReviewSessionSummary {
 }
 
 // ---- Attempts ----
-export type AttemptMode = 'practice' | 'review' | 'exam' | 'drill'
+export type AttemptMode = 'practice' | 'review' | 'exam' | 'drill' | 'practical'
 export type AttemptConfidence = 1 | 2 | 3 | 4 | 5
 
 export interface Attempt {
@@ -236,6 +236,57 @@ export interface ExamResult {
   durationSec: number
   questionIds: string[]
   answers: Record<string, string | string[] | null>
+}
+
+// ---- CEH Practical-style simulator (P4-009) ----
+export type PracticalKind = 'dataset-analysis' | 'config-review' | 'concept-lab' | 'report-prompt'
+
+export interface PracticalAnswer {
+  chosen: string | string[] | null
+  /** Self-grade for report prompts after comparing with the model answer. */
+  selfCorrect?: boolean | null
+  /** Learner flagged the challenge as a guess; correct-but-unsure counts as weak. */
+  unsure?: boolean
+}
+
+export interface PracticalSession {
+  id: string
+  seed: number
+  presetLabel: string
+  questionIds: string[]
+  answers: Record<string, PracticalAnswer>
+  durationSec: number
+  startedAt: number
+  currentIndex: number
+}
+
+export interface PracticalBreakdownRow {
+  total: number
+  correct: number
+  pct: number
+}
+
+export interface PracticalResult {
+  id: string
+  sessionId: string
+  presetLabel: string
+  seed: number
+  completedAt: number
+  total: number
+  answered: number
+  correct: number
+  scorePct: number
+  passPct: number
+  passed: boolean
+  timeUsedSec: number
+  durationSec: number
+  questionIds: string[]
+  wrongIds: string[]
+  weakIds: string[]
+  perModule: Array<PracticalBreakdownRow & { module: number; moduleName: string }>
+  perSkill: Array<PracticalBreakdownRow & { skill: string }>
+  perKind: Array<PracticalBreakdownRow & { kind: PracticalKind }>
+  nextActions: string[]
 }
 
 // ---- Player / settings ----

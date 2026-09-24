@@ -32,7 +32,7 @@ Required fields for every question:
 | `module` | CEH module `1`-`20`, or `0` for CEH+ practical tracks. |
 | `track` | Required only when `module` is `0`: `pentest`, `appsec`, `cloud`, `soc`, `ir`, or `threat-model`. |
 | `difficulty` | `easy`, `medium`, or `hard`. |
-| `tags` | Non-empty list of short search terms. |
+| `tags` | Non-empty list of short search terms. Practical simulator challenges add `practical`, one `practical:<kind>` tag (`dataset-analysis`, `config-review`, `concept-lab`, `report-prompt`), and one or two `skill:<name>` tags. |
 | `body` | Question prompt. Keep it scoped and self-contained. |
 | `choices` | Required for `mcq`, `multi`, and `true_false`; omitted for free-form types. |
 | `answer` | A matching choice string, an array of choice strings for `multi`, `True`/`False`, or a model answer string for free-form types. |
