@@ -3,6 +3,7 @@ import { canonicalFlag, isExpectedFlagValid } from './flagChallenge'
 import { isAnalysisType } from './analysisChallenges'
 import { isWebConcept } from './webConcept'
 import { scanSensitiveText, type SafetyHitKind } from './contentSafety'
+import { auditRecordProblems } from './labSafetyAudit'
 
 export const LAB_KINDS: LabKind[] = ['local', 'dataset', 'simulated', 'writeup']
 export const FLAG_ASSET_KINDS: FlagChallengeAssetKind[] = [
@@ -224,6 +225,9 @@ export function validateLabRegistry(labs: Lab[]): LabRegistryError[] {
           message: 'Web concept labs must use a static request/response or headers asset.',
         })
       }
+    }
+    for (const problem of auditRecordProblems(lab.safetyAudit)) {
+      errors.push({ labId: lab.id, field: 'safetyAudit', kind: 'schema', message: problem })
     }
     scanUnsafeText(lab, errors)
   }

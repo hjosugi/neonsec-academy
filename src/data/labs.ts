@@ -36,6 +36,19 @@ export interface WebConceptLab {
   unsafeTargetWarning: string
 }
 
+/** Stored result of the Lab Safety Audit (P4-010); verified by the publish gate. */
+export interface LabSafetyAuditRecord {
+  rulesetVersion: number
+  status: 'pass' | 'override'
+  /** YYYY-MM-DD of the last review. */
+  reviewedAt: string
+  /** Required for overrides: why the flagged content is safe. */
+  overrideNote?: string
+  reviewer?: string
+  /** Rule ids the override accepts. */
+  acceptedRules?: string[]
+}
+
 export interface FlagChallengeAsset {
   id: string
   label: string
@@ -90,6 +103,8 @@ export interface Lab {
   analysis?: LabAnalysis
   /** Present on web concept labs; enables the finding worksheet and unsafe-target warning. */
   webConcept?: WebConceptLab
+  /** Last safety audit result; `npm run audit:labs` fails when it is missing or stale. */
+  safetyAudit?: LabSafetyAuditRecord
   objectives: string[]
   rubric: LabRubric
   guiding: { q: string; a: string }[]
@@ -201,6 +216,7 @@ export const LABS: Lab[] = [
       prevention:
         'Enforce MFA for every account, add source-based throttling alongside per-account lockout, and block legacy sign-in paths that bypass MFA.',
     },
+    safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
     objectives: [
       'Classify the activity (single-account brute force vs password spraying vs credential stuffing)',
       'Identify the pivot event where the attacker likely succeeded',
@@ -307,6 +323,7 @@ export const LABS: Lab[] = [
       prevention:
         'Grant runtime roles only the actions and named resources they need, block public storage access by default, and require encryption and access logging in baseline templates.',
     },
+    safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
     objectives: [
       'Explain what is wrong with the IAM statement',
       'Identify the three risky bucket settings',
@@ -397,6 +414,7 @@ Content-Type: application/json
       unsafeTargetWarning:
         'Changing object ids in requests to applications you do not own is unauthorized testing. Review only this static exchange from a fictional toy app.',
     },
+    safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
     objectives: [
       'Name the vulnerability class',
       'Explain how you know authorization failed',
@@ -486,6 +504,7 @@ const rows = await runQuery(sql)`,
       unsafeTargetWarning:
         'Do not paste the captured request into a browser or tool, and never test inputs against applications you do not own. This exercise is a static reading of a fictional toy app.',
     },
+    safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
     objectives: [
       'Identify the line where user input becomes part of the SQL statement',
       'Write the finding: name the flaw and cite the evidence',
@@ -594,6 +613,7 @@ HTTP/1.1 200 OK`,
       unsafeTargetWarning:
         'Never reuse, share, or replay a real session cookie. The identifiers here are placeholders from a fictional toy portal and must not be tried anywhere.',
     },
+    safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
     objectives: [
       'Name the session flaw shown across the three exchanges',
       'Write the finding with evidence: which identifier persists and which response should have changed it',
@@ -685,6 +705,7 @@ Cache-Control: no-store
       unsafeTargetWarning:
         'Checking headers on sites you do not own is out of scope. Review only this synthetic header capture from a fictional toy app.',
     },
+    safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
     objectives: [
       'Name the attack enabled by the missing framing control',
       'Write the finding with evidence: list every absent header and the version banner',
@@ -773,6 +794,7 @@ Cache-Control: no-store
       prevention:
         'Retire FTP and Telnet in favour of encrypted protocols, redirect every login to HTTPS with HSTS, and set Secure and HttpOnly on session cookies.',
     },
+    safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
     objectives: [
       'List every protocol here that exposes credentials or sessions in cleartext',
       'Explain the risk of the missing cookie Secure flag',
@@ -858,6 +880,7 @@ X-Sender-IP: 203.0.113.200`,
       prevention:
         'Publish an enforcing DMARC policy, register or block obvious lookalike domains, and train staff to verify urgent requests through a known channel.',
     },
+    safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
     objectives: [
       'State whether SPF, DKIM, and DMARC passed or failed',
       'Identify the two social-engineering pressure tactics',
@@ -944,6 +967,7 @@ X-Sender-IP: 203.0.113.200`,
       prevention:
         'Keep backups outside the served directory, serve only an allow-list of static paths, and apply per-source rate limits at the edge.',
     },
+    safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
     objectives: [
       'Name the technique used by 203.0.113.45 before the downloads',
       'Identify the two requests that exposed data and their response sizes',
@@ -1038,6 +1062,7 @@ X-Sender-IP: 203.0.113.200`,
       prevention:
         'Require an owner, justification, scope, and expiry for every allow rule, order specific denies before broad allows, and review the rule base on a fixed schedule.',
     },
+    safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
     objectives: [
       'Name the rule-ordering flaw affecting rule 30',
       'Cite the evidence in the rule table and hit counters that proves it',
@@ -1119,6 +1144,7 @@ Trust boundaries: browser<->API (internet), API<->AI service (internet), API<->D
       reportPrompt:
         'Create a critical finding that connects source-controlled signing material to token forgery, then order rotation and repository cleanup actions.',
     },
+    safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
     objectives: [
       'List the key assets and the trust boundaries',
       'Give one concrete threat for Spoofing, Tampering, Info Disclosure, and Elevation',

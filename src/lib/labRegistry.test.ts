@@ -38,6 +38,7 @@ const baseLab: Lab = {
   },
   guiding: [{ q: 'What happened?', a: 'Use the synthetic evidence.' }],
   modelFindings: [{ title: 'Finding', severity: 'low', impact: 'Synthetic impact.', remediation: 'Synthetic remediation.' }],
+  safetyAudit: { rulesetVersion: 1, status: 'pass', reviewedAt: '2026-09-24' },
 }
 
 describe('lab registry validation', () => {

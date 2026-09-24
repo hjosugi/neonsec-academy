@@ -68,6 +68,13 @@ npm run preview
 npm run validate:content
 ```
 
+コンテンツ安全スキャンとラボ安全監査の公開ゲートを実行します:
+
+```bash
+npm run validate:safety
+npm run audit:labs
+```
+
 ## 使用方法
 
 1. アプリを開き、オンボーディングモーダルを完了します。

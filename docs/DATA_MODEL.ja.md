@@ -328,6 +328,9 @@ Attemptは追加のみです。訂正は履歴を編集するのではなく、�
 }
 ```
 
+すべてのラボはラボ安全監査の結果を `safetyAudit: { rulesetVersion, status, reviewedAt }` に保存します
+（`status` は `pass` または `override`。override は `reviewer`、`overrideNote`、`acceptedRules` を追加）。
+
 Web コンセプトラボは `webConcept: { concept, unsafeTargetWarning }` を持ちます。学習者の
 `LabWorksheet`（`labId`、`finding`、`impact`、`remediation`、`updatedAt`）はラボごとに 1 件
 `labWorksheets` に保存され、フルバックアップに含まれ、3 項目が揃うとレポートの所見になります。

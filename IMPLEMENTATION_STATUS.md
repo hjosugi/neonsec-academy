@@ -39,6 +39,8 @@ persisted flag attempts/hints, explanation unlocks, and scoring/Analytics integr
 report citations (`routes/EvidenceVault.tsx`, `components/lab/ChallengeEvidenceVault.tsx`); and a
 report builder with Markdown export (`routes/Reports.tsx`); a vulnerability triage board with rubric/manual
 severity, status flow, and report hand-off (`routes/Triage.tsx`, `lib/triage.ts`).
+An automated Lab Safety Audit publish gate (`lib/labSafetyAudit.ts`, `npm run audit:labs`, `/labs/audit`)
+stores audit records in lab metadata and requires reviewed overrides.
 A CEH Practical-style 20-challenge simulator (`routes/PracticalSim.tsx`, `lib/practicalSim.ts`) mixes
 dataset analysis, config review, concept labs, and report prompts with a timer, readiness report, and
 review-queue hand-off.

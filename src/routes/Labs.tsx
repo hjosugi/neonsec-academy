@@ -32,6 +32,7 @@ export function Labs() {
           exploits, no credentials — you read synthetic evidence, reason like an analyst, and write findings. This mirrors
           how you prove skill safely.
         </p>
+        <Link to="/labs/audit" className="btn btn--ghost btn--sm mt-2">⛨ Lab safety audit report</Link>
       </Panel>
 
       <div className="grid-cards">

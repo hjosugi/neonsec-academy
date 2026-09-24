@@ -160,6 +160,7 @@ Memory phrase:
 | `flagChallenge` | プロンプト、ローカルアセットメタデータ、期待されるユニークなフラグ、範囲のヒント、説明、修正、報告プロンプト。 |
 | `analysis` | 任意のデータセット分析メタデータ: `type`（`pcap`、`web-log`、`auth-log`、`cloud-config`、`firewall-rule`、`email-headers`）、`detection`、`prevention`。分析チャレンジでは必須。 |
 | `webConcept` | 任意の Web コンセプトメタデータ: `concept`（`access-control`、`input-validation`、`session`、`security-headers`）と `unsafeTargetWarning`。Web コンセプトラボは `simulated` または `local` で、静的な `request-response` か `headers` アセットを使う必要があります。 |
+| `safetyAudit` | 保存されたラボ安全監査の結果: `rulesetVersion`、`status`（`pass` または `override`）、`reviewedAt`。override の場合は `reviewer`、`overrideNote`、`acceptedRules` も必要。 |
 | `objectives` | スコアリングコンポーネントにマッピングされたチェックリスト項目。 |
 | `rubric` | フラグ/診断、証拠、説明、修正、安全性のためのコンポーネントスコアリング。 |
 | `guiding` | 教育的な回答を含むヒント。ヒントは実世界の行動手順を導入してはいけません。 |
@@ -193,6 +194,8 @@ Web コンセプトラボは攻撃手順ではなく、原因と修正を教え�
 - [ ] モデルの発見は報告準備が整っており、合成の範囲言語を使用します。
 - [ ] 報告ビルダーはラボのタイトル、範囲、要約、モデルの発見を安全に使用できます。
 - [ ] `npm run validate:safety`が公開前に合格します。
+- [ ] `npm run audit:labs` が合格し、ラボに最新の `safetyAudit` 記録（`status: 'pass'`、またはレビュー担当者・
+  メモ・受理ルールを記載した override）がある。
 
 ## レビューチェックリスト
 

@@ -18,6 +18,7 @@ import { Analytics } from './routes/Analytics'
 import { Mistakes } from './routes/Mistakes'
 import { Labs } from './routes/Labs'
 import { LabDetail } from './routes/LabDetail'
+import { LabSafetyAudit } from './routes/LabSafetyAudit'
 import { EvidenceVault } from './routes/EvidenceVault'
 import { Beyond } from './routes/Beyond'
 import { Reports } from './routes/Reports'
@@ -72,6 +73,7 @@ export default function App() {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/mistakes" element={<Mistakes />} />
           <Route path="/labs" element={<Labs />} />
+          <Route path="/labs/audit" element={<LabSafetyAudit />} />
           <Route path="/labs/:id" element={<LabDetail />} />
           <Route path="/evidence" element={<EvidenceVault />} />
           <Route path="/beyond" element={<Beyond />} />

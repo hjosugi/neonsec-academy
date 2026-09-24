@@ -81,6 +81,13 @@ Validate the seed question bank:
 npm run validate:content
 ```
 
+Run the content safety scan and the Lab Safety Audit publish gate:
+
+```bash
+npm run validate:safety
+npm run audit:labs
+```
+
 ## Usage
 
 1. Open the app and complete the onboarding modal.

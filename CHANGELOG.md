@@ -2,6 +2,26 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.26 - 2026-09-24
+
+Automated Lab Safety Audit with stored audit records, reviewed overrides, and a CI publish gate.
+
+### Added
+
+- Lab Safety Audit rules (ruleset v1): forbidden target types, attack instructions, public IPs, real
+  domains/URLs, real emails, credential fields, live malware references, offensive tool commands,
+  attack payloads, and hash-like indicators, each with a safe-alternative suggestion.
+- `safetyAudit` records stored in every lab's metadata; manual overrides require a named reviewer, a
+  safety review note (30+ characters), and accepted rules covering every blocker.
+- Publish gate `npm run audit:labs` (CI step) that audits every shipped lab and self-tests with a safe
+  sample (published) and an unsafe sample (rejected).
+- Lab Safety Audit screen (`/labs/audit`) with the shipped-lab report, Markdown copy, a draft-lab JSON
+  auditor, and override preview.
+
+### Changed
+
+- Lab registry validation requires a current `safetyAudit` record.
+
 ## v1.0.25 - 2026-09-24
 
 CEH Practical-style 20 challenge simulator with a readiness report and review-queue hand-off.

@@ -353,6 +353,9 @@ Dataset-analysis labs add `analysis: { type, detection, prevention }` where `typ
 become `EvidenceItem` rows with `type: "log"` and a `reference` such as `access.log (synthetic) L8-L9`;
 **Send to report** also appends the item id to a lab report finding's `evidenceIds`.
 
+Every lab stores its Lab Safety Audit result in `safetyAudit: { rulesetVersion, status, reviewedAt }`
+(`status` is `pass` or `override`; overrides add `reviewer`, `overrideNote`, and `acceptedRules`).
+
 Web concept labs add `webConcept: { concept, unsafeTargetWarning }`. The learner's
 `LabWorksheet` (`labId`, `finding`, `impact`, `remediation`, `updatedAt`) is stored once per lab in
 `labWorksheets`, included in full backups, and becomes a report finding when all three fields are complete.

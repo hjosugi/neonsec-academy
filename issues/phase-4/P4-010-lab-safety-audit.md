@@ -19,23 +19,23 @@ lab content が安全基準に反していないかを publish 前に検査す�
 
 ## Requirements
 
-- [ ] forbidden target type, public IP, real domain, credential field, live malware reference を検出する
-- [ ] unsafe category は safe alternative に変換する提案を出す
-- [ ] audit result を lab metadata に保存する
-- [ ] manual override は安全レビュー note 必須にする
+- [x] forbidden target type, public IP, real domain, credential field, live malware reference を検出する
+- [x] unsafe category は safe alternative に変換する提案を出す
+- [x] audit result を lab metadata に保存する
+- [x] manual override は安全レビュー note 必須にする
 
 ## Acceptance Criteria
 
-- [ ] unsafe sample lab が publish で拒否される
-- [ ] audit report が表示される
-- [ ] safe sample lab は publish できる
+- [x] unsafe sample lab が publish で拒否される
+- [x] audit report が表示される
+- [x] safe sample lab は publish できる
 
 ## Subtasks
 
 - [x] safety rules を作る
 - [x] audit runner を作る
-- [ ] publish gate を作る
-- [ ] audit report UI を作る
+- [x] publish gate を作る
+- [x] audit report UI を作る
 
 ## Dependencies
 
@@ -47,18 +47,22 @@ lab content が安全基準に反していないかを publish 前に検査す�
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- `lib/labSafetyAudit.ts` audits labs with ten rules and safe-alternative suggestions; results are
+  stored as `safetyAudit` lab metadata, overrides need reviewer + note + accepted rules, and
+  `npm run audit:labs` gates CI (safe sample publishes, unsafe sample is rejected). The `/labs/audit`
+  screen shows the report and audits drafts. Verified with unit, type, content, safety, audit, and
+  build checks.

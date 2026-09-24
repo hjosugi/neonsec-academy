@@ -102,6 +102,23 @@ Reports must:
 - Describe impact as a training scenario, not as a real-world claim against a third party.
 - Recommend defensive fixes and verification steps.
 
+## Lab Safety Audit
+
+`src/lib/labSafetyAudit.ts` audits every learner-visible lab field before publish. Rules (ruleset v1):
+forbidden target types in scope/instructions, instructions to perform attacks, public IPs, real
+domains/URLs, real emails, credential-like values, live malware references, offensive tool commands,
+attack payloads, and (warning) hash-like indicators. Each finding names the unsafe category and the
+safe alternative from the replacement table above. Prose fields use strict domain checks; artifact
+fields (logs, code) flag only URLs, emails, and hosts with real-world TLDs.
+
+The audit result is stored in lab metadata as `safetyAudit` (`rulesetVersion`, `status`,
+`reviewedAt`). The publish gate (`npm run audit:labs`, run in CI) rejects a lab whose record is
+missing or stale or whose audit has blockers. A manual `override` is accepted only with a named
+reviewer, a safety review note of at least 30 characters, and `acceptedRules` covering every blocker.
+The gate self-tests with a safe sample (must publish) and an unsafe sample (must be rejected). The
+**Lab Safety Audit** screen (`/labs/audit`) shows the report for shipped labs and audits pasted draft
+labs, producing the record to store.
+
 ## Import And Export Hygiene
 
 Before importing a progress backup or question pack:
@@ -151,6 +168,8 @@ Before publishing a release or adding default content, run a safety review with 
 
 - Validate all seed questions with `node scripts/validate_questions.mjs`.
 - Run the read-only content safety scan with `node scripts/safety_scan.mjs`.
+- Run the Lab Safety Audit publish gate with `npm run audit:labs`; every lab needs a current stored
+  `safetyAudit` record and no unresolved blockers.
 - Confirm all lab evidence uses synthetic, local, documentation-range, or fictional data.
 - Confirm UI and README copy state authorized defensive use, synthetic/local scope, and no real targets.
 - Confirm public exports exclude raw answers, private notes, report evidence, credentials, and live target details.

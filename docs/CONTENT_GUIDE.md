@@ -173,6 +173,7 @@ Each lab needs:
 | `flagChallenge` | Prompt, local asset metadata, unique expected flag, scoped hints, explanation, remediation, and report prompt. |
 | `analysis` | Optional dataset-analysis metadata: `type` (`pcap`, `web-log`, `auth-log`, `cloud-config`, `firewall-rule`, `email-headers`), `detection`, and `prevention`. Required for analysis challenges. |
 | `webConcept` | Optional web concept metadata: `concept` (`access-control`, `input-validation`, `session`, `security-headers`) and `unsafeTargetWarning`. Web concept labs must be `simulated` or `local` and use a static `request-response` or `headers` asset. |
+| `safetyAudit` | Stored Lab Safety Audit result: `rulesetVersion`, `status` (`pass` or `override`), `reviewedAt`, plus `reviewer`, `overrideNote`, and `acceptedRules` for overrides. |
 | `objectives` | Checklist items that map to scoring components. |
 | `rubric` | Component scoring for flag/diagnosis, evidence, explanation, remediation, and safety. |
 | `guiding` | Hints with teaching answers. Hints should not introduce real-world action steps. |
@@ -208,6 +209,8 @@ Web concept labs teach causes and fixes, not attack procedures. Use this templat
 - [ ] The report builder can use the lab title, scope, summary, and model findings safely.
 - [ ] Dataset-analysis labs declare an `analysis.type` and explain both detection and prevention.
 - [ ] `npm run validate:safety` passes before publishing.
+- [ ] `npm run audit:labs` passes and the lab stores a current `safetyAudit` record (`status: 'pass'`,
+  or a documented override with reviewer, note, and accepted rules).
 
 ## Review Checklist
 
