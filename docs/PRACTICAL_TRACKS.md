@@ -172,6 +172,17 @@ lists next actions, and exports Markdown. Every challenge is recorded as a `prac
 answers are scheduled like a failed review and unsure-but-correct answers get a short interval, so
 both appear in the Review Queue.
 
+## Portfolio Evidence Exporter
+
+The Portfolio screen (`/portfolio`) generates a Markdown portfolio from mock exam stats, practical
+simulator results, CEH+ track progress, selected lab reports, sanitized triage findings, and
+reflection notes. Public-safe mode is the default: evidence notes, submitted answers, and flags are
+excluded, and public IPs, real emails, non-training URLs, real-TLD hostnames, and credential values
+are replaced with placeholders such as `[ip-removed]` and `[redacted]`. A sensitive placeholder
+check scans the final Markdown (export is blocked while sensitive values remain) and flags
+unfinished template placeholders such as `TODO` or `<your name>`. A privacy checklist must be fully
+confirmed before export or copy.
+
 ## Lab Registry Safety
 
 Every lab declares a `kind`: `local`, `dataset`, `simulated`, or `writeup`. Lab Detail displays the

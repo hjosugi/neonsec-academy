@@ -131,6 +131,8 @@ Before importing a progress backup or question pack:
 Before exporting:
 
 - Remove any accidental secrets, names, customer details, or real incident artifacts.
+- Use the Portfolio exporter in public-safe mode for anything you publish; it strips evidence and
+  replaces sensitive values, and blocks export until the privacy checklist is confirmed.
 - Prefer question packs when sharing authored questions; full progress backups may contain personal
   study history, reports, mistakes, and settings.
 

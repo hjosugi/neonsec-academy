@@ -30,5 +30,7 @@ describe('content safety detectors', () => {
   it('redacts sensitive values but keeps training-safe ones', () => {
     const redacted = redactSensitiveText('8.8.8.8 203.0.113.9 admin@realcorp.com ops@neoncorp.example token=abcdef123456 https://realcorp.com/x')
     expect(redacted).toBe('[ip-removed] 203.0.113.9 [email-removed] ops@neoncorp.example token=[redacted] [link-removed]')
+    expect(redactSensitiveText('see shop.realcorp.com and api.neoncorp.example')).toBe('see [host-removed] and api.neoncorp.example')
+    expect(scanSensitiveText('see shop.realcorp.com, notes.md, res.json', { domains: 'real-tlds' }).map((hit) => hit.value)).toEqual(['shop.realcorp.com'])
   })
 })

@@ -22,6 +22,7 @@ import type {
   PracticalAnswer,
   PracticalResult,
   PracticalSession,
+  PortfolioProfile,
   Profile,
   Question,
   RawQuestion,
@@ -159,6 +160,16 @@ function withActivity(
   return { ...profile, xp, streakDays, lastActiveDay }
 }
 
+function normalizePortfolio(value: unknown): PortfolioProfile | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+  const row = value as Record<string, unknown>
+  return {
+    displayName: typeof row.displayName === 'string' ? row.displayName.slice(0, 80) : '',
+    reflection: typeof row.reflection === 'string' ? row.reflection.slice(0, 8000) : '',
+    updatedAt: typeof row.updatedAt === 'number' && row.updatedAt > 0 ? row.updatedAt : 0,
+  }
+}
+
 /** Maps a track submission onto finding fields (learner writing first, model answer as fallback). */
 function trackFindingFields(challenge: TrackChallenge, submission: TrackSubmission) {
   const text = (keys: string[]) => {
@@ -206,6 +217,7 @@ interface AppState {
   trackSubmissions: TrackSubmission[]
   incidentWorkspaces: Record<string, IncidentWorkspace>
   threatModels: Record<string, ThreatModelWork>
+  portfolio: PortfolioProfile
 }
 
 interface AppActions {
@@ -277,6 +289,8 @@ interface AppActions {
   saveThreatModel: (work: ThreatModelWork) => void
   /** Sends the remediation backlog to the Report Builder; returns the report id. */
   threatModelToReport: (scenarioId: string) => string | null
+  // portfolio
+  savePortfolio: (patch: Partial<Omit<PortfolioProfile, 'updatedAt'>>) => void
   // flag challenges
   submitLabFlag: (challengeId: string, submitted: string) => FlagAttempt | null
   revealLabFlagHint: (challengeId: string, hintIndex: number) => boolean
@@ -361,6 +375,7 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
     trackSubmissions,
     incidentWorkspaces,
     threatModels,
+    portfolio: normalizePortfolio(persisted.portfolio) ?? currentState.portfolio,
   }
 }
 
@@ -391,6 +406,7 @@ const initialState: AppState = {
   trackSubmissions: [],
   incidentWorkspaces: {},
   threatModels: {},
+  portfolio: { displayName: '', reflection: '', updatedAt: 0 },
 }
 
 export const useStore = create<Store>()(
@@ -912,6 +928,15 @@ export const useStore = create<Store>()(
         return report.id
       },
 
+      savePortfolio: (patch) =>
+        set((s) => ({
+          portfolio: {
+            displayName: (patch.displayName ?? s.portfolio.displayName).slice(0, 80),
+            reflection: (patch.reflection ?? s.portfolio.reflection).slice(0, 8000),
+            updatedAt: Date.now(),
+          },
+        })),
+
       submitLabFlag: (challengeId, submitted) => {
         const lab = labById(challengeId)
         const clean = sanitizeFlagSubmission(submitted)
@@ -1193,6 +1218,7 @@ export const useStore = create<Store>()(
           trackSubmissions: s.trackSubmissions,
           incidentWorkspaces: s.incidentWorkspaces,
           threatModels: s.threatModels,
+          portfolio: s.portfolio,
         }
         return JSON.stringify(payload, null, 2)
       },
@@ -1253,6 +1279,7 @@ export const useStore = create<Store>()(
               threatModels: d.threatModels !== undefined
                 ? normalizeThreatModelWork(d.threatModels, THREAT_MODEL_SCENARIOS)
                 : s.threatModels,
+              portfolio: normalizePortfolio(d.portfolio) ?? s.portfolio,
             }
           })
           return true
@@ -1291,6 +1318,7 @@ export const useStore = create<Store>()(
         trackSubmissions: s.trackSubmissions,
         incidentWorkspaces: s.incidentWorkspaces,
         threatModels: s.threatModels,
+        portfolio: s.portfolio,
       }),
       merge: mergePersistedStoreState,
     },

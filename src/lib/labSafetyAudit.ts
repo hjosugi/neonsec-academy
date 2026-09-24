@@ -1,5 +1,5 @@
 import type { Lab, LabSafetyAuditRecord } from '../data/labs'
-import { scanSensitiveText, type SafetyHitKind } from './contentSafety'
+import { realTldHosts, scanSensitiveText, type SafetyHitKind } from './contentSafety'
 
 // ============================================================
 // Lab Safety Audit (P4-010). Content review gate that runs before a lab
@@ -120,12 +120,6 @@ const HIT_RULE: Record<SafetyHitKind, AuditRuleId> = {
   'access-token': 'credential-field',
 }
 
-/** Common public TLDs used to spot real hosts inside code/log artifacts without flagging member access. */
-const REAL_TLDS = new Set([
-  'com', 'net', 'org', 'io', 'co', 'ai', 'app', 'dev', 'info', 'biz', 'xyz', 'online', 'site', 'tech',
-  'cloud', 'gov', 'edu', 'mil', 'jp', 'uk', 'de', 'fr', 'cn', 'ru', 'us', 'ca', 'au', 'in', 'br', 'kr',
-])
-
 const FORBIDDEN_TARGET = /\b(?:production|prod environment|public internet|internet-facing|real (?:host|hosts|system|systems|network|website|site|account|accounts|user|users|target|targets|company|organization|customer|customers)|third[- ]party (?:site|service|website|api|system)|live (?:site|target|host|system|website|environment)|customer data)\b/i
 const NEGATED_TARGET = /\b(?:no|not|never|without|forbidden|excluded|out of scope|do not|don't|must not)\b/i
 const FORBIDDEN_ACTIVITY = /(?:^|[.:;]\s*)(?:scan|exploit|attack|brute[- ]force|crack|phish|exfiltrate|deploy|launch|execute|run|send|flood|bypass|hijack|dump|inject)\b(?! (?:analysis|review|summary|output|results?)\b)/i
@@ -184,14 +178,7 @@ function finding(rule: AuditRuleId, field: string, value: string, message?: stri
 }
 
 function scanArtifactDomains(text: string): string[] {
-  const out: string[] = []
-  const domainRe = /\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+([a-z]{2,63})\b/gi
-  for (const match of text.matchAll(domainRe)) {
-    const tld = match[1].toLowerCase()
-    const host = match[0].toLowerCase()
-    if (REAL_TLDS.has(tld) && !/\.(?:example|internal|test|invalid|localhost)\./.test(`${host}.`)) out.push(match[0])
-  }
-  return out
+  return realTldHosts(text)
 }
 
 export function auditFields(fields: AuditField[]): AuditFinding[] {

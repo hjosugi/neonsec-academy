@@ -26,6 +26,7 @@ import { IncidentResponse } from './routes/IncidentResponse'
 import { ThreatModelDetail, ThreatModelList } from './routes/ThreatModeling'
 import { TrackChallengeDetail, TrackChallengeList } from './routes/TrackWorkspace'
 import { Reports } from './routes/Reports'
+import { Portfolio } from './routes/Portfolio'
 import { Triage } from './routes/Triage'
 import { CityMap } from './routes/CityMap'
 import { Settings } from './routes/Settings'
@@ -89,6 +90,7 @@ export default function App() {
           <Route path="/tracks/:track/:id" element={<TrackChallengeDetail />} />
           <Route path="/triage" element={<Triage />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/map" element={<CityMap />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />

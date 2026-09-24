@@ -2,6 +2,26 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.33 - 2026-09-25
+
+Portfolio Evidence Exporter with public-safe mode, sensitive placeholder check, and privacy checklist.
+
+### Added
+
+- Portfolio screen (`/portfolio`) generating Markdown from mock exam stats, practical simulator
+  results, CEH+ track progress, selected lab reports, sanitized triage findings, and reflection notes.
+- Public-safe mode by default: evidence notes, answers, and flags are excluded and sensitive values
+  are replaced with placeholders; private mode requires confirmation.
+- Sensitive placeholder check on the final Markdown (blocks export while sensitive values remain) and
+  warnings for unfinished template placeholders.
+- Privacy checklist that must be fully confirmed before export or copy; reflection notes persist and
+  are included in full backups.
+
+### Changed
+
+- Shared content-safety detectors gain a real-TLD host mode and hostname redaction, reused by the lab
+  safety audit for artifacts.
+
 ## v1.0.32 - 2026-09-25
 
 CEH+ threat modeling and remediation track with a remediation backlog.

@@ -302,6 +302,9 @@ Readiness thresholds are persisted with other local settings:
 
 `examTargetPct` remains part of the profile because it is the learner's personal mock-score target.
 
+`PortfolioProfile` (`portfolio`) stores the optional `displayName` and `reflection` notes used by the
+Portfolio exporter; the exported Markdown itself is generated on demand and never stored.
+
 `ThreatModelWork` (per scenario id in `threatModels`) stores `assetRatings`, `boundaryNotes`, learner
 `threats` (`target` element or flow id, `stride`, `threat`, `mitigation`, `priority` P1-P3, backlog
 `status` todo/in-progress/done, optional `cehConcept`), and the generated `reportId`.

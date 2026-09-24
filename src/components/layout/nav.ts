@@ -2,6 +2,7 @@ import type { LucideIcon } from 'lucide-react'
 import {
   Archive,
   BookOpenCheck,
+  Briefcase,
   BrainCircuit,
   ChartNoAxesColumnIncreasing,
   ClipboardList,
@@ -53,6 +54,7 @@ export const NAV: NavSection[] = [
       { to: '/beyond', label: 'CEH+ Tracks', icon: BrainCircuit },
       { to: '/triage', label: 'Triage', icon: Scale },
       { to: '/reports', label: 'Reports', icon: FileText },
+      { to: '/portfolio', label: 'Portfolio', icon: Briefcase },
     ],
   },
   {

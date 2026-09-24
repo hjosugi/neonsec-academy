@@ -479,3 +479,13 @@ describe('threat modeling store', () => {
     expect(useStore.getState().threatModels[scenario.id].reportId).toBe(reportId)
   })
 })
+
+describe('portfolio profile store', () => {
+  it('saves reflection notes and restores them from backups', () => {
+    useStore.getState().savePortfolio({ displayName: 'neon-learner', reflection: 'Triage first, then report.' })
+    const backup = useStore.getState().exportData()
+    useStore.getState().savePortfolio({ displayName: '', reflection: '' })
+    expect(useStore.getState().importData(backup)).toBe(true)
+    expect(useStore.getState().portfolio).toMatchObject({ displayName: 'neon-learner', reflection: 'Triage first, then report.' })
+  })
+})

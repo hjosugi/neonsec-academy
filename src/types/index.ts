@@ -377,6 +377,13 @@ export interface ThreatModelWork {
   updatedAt: number
 }
 
+// ---- Portfolio evidence exporter (P5-007) ----
+export interface PortfolioProfile {
+  displayName: string
+  reflection: string
+  updatedAt: number
+}
+
 // ---- Player / settings ----
 export type StudyGoal = 'ceh-exam' | 'ceh-practical' | 'ceh-plus' | 'all'
 

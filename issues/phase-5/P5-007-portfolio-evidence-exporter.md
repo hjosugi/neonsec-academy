@@ -19,14 +19,14 @@ CEH 合格後の実践力を示すため、安全に公開可能な学習成果�
 
 ## Requirements
 
-- [ ] export 対象: mock exam stats, lab reports, sanitized findings, reflection notes
+- [x] export 対象: mock exam stats, lab reports, sanitized findings, reflection notes
 - [x] 秘密情報や実ターゲット情報を自動で除外する warning を出す
 - [x] public-safe mode を用意する
-- [ ] Markdown portfolio を生成する
+- [x] Markdown portfolio を生成する
 
 ## Acceptance Criteria
 
-- [ ] public-safe portfolio を export できる
+- [x] public-safe portfolio を export できる
 - [x] sensitive placeholder check が動く
 - [x] export 前に privacy checklist が出る
 
@@ -47,18 +47,21 @@ CEH 合格後の実践力を示すため、安全に公開可能な学習成果�
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- `/portfolio` exports mock exam stats, practical results, track progress, lab reports, sanitized
+  findings, and reflection notes as Markdown with public-safe mode on by default, a sensitive
+  placeholder check that blocks unsafe output, and a mandatory privacy checklist. Verified with unit,
+  type, content, safety, audit, and build checks.

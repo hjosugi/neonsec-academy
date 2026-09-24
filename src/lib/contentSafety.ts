@@ -58,6 +58,22 @@ function isNonTargetDottedToken(domain: string): boolean {
   return NON_TARGET_DOTTED.has(normalized) || NON_TARGET_DOTTED_SUFFIXES.some((suffix) => normalized.endsWith(suffix))
 }
 
+/** Common public TLDs: bare hosts ending in these are treated as real in lenient modes. */
+export const REAL_TLDS = new Set([
+  'com', 'net', 'org', 'io', 'co', 'ai', 'app', 'dev', 'info', 'biz', 'xyz', 'online', 'site', 'tech',
+  'cloud', 'gov', 'edu', 'mil', 'jp', 'uk', 'de', 'fr', 'cn', 'ru', 'us', 'ca', 'au', 'in', 'br', 'kr',
+])
+
+/** Bare host-like tokens that end in a common real-world TLD (and not a training suffix). */
+export function realTldHosts(text: string): string[] {
+  const out: string[] = []
+  const domainRe = /\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+([a-z]{2,63})\b/gi
+  for (const match of text.matchAll(domainRe)) {
+    if (REAL_TLDS.has(match[1].toLowerCase()) && !isSafeDomain(match[0])) out.push(match[0])
+  }
+  return out
+}
+
 const PLACEHOLDER_VALUE = /^(?:\*+|<[^>]+>|\[[^\]]+\]|placeholder|example|redacted|none|null)$/i
 
 /**
@@ -66,7 +82,7 @@ const PLACEHOLDER_VALUE = /^(?:\*+|<[^>]+>|\[[^\]]+\]|placeholder|example|redact
  * `domains: 'hosts'` only flags hosts inside URLs and emails (free-form learner writing, where file
  * names and code references are common).
  */
-export function scanSensitiveText(text: string, options: { domains?: 'strict' | 'hosts' } = {}): SafetyHit[] {
+export function scanSensitiveText(text: string, options: { domains?: 'strict' | 'hosts' | 'real-tlds' } = {}): SafetyHit[] {
   const hits: SafetyHit[] = []
   const domains = options.domains ?? 'strict'
   if (!text) return hits
@@ -98,6 +114,13 @@ export function scanSensitiveText(text: string, options: { domains?: 'strict' | 
     }
   }
 
+  if (domains === 'real-tlds') {
+    for (const host of realTldHosts(text)) {
+      if (urlHosts.has(host.toLowerCase()) || emailHosts.has(host.toLowerCase())) continue
+      hits.push({ kind: 'live-domain', value: host, message: 'Real-looking hostnames must be replaced with fictional training hosts.' })
+    }
+  }
+
   if (domains === 'strict') {
     const domainRe = /\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}\b/gi
     for (const match of text.matchAll(domainRe)) {
@@ -111,8 +134,9 @@ export function scanSensitiveText(text: string, options: { domains?: 'strict' | 
 
   const credentialRe = /\b(?:password|passwd|pwd|token|secret|api[_-]?key)\s*[:=]\s*(\S+)/gi
   for (const match of text.matchAll(credentialRe)) {
+    const raw = match[1].replace(/[,"'}]+$/, '')
     const credential = match[1].replace(/[,"'}\]]+$/, '')
-    if (!PLACEHOLDER_VALUE.test(credential) && credential.length >= 8) {
+    if (!PLACEHOLDER_VALUE.test(raw) && !PLACEHOLDER_VALUE.test(credential) && credential.length >= 8) {
       hits.push({ kind: 'credential', value: match[0], message: 'Credential-like values must be placeholders such as <redacted>.' })
     }
   }
@@ -140,4 +164,6 @@ export function redactSensitiveText(text: string): string {
       isSafeDomain(host) ? email : '[email-removed]')
     .replace(/\b(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)\b/g, (ip) =>
       isDocumentationIp(ip) || isPrivateOrLocalIp(ip) ? ip : '[ip-removed]')
+    .replace(/\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+([a-z]{2,63})\b/gi, (host, tld: string) =>
+      REAL_TLDS.has(tld.toLowerCase()) && !isSafeDomain(host) ? '[host-removed]' : host)
 }

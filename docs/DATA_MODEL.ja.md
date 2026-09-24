@@ -282,6 +282,9 @@ Attemptは追加のみです。訂正は履歴を編集するのではなく、�
 
 `examTargetPct`は学習者の個人的な模擬スコア目標のためプロフィールの一部です。
 
+`PortfolioProfile`（`portfolio`）はポートフォリオエクスポーターが使う任意の `displayName` と `reflection`
+メモを保存します。エクスポートする Markdown はその都度生成され、保存されません。
+
 `ThreatModelWork`（`threatModels` にシナリオ ID ごと）は `assetRatings`、`boundaryNotes`、学習者の `threats`
 （`target` 要素/フロー ID、`stride`、`threat`、`mitigation`、`priority` P1-P3、バックログの `status`
 todo/in-progress/done、任意の `cehConcept`）、生成した `reportId` を保存します。
