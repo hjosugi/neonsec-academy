@@ -171,6 +171,7 @@ Each lab needs:
 | `scope.forbidden` | Explicitly forbid real systems, external lookups, traffic generation, credentials, and payload execution. |
 | `evidenceTitle` / `evidence` | Static synthetic artifact. Use fictional names and documentation IP ranges. |
 | `flagChallenge` | Prompt, local asset metadata, unique expected flag, scoped hints, explanation, remediation, and report prompt. |
+| `analysis` | Optional dataset-analysis metadata: `type` (`pcap`, `web-log`, `auth-log`, `cloud-config`, `firewall-rule`, `email-headers`), `detection`, and `prevention`. Required for analysis challenges. |
 | `objectives` | Checklist items that map to scoring components. |
 | `rubric` | Component scoring for flag/diagnosis, evidence, explanation, remediation, and safety. |
 | `guiding` | Hints with teaching answers. Hints should not introduce real-world action steps. |
@@ -190,6 +191,7 @@ Each lab needs:
 - [ ] Explanation, remediation, and report prompt stay defensive and unlock safely after an accepted flag.
 - [ ] Model findings are report-ready and use synthetic scope language.
 - [ ] The report builder can use the lab title, scope, summary, and model findings safely.
+- [ ] Dataset-analysis labs declare an `analysis.type` and explain both detection and prevention.
 - [ ] `npm run validate:safety` passes before publishing.
 
 ## Review Checklist

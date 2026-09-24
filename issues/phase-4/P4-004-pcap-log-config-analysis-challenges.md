@@ -19,7 +19,7 @@ estimate: "3d"
 
 ## Requirements
 
-- [ ] PCAP, web log, auth log, cloud config, firewall rule の challenge type を用意する
+- [x] PCAP, web log, auth log, cloud config, firewall rule の challenge type を用意する
 - [x] 各 challenge は answer, evidence, remediation を要求する
 - [x] dataset は synthetic または intentionally prepared のみ使う
 - [x] 解説は detection と prevention を含める
@@ -27,8 +27,8 @@ estimate: "3d"
 ## Acceptance Criteria
 
 - [x] 最低 5 種類の analysis challenge sample がある
-- [ ] 各 sample に flag と explanation がある
-- [ ] report builder へ evidence を送れる
+- [x] 各 sample に flag と explanation がある
+- [x] report builder へ evidence を送れる
 
 ## Subtasks
 
@@ -47,18 +47,22 @@ estimate: "3d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- Six dataset-analysis families ship as Safe Labs (PCAP summary, web access log, auth log, cloud
+  config, firewall rules, email headers). Each has a flag, explanation, detection/prevention debrief,
+  and rubric requiring answer, evidence, and remediation. The line-numbered viewer sends selected lines
+  to the Evidence Vault and cites them in the lab report. Verified with unit, type, content, safety,
+  and build checks.

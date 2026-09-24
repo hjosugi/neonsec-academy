@@ -39,6 +39,7 @@ import {
   normalizeEvidenceItems,
   reconcileReportEvidenceLinks,
 } from '../lib/evidence'
+import { citeEvidenceInReport, createLabReport, findLabReport } from '../lib/labReport'
 import {
   flagHintUsesForChallenge,
   isFlagChallengeSolved,
@@ -198,6 +199,8 @@ interface AppActions {
   revealLabFlagHint: (challengeId: string, hintIndex: number) => boolean
   // evidence + reports
   upsertEvidence: (item: EvidenceItem) => void
+  /** Saves evidence and cites it in the lab's report, creating the report when needed. */
+  sendEvidenceToLabReport: (item: EvidenceItem, findingId?: string) => string | null
   deleteEvidence: (id: string) => void
   upsertReport: (report: Report) => void
   deleteReport: (id: string) => void
@@ -607,6 +610,21 @@ export const useStore = create<Store>()(
           evidenceItems.sort((a, b) => b.timestamp - a.timestamp)
           return { evidenceItems }
         }),
+
+      sendEvidenceToLabReport: (item, findingId) => {
+        const lab = labById(item.challengeId)
+        const evidence = normalizeEvidenceItem(item)
+        if (!lab || !evidence) return null
+        get().upsertEvidence(evidence)
+        const state = get()
+        if (!state.evidenceItems.some((existing) => existing.id === evidence.id)) return null
+        const now = Date.now()
+        const existing = findLabReport(state.reports, lab)
+        const base = existing ? { ...existing, challengeId: existing.challengeId ?? lab.id } : createLabReport(lab, now)
+        const cited = citeEvidenceInReport(base, evidence.id, findingId, now)
+        state.upsertReport(cited)
+        return cited.id
+      },
 
       deleteEvidence: (id) =>
         set((s) => {

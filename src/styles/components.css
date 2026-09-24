@@ -526,3 +526,49 @@ button.neon-card {
 .table tr:hover td {
   background: rgba(0, 245, 255, 0.03);
 }
+
+/* ---- Line-numbered synthetic dataset viewer (Safe Labs, CEH+ tracks) ---- */
+.dataset-view {
+  background: var(--bg-abyss);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  padding: 0.45rem 0;
+  overflow-x: auto;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.dataset-view__line {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: max-content;
+  padding: 0.05rem 0.8rem 0.05rem 0;
+  border: 0;
+  border-left: 2px solid transparent;
+  background: transparent;
+  color: var(--text-main);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+.dataset-view__line:hover { background: rgba(0, 245, 255, 0.05); }
+.dataset-view__line:focus-visible { outline: 1px solid var(--focus); outline-offset: -1px; }
+.dataset-view__line.is-selected {
+  background: rgba(57, 255, 20, 0.08);
+  border-left-color: var(--acid-green);
+}
+.dataset-view__line.is-correct { border-left-color: var(--acid-green); }
+.dataset-view__line.is-missed { border-left-color: var(--warning-amber); background: rgba(255, 204, 0, 0.06); }
+.dataset-view__line.is-wrong { border-left-color: var(--danger-red); background: rgba(255, 51, 102, 0.07); }
+.dataset-view__no {
+  flex: 0 0 2.6rem;
+  text-align: right;
+  color: var(--text-dim);
+  user-select: none;
+}
+.dataset-view__text {
+  white-space: pre;
+  background: none;
+  padding: 0;
+  font-family: var(--font-mono, ui-monospace, monospace);
+}

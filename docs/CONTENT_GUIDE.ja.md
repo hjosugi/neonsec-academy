@@ -158,6 +158,7 @@ Memory phrase:
 | `scope.forbidden` | 実際のシステム、外部検索、トラフィック生成、資格情報、ペイロード実行を明示的に禁止します。 |
 | `evidenceTitle` / `evidence` | 静的な合成アーティファクト。架空の名前とドキュメントIP範囲を使用します。 |
 | `flagChallenge` | プロンプト、ローカルアセットメタデータ、期待されるユニークなフラグ、範囲のヒント、説明、修正、報告プロンプト。 |
+| `analysis` | 任意のデータセット分析メタデータ: `type`（`pcap`、`web-log`、`auth-log`、`cloud-config`、`firewall-rule`、`email-headers`）、`detection`、`prevention`。分析チャレンジでは必須。 |
 | `objectives` | スコアリングコンポーネントにマッピングされたチェックリスト項目。 |
 | `rubric` | フラグ/診断、証拠、説明、修正、安全性のためのコンポーネントスコアリング。 |
 | `guiding` | 教育的な回答を含むヒント。ヒントは実世界の行動手順を導入してはいけません。 |

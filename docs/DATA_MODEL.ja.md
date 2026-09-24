@@ -310,10 +310,20 @@ Attemptは追加のみです。訂正は履歴を編集するのではなく、�
     "remediation": "Enforce MFA and alert on one-source-to-many-user failure velocity.",
     "reportPrompt": "Cite the failure sequence and successful non-MFA login."
   },
+  "analysis": {
+    "type": "auth-log",
+    "detection": "Alert on one source failing across many usernames.",
+    "prevention": "Enforce MFA and source-based throttling."
+  },
   "objectives": ["Classify the activity", "Identify the pivot event"],
   "rubric": { "challengeType": "soc-triage", "passingScore": 80 }
 }
 ```
+
+データセット分析ラボは `analysis: { type, detection, prevention }` を持ちます（`type` は `pcap`、
+`web-log`、`auth-log`、`cloud-config`、`firewall-rule`、`email-headers`）。選択したアーティファクト行は
+`type: "log"` と `access.log (synthetic) L8-L9` のような `reference` を持つ `EvidenceItem` になり、
+**Send to report** はその ID をラボレポートの所見の `evidenceIds` に追加します。
 
 ラボの種類は`local`, `dataset`, `simulated`, `writeup`です。すべてのラボは証拠が表示される前に許可・禁止範囲を宣言する必要があります。`validateLabRegistry`はラボスキーマと安全でないメタデータ、完全かつ一意なFlag Challenge定義をチェックします。アセット種類は`log`, `config`, `request-response`, `capture`, `headers`, `architecture`で、すべてのアセットはアプリ内で既に提供されている静的メタデータです。期待されるフラグは`FLAG{UPPER_SNAKE_CASE}`形式です。これは静的クライアントに搭載されたローカルトレーニング回答であり、秘密や認証値ではありません。
 

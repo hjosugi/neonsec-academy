@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Lab } from '../data/labs'
 import { LABS } from '../data/labs'
 import { validateLabRegistry } from './labRegistry'
+import { analysisCoverage } from './analysisChallenges'
 
 const baseLab: Lab = {
   id: 'test-lab',
@@ -83,5 +84,39 @@ describe('lab registry validation', () => {
 
     expect(errors.some((error) => error.message === 'Expected flags must be unique.')).toBe(true)
     expect(errors.some((error) => error.message === 'Asset ids must be unique within a challenge.')).toBe(true)
+  })
+
+  it('ships at least five dataset-analysis challenge types with detection and prevention', () => {
+    const coverage = analysisCoverage(LABS)
+    for (const type of ['pcap', 'web-log', 'auth-log', 'cloud-config', 'firewall-rule'] as const) {
+      expect(coverage[type]).toBeGreaterThanOrEqual(1)
+    }
+    const analysisLabs = LABS.filter((lab) => lab.analysis)
+    expect(analysisLabs.length).toBeGreaterThanOrEqual(5)
+    for (const lab of analysisLabs) {
+      expect(lab.flagChallenge.explanation.trim()).not.toBe('')
+      expect(lab.rubric.components.map((component) => component.key)).toEqual(
+        expect.arrayContaining(['flag', 'evidence', 'remediation']),
+      )
+    }
+  })
+
+  it('rejects analysis metadata without a valid type, detection, or prevention', () => {
+    const invalidType = validateLabRegistry([
+      { ...baseLab, analysis: { type: 'netflow' as never, detection: 'Alert.', prevention: 'Fix.' } },
+    ])
+    const missingDetection = validateLabRegistry([
+      { ...baseLab, analysis: { type: 'auth-log', detection: ' ', prevention: 'Enforce MFA.' } },
+    ])
+
+    expect(invalidType.some((error) => error.field === 'analysis.type')).toBe(true)
+    expect(missingDetection.some((error) => error.field === 'analysis')).toBe(true)
+  })
+
+  it('scans analysis debrief text for unsafe targets', () => {
+    const errors = validateLabRegistry([
+      { ...baseLab, analysis: { type: 'web-log', detection: 'Compare with shop.acme.com traffic.', prevention: 'Block.' } },
+    ])
+    expect(errors.some((error) => error.kind === 'live-domain' && error.field === 'analysis.detection')).toBe(true)
   })
 })

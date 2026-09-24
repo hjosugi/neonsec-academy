@@ -20,10 +20,10 @@ const TRACK_VIS: Record<TrackKey, { glyph: string; color: string }> = {
 }
 
 const TRACK_LABS: Record<TrackKey, string[]> = {
-  pentest: ['web-idor', 'net-cleartext'],
+  pentest: ['web-idor', 'net-cleartext', 'fw-rule-shadowing'],
   appsec: ['web-idor'],
   cloud: ['cloud-iam'],
-  soc: ['soc-bruteforce', 'phish-headers'],
+  soc: ['soc-bruteforce', 'phish-headers', 'web-log-forced-browsing'],
   ir: ['soc-bruteforce'],
   'threat-model': ['threat-model'],
 }

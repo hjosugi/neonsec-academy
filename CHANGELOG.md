@@ -2,6 +2,30 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.21 - 2026-09-24
+
+Dataset-analysis challenges for PCAP, web log, auth log, cloud config, and firewall rule review.
+
+### Added
+
+- Two new synthetic dataset labs: web access log forced browsing (`web-log-forced-browsing`) and
+  firewall rule shadowing (`fw-rule-shadowing`), each with a flag, hints, explanation, remediation,
+  report prompt, rubric, guiding questions, and model findings.
+- `analysis` metadata (`pcap`, `web-log`, `auth-log`, `cloud-config`, `firewall-rule`, `email-headers`)
+  with detection and prevention guidance on every dataset-analysis lab, shown as an Analysis Debrief
+  after the flag is accepted.
+- Line-numbered dataset viewer in Lab Detail: select artifact lines, save them to the Evidence Vault as
+  a log excerpt, or **Send to report** to cite them on the lab report (created from model findings if
+  missing).
+- Tests for analysis-type coverage, analysis metadata validation, line-range evidence capture, report
+  citation, and backup round-trips of the hand-off.
+
+### Changed
+
+- Lab registry validation now rejects analysis labs with an unknown type or missing detection/prevention
+  text and scans that text for unsafe targets.
+- Lab report creation and matching moved to a shared helper used by Lab Detail, Reports, and the store.
+
 ## v1.0.20 - 2026-07-10
 
 Safe, persisted flag challenges with hint tracking, explanation unlocks, and practical analytics.

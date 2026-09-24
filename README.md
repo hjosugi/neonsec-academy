@@ -38,7 +38,7 @@ generation.
 | Mock Exam | Full Exam (125 questions/240 minutes), Half Length (63/120), Quick Sim (25/45), and Weakness Focus (40/70), with domain weighting, flags, resume, and per-domain results. |
 | Analytics | Module/domain mastery, flag challenge completion and accuracy, weakest modules, due backlog, readiness scoring, badges, streaks, and XP. |
 | Mistake Notebook | Records why an answer was wrong, correct reasoning, trap pattern, memory phrase, next action, and resolution state. |
-| Safe Labs | Six synthetic, read-only flag challenges with persisted attempts and hints: SOC suspicious logins, cloud IAM review, web access control, cleartext credentials, phishing headers, and STRIDE threat modeling. |
+| Safe Labs | Eight synthetic, read-only flag challenges with persisted attempts and hints: SOC suspicious logins, cloud IAM review, web access control, cleartext credentials (PCAP summary), phishing headers, web access log forced browsing, firewall rule shadowing, and STRIDE threat modeling. Dataset-analysis labs add a line-numbered viewer that sends selected lines to the Evidence Vault and lab report, plus a detection/prevention debrief. |
 | Evidence Vault | Challenge-linked observations, log excerpts, screenshot/file references, and notes with local-only persistence and explicit sensitive-data warnings. |
 | Reports | Findings reports with scope, summary, severity, impact, remediation, linked Vault citations, Markdown copy, and Markdown download. |
 | Final Gate | Pre-booking checklist for mock-score streak, due backlog, weak-module count, and CEH module coverage, exportable as Markdown. |

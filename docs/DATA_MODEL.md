@@ -330,10 +330,20 @@ Readiness thresholds are persisted with other local settings:
     "remediation": "Enforce MFA and alert on one-source-to-many-user failure velocity.",
     "reportPrompt": "Cite the failure sequence and successful non-MFA login."
   },
+  "analysis": {
+    "type": "auth-log",
+    "detection": "Alert on one source failing across many usernames.",
+    "prevention": "Enforce MFA and source-based throttling."
+  },
   "objectives": ["Classify the activity", "Identify the pivot event"],
   "rubric": { "challengeType": "soc-triage", "passingScore": 80 }
 }
 ```
+
+Dataset-analysis labs add `analysis: { type, detection, prevention }` where `type` is `pcap`,
+`web-log`, `auth-log`, `cloud-config`, `firewall-rule`, or `email-headers`. Selected artifact lines
+become `EvidenceItem` rows with `type: "log"` and a `reference` such as `access.log (synthetic) L8-L9`;
+**Send to report** also appends the item id to a lab report finding's `evidenceIds`.
 
 Lab kinds are `local`, `dataset`, `simulated`, and `writeup`. All labs must declare allowed and
 forbidden scope before evidence is visible. `validateLabRegistry` checks lab schema and unsafe

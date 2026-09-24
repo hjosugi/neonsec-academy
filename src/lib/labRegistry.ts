@@ -1,5 +1,6 @@
 import type { FlagChallengeAssetKind, Lab, LabKind } from '../data/labs'
 import { canonicalFlag, isExpectedFlagValid } from './flagChallenge'
+import { isAnalysisType } from './analysisChallenges'
 
 export const LAB_KINDS: LabKind[] = ['local', 'dataset', 'simulated', 'writeup']
 export const FLAG_ASSET_KINDS: FlagChallengeAssetKind[] = [
@@ -76,6 +77,12 @@ function textFields(lab: Lab): Array<[string, string]> {
       ['flagChallenge.explanation', typeof challenge.explanation === 'string' ? challenge.explanation : ''],
       ['flagChallenge.remediation', typeof challenge.remediation === 'string' ? challenge.remediation : ''],
       ['flagChallenge.reportPrompt', typeof challenge.reportPrompt === 'string' ? challenge.reportPrompt : ''],
+    )
+  }
+  if (lab.analysis) {
+    fields.push(
+      ['analysis.detection', typeof lab.analysis.detection === 'string' ? lab.analysis.detection : ''],
+      ['analysis.prevention', typeof lab.analysis.prevention === 'string' ? lab.analysis.prevention : ''],
     )
   }
   return fields
@@ -200,6 +207,26 @@ export function validateLabRegistry(labs: Lab[]): LabRegistryError[] {
           errors.push({ labId: lab.id, field: 'flagChallenge.expectedFlag', kind: 'schema', message: 'Expected flags must be unique.' })
         }
         expectedFlags.add(expectedFlag)
+      }
+    }
+    if (lab.analysis !== undefined) {
+      const analysis = lab.analysis
+      if (!analysis || !isAnalysisType(analysis.type)) {
+        errors.push({ labId: lab.id, field: 'analysis.type', kind: 'schema', message: 'Analysis challenge type is invalid.' })
+      }
+      if (
+        !analysis
+        || typeof analysis.detection !== 'string'
+        || typeof analysis.prevention !== 'string'
+        || !analysis.detection.trim()
+        || !analysis.prevention.trim()
+      ) {
+        errors.push({
+          labId: lab.id,
+          field: 'analysis',
+          kind: 'schema',
+          message: 'Analysis challenges must explain both detection and prevention.',
+        })
       }
     }
     scanUnsafeText(lab, errors)

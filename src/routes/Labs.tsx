@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { LABS } from '../data/labs'
 import { useStore } from '../store/useStore'
 import { computeFlagChallengeAnalytics } from '../lib/flagChallenge'
+import { ANALYSIS_TYPES } from '../lib/analysisChallenges'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 
@@ -51,6 +52,11 @@ export function Labs() {
               <span className="badge mt-1" style={{ marginLeft: '0.35rem' }}>
                 {lab.kind}
               </span>
+              {lab.analysis && (
+                <span className="badge badge--cyan mt-1" style={{ marginLeft: '0.35rem' }}>
+                  {ANALYSIS_TYPES[lab.analysis.type].label}
+                </span>
+              )}
               <span
                 className={`badge mt-1 ${result?.solved ? 'badge--green' : result?.attempts ? 'badge--amber' : 'badge--cyan'}`}
                 style={{ marginLeft: '0.35rem' }}

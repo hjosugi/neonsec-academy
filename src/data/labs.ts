@@ -7,6 +7,17 @@ import type { Difficulty, Severity } from '../types'
 
 export type LabKind = 'local' | 'dataset' | 'simulated' | 'writeup'
 
+/** Dataset-analysis challenge families (P4-004). */
+export type AnalysisChallengeType = 'pcap' | 'web-log' | 'auth-log' | 'cloud-config' | 'firewall-rule' | 'email-headers'
+
+export interface LabAnalysis {
+  type: AnalysisChallengeType
+  /** How a defender would detect this pattern in their own telemetry. */
+  detection: string
+  /** Preventive control that removes or reduces the risk. */
+  prevention: string
+}
+
 export interface LabFinding {
   title: string
   severity: Severity
@@ -66,6 +77,8 @@ export interface Lab {
   evidenceTitle: string
   evidence: string
   flagChallenge: FlagChallengeDefinition
+  /** Present on dataset-analysis challenges; drives the analysis debrief. */
+  analysis?: LabAnalysis
   objectives: string[]
   rubric: LabRubric
   guiding: { q: string; a: string }[]
@@ -170,6 +183,13 @@ export const LABS: Lab[] = [
       reportPrompt:
         'Write a finding that cites the multi-user failure sequence and successful non-MFA login, then explains impact and prioritized containment.',
     },
+    analysis: {
+      type: 'auth-log',
+      detection:
+        'Alert when one source produces failures across many distinct usernames in a short window, and escalate any success from that source, especially without MFA.',
+      prevention:
+        'Enforce MFA for every account, add source-based throttling alongside per-account lockout, and block legacy sign-in paths that bypass MFA.',
+    },
     objectives: [
       'Classify the activity (single-account brute force vs password spraying vs credential stuffing)',
       'Identify the pivot event where the attacker likely succeeded',
@@ -268,6 +288,13 @@ export const LABS: Lab[] = [
         'Replace the wildcard statement with only required actions on named resources, then review access with a policy analyzer.',
       reportPrompt:
         'Document the wildcard authorization risk separately from the bucket exposure and prioritize least-privilege remediation.',
+    },
+    analysis: {
+      type: 'cloud-config',
+      detection:
+        'Run policy-as-code checks that flag wildcard actions or resources and public storage settings before deployment, and alert on configuration drift afterwards.',
+      prevention:
+        'Grant runtime roles only the actions and named resources they need, block public storage access by default, and require encryption and access logging in baseline templates.',
     },
     objectives: [
       'Explain what is wrong with the IAM statement',
@@ -429,6 +456,13 @@ Content-Type: application/json
       reportPrompt:
         'Summarize every cleartext protocol observation, its impact, and the secure replacement without including any real credential value.',
     },
+    analysis: {
+      type: 'pcap',
+      detection:
+        'Flag authentication exchanges on cleartext protocols in network monitoring and alert on session cookies issued without the Secure attribute.',
+      prevention:
+        'Retire FTP and Telnet in favour of encrypted protocols, redirect every login to HTTPS with HSTS, and set Secure and HttpOnly on session cookies.',
+    },
     objectives: [
       'List every protocol here that exposes credentials or sessions in cleartext',
       'Explain the risk of the missing cookie Secure flag',
@@ -507,6 +541,13 @@ X-Sender-IP: 203.0.113.200`,
       reportPrompt:
         'Write a phishing finding that cites the domain mismatch and authentication failures, then recommends user and mail-control actions.',
     },
+    analysis: {
+      type: 'email-headers',
+      detection:
+        'Quarantine or banner messages that fail SPF and DMARC, and alert on cousin domains that closely resemble the organization domain.',
+      prevention:
+        'Publish an enforcing DMARC policy, register or block obvious lookalike domains, and train staff to verify urgent requests through a known channel.',
+    },
     objectives: [
       'State whether SPF, DKIM, and DMARC passed or failed',
       'Identify the two social-engineering pressure tactics',
@@ -535,6 +576,192 @@ X-Sender-IP: 203.0.113.200`,
         severity: 'medium',
         impact: 'Recipients could be tricked into surrendering credentials via a lookalike domain.',
         remediation: 'Report/quarantine per DMARC, block the cousin domains, and reinforce awareness: verify via known channels, never via urgent email links.',
+      },
+    ],
+  },
+  {
+    id: 'web-log-forced-browsing',
+    title: 'Web Log Analysis: Forced Browsing Burst',
+    category: 'Web Log',
+    kind: 'dataset',
+    glyph: '≣',
+    color: '#72efdd',
+    difficulty: 'medium',
+    brief:
+      'A synthetic web access log from a fictional storefront shows a burst of requests from one source. Decide what the source was doing, find the request that turned reconnaissance into exposure, and recommend detection and prevention. Log review only.',
+    scope: {
+      allowed: ['The synthetic access log below', 'Local note-taking, the Evidence Vault, and the report builder'],
+      forbidden: ['Requesting any path on any real or fictional site', 'Any external lookup of the fake addresses', 'Generating traffic'],
+    },
+    evidenceTitle: 'access.log (synthetic)',
+    evidence: `2026-07-12T03:14:02Z 198.51.100.23 GET /products/lamp-07 200 5120 ua="Mozilla/5.0 (browser)"
+2026-07-12T03:20:11Z 203.0.113.45 GET /admin 404 162 ua="content-discovery-bot/0.9"
+2026-07-12T03:20:11Z 203.0.113.45 GET /administrator 404 162 ua="content-discovery-bot/0.9"
+2026-07-12T03:20:12Z 203.0.113.45 GET /old 404 162 ua="content-discovery-bot/0.9"
+2026-07-12T03:20:12Z 203.0.113.45 GET /backup 301 0 ua="content-discovery-bot/0.9"
+2026-07-12T03:20:12Z 203.0.113.45 GET /backup/ 403 199 ua="content-discovery-bot/0.9"
+... (1,240 similar 404 responses from 203.0.113.45 across wordlist-style paths in 6 minutes) ...
+2026-07-12T03:26:40Z 203.0.113.45 GET /backup/customers-export.json 200 4194304 ua="content-discovery-bot/0.9"
+2026-07-12T03:26:52Z 203.0.113.45 GET /backup/orders-export.json 200 2097152 ua="content-discovery-bot/0.9"
+2026-07-12T03:31:09Z 198.51.100.23 GET /cart 200 2048 ua="Mozilla/5.0 (browser)"`,
+    flagChallenge: {
+      prompt:
+        'Name the reconnaissance technique shown by the rapid 404 burst that preceded the successful backup downloads, and submit it as a flag.',
+      assets: [
+        {
+          id: 'access-log',
+          label: 'access.log (synthetic)',
+          kind: 'log',
+          description: 'Prepared web access events from a fictional storefront using documentation-range sources.',
+        },
+      ],
+      expectedFlag: 'FLAG{FORCED_BROWSING}',
+      hints: [
+        'Compare the status codes and path names requested by 203.0.113.45 with normal shopper traffic.',
+        'The source guesses unlinked paths from a wordlist until an unprotected directory responds.',
+      ],
+      explanation:
+        'One source requested more than a thousand unlinked, wordlist-style paths in minutes, receiving mostly 404s, until it found an unprotected backup directory and downloaded two large exports. That is forced browsing (content discovery) turning into data exposure.',
+      remediation:
+        'Remove backups and exports from the web root, deny directory access by default, rate-limit or block sources with abnormal 404 ratios, and review which records the exports contained.',
+      reportPrompt:
+        'Write a finding that cites the 404 burst and the two 200 responses for export files, states the data exposure impact, and orders removal, access control, and detection actions.',
+    },
+    analysis: {
+      type: 'web-log',
+      detection:
+        'Alert on sources whose 404 ratio or distinct-path count spikes within a short window, and alert on any successful response for backup, archive, or export paths.',
+      prevention:
+        'Keep backups outside the served directory, serve only an allow-list of static paths, and apply per-source rate limits at the edge.',
+    },
+    objectives: [
+      'Name the technique used by 203.0.113.45 before the downloads',
+      'Identify the two requests that exposed data and their response sizes',
+      'Explain why the user agent and 404 ratio are useful indicators',
+      'Recommend one detection rule and two preventive fixes',
+    ],
+    rubric: rubric('web-log-analysis', {
+      flag: [0],
+      evidence: [1],
+      explanation: [2],
+      remediation: [3],
+    }),
+    guiding: [
+      {
+        q: 'What distinguishes this source from the shopper at 198.51.100.23?',
+        a: 'It requests unlinked administrative and backup paths at machine speed, almost all returning 404, with a self-identified automation user agent. The shopper only requests linked product and cart pages.',
+      },
+      {
+        q: 'Which events matter most for impact?',
+        a: 'The two 200 responses for customers-export.json and orders-export.json, 4 MB and 2 MB. Those are the moment reconnaissance became data exposure.',
+      },
+      {
+        q: 'Why is the 403 on the backup directory not enough protection?',
+        a: 'Blocking the directory listing hides file names, but files inside remain directly downloadable once guessed. Sensitive exports must not be served at all.',
+      },
+    ],
+    modelFindings: [
+      {
+        title: 'Customer and order exports downloadable from the web root',
+        severity: 'high',
+        impact: 'An unauthenticated source downloaded customer and order exports after guessing the backup directory.',
+        remediation: 'Remove the exports from the served directory, rotate any secrets they contained, and assess notification obligations for the fictional records.',
+      },
+      {
+        title: 'No detection or throttling of forced-browsing bursts',
+        severity: 'medium',
+        impact: 'More than a thousand 404 responses from one source went unthrottled and unalerted.',
+        remediation: 'Add 404-ratio and distinct-path alerts per source and enforce edge rate limits for abnormal request bursts.',
+      },
+    ],
+  },
+  {
+    id: 'fw-rule-shadowing',
+    title: 'Firewall Rule Review: Shadowed Deny',
+    category: 'Firewall',
+    kind: 'dataset',
+    glyph: '⛨',
+    color: '#f77f00',
+    difficulty: 'medium',
+    brief:
+      'Review an ordered, synthetic edge firewall rule set where the first matching rule wins. Find the rule ordering problem that silently disables an intended control, then propose a safe rule order. Config review only.',
+    scope: {
+      allowed: ['The synthetic rule export below', 'Local note-taking, the Evidence Vault, and the report builder'],
+      forbidden: ['Any real firewall, router, or cloud security group', 'Probing or connecting to the listed addresses', 'Applying changes anywhere'],
+    },
+    evidenceTitle: 'edge-fw-rules.txt (synthetic)',
+    evidence: `# edge-fw ruleset export (synthetic) — evaluated top-down, first match wins
+# id  action  proto  source           destination          port   log  comment
+  10  allow   tcp    any              192.0.2.20/32        443    on   public storefront
+  20  allow   tcp    any              192.0.2.0/24         any    off  temp vendor access 2024 (ticket CHG-1182)
+  30  deny    tcp    any              192.0.2.30/32        3389   on   block remote desktop to jump host
+  40  allow   tcp    10.20.0.0/16     192.0.2.40/32        22     on   admin SSH from corporate range
+  50  deny    ip     any              any                  any    on   default deny
+# hit counters (last 30 days): rule10=1,204,332  rule20=88,410  rule30=0  rule40=5,120  rule50=611,044`,
+    flagChallenge: {
+      prompt:
+        'Identify the rule-ordering flaw that makes rule 30 ineffective and submit its name as a flag.',
+      assets: [
+        {
+          id: 'rule-export',
+          label: 'edge-fw-rules.txt (synthetic)',
+          kind: 'config',
+          description: 'Prepared ordered rule export with hit counters for a fictional edge firewall.',
+        },
+      ],
+      expectedFlag: 'FLAG{RULE_SHADOWING}',
+      hints: [
+        'Evaluate a remote desktop connection to 192.0.2.30 from any source, top-down, and stop at the first match.',
+        'A broader allow rule above a specific deny means the deny is never reached; the zero hit counter confirms it.',
+      ],
+      explanation:
+        'Rule 20 allows any TCP port from anywhere to the whole 192.0.2.0/24 range, so traffic that rule 30 was meant to deny matches rule 20 first. Rule 30 is shadowed, as its zero hit counter shows, and rule 20 does not log.',
+      remediation:
+        'Remove or narrow the expired vendor rule to named sources, hosts, and ports with an expiry date, place specific denies above broad allows, enable logging, and review rules with zero hits or no owner.',
+      reportPrompt:
+        'Write a finding explaining how the temporary vendor rule shadows the remote desktop deny, cite the hit counters, and prioritize rule cleanup and review controls.',
+    },
+    analysis: {
+      type: 'firewall-rule',
+      detection:
+        'Run rule-set analysis that reports shadowed, redundant, and overly broad rules, and alert on rules with zero hits, logging disabled, or expired change tickets.',
+      prevention:
+        'Require an owner, justification, scope, and expiry for every allow rule, order specific denies before broad allows, and review the rule base on a fixed schedule.',
+    },
+    objectives: [
+      'Name the rule-ordering flaw affecting rule 30',
+      'Cite the evidence in the rule table and hit counters that proves it',
+      'Explain the exposure created by rule 20 beyond remote desktop',
+      'Propose a corrected rule order and a rule-governance control',
+    ],
+    rubric: rubric('firewall-rule-review', {
+      flag: [0],
+      evidence: [1],
+      explanation: [2],
+      remediation: [3],
+    }),
+    guiding: [
+      {
+        q: 'Why does rule 30 have zero hits?',
+        a: 'Every packet that would match rule 30 also matches rule 20, which sits above it and allows any port to the whole 192.0.2.0/24 range. First match wins, so rule 30 is never evaluated.',
+      },
+      {
+        q: 'What else does rule 20 expose?',
+        a: 'Every port on every host in the range, from any source, without logging. Management services such as SSH on 192.0.2.40 are reachable from anywhere, bypassing the corporate-only intent of rule 40.',
+      },
+    ],
+    modelFindings: [
+      {
+        title: 'Temporary any-port vendor rule shadows the remote desktop deny',
+        severity: 'high',
+        impact: 'Remote desktop and every other service in the range are reachable from any source, without logging, despite an explicit deny.',
+        remediation: 'Remove or scope rule 20 to named vendor sources, hosts, and ports with an expiry; move specific denies above broad allows.',
+      },
+      {
+        title: 'Rule governance gaps: no expiry, no logging, zero-hit rules unreviewed',
+        severity: 'medium',
+        impact: 'A 2024 temporary rule persisted unnoticed and a critical deny silently stopped working.',
+        remediation: 'Require owner, ticket, and expiry for allow rules; enable logging; review zero-hit and expired rules on a schedule.',
       },
     ],
   },

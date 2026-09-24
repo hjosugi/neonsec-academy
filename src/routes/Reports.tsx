@@ -7,6 +7,7 @@ import { uid } from '../lib/id'
 import { formatDate } from '../lib/format'
 import { EVIDENCE_TYPE_LABELS, evidenceForChallenge } from '../lib/evidence'
 import { reportToMarkdown } from '../lib/reportMarkdown'
+import { createLabReport, isReportForLab } from '../lib/labReport'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { EmptyState } from '../components/ui/EmptyState'
@@ -34,29 +35,9 @@ function download(name: string, text: string) {
   URL.revokeObjectURL(url)
 }
 
-function reportFromLab(lab: Lab): Report {
-  const now = Date.now()
-  return {
-    id: uid('r-'),
-    challengeId: lab.id,
-    title: `Report — ${lab.title}`,
-    scope: `Synthetic lab: ${lab.category}. Allowed: ${lab.scope.allowed.join('; ')}.`,
-    summary: lab.brief,
-    findings: lab.modelFindings.map((f) => ({ id: uid('f-'), evidence: '', evidenceIds: [], ...f })),
-    createdAt: now,
-    updatedAt: now,
-  }
-}
-
-function reportMatchesLab(report: Report, lab: Lab): boolean {
-  const title = `Report — ${lab.title}`
-  const scope = `Synthetic lab: ${lab.category}. Allowed: ${lab.scope.allowed.join('; ')}.`
-  return report.challengeId === lab.id || report.title === title || (report.scope === scope && report.summary === lab.brief)
-}
-
 function challengeIdForReport(report: Report | null): string | undefined {
   if (!report) return undefined
-  return report.challengeId ?? LABS.find((lab) => reportMatchesLab(report, lab))?.id
+  return report.challengeId ?? LABS.find((lab) => isReportForLab(report, lab))?.id
 }
 
 export function Reports() {
@@ -89,7 +70,7 @@ export function Reports() {
       setSaved(true)
     } else if (state?.prefillLab) {
       const lab = state.prefillLab
-      const r = reportFromLab(lab)
+      const r = createLabReport(lab)
       upsert(r)
       setDraft(r)
     }

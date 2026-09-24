@@ -2,6 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 import type { EvidenceItem, Report } from '../types'
 import { LABS } from '../data/labs'
 import { mergePersistedStoreState, useStore } from './useStore'
+import { evidenceFromLabLines } from '../lib/labReport'
 
 const evidence: EvidenceItem = {
   id: 'ev-persisted',
@@ -212,5 +213,38 @@ describe('flag challenge persistence', () => {
     expect(hydrated.flagAttempts).toHaveLength(1)
     expect(hydrated.flagAttempts[0].correct).toBe(true)
     expect(hydrated.flagHintUses).toEqual([{ challengeId: challenge.id, hintIndex: 0, usedAt: 50 }])
+  })
+})
+
+describe('lab dataset evidence hand-off', () => {
+  it('saves selected lines and cites them in a new or existing lab report', () => {
+    const lab = LABS.find((item) => item.id === 'fw-rule-shadowing')!
+    const first = evidenceFromLabLines(lab, [4, 5])!
+    const reportId = useStore.getState().sendEvidenceToLabReport(first)
+
+    expect(reportId).toBeTruthy()
+    let state = useStore.getState()
+    expect(state.evidenceItems.map((item) => item.id)).toContain(first.id)
+    expect(state.reports).toHaveLength(1)
+    expect(state.reports[0]).toMatchObject({ id: reportId, challengeId: lab.id })
+    expect(state.reports[0].findings[0].evidenceIds).toEqual([first.id])
+
+    const second = evidenceFromLabLines(lab, [8])!
+    expect(useStore.getState().sendEvidenceToLabReport(second, state.reports[0].findings[1].id)).toBe(reportId)
+    state = useStore.getState()
+    expect(state.reports).toHaveLength(1)
+    expect(state.reports[0].findings[1].evidenceIds).toEqual([second.id])
+
+    const backup = state.exportData()
+    useStore.setState({ evidenceItems: [], reports: [] })
+    expect(useStore.getState().importData(backup)).toBe(true)
+    expect(useStore.getState().reports[0].findings[0].evidenceIds).toEqual([first.id])
+  })
+
+  it('rejects evidence for unknown labs', () => {
+    const lab = LABS[0]
+    const item = { ...evidenceFromLabLines(lab, [1])!, challengeId: 'unknown-lab' }
+    expect(useStore.getState().sendEvidenceToLabReport(item)).toBeNull()
+    expect(useStore.getState().reports).toEqual([])
   })
 })

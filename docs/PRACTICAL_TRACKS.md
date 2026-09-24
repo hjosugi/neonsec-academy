@@ -60,6 +60,20 @@ unique hint reveals persist locally and feed Analytics. Accepted flags lock furt
 unlock the explanation/remediation/report prompt, and enable the model findings. Guiding-question
 hints and Flag Challenge hints both contribute to the configured hint penalty.
 
+## Dataset Analysis Challenges
+
+Safe Labs include dataset-analysis challenges for each required artifact family: PCAP / packet
+summary (`net-cleartext`), web access log (`web-log-forced-browsing`), authentication log
+(`soc-bruteforce`), cloud configuration (`cloud-iam`), firewall rule set (`fw-rule-shadowing`), and
+email headers (`phish-headers`). Every analysis challenge requires an accepted flag (answer),
+evidence, and remediation in its rubric, and unlocks a detection + prevention debrief after the flag
+is accepted.
+
+Lab Detail renders the synthetic artifact in a line-numbered viewer. Learners select the lines that
+prove a finding and either save them to the Evidence Vault as a log excerpt or **Send to report**,
+which saves the excerpt and cites it on the lab report (creating the report from the model findings
+if needed). The citation appears in Markdown export.
+
 ## Lab Registry Safety
 
 Every lab declares a `kind`: `local`, `dataset`, `simulated`, or `writeup`. Lab Detail displays the
@@ -68,4 +82,4 @@ before starting. The registry validator rejects missing scope, invalid kinds, pu
 real email domains, live domains, and credential-like assignments. CI also runs
 `npm run validate:safety` so unsafe lab metadata cannot be published. Registry validation also
 requires prompt, local asset metadata, a unique expected flag, at least one scoped hint,
-explanation, remediation, and report prompt for every lab.
+explanation, remediation, and report prompt for every lab. Analysis challenges must also declare a valid `analysis.type` plus detection and prevention text.

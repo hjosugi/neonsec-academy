@@ -8,6 +8,9 @@ import { Panel } from '../components/ui/Panel'
 import { EmptyState } from '../components/ui/EmptyState'
 import { ChallengeEvidenceVault } from '../components/lab/ChallengeEvidenceVault'
 import { FlagChallengePanel } from '../components/lab/FlagChallengePanel'
+import { LabDatasetViewer } from '../components/lab/LabDatasetViewer'
+import { findLabReport } from '../lib/labReport'
+import { ANALYSIS_TYPES } from '../lib/analysisChallenges'
 import {
   flagAttemptsForChallenge,
   flagHintUsesForChallenge,
@@ -81,18 +84,6 @@ function writeLabProgress(lab: Lab, ack: boolean, done: boolean[], revealedHints
   } catch {
     // Progress persistence is best-effort; scoring still works for the current session.
   }
-}
-
-function reportTitle(lab: Lab) {
-  return `Report — ${lab.title}`
-}
-
-function reportScope(lab: Lab) {
-  return `Synthetic lab: ${lab.category}. Allowed: ${lab.scope.allowed.join('; ')}.`
-}
-
-function isReportForLab(report: { challengeId?: string; title: string; scope: string; summary: string }, lab: Lab) {
-  return report.challengeId === lab.id || report.title === reportTitle(lab) || (report.scope === reportScope(lab) && report.summary === lab.brief)
 }
 
 function objectivesReady(component: LabRubricComponent, done: boolean[]) {
@@ -214,7 +205,7 @@ export function LabDetail() {
     hintPenalty: settings.labHintPenalty ?? lab.rubric.hintPenalty,
     scopeWarningPenalty: settings.labScopeWarningPenalty ?? lab.rubric.scopeWarningPenalty,
   }
-  const labReport = reports.find((report) => isReportForLab(report, lab))
+  const labReport = findLabReport(reports, lab)
   const hasReport = Boolean(labReport)
   const flagAttempts = flagAttemptsForChallenge(allFlagAttempts, lab.id)
   const flagHintUses = flagHintUsesForChallenge(allFlagHintUses, lab.id)
@@ -391,11 +382,7 @@ export function LabDetail() {
 
           <div className="grid-dash">
             <div className="stack">
-              <Panel title={lab.evidenceTitle}>
-                <pre style={{ background: 'var(--bg-abyss)', border: '1px solid var(--hairline)', borderRadius: 'var(--r-md)', padding: '0.9rem', overflowX: 'auto', fontSize: '0.82rem', lineHeight: 1.55 }}>
-                  <code>{lab.evidence}</code>
-                </pre>
-              </Panel>
+              <LabDatasetViewer lab={lab} onOpenReport={openReport} />
 
               <FlagChallengePanel
                 key={`flag-${lab.id}`}
@@ -450,6 +437,31 @@ export function LabDetail() {
                   ))}
                 </div>
               </Panel>
+
+              {lab.analysis && (
+                <Panel
+                  title="Analysis Debrief"
+                  right={<span className="badge badge--cyan">{ANALYSIS_TYPES[lab.analysis.type].label}</span>}
+                >
+                  {flagSolved ? (
+                    <div className="stack stack--sm">
+                      <div>
+                        <div className="term t-xs dim">Detection</div>
+                        <p className="t-sm muted mt-1" style={{ marginBottom: 0 }}>{lab.analysis.detection}</p>
+                      </div>
+                      <div>
+                        <div className="term t-xs dim">Prevention</div>
+                        <p className="t-sm muted mt-1" style={{ marginBottom: 0 }}>{lab.analysis.prevention}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="term t-xs dim" style={{ marginBottom: 0 }}>
+                      Submit the accepted flag to unlock the detection and prevention debrief. Answer, evidence, and
+                      remediation all count toward the score.
+                    </p>
+                  )}
+                </Panel>
+              )}
 
               <Panel title="Deliverable">
                 <p className="term t-xs dim mb-2">
