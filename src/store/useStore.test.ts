@@ -458,3 +458,24 @@ describe('incident response store', () => {
     expect(useStore.getState().incidentWorkspaces[incident.id].events).toHaveLength(added)
   })
 })
+
+describe('threat modeling store', () => {
+  it('saves work and sends the backlog to the Report Builder once', async () => {
+    const { THREAT_MODEL_SCENARIOS } = await import('../data/tracks/threatModel')
+    const scenario = THREAT_MODEL_SCENARIOS[1]
+    useStore.setState({ threatModels: {}, reports: [] })
+    expect(useStore.getState().threatModelToReport(scenario.id)).toBeNull()
+    useStore.getState().saveThreatModel({
+      scenarioId: scenario.id,
+      assetRatings: {},
+      boundaryNotes: {},
+      threats: [{ id: 't1', target: scenario.dataFlows[0].id, stride: 'T', threat: 'Order totals tampered in transit.', mitigation: 'Recompute prices server-side and sign webhooks.', priority: 'P1', status: 'todo' }],
+      updatedAt: 1,
+    })
+    const reportId = useStore.getState().threatModelToReport(scenario.id)
+    expect(reportId).toBeTruthy()
+    expect(useStore.getState().threatModelToReport(scenario.id)).toBe(reportId)
+    expect(useStore.getState().reports.filter((report) => report.id === reportId)).toHaveLength(1)
+    expect(useStore.getState().threatModels[scenario.id].reportId).toBe(reportId)
+  })
+})

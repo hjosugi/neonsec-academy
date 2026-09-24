@@ -1,4 +1,4 @@
-import type { EngagementFindingStatus, EngagementStepKey, TimelineConfidence } from '../data/tracks/types'
+import type { EngagementFindingStatus, EngagementStepKey, StrideKey, ThreatPriority, TimelineConfidence } from '../data/tracks/types'
 
 // ============================================================
 // NeonSec Academy — domain types
@@ -351,6 +351,29 @@ export interface IncidentWorkspace {
   incidentId: string
   events: IncidentTimelineEvent[]
   report: IncidentReportSections
+  updatedAt: number
+}
+
+// ---- CEH+ threat modeling and remediation (P5-006) ----
+export interface LearnerThreat {
+  id: string
+  /** Component or data-flow id from the scenario. */
+  target: string
+  stride: StrideKey
+  threat: string
+  mitigation: string
+  priority: ThreatPriority
+  status: 'todo' | 'in-progress' | 'done'
+  cehConcept?: string
+}
+
+export interface ThreatModelWork {
+  scenarioId: string
+  assetRatings: Record<string, 'high' | 'medium' | 'low'>
+  /** What each trust boundary must enforce. */
+  boundaryNotes: Record<string, string>
+  threats: LearnerThreat[]
+  reportId?: string
   updatedAt: number
 }
 

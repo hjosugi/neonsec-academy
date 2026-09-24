@@ -75,6 +75,14 @@ Focus: assets, trust boundaries, threats, mitigations.
 
 Safe mode: fictional architecture diagrams only.
 
+Workspace: `/tracks/threat-model` has 5 fictional scenarios (`src/data/tracks/threatModel.ts`) with a
+data-flow diagram, components, flows, trust boundaries, and assets. The learner rates asset
+sensitivity, states what each trust boundary must enforce, and records STRIDE threats per element or
+flow with a design mitigation and priority; required STRIDE categories must be covered. Threats link
+to CEH concepts (for example Session hijacking (M11)). The output is a prioritized remediation backlog
+with status tracking, exportable as Markdown and sendable to the Report Builder as findings plus a
+remediation plan. Model threats can be compared after drafting.
+
 ## Lab Scoring Rubric
 
 Safe Labs score practical work with these components:

@@ -35,6 +35,7 @@ const TRACK_WORKSPACES: Partial<Record<TrackKey, { to: string; label: string }>>
   cloud: { to: '/tracks/cloud', label: 'Config review challenges' },
   soc: { to: '/tracks/soc', label: 'Log investigations' },
   ir: { to: '/tracks/ir', label: 'Incident timeline & report' },
+  'threat-model': { to: '/tracks/threat-model', label: 'Threat modeling scenarios' },
 }
 
 export function Beyond() {

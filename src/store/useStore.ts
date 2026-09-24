@@ -33,6 +33,7 @@ import type {
   FindingStatus,
   TriageFinding,
   TrackSubmission,
+  ThreatModelWork,
 } from '../types'
 import { SEED_QUESTIONS, enrichQuestion } from '../data/questions'
 import { LABS, labById } from '../data/labs'
@@ -53,6 +54,8 @@ import { normalizeTrackSubmissions, trackQuestionId, type TrackDraft } from '../
 import type { TrackChallenge } from '../data/tracks/types'
 import { INCIDENTS } from '../data/tracks/incidents'
 import { blankIncidentWorkspace, importSocTimelines, normalizeIncidentWorkspaces } from '../lib/incidentResponse'
+import { THREAT_MODEL_SCENARIOS } from '../data/tracks/threatModel'
+import { normalizeThreatModelWork, threatModelReport } from '../lib/threatModel'
 import {
   normalizeEvidenceItem,
   normalizeEvidenceItems,
@@ -202,6 +205,7 @@ interface AppState {
   engagementProgress: Record<string, EngagementProgress>
   trackSubmissions: TrackSubmission[]
   incidentWorkspaces: Record<string, IncidentWorkspace>
+  threatModels: Record<string, ThreatModelWork>
 }
 
 interface AppActions {
@@ -269,6 +273,10 @@ interface AppActions {
   /** Imports the learner's SOC-track timelines for the incident's related challenges; returns events added. */
   importSocTimelinesToIncident: (incidentId: string) => number
   resetIncident: (incidentId: string) => void
+  // threat modeling
+  saveThreatModel: (work: ThreatModelWork) => void
+  /** Sends the remediation backlog to the Report Builder; returns the report id. */
+  threatModelToReport: (scenarioId: string) => string | null
   // flag challenges
   submitLabFlag: (challengeId: string, submitted: string) => FlagAttempt | null
   revealLabFlagHint: (challengeId: string, hintIndex: number) => boolean
@@ -334,6 +342,9 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
   const incidentWorkspaces = persisted.incidentWorkspaces !== undefined
     ? normalizeIncidentWorkspaces(persisted.incidentWorkspaces, INCIDENTS)
     : currentState.incidentWorkspaces
+  const threatModels = persisted.threatModels !== undefined
+    ? normalizeThreatModelWork(persisted.threatModels, THREAT_MODEL_SCENARIOS)
+    : currentState.threatModels
   const engagementProgress = persisted.engagementProgress !== undefined
     ? normalizeEngagementProgress(persisted.engagementProgress, ENGAGEMENTS)
     : currentState.engagementProgress
@@ -349,6 +360,7 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
     engagementProgress,
     trackSubmissions,
     incidentWorkspaces,
+    threatModels,
   }
 }
 
@@ -378,6 +390,7 @@ const initialState: AppState = {
   engagementProgress: {},
   trackSubmissions: [],
   incidentWorkspaces: {},
+  threatModels: {},
 }
 
 export const useStore = create<Store>()(
@@ -881,6 +894,24 @@ export const useStore = create<Store>()(
           return { incidentWorkspaces }
         }),
 
+      saveThreatModel: (work) =>
+        set((s) => {
+          const normalized = normalizeThreatModelWork({ [work.scenarioId]: { ...work, updatedAt: Date.now() } }, THREAT_MODEL_SCENARIOS)[work.scenarioId]
+          return normalized ? { threatModels: { ...s.threatModels, [work.scenarioId]: normalized } } : {}
+        }),
+
+      threatModelToReport: (scenarioId) => {
+        const scenario = THREAT_MODEL_SCENARIOS.find((item) => item.id === scenarioId)
+        const work = get().threatModels[scenarioId]
+        if (!scenario || !work) return null
+        const existing = work.reportId ? get().reports.find((report) => report.id === work.reportId) : undefined
+        const report = threatModelReport(scenario, { ...work, reportId: existing?.id })
+        if (report.findings.length === 0) return null
+        get().upsertReport(existing ? { ...report, createdAt: existing.createdAt } : report)
+        get().saveThreatModel({ ...work, reportId: report.id })
+        return report.id
+      },
+
       submitLabFlag: (challengeId, submitted) => {
         const lab = labById(challengeId)
         const clean = sanitizeFlagSubmission(submitted)
@@ -1161,6 +1192,7 @@ export const useStore = create<Store>()(
           engagementProgress: s.engagementProgress,
           trackSubmissions: s.trackSubmissions,
           incidentWorkspaces: s.incidentWorkspaces,
+          threatModels: s.threatModels,
         }
         return JSON.stringify(payload, null, 2)
       },
@@ -1218,6 +1250,9 @@ export const useStore = create<Store>()(
               incidentWorkspaces: d.incidentWorkspaces !== undefined
                 ? normalizeIncidentWorkspaces(d.incidentWorkspaces, INCIDENTS)
                 : s.incidentWorkspaces,
+              threatModels: d.threatModels !== undefined
+                ? normalizeThreatModelWork(d.threatModels, THREAT_MODEL_SCENARIOS)
+                : s.threatModels,
             }
           })
           return true
@@ -1255,6 +1290,7 @@ export const useStore = create<Store>()(
         engagementProgress: s.engagementProgress,
         trackSubmissions: s.trackSubmissions,
         incidentWorkspaces: s.incidentWorkspaces,
+        threatModels: s.threatModels,
       }),
       merge: mergePersistedStoreState,
     },

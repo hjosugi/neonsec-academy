@@ -282,6 +282,10 @@ Attemptは追加のみです。訂正は履歴を編集するのではなく、�
 
 `examTargetPct`は学習者の個人的な模擬スコア目標のためプロフィールの一部です。
 
+`ThreatModelWork`（`threatModels` にシナリオ ID ごと）は `assetRatings`、`boundaryNotes`、学習者の `threats`
+（`target` 要素/フロー ID、`stride`、`threat`、`mitigation`、`priority` P1-P3、バックログの `status`
+todo/in-progress/done、任意の `cehConcept`）、生成した `reportId` を保存します。
+
 `IncidentWorkspace`（`incidentWorkspaces` にインシデント ID ごと）はタイムラインの `events`（`id`、ISO `time`、
 `source`、`observation`、`confidence` high/medium/low、関連 `evidence`）と IR `report` のセクション（`summary`、
 `impact`、`containment`、`eradication`、`recovery`、`lessonsLearned`）を保存します。

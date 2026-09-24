@@ -2,6 +2,20 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.32 - 2026-09-25
+
+CEH+ threat modeling and remediation track with a remediation backlog.
+
+### Added
+
+- 5 fictional threat modeling scenarios with data-flow diagrams, components, flows, trust boundaries,
+  assets, required STRIDE categories, and model threats linked to CEH concepts.
+- Threat modeling workspace (`/tracks/threat-model`): rate asset sensitivity, describe what each trust
+  boundary enforces, and record STRIDE threats per element or flow with mitigations and priorities.
+- Prioritized remediation backlog with status tracking, Markdown export, and Report Builder hand-off
+  (findings, remediation plan, and diagram appendix).
+- Threat model work persists, normalizes on import and hydration, and is included in full backups.
+
 ## v1.0.31 - 2026-09-25
 
 CEH+ incident response timeline and report track.

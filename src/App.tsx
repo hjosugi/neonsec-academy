@@ -23,6 +23,7 @@ import { EvidenceVault } from './routes/EvidenceVault'
 import { Beyond } from './routes/Beyond'
 import { EngagementWorkflow } from './routes/EngagementWorkflow'
 import { IncidentResponse } from './routes/IncidentResponse'
+import { ThreatModelDetail, ThreatModelList } from './routes/ThreatModeling'
 import { TrackChallengeDetail, TrackChallengeList } from './routes/TrackWorkspace'
 import { Reports } from './routes/Reports'
 import { Triage } from './routes/Triage'
@@ -82,6 +83,8 @@ export default function App() {
           <Route path="/beyond" element={<Beyond />} />
           <Route path="/tracks/pentest" element={<EngagementWorkflow />} />
           <Route path="/tracks/ir" element={<IncidentResponse />} />
+          <Route path="/tracks/threat-model" element={<ThreatModelList />} />
+          <Route path="/tracks/threat-model/:id" element={<ThreatModelDetail />} />
           <Route path="/tracks/:track" element={<TrackChallengeList />} />
           <Route path="/tracks/:track/:id" element={<TrackChallengeDetail />} />
           <Route path="/triage" element={<Triage />} />

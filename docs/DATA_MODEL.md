@@ -302,6 +302,10 @@ Readiness thresholds are persisted with other local settings:
 
 `examTargetPct` remains part of the profile because it is the learner's personal mock-score target.
 
+`ThreatModelWork` (per scenario id in `threatModels`) stores `assetRatings`, `boundaryNotes`, learner
+`threats` (`target` element or flow id, `stride`, `threat`, `mitigation`, `priority` P1-P3, backlog
+`status` todo/in-progress/done, optional `cehConcept`), and the generated `reportId`.
+
 `IncidentWorkspace` (per incident id in `incidentWorkspaces`) stores timeline `events`
 (`id`, ISO `time`, `source`, `observation`, `confidence` high/medium/low, related `evidence`) and the
 IR `report` sections (`summary`, `impact`, `containment`, `eradication`, `recovery`,
