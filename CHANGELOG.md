@@ -2,6 +2,22 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.36 - 2026-09-25
+
+Advanced Lab Pack Authoring: pack format, sample pack, import preview, and safety-gated import.
+
+### Added
+
+- Lab pack format (`docs/LAB_PACK_FORMAT.md`, English and Japanese) and JSON Schema
+  (`docs/schemas/lab-pack.schema.json`): manifest, challenge files, assets, safety audit summary,
+  versioning, and app compatibility (`minAppVersion`).
+- Sample pack `seed_content/lab-packs/neon-starter-pack.json` with two synthetic labs.
+- Lab Pack Import screen (`/labs/packs`): load the sample, an unsafe demo, a pasted pack, or a local
+  JSON file and preview the manifest, compatibility, and per-lab audit findings.
+- Import pipeline that validates the manifest and semver compatibility, rejects author overrides and
+  id collisions, re-runs the Lab Safety Audit and registry validation locally, and refuses any pack with
+  errors. Installed packs are stored in backups and re-audited on every restore.
+
 ## v1.0.35 - 2026-09-25
 
 Team / Peer Review Mode design: data model, UX, rubric, and privacy/safety guardrails.

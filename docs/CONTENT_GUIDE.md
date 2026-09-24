@@ -193,6 +193,9 @@ Web concept labs teach causes and fixes, not attack procedures. Use this templat
    Worksheet requires all three (20+ characters each) before it can be added to the lab report.
 6. **Model findings:** report-ready severity, impact, and remediation.
 
+To distribute labs without editing `src/data/labs.ts`, package them as a lab pack; see
+[LAB_PACK_FORMAT.md](LAB_PACK_FORMAT.md).
+
 ## Lab Checklist
 
 - [ ] The lab can be completed without leaving the app.

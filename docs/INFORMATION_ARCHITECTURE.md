@@ -51,6 +51,7 @@ Neon City Map
 | Mistakes `/mistakes` | Maintain mistake notes, trap patterns, next actions, and resolved state. | Review result, Question Detail, nav. | Question Detail, Review Queue, Practice. |
 | Safe Labs `/labs`, `/labs/:id` | Pick a synthetic lab, acknowledge scope, inspect local assets, submit flags, reveal recorded hints, unlock explanations, preserve evidence, and score objectives. | Nav, Beyond track links, Dashboard, Analytics. | Lab Detail, Reports, Evidence Vault, Analytics. |
 | Lab Safety Audit `/labs/audit` | Review the publish-gate audit for shipped labs and audit pasted draft labs, including manual override requirements. | Safe Labs. | Lab Detail. |
+| Lab Pack Import `/labs/packs` | Preview, validate, re-audit, and import local lab packs; unsafe packs are refused. | Safe Labs. | Lab Safety Audit. |
 | Evidence Vault `/evidence` | Review private synthetic evidence grouped by challenge and return to a lab for editing. | Nav, Lab Detail. | Lab Detail, Reports. |
 | CEH+ Tracks `/beyond` | Browse practical tracks and launch related drills or labs. | Nav, City Map, Dashboard. | Practice with `track`, Safe Labs, Reports. |
 | Triage `/triage` | Rate impact and likelihood, set rubric or manual severity, move findings through the status flow, and add them to reports. | Nav, Lab Detail deliverable. | Reports, Safe Labs. |

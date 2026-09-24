@@ -505,3 +505,25 @@ describe('interview story store', () => {
     expect(useStore.getState().interviewStories[0].id).toBe('is-1')
   })
 })
+
+describe('lab pack store', () => {
+  it('installs the safe sample pack, refuses unsafe packs, and re-audits on restore', async () => {
+    const samplePack = (await import('../../seed_content/lab-packs/neon-starter-pack.json')).default
+    const { UNSAFE_SAMPLE_LAB } = await import('../data/labAuditSamples')
+    useStore.setState({ labPacks: [] })
+    expect(useStore.getState().installLabPack(JSON.stringify(samplePack))).toEqual({ ok: true, errors: [] })
+    expect(useStore.getState().labPacks.map((pack) => pack.id)).toEqual(['neon-starter-pack'])
+
+    const unsafe = useStore.getState().installLabPack(JSON.stringify({ ...samplePack, id: 'unsafe-pack', labs: [UNSAFE_SAMPLE_LAB] }))
+    expect(unsafe.ok).toBe(false)
+    expect(useStore.getState().labPacks).toHaveLength(1)
+
+    const backup = JSON.parse(useStore.getState().exportData())
+    backup.labPacks.push({ ...backup.labPacks[0], id: 'tampered-pack', labs: [UNSAFE_SAMPLE_LAB] })
+    useStore.setState({ labPacks: [] })
+    expect(useStore.getState().importData(JSON.stringify(backup))).toBe(true)
+    expect(useStore.getState().labPacks.map((pack) => pack.id)).toEqual(['neon-starter-pack'])
+    useStore.getState().uninstallLabPack('neon-starter-pack')
+    expect(useStore.getState().labPacks).toEqual([])
+  })
+})

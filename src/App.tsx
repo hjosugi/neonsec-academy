@@ -19,6 +19,7 @@ import { Mistakes } from './routes/Mistakes'
 import { Labs } from './routes/Labs'
 import { LabDetail } from './routes/LabDetail'
 import { LabSafetyAudit } from './routes/LabSafetyAudit'
+import { LabPacks } from './routes/LabPacks'
 import { EvidenceVault } from './routes/EvidenceVault'
 import { Beyond } from './routes/Beyond'
 import { EngagementWorkflow } from './routes/EngagementWorkflow'
@@ -80,6 +81,7 @@ export default function App() {
           <Route path="/mistakes" element={<Mistakes />} />
           <Route path="/labs" element={<Labs />} />
           <Route path="/labs/audit" element={<LabSafetyAudit />} />
+          <Route path="/labs/packs" element={<LabPacks />} />
           <Route path="/labs/:id" element={<LabDetail />} />
           <Route path="/evidence" element={<EvidenceVault />} />
           <Route path="/beyond" element={<Beyond />} />

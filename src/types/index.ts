@@ -404,6 +404,19 @@ export interface InterviewStory {
   updatedAt: number
 }
 
+// ---- Lab packs (P5-010) ----
+export interface InstalledLabPack {
+  id: string
+  name: string
+  version: string
+  author: string
+  description: string
+  /** Lab definitions from the pack; preview-only until a full pack runtime ships. */
+  labs: import('../data/labs').Lab[]
+  installedAt: number
+  auditRuleset: number
+}
+
 // ---- Player / settings ----
 export type StudyGoal = 'ceh-exam' | 'ceh-practical' | 'ceh-plus' | 'all'
 

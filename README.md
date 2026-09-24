@@ -112,6 +112,7 @@ npm run audit:labs
 - CEH mapping notes: [docs/CEH_OFFICIAL_NOTES.md](docs/CEH_OFFICIAL_NOTES.md)
 - Safety boundaries: [docs/SAFETY_BOUNDARIES.md](docs/SAFETY_BOUNDARIES.md)
 - Team / peer review mode design (not implemented in the MVP): [docs/PEER_REVIEW_DESIGN.md](docs/PEER_REVIEW_DESIGN.md)
+- Lab pack authoring format and import pipeline: [docs/LAB_PACK_FORMAT.md](docs/LAB_PACK_FORMAT.md)
 
 Seed questions live in `src/data/questions/group-*.json`. In-app authored questions are stored
 locally and can be exchanged as `neonsec-question-pack` v1 JSON. Safe Labs are maintained in

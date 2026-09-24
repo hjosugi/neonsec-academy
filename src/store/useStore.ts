@@ -12,6 +12,7 @@ import type {
   EngagementProgress,
   EvidenceItem,
   IncidentWorkspace,
+  InstalledLabPack,
   InterviewStory,
   ExamSession,
   ExamResult,
@@ -59,6 +60,8 @@ import { blankIncidentWorkspace, importSocTimelines, normalizeIncidentWorkspaces
 import { THREAT_MODEL_SCENARIOS } from '../data/tracks/threatModel'
 import { normalizeThreatModelWork, threatModelReport } from '../lib/threatModel'
 import { normalizeStories } from '../lib/interview'
+import { installedPackFromPreview, previewLabPack } from '../lib/labPacks'
+import { APP_VERSION } from '../lib/appVersion'
 import {
   normalizeEvidenceItem,
   normalizeEvidenceItems,
@@ -162,6 +165,33 @@ function withActivity(
   return { ...profile, xp, streakDays, lastActiveDay }
 }
 
+/** Installed packs are re-validated and re-audited on every import or hydration; failures are dropped. */
+function revalidateLabPacks(value: unknown[]): InstalledLabPack[] {
+  return value.flatMap((row) => {
+    if (!row || typeof row !== 'object') return []
+    const pack = row as InstalledLabPack
+    const manifest = {
+      format: 'neonsec-lab-pack',
+      formatVersion: 1,
+      id: pack.id,
+      name: pack.name,
+      version: pack.version,
+      minAppVersion: '0.0.0',
+      author: pack.author,
+      license: 'restored',
+      description: pack.description,
+      labs: pack.labs,
+      safetyAudit: {
+        rulesetVersion: pack.auditRuleset,
+        auditedAt: 'restored',
+        results: Array.isArray(pack.labs) ? pack.labs.map((lab) => ({ labId: lab?.id, status: 'pass', blockers: 0, warnings: 0 })) : [],
+      },
+    }
+    const restored = installedPackFromPreview(previewLabPack(JSON.stringify(manifest), APP_VERSION, LABS.map((lab) => lab.id)), pack.installedAt)
+    return restored ? [restored] : []
+  })
+}
+
 function normalizePortfolio(value: unknown): PortfolioProfile | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null
   const row = value as Record<string, unknown>
@@ -221,6 +251,7 @@ interface AppState {
   threatModels: Record<string, ThreatModelWork>
   portfolio: PortfolioProfile
   interviewStories: InterviewStory[]
+  labPacks: InstalledLabPack[]
 }
 
 interface AppActions {
@@ -297,6 +328,10 @@ interface AppActions {
   // interview readiness
   upsertStory: (story: InterviewStory) => void
   deleteStory: (id: string) => void
+  // lab packs
+  /** Validates and re-audits a pack; installs it only when every check passes. */
+  installLabPack: (json: string) => { ok: boolean; errors: string[] }
+  uninstallLabPack: (id: string) => void
   // flag challenges
   submitLabFlag: (challengeId: string, submitted: string) => FlagAttempt | null
   revealLabFlagHint: (challengeId: string, hintIndex: number) => boolean
@@ -383,6 +418,7 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
     threatModels,
     portfolio: normalizePortfolio(persisted.portfolio) ?? currentState.portfolio,
     interviewStories: Array.isArray(persisted.interviewStories) ? normalizeStories(persisted.interviewStories) : currentState.interviewStories,
+    labPacks: Array.isArray(persisted.labPacks) ? revalidateLabPacks(persisted.labPacks) : currentState.labPacks,
   }
 }
 
@@ -415,6 +451,7 @@ const initialState: AppState = {
   threatModels: {},
   portfolio: { displayName: '', reflection: '', updatedAt: 0 },
   interviewStories: [],
+  labPacks: [],
 }
 
 export const useStore = create<Store>()(
@@ -955,6 +992,16 @@ export const useStore = create<Store>()(
 
       deleteStory: (id) => set((s) => ({ interviewStories: s.interviewStories.filter((item) => item.id !== id) })),
 
+      installLabPack: (json) => {
+        const preview = previewLabPack(json, APP_VERSION, LABS.map((lab) => lab.id))
+        const pack = installedPackFromPreview(preview)
+        if (!pack) return { ok: false, errors: preview.errors }
+        set((s) => ({ labPacks: [pack, ...s.labPacks.filter((item) => item.id !== pack.id)] }))
+        return { ok: true, errors: [] }
+      },
+
+      uninstallLabPack: (id) => set((s) => ({ labPacks: s.labPacks.filter((pack) => pack.id !== id) })),
+
       submitLabFlag: (challengeId, submitted) => {
         const lab = labById(challengeId)
         const clean = sanitizeFlagSubmission(submitted)
@@ -1238,6 +1285,7 @@ export const useStore = create<Store>()(
           threatModels: s.threatModels,
           portfolio: s.portfolio,
           interviewStories: s.interviewStories,
+          labPacks: s.labPacks,
         }
         return JSON.stringify(payload, null, 2)
       },
@@ -1300,6 +1348,7 @@ export const useStore = create<Store>()(
                 : s.threatModels,
               portfolio: normalizePortfolio(d.portfolio) ?? s.portfolio,
               interviewStories: Array.isArray(d.interviewStories) ? normalizeStories(d.interviewStories) : s.interviewStories,
+              labPacks: Array.isArray(d.labPacks) ? revalidateLabPacks(d.labPacks) : s.labPacks,
             }
           })
           return true
@@ -1340,6 +1389,7 @@ export const useStore = create<Store>()(
         threatModels: s.threatModels,
         portfolio: s.portfolio,
         interviewStories: s.interviewStories,
+        labPacks: s.labPacks,
       }),
       merge: mergePersistedStoreState,
     },

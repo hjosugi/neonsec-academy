@@ -1,0 +1,284 @@
+{
+  "format": "neonsec-lab-pack",
+  "formatVersion": 1,
+  "id": "neon-starter-pack",
+  "name": "Neon Starter Pack",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.35",
+  "author": "NeonSec content team (fictional)",
+  "license": "MIT",
+  "description": "Two synthetic analysis labs that demonstrate the lab pack format: a DNS beacon review and a storage policy review. Fictional organizations and documentation address ranges only.",
+  "tags": [
+    "sample",
+    "soc",
+    "cloud"
+  ],
+  "labs": [
+    {
+      "id": "dns-beacon-review",
+      "title": "Pack Lab: Fixed-Interval DNS Lookups",
+      "category": "SOC",
+      "kind": "dataset",
+      "glyph": "◇",
+      "color": "#48cae4",
+      "difficulty": "easy",
+      "brief": "A synthetic resolver log from a fictional workstation shows repeated lookups. Decide whether they look automated and recommend containment. Log review only.",
+      "scope": {
+        "allowed": [
+          "The synthetic resolver log in this pack",
+          "Local notes and the report builder"
+        ],
+        "forbidden": [
+          "Any real resolver, domain, or host",
+          "Any external lookup of the listed names",
+          "Generating traffic"
+        ]
+      },
+      "evidenceTitle": "resolver-log (synthetic)",
+      "evidence": "2026-06-02T09:00:00Z 10.40.8.21 query A updates.neonharbor.example NOERROR\n2026-06-02T09:05:00Z 10.40.8.21 query A cdn-7f.beacon-demo.invalid NOERROR\n2026-06-02T09:10:00Z 10.40.8.21 query A cdn-7f.beacon-demo.invalid NOERROR\n2026-06-02T09:15:00Z 10.40.8.21 query A cdn-7f.beacon-demo.invalid NOERROR\n2026-06-02T09:16:12Z 10.40.8.30 query A portal.neonharbor.example NOERROR",
+      "flagChallenge": {
+        "prompt": "Name the timing pattern shown by the repeated lookups from one workstation and submit it as a flag.",
+        "assets": [
+          {
+            "id": "resolver-log",
+            "label": "resolver-log (synthetic)",
+            "kind": "log",
+            "description": "Prepared resolver queries from fictional hosts."
+          }
+        ],
+        "expectedFlag": "FLAG{PACK_FIXED_INTERVAL_BEACON}",
+        "hints": [
+          "Compare the timestamps of the repeated name.",
+          "The same name is queried exactly every five minutes."
+        ],
+        "explanation": "One workstation queries the same unfamiliar name every five minutes, a fixed-interval pattern typical of automated check-ins rather than human browsing.",
+        "remediation": "Isolate the fictional workstation for triage, block the name at the resolver, and alert on fixed-interval lookups to newly seen names.",
+        "reportPrompt": "Write a finding that cites the repeated lookups and recommends containment and detection."
+      },
+      "safetyAudit": {
+        "rulesetVersion": 1,
+        "status": "pass",
+        "reviewedAt": "2026-09-25"
+      },
+      "objectives": [
+        "Name the timing pattern",
+        "Cite the repeated lookups",
+        "Recommend containment and detection"
+      ],
+      "rubric": {
+        "challengeType": "pack-dns-review",
+        "passingScore": 80,
+        "hintPenalty": 2,
+        "scopeWarningPenalty": 5,
+        "components": [
+          {
+            "key": "flag",
+            "label": "Flag / diagnosis",
+            "points": 20,
+            "objectiveIndexes": [
+              0
+            ],
+            "description": "Names the pattern."
+          },
+          {
+            "key": "evidence",
+            "label": "Evidence",
+            "points": 25,
+            "objectiveIndexes": [
+              1
+            ],
+            "reportPoints": 5,
+            "description": "Cites the log lines."
+          },
+          {
+            "key": "explanation",
+            "label": "Explanation",
+            "points": 20,
+            "objectiveIndexes": [
+              1
+            ],
+            "description": "Explains why it looks automated."
+          },
+          {
+            "key": "remediation",
+            "label": "Remediation",
+            "points": 25,
+            "objectiveIndexes": [
+              2
+            ],
+            "reportPoints": 5,
+            "description": "Recommends containment."
+          },
+          {
+            "key": "safety",
+            "label": "Safety",
+            "points": 10,
+            "requiresSafetyAck": true,
+            "description": "Scope acknowledged."
+          }
+        ]
+      },
+      "guiding": [
+        {
+          "q": "What repeats, and how regularly?",
+          "a": "The same fictional name every five minutes from one workstation."
+        }
+      ],
+      "modelFindings": [
+        {
+          "title": "Fixed-interval lookups from a fictional workstation",
+          "severity": "medium",
+          "impact": "Possible automated check-ins from an unmanaged process.",
+          "remediation": "Contain the host, block the name, and add interval-based detection."
+        }
+      ]
+    },
+    {
+      "id": "storage-policy-review",
+      "title": "Pack Lab: Storage Policy Review",
+      "category": "Cloud",
+      "kind": "simulated",
+      "glyph": "⛁",
+      "color": "#00b4d8",
+      "difficulty": "easy",
+      "brief": "Review a synthetic storage policy for a fictional logistics tenant and decide what makes the reports container unsafe. Config review only.",
+      "scope": {
+        "allowed": [
+          "The synthetic storage policy in this pack",
+          "Local notes and the report builder"
+        ],
+        "forbidden": [
+          "Any real cloud account",
+          "Applying changes anywhere",
+          "Credential use"
+        ]
+      },
+      "evidenceTitle": "storage-policy (synthetic)",
+      "evidence": "container: neonharbor-reports\naccount: acct-000000-demo\nread_access: anyone\nlist_access: anyone\nencryption_at_rest: disabled\naccess_logging: disabled",
+      "flagChallenge": {
+        "prompt": "Identify the most urgent exposure in the storage policy and submit it as a flag.",
+        "assets": [
+          {
+            "id": "storage-policy",
+            "label": "storage-policy (synthetic)",
+            "kind": "config",
+            "description": "Prepared container settings for a fictional tenant."
+          }
+        ],
+        "expectedFlag": "FLAG{PACK_PUBLIC_CONTAINER}",
+        "hints": [
+          "Who can read and list the container?"
+        ],
+        "explanation": "Anyone can read and list the reports container, so its contents are public; missing encryption and logging make the exposure worse and invisible.",
+        "remediation": "Remove anonymous read and list access, enable encryption at rest and access logging, and review which reports were exposed.",
+        "reportPrompt": "Write a finding for the public container and a second one for missing encryption and logging."
+      },
+      "analysis": {
+        "type": "cloud-config",
+        "detection": "Run policy-as-code checks that fail any container granting anonymous read or list access.",
+        "prevention": "Block public access by default at the tenant level and require encryption and logging in templates."
+      },
+      "safetyAudit": {
+        "rulesetVersion": 1,
+        "status": "pass",
+        "reviewedAt": "2026-09-25"
+      },
+      "objectives": [
+        "Name the most urgent exposure",
+        "List the risky settings",
+        "Recommend least-privilege fixes"
+      ],
+      "rubric": {
+        "challengeType": "pack-storage-review",
+        "passingScore": 80,
+        "hintPenalty": 2,
+        "scopeWarningPenalty": 5,
+        "components": [
+          {
+            "key": "flag",
+            "label": "Flag / diagnosis",
+            "points": 20,
+            "objectiveIndexes": [
+              0
+            ],
+            "description": "Names the exposure."
+          },
+          {
+            "key": "evidence",
+            "label": "Evidence",
+            "points": 25,
+            "objectiveIndexes": [
+              1
+            ],
+            "reportPoints": 5,
+            "description": "Cites the settings."
+          },
+          {
+            "key": "explanation",
+            "label": "Explanation",
+            "points": 20,
+            "objectiveIndexes": [
+              1
+            ],
+            "description": "Explains the impact."
+          },
+          {
+            "key": "remediation",
+            "label": "Remediation",
+            "points": 25,
+            "objectiveIndexes": [
+              2
+            ],
+            "reportPoints": 5,
+            "description": "Recommends fixes."
+          },
+          {
+            "key": "safety",
+            "label": "Safety",
+            "points": 10,
+            "requiresSafetyAck": true,
+            "description": "Scope acknowledged."
+          }
+        ]
+      },
+      "guiding": [
+        {
+          "q": "Which setting matters most?",
+          "a": "Anonymous read and list access: anyone can enumerate and download the reports."
+        }
+      ],
+      "modelFindings": [
+        {
+          "title": "Reports container readable and listable by anyone",
+          "severity": "high",
+          "impact": "Fictional customer reports are publicly exposed.",
+          "remediation": "Remove anonymous access and review exposure."
+        },
+        {
+          "title": "No encryption at rest or access logging",
+          "severity": "medium",
+          "impact": "Data is unprotected at rest and access is unaudited.",
+          "remediation": "Enable encryption and access logging."
+        }
+      ]
+    }
+  ],
+  "safetyAudit": {
+    "rulesetVersion": 1,
+    "auditedAt": "2026-09-25",
+    "results": [
+      {
+        "labId": "dns-beacon-review",
+        "status": "pass",
+        "blockers": 0,
+        "warnings": 0
+      },
+      {
+        "labId": "storage-policy-review",
+        "status": "pass",
+        "blockers": 0,
+        "warnings": 0
+      }
+    ]
+  }
+}

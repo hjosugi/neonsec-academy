@@ -32,7 +32,10 @@ export function Labs() {
           exploits, no credentials — you read synthetic evidence, reason like an analyst, and write findings. This mirrors
           how you prove skill safely.
         </p>
-        <Link to="/labs/audit" className="btn btn--ghost btn--sm mt-2">⛨ Lab safety audit report</Link>
+        <div className="row wrap mt-2" style={{ gap: '0.4rem' }}>
+          <Link to="/labs/audit" className="btn btn--ghost btn--sm">⛨ Lab safety audit report</Link>
+          <Link to="/labs/packs" className="btn btn--ghost btn--sm">⬡ Lab pack import</Link>
+        </div>
       </Panel>
 
       <div className="grid-cards">

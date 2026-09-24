@@ -19,23 +19,23 @@ estimate: "3d"
 
 ## Requirements
 
-- [ ] lab pack manifest, challenge files, assets, safety audit result を定義する
-- [ ] versioning と compatibility を持たせる
-- [ ] pack import 前に safety audit を必須にする
-- [ ] sample pack を 1 つ作る
+- [x] lab pack manifest, challenge files, assets, safety audit result を定義する
+- [x] versioning と compatibility を持たせる
+- [x] pack import 前に safety audit を必須にする
+- [x] sample pack を 1 つ作る
 
 ## Acceptance Criteria
 
-- [ ] lab pack format が docs にある
-- [ ] sample pack を import preview できる
-- [ ] unsafe pack は import できない
+- [x] lab pack format が docs にある
+- [x] sample pack を import preview できる
+- [x] unsafe pack は import できない
 
 ## Subtasks
 
-- [ ] manifest schema を作る
-- [ ] sample pack を作る
-- [ ] import preview を設計する
-- [ ] safety audit 連携を作る
+- [x] manifest schema を作る
+- [x] sample pack を作る
+- [x] import preview を設計する
+- [x] safety audit 連携を作る
 
 ## Dependencies
 
@@ -47,18 +47,23 @@ estimate: "3d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- `docs/LAB_PACK_FORMAT.md` (EN/JA) and `docs/schemas/lab-pack.schema.json` define the manifest,
+  challenge files, assets, safety audit result, versioning, and compatibility. The sample pack
+  `seed_content/lab-packs/neon-starter-pack.json` previews and imports on `/labs/packs`; unsafe packs,
+  author overrides, incompatible versions, and id collisions are refused after a local re-audit.
+  Installed pack labs are preview-only for now. Verified with unit, type, content, safety, audit, and
+  build checks.
