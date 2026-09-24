@@ -2,6 +2,20 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.31 - 2026-09-25
+
+CEH+ incident response timeline and report track.
+
+### Added
+
+- Fictional incident (MFA-less account takeover and bulk export) with four synthetic artifacts, a model
+  timeline, and a model IR report, linked to SOC-01 and SOC-02.
+- Incident workspace (`/tracks/ir`): timeline events with time, source, observation, confidence, and
+  related evidence, added from artifact lines, manual entries, or imported SOC track timelines.
+- IR report sections (summary, impact, containment, eradication, recovery, lessons learned), a report
+  quality checklist, a missing-evidence warning, model comparison, and Markdown export.
+- Incident workspaces persist, normalize on import and hydration, and are included in full backups.
+
 ## v1.0.30 - 2026-09-24
 
 CEH+ SOC log investigation track with a timeline builder and review-queue hand-off.

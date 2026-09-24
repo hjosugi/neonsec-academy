@@ -430,3 +430,31 @@ describe('SOC investigation store', () => {
     expect(useStore.getState().reviews[trackQuestionId(soc)]).toMatchObject({ lastResult: 'incorrect' })
   })
 })
+
+describe('incident response store', () => {
+  it('imports SOC timelines into the incident, persists edits, and round-trips backups', async () => {
+    const { INCIDENTS } = await import('../data/tracks/incidents')
+    const { trackChallengeById } = await import('../data/tracks')
+    const incident = INCIDENTS[0]
+    useStore.setState({ incidentWorkspaces: {}, trackSubmissions: [] })
+    expect(useStore.getState().importSocTimelinesToIncident(incident.id)).toBe(0)
+    const soc = trackChallengeById(incident.relatedSocChallenges[0])!
+    useStore.getState().submitTrackChallenge(soc.id, {
+      selectedLines: soc.answerLines,
+      classification: soc.classification.answer,
+      writeups: {},
+      timeline: soc.timeline!.map((entry) => ({ time: entry.time, line: entry.line, observation: entry.observation })),
+    })
+    const added = useStore.getState().importSocTimelinesToIncident(incident.id)
+    expect(added).toBe(soc.timeline!.length)
+    const workspace = useStore.getState().incidentWorkspaces[incident.id]
+    useStore.getState().saveIncidentWorkspace({ ...workspace, report: { ...workspace.report, summary: 'Account takeover followed by bulk export.' } })
+
+    const backup = useStore.getState().exportData()
+    useStore.getState().resetIncident(incident.id)
+    expect(useStore.getState().incidentWorkspaces[incident.id]).toBeUndefined()
+    expect(useStore.getState().importData(backup)).toBe(true)
+    expect(useStore.getState().incidentWorkspaces[incident.id].report.summary).toBe('Account takeover followed by bulk export.')
+    expect(useStore.getState().incidentWorkspaces[incident.id].events).toHaveLength(added)
+  })
+})

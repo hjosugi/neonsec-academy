@@ -56,6 +56,7 @@ Neon City Map
 | Triage `/triage` | Rate impact and likelihood, set rubric or manual severity, move findings through the status flow, and add them to reports. | Nav, Lab Detail deliverable. | Reports, Safe Labs. |
 | Engagement Workflow `/tracks/pentest` | Walk a fictional pentest engagement from scope review to report delivery with checklists and deliverables. | CEH+ Tracks. | Reports, Markdown export. |
 | Track Challenges `/tracks/:track`, `/tracks/:track/:id` | Solve review-style CEH+ challenges (AppSec, Cloud, SOC) and inspect weakness stats. | CEH+ Tracks. | Triage, Reports, Review Queue. |
+| Incident Response `/tracks/ir` | Build an incident timeline from synthetic artifacts and SOC timelines, write the IR report, and export Markdown. | CEH+ Tracks. | SOC track, Markdown export. |
 | Reports `/reports` | Build safe findings reports, link Vault citations, and export Markdown. | Lab Detail, Evidence Vault, nav, command palette. | Safe Labs, Evidence Vault, Settings export, local Markdown download. |
 | City Map `/map` | Secondary visual navigation across CEH modules and CEH+ tracks. | Nav world section, command palette. | Practice module drill, Beyond, Analytics. |
 | Settings `/settings` | Manage theme/accessibility preferences and local import/export. | Nav, command palette. | Dashboard, Question Bank after import, local file export. |

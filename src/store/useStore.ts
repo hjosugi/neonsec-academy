@@ -11,6 +11,7 @@ import type {
   DrillResult,
   EngagementProgress,
   EvidenceItem,
+  IncidentWorkspace,
   ExamSession,
   ExamResult,
   FlagAttempt,
@@ -50,6 +51,8 @@ import { TRACK_CHALLENGES, trackChallengeById } from '../data/tracks'
 import { TRACKS } from '../data/taxonomy'
 import { normalizeTrackSubmissions, trackQuestionId, type TrackDraft } from '../lib/trackChallenges'
 import type { TrackChallenge } from '../data/tracks/types'
+import { INCIDENTS } from '../data/tracks/incidents'
+import { blankIncidentWorkspace, importSocTimelines, normalizeIncidentWorkspaces } from '../lib/incidentResponse'
 import {
   normalizeEvidenceItem,
   normalizeEvidenceItems,
@@ -198,6 +201,7 @@ interface AppState {
   practicalResults: PracticalResult[]
   engagementProgress: Record<string, EngagementProgress>
   trackSubmissions: TrackSubmission[]
+  incidentWorkspaces: Record<string, IncidentWorkspace>
 }
 
 interface AppActions {
@@ -260,6 +264,11 @@ interface AppActions {
   sendTrackChallengeToTriage: (challengeId: string) => string | null
   /** Adds the latest submission as a finding in the track's review report; returns the report id. */
   addTrackChallengeToReport: (challengeId: string) => string | null
+  // incident response
+  saveIncidentWorkspace: (workspace: IncidentWorkspace) => void
+  /** Imports the learner's SOC-track timelines for the incident's related challenges; returns events added. */
+  importSocTimelinesToIncident: (incidentId: string) => number
+  resetIncident: (incidentId: string) => void
   // flag challenges
   submitLabFlag: (challengeId: string, submitted: string) => FlagAttempt | null
   revealLabFlagHint: (challengeId: string, hintIndex: number) => boolean
@@ -322,6 +331,9 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
   const trackSubmissions = Array.isArray(persisted.trackSubmissions)
     ? normalizeTrackSubmissions(persisted.trackSubmissions, TRACK_CHALLENGES)
     : currentState.trackSubmissions
+  const incidentWorkspaces = persisted.incidentWorkspaces !== undefined
+    ? normalizeIncidentWorkspaces(persisted.incidentWorkspaces, INCIDENTS)
+    : currentState.incidentWorkspaces
   const engagementProgress = persisted.engagementProgress !== undefined
     ? normalizeEngagementProgress(persisted.engagementProgress, ENGAGEMENTS)
     : currentState.engagementProgress
@@ -336,6 +348,7 @@ export function mergePersistedStoreState(persistedState: unknown, currentState: 
     triageFindings,
     engagementProgress,
     trackSubmissions,
+    incidentWorkspaces,
   }
 }
 
@@ -364,6 +377,7 @@ const initialState: AppState = {
   practicalResults: [],
   engagementProgress: {},
   trackSubmissions: [],
+  incidentWorkspaces: {},
 }
 
 export const useStore = create<Store>()(
@@ -844,6 +858,29 @@ export const useStore = create<Store>()(
         return report.id
       },
 
+      saveIncidentWorkspace: (workspace) =>
+        set((s) => {
+          const normalized = normalizeIncidentWorkspaces({ [workspace.incidentId]: { ...workspace, updatedAt: Date.now() } }, INCIDENTS)[workspace.incidentId]
+          return normalized ? { incidentWorkspaces: { ...s.incidentWorkspaces, [workspace.incidentId]: normalized } } : {}
+        }),
+
+      importSocTimelinesToIncident: (incidentId) => {
+        const incident = INCIDENTS.find((item) => item.id === incidentId)
+        if (!incident) return 0
+        const state = get()
+        const current = state.incidentWorkspaces[incidentId] ?? blankIncidentWorkspace(incident)
+        const { workspace, added } = importSocTimelines(current, incident, TRACK_CHALLENGES, state.trackSubmissions)
+        if (added > 0) state.saveIncidentWorkspace(workspace)
+        return added
+      },
+
+      resetIncident: (incidentId) =>
+        set((s) => {
+          const incidentWorkspaces = { ...s.incidentWorkspaces }
+          delete incidentWorkspaces[incidentId]
+          return { incidentWorkspaces }
+        }),
+
       submitLabFlag: (challengeId, submitted) => {
         const lab = labById(challengeId)
         const clean = sanitizeFlagSubmission(submitted)
@@ -1123,6 +1160,7 @@ export const useStore = create<Store>()(
           practicalResults: s.practicalResults,
           engagementProgress: s.engagementProgress,
           trackSubmissions: s.trackSubmissions,
+          incidentWorkspaces: s.incidentWorkspaces,
         }
         return JSON.stringify(payload, null, 2)
       },
@@ -1177,6 +1215,9 @@ export const useStore = create<Store>()(
               trackSubmissions: Array.isArray(d.trackSubmissions)
                 ? normalizeTrackSubmissions(d.trackSubmissions, TRACK_CHALLENGES)
                 : s.trackSubmissions,
+              incidentWorkspaces: d.incidentWorkspaces !== undefined
+                ? normalizeIncidentWorkspaces(d.incidentWorkspaces, INCIDENTS)
+                : s.incidentWorkspaces,
             }
           })
           return true
@@ -1213,6 +1254,7 @@ export const useStore = create<Store>()(
         practicalResults: s.practicalResults,
         engagementProgress: s.engagementProgress,
         trackSubmissions: s.trackSubmissions,
+        incidentWorkspaces: s.incidentWorkspaces,
       }),
       merge: mergePersistedStoreState,
     },

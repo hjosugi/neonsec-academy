@@ -19,23 +19,23 @@ estimate: "3d"
 
 ## Requirements
 
-- [ ] timeline event: time, source, observation, confidence, related evidence を持つ
-- [ ] incident summary, impact, containment, eradication, recovery, lessons learned を書く
+- [x] timeline event: time, source, observation, confidence, related evidence を持つ
+- [x] incident summary, impact, containment, eradication, recovery, lessons learned を書く
 - [x] SOC log track と連携する
-- [ ] report quality checklist を入れる
+- [x] report quality checklist を入れる
 
 ## Acceptance Criteria
 
-- [ ] synthetic incident を timeline に整理できる
-- [ ] IR report を Markdown export できる
-- [ ] missing evidence warning が出る
+- [x] synthetic incident を timeline に整理できる
+- [x] IR report を Markdown export できる
+- [x] missing evidence warning が出る
 
 ## Subtasks
 
-- [ ] timeline schema を作る
-- [ ] timeline UI を作る
-- [ ] IR report template を作る
-- [ ] quality checklist を作る
+- [x] timeline schema を作る
+- [x] timeline UI を作る
+- [x] IR report template を作る
+- [x] quality checklist を作る
 
 ## Dependencies
 
@@ -47,18 +47,21 @@ estimate: "3d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- `/tracks/ir` reconstructs a fictional incident into a timeline (time, source, observation,
+  confidence, related evidence) from artifact lines, manual events, and imported SOC track timelines,
+  then writes and exports a Markdown IR report with a quality checklist and missing-evidence warning.
+  Verified with unit, type, content, safety, audit, and build checks.

@@ -34,6 +34,7 @@ const TRACK_WORKSPACES: Partial<Record<TrackKey, { to: string; label: string }>>
   appsec: { to: '/tracks/appsec', label: 'Code review challenges' },
   cloud: { to: '/tracks/cloud', label: 'Config review challenges' },
   soc: { to: '/tracks/soc', label: 'Log investigations' },
+  ir: { to: '/tracks/ir', label: 'Incident timeline & report' },
 }
 
 export function Beyond() {

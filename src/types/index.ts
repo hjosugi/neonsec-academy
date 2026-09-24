@@ -1,4 +1,4 @@
-import type { EngagementFindingStatus, EngagementStepKey } from '../data/tracks/types'
+import type { EngagementFindingStatus, EngagementStepKey, TimelineConfidence } from '../data/tracks/types'
 
 // ============================================================
 // NeonSec Academy — domain types
@@ -324,6 +324,34 @@ export interface TrackSubmission {
   correct: boolean
   scorePct: number
   at: number
+}
+
+// ---- CEH+ incident response timeline / report (P5-005) ----
+export interface IncidentTimelineEvent {
+  id: string
+  /** ISO-8601 UTC time. */
+  time: string
+  source: string
+  observation: string
+  confidence: TimelineConfidence
+  /** Related evidence reference, e.g. `auth.log (synthetic) L5` or an Evidence Vault title. */
+  evidence: string
+}
+
+export interface IncidentReportSections {
+  summary: string
+  impact: string
+  containment: string
+  eradication: string
+  recovery: string
+  lessonsLearned: string
+}
+
+export interface IncidentWorkspace {
+  incidentId: string
+  events: IncidentTimelineEvent[]
+  report: IncidentReportSections
+  updatedAt: number
 }
 
 // ---- Player / settings ----

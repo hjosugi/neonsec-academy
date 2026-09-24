@@ -61,6 +61,14 @@ Focus: timeline, impact, containment, eradication, recovery, lessons learned.
 
 Safe mode: fictional incident scenario only.
 
+Workspace: `/tracks/ir` reconstructs a fictional incident (MFA-less account takeover and bulk export at
+NeonCorp's RecordVault app) from four synthetic artifacts. Timeline events carry time, source,
+observation, confidence, and related evidence; learners add artifact lines, manual events, or import
+their SOC track timelines from the related challenges (SOC-01, SOC-02). The IR report covers incident
+summary, impact, containment, eradication, recovery, and lessons learned. A quality checklist and a
+missing-evidence warning guide the draft, the model timeline and report can be compared, and the
+report exports as Markdown.
+
 ## Track 6: Threat Modeling and Remediation
 
 Focus: assets, trust boundaries, threats, mitigations.

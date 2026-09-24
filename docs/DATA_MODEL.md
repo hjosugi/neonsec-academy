@@ -302,6 +302,11 @@ Readiness thresholds are persisted with other local settings:
 
 `examTargetPct` remains part of the profile because it is the learner's personal mock-score target.
 
+`IncidentWorkspace` (per incident id in `incidentWorkspaces`) stores timeline `events`
+(`id`, ISO `time`, `source`, `observation`, `confidence` high/medium/low, related `evidence`) and the
+IR `report` sections (`summary`, `impact`, `containment`, `eradication`, `recovery`,
+`lessonsLearned`).
+
 `TrackSubmission` (`trackSubmissions`) stores `challengeId`, `selectedLines`, `classification`,
 `writeups` by key, an optional SOC `timeline` of `{ time, line, observation }`, and the recomputed
 `correct` and `scorePct`. Import and hydration drop unknown challenges and re-grade every row against

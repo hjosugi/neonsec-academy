@@ -49,6 +49,7 @@ NeonSec Academyは、ブラウザ内に状態をローカルに保存します�
 - `practicalResults`
 - `engagementProgress`
 - `trackSubmissions`
+- `incidentWorkspaces`
 
 完全バックアップは、自分のデバイスの移行や復元に使用します。公開しないでください。個人の学習履歴、提出されたフラグ、ヒントの使用、カスタムミスノート、証拠ボールトのエントリ、レポート、設定、作成した質問が含まれる可能性があります。
 

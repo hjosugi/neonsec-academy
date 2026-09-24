@@ -282,6 +282,10 @@ Attemptは追加のみです。訂正は履歴を編集するのではなく、�
 
 `examTargetPct`は学習者の個人的な模擬スコア目標のためプロフィールの一部です。
 
+`IncidentWorkspace`（`incidentWorkspaces` にインシデント ID ごと）はタイムラインの `events`（`id`、ISO `time`、
+`source`、`observation`、`confidence` high/medium/low、関連 `evidence`）と IR `report` のセクション（`summary`、
+`impact`、`containment`、`eradication`、`recovery`、`lessonsLearned`）を保存します。
+
 `TrackSubmission`（`trackSubmissions`）は `challengeId`、`selectedLines`、`classification`、キーごとの
 `writeups`、SOC 用の任意の `timeline`（`{ time, line, observation }`）、再計算された `correct` と `scorePct` を
 保存します。インポートと復元時は未知のチャレンジを破棄し、静的チャレンジに対して全行を再採点します。
