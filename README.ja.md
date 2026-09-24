@@ -98,6 +98,7 @@ npm run audit:labs
 - インポート/エクスポート形式とワークフロー: [docs/IMPORT_EXPORT.md](docs/IMPORT_EXPORT.md)
 - CEHマッピングノート: [docs/CEH_OFFICIAL_NOTES.md](docs/CEH_OFFICIAL_NOTES.md)
 - 安全境界: [docs/SAFETY_BOUNDARIES.md](docs/SAFETY_BOUNDARIES.md)
+- チーム / ピアレビューモードの設計（MVP では未実装）: [docs/PEER_REVIEW_DESIGN.ja.md](docs/PEER_REVIEW_DESIGN.ja.md)
 
 シード質問は`src/data/questions/group-*.json`に存在します。アプリ内で作成された質問はローカルに保存され、`neonsec-question-pack` v1 JSONとして交換できます。安全なラボは`src/data/labs.ts`に維持され、合成、ローカル、読み取り専用である必要があります。
 

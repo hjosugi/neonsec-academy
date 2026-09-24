@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "neonsec-academy/peer-review-package.schema.json",
+  "title": "NeonSec Peer Review Package",
+  "description": "A masked, public-safe snapshot of a question, report, or lab writeup shared for review. Design only (P5-009).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "id", "kind", "author", "title", "content", "masking", "state", "createdAt"],
+  "properties": {
+    "format": { "const": "neonsec-review-package" },
+    "version": { "const": 1 },
+    "id": { "type": "string", "pattern": "^rp-[a-z0-9]{6,32}$" },
+    "kind": { "enum": ["question", "report", "lab-writeup"] },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["handle"],
+      "properties": { "handle": { "type": "string", "minLength": 2, "maxLength": 40 } }
+    },
+    "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "content": { "type": "string", "minLength": 1, "description": "Markdown produced by the public-safe exporter; never raw evidence or backups." },
+    "masking": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publicSafe", "redactions", "sensitiveHits", "checklistConfirmed"],
+      "properties": {
+        "publicSafe": { "const": true },
+        "redactions": { "type": "integer", "minimum": 0 },
+        "sensitiveHits": { "const": 0, "description": "Packages with remaining sensitive values cannot be created." },
+        "checklistConfirmed": { "const": true }
+      }
+    },
+    "state": { "enum": ["draft", "in-review", "changes-requested", "approved", "hidden"] },
+    "reviewers": { "type": "array", "maxItems": 5, "items": { "type": "string", "minLength": 2, "maxLength": 40 } },
+    "createdAt": { "type": "integer", "minimum": 1 },
+    "updatedAt": { "type": "integer", "minimum": 1 }
+  },
+  "examples": [
+    {
+      "format": "neonsec-review-package",
+      "version": 1,
+      "id": "rp-c01d22",
+      "kind": "report",
+      "author": { "handle": "neon-learner" },
+      "title": "Report — SOC Triage: Suspicious Logins",
+      "content": "# Report — SOC Triage: Suspicious Logins\n\n## Executive Summary\n\nSynthetic training report...",
+      "masking": { "publicSafe": true, "redactions": 2, "sensitiveHits": 0, "checklistConfirmed": true },
+      "state": "in-review",
+      "reviewers": ["blue-team-owl"],
+      "createdAt": 1789990000000
+    }
+  ]
+}

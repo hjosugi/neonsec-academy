@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "neonsec-academy/peer-review-comment.schema.json",
+  "title": "NeonSec Peer Review Comment",
+  "description": "One comment, suggestion, approval, or safety flag left on a shared, public-safe review package. Design only (P5-009); not implemented in the MVP.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "packageId", "kind", "author", "anchor", "body", "createdAt", "status"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^rc-[a-z0-9]{6,32}$" },
+    "packageId": { "type": "string", "pattern": "^rp-[a-z0-9]{6,32}$", "description": "Review package the comment belongs to." },
+    "parentId": { "type": ["string", "null"], "pattern": "^rc-[a-z0-9]{6,32}$", "description": "Reply target; null for top-level threads." },
+    "kind": { "enum": ["comment", "suggestion", "approval", "safety-flag"] },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["handle", "role"],
+      "properties": {
+        "handle": { "type": "string", "minLength": 2, "maxLength": 40, "description": "Pseudonymous handle; never a legal name or email." },
+        "role": { "enum": ["author", "reviewer", "moderator"] }
+      }
+    },
+    "anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["section"],
+      "properties": {
+        "section": { "enum": ["question", "explanation", "summary", "scope", "methodology", "finding", "remediation-plan", "appendix", "writeup"] },
+        "findingId": { "type": "string" },
+        "quote": { "type": "string", "maxLength": 280, "description": "Short quoted span; masked like the package body." }
+      }
+    },
+    "body": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "suggestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["replacement"],
+      "properties": {
+        "replacement": { "type": "string", "maxLength": 4000 },
+        "accepted": { "type": ["boolean", "null"] }
+      },
+      "description": "Required when kind is suggestion."
+    },
+    "rubric": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Required when kind is approval. Scores 1-4 per criterion.",
+      "properties": {
+        "accuracy": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "evidence": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "clarity": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "remediation": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "safety": { "type": "integer", "minimum": 1, "maximum": 4 }
+      }
+    },
+    "safetyFlag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category"],
+      "properties": {
+        "category": { "enum": ["real-target", "credential", "personal-data", "attack-instructions", "malware", "non-public-info", "other"] },
+        "severity": { "enum": ["blocker", "warning"] }
+      },
+      "description": "Required when kind is safety-flag. A blocker hides the package until resolved."
+    },
+    "status": { "enum": ["open", "resolved", "dismissed"] },
+    "createdAt": { "type": "integer", "minimum": 1 },
+    "updatedAt": { "type": "integer", "minimum": 1 }
+  },
+  "allOf": [
+    { "if": { "properties": { "kind": { "const": "suggestion" } } }, "then": { "required": ["suggestion"] } },
+    { "if": { "properties": { "kind": { "const": "approval" } } }, "then": { "required": ["rubric"] } },
+    { "if": { "properties": { "kind": { "const": "safety-flag" } } }, "then": { "required": ["safetyFlag"] } }
+  ],
+  "examples": [
+    {
+      "id": "rc-7f3a91",
+      "packageId": "rp-c01d22",
+      "kind": "suggestion",
+      "author": { "handle": "blue-team-owl", "role": "reviewer" },
+      "anchor": { "section": "finding", "findingId": "f-1", "quote": "Enforce MFA" },
+      "body": "Name the detection control too, not only the prevention.",
+      "suggestion": { "replacement": "Enforce MFA and alert on one-source-to-many-user failure velocity.", "accepted": null },
+      "status": "open",
+      "createdAt": 1790000000000
+    },
+    {
+      "id": "rc-9b2e40",
+      "packageId": "rp-c01d22",
+      "kind": "safety-flag",
+      "author": { "handle": "neon-mod", "role": "moderator" },
+      "anchor": { "section": "appendix" },
+      "body": "The appendix contains a hostname that is not a training domain.",
+      "safetyFlag": { "category": "real-target", "severity": "blocker" },
+      "status": "open",
+      "createdAt": 1790000100000
+    }
+  ]
+}

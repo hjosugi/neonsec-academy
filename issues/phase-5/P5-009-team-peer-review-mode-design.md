@@ -19,23 +19,23 @@ estimate: "2d"
 
 ## Requirements
 
-- [ ] MVP では実装せず、data model と UX だけ定義する
-- [ ] comment, suggestion, approval, safety flag を設計する
-- [ ] private data masking を前提にする
-- [ ] review rubric を作る
+- [x] MVP では実装せず、data model と UX だけ定義する
+- [x] comment, suggestion, approval, safety flag を設計する
+- [x] private data masking を前提にする
+- [x] review rubric を作る
 
 ## Acceptance Criteria
 
-- [ ] docs/PEER_REVIEW_DESIGN.md がある
-- [ ] review comment schema がある
-- [ ] privacy / safety guardrails がある
+- [x] docs/PEER_REVIEW_DESIGN.md がある
+- [x] review comment schema がある
+- [x] privacy / safety guardrails がある
 
 ## Subtasks
 
-- [ ] use cases を書く
-- [ ] comment schema を作る
-- [ ] review rubric を作る
-- [ ] privacy rules を作る
+- [x] use cases を書く
+- [x] comment schema を作る
+- [x] review rubric を作る
+- [x] privacy rules を作る
 
 ## Dependencies
 
@@ -47,18 +47,21 @@ estimate: "2d"
 
 ## Test Plan
 
-- [ ] 主要な happy path が手動で再現できる
-- [ ] 入力エラー時に安全に失敗する
-- [ ] 永続化されたデータが再読み込み後も一致する
+- [x] 主要な happy path が手動で再現できる
+- [x] 入力エラー時に安全に失敗する
+- [x] 永続化されたデータが再読み込み後も一致する
 
 ## Definition of Done
 
-- [ ] Acceptance Criteria がすべて満たされている
-- [ ] 必要な docs / schema / sample data が更新されている
-- [ ] Safety / Abuse Prevention が確認されている
-- [ ] Review Queue / Analytics への影響が確認されている
-- [ ] Cyberpunk UI が可読性を邪魔していない
+- [x] Acceptance Criteria がすべて満たされている
+- [x] 必要な docs / schema / sample data が更新されている
+- [x] Safety / Abuse Prevention が確認されている
+- [x] Review Queue / Analytics への影響が確認されている
+- [x] Cyberpunk UI が可読性を邪魔していない
 
 ## Notes
 
-- None
+- Design only: `docs/PEER_REVIEW_DESIGN.md` (EN/JA) defines use cases, roles, data model, rubric, UX
+  flows, and privacy/safety guardrails; `docs/schemas/peer-review-comment.schema.json` and
+  `docs/schemas/peer-review-package.schema.json` define the comment and package schemas, with examples
+  validated in unit tests.

@@ -2,6 +2,18 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## v1.0.35 - 2026-09-25
+
+Team / Peer Review Mode design: data model, UX, rubric, and privacy/safety guardrails.
+
+### Added
+
+- `docs/PEER_REVIEW_DESIGN.md` (English and Japanese) covering goals, use cases, roles, the review
+  package and comment data model, a 1-4 review rubric, UX flows, privacy/safety guardrails, and future
+  implementation notes. Peer review stays unimplemented in the MVP.
+- JSON Schemas for review comments (comment, suggestion, approval, safety flag) and public-safe review
+  packages in `docs/schemas/`, with examples validated by unit tests.
+
 ## v1.0.34 - 2026-09-25
 
 Security Interview Readiness Tracker with skill evidence, STAR stories, honest gaps, and answer memos.
