@@ -2,6 +2,10 @@
 
 All notable changes to NeonSec Academy are documented here.
 
+## [1.0.38] - 2026-10-24
+
+- Update the reviewed dependencies and retain the recorded security compatibility fixes.
+
 ## v1.0.37 - 2026-09-25
 
 Landing page and safe demo mode with synthetic demo content.
